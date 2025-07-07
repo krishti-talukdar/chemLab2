@@ -377,7 +377,7 @@ function VirtualLabApp({
         },
         {
           id: "beaker_hot_water",
-          name: "Beaker with Hot Water",
+          name: "Hot Water Beaker",
           icon: (
             <svg
               width="36"
