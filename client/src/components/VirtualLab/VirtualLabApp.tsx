@@ -351,6 +351,39 @@ function VirtualLabApp({
       ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
+        { id: "beaker", name: "Beaker", icon: <Beaker size={36} /> },
+        { id: "dropper", name: "Dropper", icon: <Droplets size={36} /> },
+        {
+          id: "water_bath",
+          name: "Water Bath",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-orange-600"
+            >
+              <rect
+                x="4"
+                y="12"
+                width="28"
+                height="16"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="rgba(249, 115, 22, 0.1)"
+              />
+              <path
+                d="M8 20c2-2 4-2 6 0s4 2 6 0s4-2 6 0s4 2 6 0"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <circle cx="18" cy="8" r="2" fill="rgba(249, 115, 22, 0.5)" />
+              <path d="M16 6l4 4" stroke="currentColor" strokeWidth="1" />
+            </svg>
+          ),
+        },
         { id: "test_tubes", name: "Test Tubes", icon: <TestTube size={36} /> },
         { id: "ice_bath", name: "Ice Bath", icon: <FlaskConical size={36} /> },
       ];
