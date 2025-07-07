@@ -352,12 +352,6 @@ function VirtualLabApp({
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
         { id: "test_tubes", name: "Test Tubes", icon: <TestTube size={36} /> },
-        { id: "beakers", name: "Beakers", icon: <Beaker size={36} /> },
-        {
-          id: "hot_water_bath",
-          name: "Hot Water Bath",
-          icon: <Thermometer size={36} />,
-        },
         { id: "ice_bath", name: "Ice Bath", icon: <FlaskConical size={36} /> },
       ];
     }
