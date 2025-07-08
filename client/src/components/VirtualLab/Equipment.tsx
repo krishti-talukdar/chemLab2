@@ -404,11 +404,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
                         key={i}
                         className="absolute w-0.5 h-0.5 bg-white/60 rounded-full animate-bounce"
                         style={{
-                          left: `${25 + (i % 3) * 25}%`,
-                          bottom: `${10 + (i % 2) * 30}%`,
-                          animationDelay: `${i * 0.4}s`,
+                          left: `${35 + (i % 2) * 30}%`,
+                          bottom: `${20 + (i % 2) * 20}%`,
+                          animationDelay: `${i * 0.5}s`,
                           animationDuration: cobaltReactionState?.stirrerActive
-                            ? "1s"
+                            ? "1.2s"
                             : "2s",
                         }}
                       />
