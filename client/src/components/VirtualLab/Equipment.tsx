@@ -274,12 +274,30 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
     // Use provided images for specific equipment types with bigger sizes
     if (id === "test_tubes") {
+      // Determine which test tube image to show based on reaction state
+      const getTestTubeImage = () => {
+        if (
+          !cobaltReactionState?.stirrerActive &&
+          !cobaltReactionState?.distilledWaterAdded
+        ) {
+          // Default empty test tube
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800";
+        } else if (cobaltReactionState?.colorTransition === "pink") {
+          // Pink liquid test tube
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F280bbef2140249df9531563786b4bae0?format=webp&width=800";
+        } else {
+          // Blue liquid test tube (initial state when stirrer is active or water added)
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F0dba4a9e1cb14c0798299e02a71a75b1?format=webp&width=800";
+        }
+      };
+
       return (
         <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800"
+            key={getTestTubeImage()} // Force re-render when image changes
+            src={getTestTubeImage()}
             alt="Laboratory Test Tube"
-            className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
+            className={`w-64 h-[40rem] object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
                 ? "scale-108 rotate-2 brightness-115"
                 : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
@@ -292,6 +310,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
+              opacity:
+                cobaltReactionState?.colorTransition === "transitioning"
+                  ? 0.8
+                  : 1,
             }}
           />
           {/* Cobalt chloride crystals - show blue crystals at bottom of test tube */}
