@@ -41,11 +41,56 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [smoothPosition, setSmoothPosition] = useState(position);
+
+  // Smooth position interpolation
+  useEffect(() => {
+    if (
+      position &&
+      (!smoothPosition ||
+        position.x !== smoothPosition.x ||
+        position.y !== smoothPosition.y)
+    ) {
+      const startPos = smoothPosition || position;
+      const startTime = Date.now();
+      const duration = 400; // Smooth transition duration
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing function for smooth movement
+        const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+        const easedProgress = easeOutCubic(progress);
+
+        setSmoothPosition({
+          x: startPos.x + (position.x - startPos.x) * easedProgress,
+          y: startPos.y + (position.y - startPos.y) * easedProgress,
+        });
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }
+  }, [position, smoothPosition]);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
     setIsDragging(true);
+
+    // Calculate offset from mouse to equipment center for precise positioning
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    setDragOffset({
+      x: e.clientX - rect.left - centerX,
+      y: e.clientY - rect.top - centerY,
+    });
 
     // Create enhanced drag preview
     const dragPreview = document.createElement("div");
@@ -124,6 +169,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    setDragOffset({ x: 0, y: 0 });
   };
 
   const handleDoubleClick = () => {
