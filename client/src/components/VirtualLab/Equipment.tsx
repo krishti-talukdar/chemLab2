@@ -308,7 +308,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             className={`${
               cobaltReactionState?.cobaltChlorideAdded &&
               cobaltReactionState?.distilledWaterAdded
-                ? "w-68 h-[42rem]"
+                ? "w-64 h-[40rem]"
                 : cobaltReactionState?.cobaltChlorideAdded
                   ? "w-[36rem] h-[90rem]"
                   : "w-64 h-[40rem]"
