@@ -97,6 +97,12 @@ function VirtualLabApp({
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [currentGuidedStep, setCurrentGuidedStep] = useState(1);
+  const [cobaltChlorideAdded, setCobaltChlorideAdded] = useState(false);
+  const [distilledWaterAdded, setDistilledWaterAdded] = useState(false);
+  const [stirrerActive, setStirrerActive] = useState(false);
+  const [colorTransition, setColorTransition] = useState<
+    "blue" | "transitioning" | "pink"
+  >("blue");
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -491,6 +497,31 @@ function VirtualLabApp({
           return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
         }
 
+        // Cobalt chloride stirrer automation
+        if (
+          experimentTitle.includes("Equilibrium") &&
+          id === "stirring_rod" &&
+          distilledWaterAdded
+        ) {
+          setStirrerActive(true);
+          setToastMessage("Stirrer activated! Mixing solution...");
+          setTimeout(() => setToastMessage(null), 3000);
+
+          // Start color transition after stirring begins
+          setTimeout(() => {
+            setColorTransition("transitioning");
+            setToastMessage("Color changing to pink...");
+            setTimeout(() => setToastMessage(null), 3000);
+
+            // Complete transition to pink
+            setTimeout(() => {
+              setColorTransition("pink");
+              setToastMessage("Pink hydrated cobalt complex formed!");
+              setTimeout(() => setToastMessage(null), 4000);
+            }, 2000);
+          }, 1000);
+        }
+
         // Check if this completes a guided step for Aspirin Synthesis
         if (experimentTitle.includes("Aspirin")) {
           const currentStep = aspirinGuidedSteps[currentGuidedStep - 1];
@@ -570,11 +601,34 @@ function VirtualLabApp({
             },
           ];
 
-          // Show success toast
-          setToastMessage(
-            `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
-          );
-          setTimeout(() => setToastMessage(null), 3000);
+          // Cobalt chloride reaction logic
+          if (
+            experimentTitle.includes("Equilibrium") &&
+            equipmentId === "test_tubes"
+          ) {
+            if (chemicalId === "cocl2") {
+              setCobaltChlorideAdded(true);
+              setToastMessage(
+                "Blue cobalt chloride crystals formed in test tube!",
+              );
+              setTimeout(() => setToastMessage(null), 3000);
+            } else if (chemicalId === "water" && cobaltChlorideAdded) {
+              setDistilledWaterAdded(true);
+              setToastMessage("Add the stirrer");
+              setTimeout(() => setToastMessage(null), 5000);
+            } else {
+              setToastMessage(
+                `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
+              );
+              setTimeout(() => setToastMessage(null), 3000);
+            }
+          } else {
+            // Show success toast
+            setToastMessage(
+              `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
+            );
+            setTimeout(() => setToastMessage(null), 3000);
+          }
 
           // Check if this completes a guided step for Aspirin Synthesis
           if (experimentTitle.includes("Aspirin")) {
