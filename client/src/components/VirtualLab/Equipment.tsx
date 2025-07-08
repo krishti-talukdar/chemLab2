@@ -92,25 +92,28 @@ export const Equipment: React.FC<EquipmentProps> = ({
       y: e.clientY - rect.top - centerY,
     });
 
-    // Create enhanced drag preview
+    // Create enhanced drag preview with smooth physics
     const dragPreview = document.createElement("div");
     dragPreview.style.cssText = `
       position: absolute;
       top: -1000px;
       left: -1000px;
-      width: 120px;
-      height: 140px;
-      background: linear-gradient(145deg, #ffffff, #f0f9ff);
+      width: 140px;
+      height: 160px;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
       border: 3px solid #3b82f6;
-      border-radius: 16px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(59, 130, 246, 0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: rotate(-3deg) scale(1.2);
+      transform: rotate(-2deg) scale(1.1);
       z-index: 9999;
       pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      will-change: transform;
+      backdrop-filter: blur(8px);
     `;
 
     // Add enhanced icon
