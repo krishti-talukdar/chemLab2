@@ -497,6 +497,33 @@ function VirtualLabApp({
           return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
         }
 
+        // Cobalt chloride stirrer automation
+        if (
+          experimentTitle.includes("Equilibrium") &&
+          id === "stirring_rod" &&
+          distilledWaterAdded
+        ) {
+          setStirrerActive(true);
+          setToastMessage("Stirrer activated! Mixing solution...");
+          setTimeout(() => setToastMessage(null), 3000);
+
+          // Start color transition after stirring begins
+          setTimeout(() => {
+            setColorTransition("transitioning");
+            setToastMessage("Solution is changing color to pink!");
+            setTimeout(() => setToastMessage(null), 3000);
+
+            // Complete transition to pink
+            setTimeout(() => {
+              setColorTransition("pink");
+              setToastMessage(
+                "Hydrated cobalt complex formed - pink solution!",
+              );
+              setTimeout(() => setToastMessage(null), 4000);
+            }, 2000);
+          }, 1000);
+        }
+
         // Check if this completes a guided step for Aspirin Synthesis
         if (experimentTitle.includes("Aspirin")) {
           const currentStep = aspirinGuidedSteps[currentGuidedStep - 1];
