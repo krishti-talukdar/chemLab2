@@ -561,7 +561,7 @@ function VirtualLabApp({
           }
         }
 
-        return [...prev, newPos];
+        return [...prev, { id, x, y, chemicals: [] }];
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
