@@ -416,28 +416,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   ))}
                 </div>
               )}
-
-              {/* Controlled bubbles within test tube */}
-              {(chemicals.length > 1 || cobaltReactionState?.stirrerActive) && (
-                <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(cobaltReactionState?.stirrerActive ? 6 : 2)].map(
-                    (_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-0.5 h-0.5 bg-white/60 rounded-full animate-bounce"
-                        style={{
-                          left: `${35 + (i % 2) * 30}%`,
-                          bottom: `${20 + (i % 2) * 20}%`,
-                          animationDelay: `${i * 0.5}s`,
-                          animationDuration: cobaltReactionState?.stirrerActive
-                            ? "1.2s"
-                            : "2s",
-                        }}
-                      />
-                    ),
-                  )}
-                </div>
-              )}
             </div>
           )}
           {/* Chemical composition display */}
