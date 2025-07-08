@@ -361,7 +361,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       : cobaltReactionState?.colorTransition === "transitioning"
                         ? "#9370DB"
                         : cobaltReactionState?.distilledWaterAdded
-                          ? "#20B2AA"
+                          ? "transparent"
                           : getMixedColor(),
                   opacity: 0.8,
                   transform: "scaleY(0.5)",
