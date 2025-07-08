@@ -307,7 +307,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             alt="Laboratory Test Tube"
             className={`${
               cobaltReactionState?.cobaltChlorideAdded
-                ? "w-80 h-[50rem]"
+                ? "w-96 h-[60rem]"
                 : "w-64 h-[40rem]"
             } object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
