@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Beaker,
   FlaskConical,
@@ -51,11 +51,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   // Use immediate positioning for responsive movement
   const currentPosition = position;
+  const [dragStartTime, setDragStartTime] = useState(0);
+  const [isPointerDragging, setIsPointerDragging] = useState(false);
+  const [pointerStartPos, setPointerStartPos] = useState({ x: 0, y: 0 });
+  const elementRef = useRef<HTMLDivElement>(null);
+  const lastUpdateTime = useRef(0);
+  const animationFrameId = useRef<number>();
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
     setIsDragging(true);
+    setDragStartTime(Date.now());
 
     // Calculate offset from mouse to equipment center for precise positioning
     const rect = e.currentTarget.getBoundingClientRect();
@@ -66,75 +73,51 @@ export const Equipment: React.FC<EquipmentProps> = ({
       y: e.clientY - rect.top - centerY,
     });
 
-    // Create enhanced drag preview with smooth physics
+    // Create lightweight drag preview for better performance
     const dragPreview = document.createElement("div");
     dragPreview.style.cssText = `
       position: absolute;
       top: -1000px;
       left: -1000px;
-      width: 140px;
-      height: 160px;
-      background: linear-gradient(145deg, #ffffff, #f8fafc);
-      border: 3px solid #3b82f6;
-      border-radius: 20px;
-      box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(59, 130, 246, 0.2);
+      width: 100px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #3b82f6;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: rotate(-2deg) scale(1.1);
       z-index: 9999;
       pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
       will-change: transform;
-      backdrop-filter: blur(8px);
     `;
 
-    // Add enhanced icon
+    // Add lightweight icon
     const iconContainer = document.createElement("div");
     iconContainer.style.cssText = `
-      font-size: 48px;
+      font-size: 36px;
       color: #1d4ed8;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 4px 8px rgba(29, 78, 216, 0.3));
+      margin-bottom: 4px;
     `;
     iconContainer.innerHTML = getIconSVG(id);
 
-    // Add enhanced label
+    // Add simple label
     const label = document.createElement("div");
     label.style.cssText = `
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: #1e40af;
       text-align: center;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-      margin: 0 8px;
     `;
     label.textContent = name;
 
-    // Add drag indicator
-    const indicator = document.createElement("div");
-    indicator.style.cssText = `
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 24px;
-      height: 24px;
-      background: linear-gradient(45deg, #10b981, #059669);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-    `;
-    indicator.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M13 6v5h5l-6 6-6-6h5V6h2z"/></svg>`;
-
     dragPreview.appendChild(iconContainer);
     dragPreview.appendChild(label);
-    dragPreview.appendChild(indicator);
     document.body.appendChild(dragPreview);
 
-    e.dataTransfer.setDragImage(dragPreview, 60, 70);
+    e.dataTransfer.setDragImage(dragPreview, 50, 60);
 
     // Cleanup
     setTimeout(() => {
@@ -147,7 +130,93 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleDragEnd = () => {
     setIsDragging(false);
     setDragOffset({ x: 0, y: 0 });
+    setDragStartTime(0);
   };
+
+  // Smooth pointer-based dragging for stirrer
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (id !== "stirring_rod") return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const element = elementRef.current;
+      if (!element) return;
+
+      element.setPointerCapture(e.pointerId);
+      setIsPointerDragging(true);
+      setIsDragging(true);
+
+      const rect = element.getBoundingClientRect();
+      setPointerStartPos({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    },
+    [id],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isPointerDragging || id !== "stirring_rod") return;
+
+      e.preventDefault();
+
+      // Throttle updates to 60fps for ultra-smooth performance
+      const now = performance.now();
+      if (now - lastUpdateTime.current < 16) return; // ~60fps
+      lastUpdateTime.current = now;
+
+      // Cancel previous animation frame if it exists
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+
+      animationFrameId.current = requestAnimationFrame(() => {
+        // Get the workbench element
+        const workbench = document.querySelector('[data-workbench="true"]');
+        if (!workbench) return;
+
+        const workbenchRect = workbench.getBoundingClientRect();
+        const x = e.clientX - workbenchRect.left - pointerStartPos.x;
+        const y = e.clientY - workbenchRect.top - pointerStartPos.y;
+
+        // Constrain to workbench bounds
+        const minMargin = 30;
+        const maxX = workbenchRect.width - minMargin;
+        const maxY = workbenchRect.height - minMargin;
+
+        const clampedX = Math.max(minMargin, Math.min(x, maxX));
+        const clampedY = Math.max(minMargin, Math.min(y, maxY));
+
+        // Update position immediately
+        onDrag(id, clampedX, clampedY);
+      });
+    },
+    [isPointerDragging, id, pointerStartPos, onDrag],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (id !== "stirring_rod") return;
+
+      const element = elementRef.current;
+      if (element) {
+        element.releasePointerCapture(e.pointerId);
+      }
+
+      // Clean up animation frame
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = undefined;
+      }
+
+      setIsPointerDragging(false);
+      setIsDragging(false);
+    },
+    [id],
+  );
 
   const handleDoubleClick = () => {
     if (isOnWorkbench && onRemove) {
@@ -448,11 +517,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
     if (id === "stirring_rod") {
       return (
-        <div className="relative">
+        <div className="relative will-change-transform">
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Fc57e71c48b934b3389c584fe631276e8?format=webp&width=800"
             alt="Laboratory Stirring Rod"
-            className="w-24 h-32 object-contain drop-shadow-lg"
+            className={`w-24 h-32 object-contain ${isDragging ? "drop-shadow-2xl" : "drop-shadow-lg"} ${isDragging ? "transition-none" : "transition-all duration-200"}`}
+            style={{
+              transform: isDragging ? "scale(1.1)" : "scale(1)",
+              filter: isDragging ? "brightness(1.1)" : "brightness(1)",
+            }}
           />
         </div>
       );
@@ -1212,14 +1285,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   return (
     <div
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+      ref={elementRef}
+      draggable={id !== "stirring_rod"}
+      onDragStart={id !== "stirring_rod" ? handleDragStart : undefined}
+      onDragEnd={id !== "stirring_rod" ? handleDragEnd : undefined}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
       onDoubleClick={handleDoubleClick}
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${
+      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${id === "stirring_rod" ? "stirring-rod-optimized" : ""} ${
         isOnWorkbench
           ? `p-0 bg-transparent border-0 shadow-none ${isDragging ? "opacity-80 z-50" : "hover:scale-105 hover:rotate-0.5"}`
           : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
@@ -1231,13 +1308,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
         zIndex: isOnWorkbench ? (isDragging ? 50 : 10) : "auto",
         transform: isOnWorkbench
           ? isDragging
-            ? `translate(-50%, -50%) scale(1.08) rotate(${Math.sin(Date.now() / 800) * 1.5}deg)`
+            ? "translate(-50%, -50%) scale(1.05)"
             : "translate(-50%, -50%) scale(1)"
           : "none",
         transition: isDragging
-          ? "opacity 0.2s ease-out"
-          : "all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)",
-        willChange: isDragging ? "transform, opacity" : "auto",
+          ? "none"
+          : isOnWorkbench
+            ? "transform 0.2s ease-out"
+            : "all 0.3s ease-out",
+        willChange: isDragging ? "transform" : "auto",
         cursor: isOnWorkbench ? (isDragging ? "grabbing" : "grab") : "grab",
       }}
     >
