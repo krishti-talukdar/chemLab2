@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Beaker,
   FlaskConical,
@@ -52,6 +52,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
   // Use immediate positioning for responsive movement
   const currentPosition = position;
   const [dragStartTime, setDragStartTime] = useState(0);
+  const [isPointerDragging, setIsPointerDragging] = useState(false);
+  const [pointerStartPos, setPointerStartPos] = useState({ x: 0, y: 0 });
+  const elementRef = useRef<HTMLDivElement>(null);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
@@ -127,6 +130,73 @@ export const Equipment: React.FC<EquipmentProps> = ({
     setDragOffset({ x: 0, y: 0 });
     setDragStartTime(0);
   };
+
+  // Smooth pointer-based dragging for stirrer
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (id !== "stirring_rod") return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const element = elementRef.current;
+      if (!element) return;
+
+      element.setPointerCapture(e.pointerId);
+      setIsPointerDragging(true);
+      setIsDragging(true);
+
+      const rect = element.getBoundingClientRect();
+      setPointerStartPos({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    },
+    [id],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isPointerDragging || id !== "stirring_rod") return;
+
+      e.preventDefault();
+
+      // Get the workbench element
+      const workbench = document.querySelector('[data-workbench="true"]');
+      if (!workbench) return;
+
+      const workbenchRect = workbench.getBoundingClientRect();
+      const x = e.clientX - workbenchRect.left - pointerStartPos.x;
+      const y = e.clientY - workbenchRect.top - pointerStartPos.y;
+
+      // Constrain to workbench bounds
+      const minMargin = 30;
+      const maxX = workbenchRect.width - minMargin;
+      const maxY = workbenchRect.height - minMargin;
+
+      const clampedX = Math.max(minMargin, Math.min(x, maxX));
+      const clampedY = Math.max(minMargin, Math.min(y, maxY));
+
+      // Update position immediately without waiting for React re-render
+      onDrag(id, clampedX, clampedY);
+    },
+    [isPointerDragging, id, pointerStartPos, onDrag],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (id !== "stirring_rod") return;
+
+      const element = elementRef.current;
+      if (element) {
+        element.releasePointerCapture(e.pointerId);
+      }
+
+      setIsPointerDragging(false);
+      setIsDragging(false);
+    },
+    [id],
+  );
 
   const handleDoubleClick = () => {
     if (isOnWorkbench && onRemove) {
@@ -1195,9 +1265,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   return (
     <div
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+      ref={elementRef}
+      draggable={id !== "stirring_rod"}
+      onDragStart={id !== "stirring_rod" ? handleDragStart : undefined}
+      onDragEnd={id !== "stirring_rod" ? handleDragEnd : undefined}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
       onDoubleClick={handleDoubleClick}
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
