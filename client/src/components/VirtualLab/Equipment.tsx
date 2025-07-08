@@ -294,17 +294,20 @@ export const Equipment: React.FC<EquipmentProps> = ({
               transformOrigin: "center bottom",
             }}
           />
-          {/* Cobalt chloride crystals - show blue crystals before water is added */}
+          {/* Cobalt chloride crystals - show blue crystals at bottom of test tube */}
           {cobaltReactionState?.cobaltChlorideAdded &&
             !cobaltReactionState?.distilledWaterAdded && (
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-6 bottom-32">
-                {[...Array(8)].map((_, i) => (
+              <div
+                className="absolute left-1/2 transform -translate-x-1/2 w-6"
+                style={{ bottom: "140px" }}
+              >
+                {[...Array(6)].map((_, i) => (
                   <div
                     key={i}
-                    className="absolute w-1.5 h-1.5 bg-blue-600 rounded-sm animate-pulse shadow-sm"
+                    className="absolute w-1 h-1 bg-blue-600 rounded-sm animate-pulse shadow-sm"
                     style={{
-                      bottom: `${(i % 4) * 12}px`,
-                      left: `${(i % 3) * 8 + 4}px`,
+                      bottom: `${(i % 3) * 4}px`,
+                      left: `${(i % 3) * 6 + 6}px`,
                       animationDelay: `${i * 0.3}s`,
                       animationDuration: "2s",
                       transform: `rotate(${Math.random() * 45}deg)`,
@@ -312,17 +315,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
                     }}
                   />
                 ))}
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-bold whitespace-nowrap bg-blue-50 px-2 py-1 rounded border shadow-sm">
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-bold whitespace-nowrap bg-blue-50 px-1 py-0.5 rounded text-center">
                   Blue Crystals
                 </div>
               </div>
             )}
 
-          {/* Solution overlay for test tubes - enhanced for cobalt reaction */}
+          {/* Solution overlay for test tubes - properly contained within test tube */}
           {(chemicals.length > 0 ||
             cobaltReactionState?.distilledWaterAdded) && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-8 rounded-b-full transition-all duration-1000 ease-in-out"
+              className="absolute left-1/2 transform -translate-x-1/2 w-6 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
               style={{
                 backgroundColor:
                   cobaltReactionState?.colorTransition === "pink"
@@ -332,24 +335,25 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       : cobaltReactionState?.distilledWaterAdded
                         ? "#4169E1"
                         : getMixedColor(),
-                bottom: "128px",
-                height: `${Math.min(getSolutionHeight() * 3, 320)}px`,
+                bottom: "140px",
+                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 2 : 60, 200)}px`,
+                maxHeight: "200px",
                 opacity: 0.9,
                 boxShadow:
-                  "inset 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15)",
+                  "inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.1)",
                 background:
                   cobaltReactionState?.colorTransition === "pink"
-                    ? "linear-gradient(180deg, #FFB6C1CC, #FFB6C1FF)"
+                    ? "linear-gradient(180deg, #FFB6C1DD, #FFB6C1FF)"
                     : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, #4169E1CC, #FFB6C1FF)"
+                      ? "linear-gradient(180deg, #4169E1DD, #FFB6C1FF)"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "linear-gradient(180deg, #4169E1CC, #4169E1FF)"
-                        : `linear-gradient(180deg, ${getMixedColor()}CC, ${getMixedColor()}FF)`,
+                        ? "linear-gradient(180deg, #4169E1DD, #4169E1FF)"
+                        : `linear-gradient(180deg, ${getMixedColor()}DD, ${getMixedColor()}FF)`,
               }}
             >
               {/* Liquid surface meniscus effect */}
               <div
-                className="absolute top-0 left-0 right-0 h-1.5 rounded-full"
+                className="absolute top-0 left-0 right-0 h-1 rounded-full"
                 style={{
                   backgroundColor:
                     cobaltReactionState?.colorTransition === "pink"
@@ -359,52 +363,52 @@ export const Equipment: React.FC<EquipmentProps> = ({
                         : cobaltReactionState?.distilledWaterAdded
                           ? "#4169E1"
                           : getMixedColor(),
-                  opacity: 0.7,
-                  transform: "scaleY(0.4)",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                  opacity: 0.8,
+                  transform: "scaleY(0.5)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
                 }}
               />
 
               {/* Stirring animation when stirrer is active */}
               {cobaltReactionState?.stirrerActive && (
-                <div className="absolute inset-0">
-                  {/* Stirring rod animation */}
+                <div className="absolute inset-0 overflow-hidden">
+                  {/* Stirring rod animation - smaller and contained */}
                   <div
                     className="absolute w-full h-full animate-spin"
                     style={{ animationDuration: "2s" }}
                   >
-                    <div className="absolute w-0.5 h-12 bg-gray-400 rounded-full left-1/2 top-1/4 transform -translate-x-1/2 shadow-md" />
+                    <div className="absolute w-0.5 h-6 bg-gray-400 rounded-full left-1/2 top-1/3 transform -translate-x-1/2 shadow-sm" />
                   </div>
-                  {/* Swirling liquid effect */}
-                  {[...Array(6)].map((_, i) => (
+                  {/* Gentle swirling liquid effect */}
+                  {[...Array(4)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-1 h-3 bg-white/30 rounded-full animate-spin"
+                      className="absolute w-0.5 h-2 bg-white/25 rounded-full animate-spin"
                       style={{
-                        left: `${30 + (i % 3) * 15}%`,
-                        top: `${20 + (i % 2) * 30}%`,
-                        animationDelay: `${i * 0.2}s`,
-                        animationDuration: "1.5s",
+                        left: `${40 + (i % 2) * 20}%`,
+                        top: `${30 + (i % 2) * 20}%`,
+                        animationDelay: `${i * 0.3}s`,
+                        animationDuration: "1.8s",
                       }}
                     />
                   ))}
                 </div>
               )}
 
-              {/* Enhanced bubbles for active stirring */}
+              {/* Controlled bubbles within test tube */}
               {(chemicals.length > 1 || cobaltReactionState?.stirrerActive) && (
                 <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(cobaltReactionState?.stirrerActive ? 12 : 3)].map(
+                  {[...Array(cobaltReactionState?.stirrerActive ? 6 : 2)].map(
                     (_, i) => (
                       <div
                         key={i}
-                        className="absolute w-1 h-1 bg-white/50 rounded-full animate-bounce"
+                        className="absolute w-0.5 h-0.5 bg-white/60 rounded-full animate-bounce"
                         style={{
-                          left: `${15 + (i % 4) * 18}%`,
-                          bottom: `${5 + (i % 3) * 25}%`,
-                          animationDelay: `${i * 0.2}s`,
+                          left: `${25 + (i % 3) * 25}%`,
+                          bottom: `${10 + (i % 2) * 30}%`,
+                          animationDelay: `${i * 0.4}s`,
                           animationDuration: cobaltReactionState?.stirrerActive
-                            ? "0.8s"
+                            ? "1s"
                             : "2s",
                         }}
                       />
