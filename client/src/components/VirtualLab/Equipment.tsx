@@ -276,18 +276,23 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "test_tubes") {
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
+        // If stirrer is active and we have cobalt + water, transition to pink
         if (
-          !cobaltReactionState?.stirrerActive &&
-          !cobaltReactionState?.distilledWaterAdded
+          cobaltReactionState?.stirrerActive &&
+          cobaltReactionState?.cobaltChlorideAdded &&
+          cobaltReactionState?.distilledWaterAdded
         ) {
+          // Pink liquid test tube (after stirring)
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F280bbef2140249df9531563786b4bae0?format=webp&width=800";
+        } else if (
+          cobaltReactionState?.cobaltChlorideAdded &&
+          cobaltReactionState?.distilledWaterAdded
+        ) {
+          // Blue liquid test tube (after adding cobalt chloride and distilled water)
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F0dba4a9e1cb14c0798299e02a71a75b1?format=webp&width=800";
+        } else {
           // Default empty test tube
           return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800";
-        } else if (cobaltReactionState?.colorTransition === "pink") {
-          // Pink liquid test tube
-          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F280bbef2140249df9531563786b4bae0?format=webp&width=800";
-        } else {
-          // Blue liquid test tube (initial state when stirrer is active or water added)
-          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F0dba4a9e1cb14c0798299e02a71a75b1?format=webp&width=800";
         }
       };
 
