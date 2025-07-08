@@ -427,11 +427,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
     if (id === "stirring_rod") {
       return (
-        <div className="relative">
+        <div className="relative will-change-transform">
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Fc57e71c48b934b3389c584fe631276e8?format=webp&width=800"
             alt="Laboratory Stirring Rod"
-            className="w-24 h-32 object-contain drop-shadow-lg"
+            className={`w-24 h-32 object-contain ${isDragging ? "drop-shadow-2xl" : "drop-shadow-lg"} ${isDragging ? "transition-none" : "transition-all duration-200"}`}
+            style={{
+              transform: isDragging ? "scale(1.1)" : "scale(1)",
+              filter: isDragging ? "brightness(1.1)" : "brightness(1)",
+            }}
           />
         </div>
       );
@@ -1198,7 +1202,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${
+      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${id === "stirring_rod" ? "stirring-rod-optimized" : ""} ${
         isOnWorkbench
           ? `p-0 bg-transparent border-0 shadow-none ${isDragging ? "opacity-80 z-50" : "hover:scale-105 hover:rotate-0.5"}`
           : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
