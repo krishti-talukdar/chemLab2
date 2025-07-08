@@ -353,7 +353,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             >
               {/* Liquid surface meniscus effect */}
               <div
-                className="absolute top-0 left-0 right-0 h-1 rounded-full"
+                className="absolute top-0 left-0 right-0 h-1 rounded-full transition-all duration-2000 ease-in-out"
                 style={{
                   backgroundColor:
                     cobaltReactionState?.colorTransition === "pink"
@@ -361,7 +361,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       : cobaltReactionState?.colorTransition === "transitioning"
                         ? "#9370DB"
                         : cobaltReactionState?.distilledWaterAdded
-                          ? "#20B2AA"
+                          ? "#48D1CC"
                           : getMixedColor(),
                   opacity: 0.8,
                   transform: "scaleY(0.5)",
