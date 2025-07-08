@@ -836,57 +836,122 @@ export const Equipment: React.FC<EquipmentProps> = ({
       );
     }
 
+    // Fallback for any equipment not specifically handled above
     return (
       <div className="relative">
-        {icon}
-
-        {/* Solution visualization for other containers */}
-        {isContainer &&
-          chemicals.length > 0 &&
-          isOnWorkbench &&
-          id !== "erlenmeyer_flask" && (
-            <div className="absolute inset-0 flex items-end justify-center">
-              <div
-                className="rounded-b-lg transition-all duration-500 opacity-80"
-                style={{
-                  backgroundColor: getMixedColor(),
-                  height: `${getSolutionHeight()}%`,
-                  width: id === "beaker" ? "70%" : "60%",
-                  minHeight: "8px",
-                }}
+        {isOnWorkbench ? (
+          // Create a realistic glass container for any unspecified equipment
+          <svg
+            width="70"
+            height="90"
+            viewBox="0 0 70 90"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="genericGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
               >
-                {/* Enhanced liquid effects */}
-                <div className="relative w-full h-full overflow-hidden rounded-b-lg">
-                  {/* Surface shimmer */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="50%" stopColor="rgba(248,250,252,0.85)" />
+                <stop offset="100%" stopColor="rgba(226,232,240,0.95)" />
+              </linearGradient>
+              <linearGradient
+                id="genericLiquid"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+              </linearGradient>
+            </defs>
 
-                  {/* Bubbling animation for reactions */}
-                  {chemicals.length > 1 && (
-                    <div className="absolute inset-0">
-                      {[...Array(4)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-1 h-1 bg-white opacity-70 rounded-full animate-bounce"
-                          style={{
-                            left: `${15 + i * 20}%`,
-                            bottom: `${5 + (i % 2) * 15}px`,
-                            animationDelay: `${i * 0.3}s`,
-                            animationDuration: "1.5s",
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                  )}
+            {/* Generic container */}
+            <rect
+              x="15"
+              y="20"
+              width="40"
+              height="60"
+              fill="url(#genericGlass)"
+              stroke="#94a3b8"
+              strokeWidth="2"
+              rx="3"
+            />
 
-                  {/* Color change animation */}
-                  {chemicals.some((c) => c.id === "phenol") &&
-                    chemicals.some((c) => c.id === "naoh") && (
-                      <div className="absolute inset-0 bg-pink-300 opacity-50 animate-pulse rounded-b-lg"></div>
-                    )}
-                </div>
-              </div>
+            {/* Solution */}
+            {chemicals.length > 0 && (
+              <rect
+                x="18"
+                y={75 - getSolutionHeight() * 0.6}
+                width="34"
+                height={getSolutionHeight() * 0.6 + 5}
+                fill="url(#genericLiquid)"
+                rx="2"
+                className="transition-all duration-500"
+              />
+            )}
+
+            {/* Glass shine */}
+            <rect
+              x="20"
+              y="25"
+              width="4"
+              height="50"
+              fill="rgba(255,255,255,0.5)"
+              rx="2"
+              opacity="0.8"
+            />
+
+            {/* Volume markings */}
+            <g stroke="#6b7280" strokeWidth="0.8" fill="#4b5563" fontSize="6">
+              <line x1="57" y1="35" x2="60" y2="35" />
+              <text x="62" y="38">
+                100
+              </text>
+              <line x1="57" y1="50" x2="59" y2="50" />
+              <line x1="57" y1="65" x2="60" y2="65" />
+              <text x="62" y="68">
+                50
+              </text>
+            </g>
+          </svg>
+        ) : (
+          icon
+        )}
+
+        {/* Enhanced solution visualization for workbench containers */}
+        {isContainer && chemicals.length > 0 && isOnWorkbench && (
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
+            <div className="text-gray-800 font-medium text-center">
+              {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
             </div>
-          )}
+            <div className="text-gray-600 text-center">
+              {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+            </div>
+            <div
+              className="w-full h-1 rounded-full mt-1"
+              style={{ backgroundColor: getMixedColor() }}
+            ></div>
+          </div>
+        )}
       </div>
     );
   };
