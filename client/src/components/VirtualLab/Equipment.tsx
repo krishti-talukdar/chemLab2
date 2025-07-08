@@ -55,6 +55,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [isPointerDragging, setIsPointerDragging] = useState(false);
   const [pointerStartPos, setPointerStartPos] = useState({ x: 0, y: 0 });
   const elementRef = useRef<HTMLDivElement>(null);
+  const lastUpdateTime = useRef(0);
+  const animationFrameId = useRef<number>();
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
@@ -161,24 +163,36 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       e.preventDefault();
 
-      // Get the workbench element
-      const workbench = document.querySelector('[data-workbench="true"]');
-      if (!workbench) return;
+      // Throttle updates to 60fps for ultra-smooth performance
+      const now = performance.now();
+      if (now - lastUpdateTime.current < 16) return; // ~60fps
+      lastUpdateTime.current = now;
 
-      const workbenchRect = workbench.getBoundingClientRect();
-      const x = e.clientX - workbenchRect.left - pointerStartPos.x;
-      const y = e.clientY - workbenchRect.top - pointerStartPos.y;
+      // Cancel previous animation frame if it exists
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
 
-      // Constrain to workbench bounds
-      const minMargin = 30;
-      const maxX = workbenchRect.width - minMargin;
-      const maxY = workbenchRect.height - minMargin;
+      animationFrameId.current = requestAnimationFrame(() => {
+        // Get the workbench element
+        const workbench = document.querySelector('[data-workbench="true"]');
+        if (!workbench) return;
 
-      const clampedX = Math.max(minMargin, Math.min(x, maxX));
-      const clampedY = Math.max(minMargin, Math.min(y, maxY));
+        const workbenchRect = workbench.getBoundingClientRect();
+        const x = e.clientX - workbenchRect.left - pointerStartPos.x;
+        const y = e.clientY - workbenchRect.top - pointerStartPos.y;
 
-      // Update position immediately without waiting for React re-render
-      onDrag(id, clampedX, clampedY);
+        // Constrain to workbench bounds
+        const minMargin = 30;
+        const maxX = workbenchRect.width - minMargin;
+        const maxY = workbenchRect.height - minMargin;
+
+        const clampedX = Math.max(minMargin, Math.min(x, maxX));
+        const clampedY = Math.max(minMargin, Math.min(y, maxY));
+
+        // Update position immediately
+        onDrag(id, clampedX, clampedY);
+      });
     },
     [isPointerDragging, id, pointerStartPos, onDrag],
   );
@@ -190,6 +204,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
       const element = elementRef.current;
       if (element) {
         element.releasePointerCapture(e.pointerId);
+      }
+
+      // Clean up animation frame
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = undefined;
       }
 
       setIsPointerDragging(false);
