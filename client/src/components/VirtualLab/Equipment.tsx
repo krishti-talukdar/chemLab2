@@ -51,11 +51,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   // Use immediate positioning for responsive movement
   const currentPosition = position;
+  const [dragStartTime, setDragStartTime] = useState(0);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
     setIsDragging(true);
+    setDragStartTime(Date.now());
 
     // Calculate offset from mouse to equipment center for precise positioning
     const rect = e.currentTarget.getBoundingClientRect();
@@ -66,75 +68,51 @@ export const Equipment: React.FC<EquipmentProps> = ({
       y: e.clientY - rect.top - centerY,
     });
 
-    // Create enhanced drag preview with smooth physics
+    // Create lightweight drag preview for better performance
     const dragPreview = document.createElement("div");
     dragPreview.style.cssText = `
       position: absolute;
       top: -1000px;
       left: -1000px;
-      width: 140px;
-      height: 160px;
-      background: linear-gradient(145deg, #ffffff, #f8fafc);
-      border: 3px solid #3b82f6;
-      border-radius: 20px;
-      box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(59, 130, 246, 0.2);
+      width: 100px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #3b82f6;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: rotate(-2deg) scale(1.1);
       z-index: 9999;
       pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
       will-change: transform;
-      backdrop-filter: blur(8px);
     `;
 
-    // Add enhanced icon
+    // Add lightweight icon
     const iconContainer = document.createElement("div");
     iconContainer.style.cssText = `
-      font-size: 48px;
+      font-size: 36px;
       color: #1d4ed8;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 4px 8px rgba(29, 78, 216, 0.3));
+      margin-bottom: 4px;
     `;
     iconContainer.innerHTML = getIconSVG(id);
 
-    // Add enhanced label
+    // Add simple label
     const label = document.createElement("div");
     label.style.cssText = `
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: #1e40af;
       text-align: center;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-      margin: 0 8px;
     `;
     label.textContent = name;
 
-    // Add drag indicator
-    const indicator = document.createElement("div");
-    indicator.style.cssText = `
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 24px;
-      height: 24px;
-      background: linear-gradient(45deg, #10b981, #059669);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-    `;
-    indicator.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M13 6v5h5l-6 6-6-6h5V6h2z"/></svg>`;
-
     dragPreview.appendChild(iconContainer);
     dragPreview.appendChild(label);
-    dragPreview.appendChild(indicator);
     document.body.appendChild(dragPreview);
 
-    e.dataTransfer.setDragImage(dragPreview, 60, 70);
+    e.dataTransfer.setDragImage(dragPreview, 50, 60);
 
     // Cleanup
     setTimeout(() => {
@@ -147,6 +125,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleDragEnd = () => {
     setIsDragging(false);
     setDragOffset({ x: 0, y: 0 });
+    setDragStartTime(0);
   };
 
   const handleDoubleClick = () => {
@@ -1231,13 +1210,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
         zIndex: isOnWorkbench ? (isDragging ? 50 : 10) : "auto",
         transform: isOnWorkbench
           ? isDragging
-            ? `translate(-50%, -50%) scale(1.08) rotate(${Math.sin(Date.now() / 800) * 1.5}deg)`
+            ? "translate(-50%, -50%) scale(1.05)"
             : "translate(-50%, -50%) scale(1)"
           : "none",
         transition: isDragging
-          ? "opacity 0.2s ease-out"
-          : "all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)",
-        willChange: isDragging ? "transform, opacity" : "auto",
+          ? "none"
+          : isOnWorkbench
+            ? "transform 0.2s ease-out"
+            : "all 0.3s ease-out",
+        willChange: isDragging ? "transform" : "auto",
         cursor: isOnWorkbench ? (isDragging ? "grabbing" : "grab") : "grab",
       }}
     >
