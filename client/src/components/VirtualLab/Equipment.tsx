@@ -315,7 +315,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                     }}
                   />
                 ))}
-                <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-1 py-0.5 rounded text-center">
+                <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-semibold whitespace-nowrap bg-gray-50 px-1 py-0.5 rounded text-center">
                   Crystals
                 </div>
               </div>
