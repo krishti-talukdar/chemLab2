@@ -603,35 +603,11 @@ function VirtualLabApp({
             },
           ];
 
-          // Cobalt chloride reaction logic
-          if (
-            experimentTitle.includes("Equilibrium") &&
-            equipmentId === "test_tubes"
-          ) {
-            if (chemicalId === "cocl2") {
-              setCobaltChlorideAdded(true);
-              setToastMessage(
-                "Blue cobalt chloride crystals added to test tube!",
-              );
-              setTimeout(() => setToastMessage(null), 3000);
-            } else if (chemicalId === "water" && cobaltChlorideAdded) {
-              setDistilledWaterAdded(true);
-              setToastMessage("Add the stirrer to mix the solution");
-              setTimeout(() => setToastMessage(null), 5000);
-            } else {
-              // Show regular toast for other chemicals
-              setToastMessage(
-                `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
-              );
-              setTimeout(() => setToastMessage(null), 3000);
-            }
-          } else {
-            // Show success toast for non-cobalt reactions
-            setToastMessage(
-              `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
-            );
-            setTimeout(() => setToastMessage(null), 3000);
-          }
+          // Show success toast
+          setToastMessage(
+            `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
+          );
+          setTimeout(() => setToastMessage(null), 3000);
 
           // Check if this completes a guided step for Aspirin Synthesis
           if (experimentTitle.includes("Aspirin")) {
@@ -1009,12 +985,6 @@ function VirtualLabApp({
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
                     onRemove={handleEquipmentRemove}
-                    cobaltReactionState={{
-                      cobaltChlorideAdded,
-                      distilledWaterAdded,
-                      stirrerActive,
-                      colorTransition,
-                    }}
                   />
                 ) : null;
               })}
