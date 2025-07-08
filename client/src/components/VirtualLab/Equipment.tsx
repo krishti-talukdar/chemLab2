@@ -40,6 +40,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
