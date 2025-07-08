@@ -26,6 +26,12 @@ interface EquipmentProps {
     amount: number,
   ) => void;
   onRemove?: (id: string) => void;
+  cobaltReactionState?: {
+    cobaltChlorideAdded: boolean;
+    distilledWaterAdded: boolean;
+    stirrerActive: boolean;
+    colorTransition: "blue" | "transitioning" | "pink";
+  };
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -37,6 +43,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
   chemicals = [],
   onChemicalDrop,
   onRemove,
+  cobaltReactionState,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
