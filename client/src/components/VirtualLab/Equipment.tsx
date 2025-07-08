@@ -322,6 +322,22 @@ export const Equipment: React.FC<EquipmentProps> = ({
             }}
           />
 
+          {/* Cobalt chloride solid at bottom of test tube */}
+          {cobaltReactionState?.cobaltChlorideAdded &&
+            !cobaltReactionState?.distilledWaterAdded && (
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fc2053654ab564f8eb91577d73cfc950b%2Fec31965a3f6f4a24bd461f0d6c1719c2?format=webp&width=800"
+                alt="Cobalt Chloride Solid"
+                className="absolute bottom-[4rem] left-1/2 transform -translate-x-1/2 w-12 h-8 object-contain transition-opacity duration-500"
+                style={{
+                  opacity:
+                    cobaltReactionState?.colorTransition === "transitioning"
+                      ? 0
+                      : 1,
+                }}
+              />
+            )}
+
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
             <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
