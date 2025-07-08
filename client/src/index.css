@@ -23,7 +23,7 @@
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
-  
+
   /* Custom colors for chemistry lab theme */
   --science-blue: hsl(217, 91%, 60%);
   --lab-green: hsl(158, 64%, 52%);
@@ -61,7 +61,7 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 }
 
@@ -69,32 +69,130 @@
   .science-blue {
     color: var(--science-blue);
   }
-  
+
   .bg-science-blue {
     background-color: var(--science-blue);
   }
-  
+
   .lab-green {
     color: var(--lab-green);
   }
-  
+
   .bg-lab-green {
     background-color: var(--lab-green);
   }
-  
+
   .alert-red {
     color: var(--alert-red);
   }
-  
+
   .bg-alert-red {
     background-color: var(--alert-red);
   }
-  
+
   .lab-gray {
     color: var(--lab-gray);
   }
-  
+
   .bg-lab-gray {
     background-color: var(--lab-gray);
   }
+}
+
+/* Enhanced drag and drop styles */
+@layer components {
+  .dragging {
+    @apply opacity-50 transform scale-95 rotate-3;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .drag-over {
+    @apply ring-4 ring-blue-300 ring-opacity-50 scale-105;
+    animation: dragPulse 1s infinite;
+  }
+
+  .drag-source {
+    @apply cursor-grabbing;
+    user-select: none;
+  }
+
+  .drop-zone-active {
+    @apply bg-gradient-to-br from-blue-50 to-green-50 border-blue-400;
+    animation: dropZoneGlow 2s infinite;
+  }
+
+  .chemical-bottle-shadow {
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15))
+      drop-shadow(0 6px 12px rgba(59, 130, 246, 0.1));
+  }
+
+  .equipment-shadow {
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.12))
+      drop-shadow(0 4px 8px rgba(37, 99, 235, 0.08));
+  }
+}
+
+@keyframes dragPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+}
+
+@keyframes dropZoneGlow {
+  0%,
+  100% {
+    border-color: rgba(59, 130, 246, 0.5);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.05),
+      rgba(16, 185, 129, 0.05)
+    );
+  }
+  50% {
+    border-color: rgba(16, 185, 129, 0.8);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.1),
+      rgba(16, 185, 129, 0.1)
+    );
+  }
+}
+
+@keyframes liquidBubble {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.liquid-bubble {
+  animation: liquidBubble 2s infinite ease-in-out;
+}
+
+.chemical-glow {
+  box-shadow:
+    0 0 20px rgba(139, 92, 246, 0.3),
+    0 0 40px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.equipment-glow {
+  box-shadow:
+    0 0 20px rgba(59, 130, 246, 0.3),
+    0 0 40px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
