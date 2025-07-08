@@ -406,121 +406,432 @@ export const Equipment: React.FC<EquipmentProps> = ({
       );
     }
 
-    if (id === "erlenmeyer_flask" && isOnWorkbench) {
+    if (id === "flask" || id === "erlenmeyer_flask") {
       return (
         <div className="relative">
-          {/* Enhanced Erlenmeyer Flask Illustration */}
           <svg
-            width="80"
-            height="100"
-            viewBox="0 0 80 100"
+            width="100"
+            height="140"
+            viewBox="0 0 100 140"
             className="drop-shadow-lg"
           >
-            {/* Flask body */}
+            <defs>
+              <linearGradient
+                id="flaskGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="30%" stopColor="rgba(248,250,252,0.85)" />
+                <stop offset="70%" stopColor="rgba(241,245,249,0.9)" />
+                <stop offset="100%" stopColor="rgba(226,232,240,0.95)" />
+              </linearGradient>
+              <linearGradient
+                id="flaskLiquid"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+              </linearGradient>
+            </defs>
+
+            {/* Flask body - conical shape */}
             <path
-              d="M25 20 L25 35 L10 70 L70 70 L55 35 L55 20 Z"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
+              d="M35 30 L35 45 L15 105 L85 105 L65 45 L65 30 Z"
+              fill="url(#flaskGlass)"
+              stroke="#94a3b8"
               strokeWidth="2"
             />
+
             {/* Flask neck */}
             <rect
-              x="30"
-              y="10"
+              x="40"
+              y="15"
               width="20"
-              height="15"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
+              height="20"
+              fill="url(#flaskGlass)"
+              stroke="#94a3b8"
               strokeWidth="2"
-              rx="2"
+              rx="3"
             />
+
             {/* Flask opening */}
             <ellipse
-              cx="40"
-              cy="10"
+              cx="50"
+              cy="15"
               rx="10"
-              ry="2"
+              ry="3"
               fill="none"
-              stroke="#2563eb"
+              stroke="#64748b"
               strokeWidth="2"
             />
+
+            {/* Volume markings */}
+            <g
+              stroke="#6b7280"
+              strokeWidth="1"
+              fill="#4b5563"
+              fontSize="7"
+              fontFamily="Arial"
+            >
+              <line x1="87" y1="65" x2="92" y2="65" />
+              <text x="94" y="68">
+                1000
+              </text>
+              <line x1="87" y1="75" x2="90" y2="75" />
+              <line x1="87" y1="82" x2="92" y2="82" />
+              <text x="94" y="85">
+                800
+              </text>
+              <line x1="87" y1="89" x2="90" y2="89" />
+              <line x1="87" y1="96" x2="92" y2="96" />
+              <text x="94" y="99">
+                600
+              </text>
+              <line x1="87" y1="100" x2="90" y2="100" />
+              <text x="94" y="108">
+                400
+              </text>
+            </g>
+
+            {/* Label area */}
+            <rect
+              x="25"
+              y="75"
+              width="20"
+              height="12"
+              fill="rgba(255,255,255,0.9)"
+              stroke="#d1d5db"
+              strokeWidth="0.5"
+              rx="2"
+            />
+            <text
+              x="35"
+              y="82"
+              textAnchor="middle"
+              fontSize="6"
+              fill="#374151"
+              fontWeight="bold"
+            >
+              1000ml
+            </text>
 
             {/* Solution in flask */}
             {chemicals.length > 0 && (
               <path
-                d={`M${15 + chemicals.length * 2} ${70 - getSolutionHeight() * 0.4} L${65 - chemicals.length * 2} ${70 - getSolutionHeight() * 0.4} L70 70 L10 70 Z`}
-                fill={getMixedColor()}
-                opacity="0.8"
+                d={`M${20 + chemicals.length} ${105 - getSolutionHeight() * 0.6} L${80 - chemicals.length} ${105 - getSolutionHeight() * 0.6} L85 105 L15 105 Z`}
+                fill="url(#flaskLiquid)"
                 className="transition-all duration-500"
               />
             )}
 
-            {/* Volume markings */}
-            <g stroke="#6b7280" strokeWidth="1" fill="#6b7280">
-              <line x1="72" y1="50" x2="75" y2="50" />
-              <text x="78" y="53" fontSize="6">
-                100mL
-              </text>
-              <line x1="72" y1="60" x2="75" y2="60" />
-              <text x="78" y="63" fontSize="6">
-                50mL
-              </text>
-            </g>
+            {/* Glass shine effects */}
+            <ellipse
+              cx="30"
+              cy="55"
+              rx="3"
+              ry="15"
+              fill="rgba(255,255,255,0.6)"
+              opacity="0.8"
+            />
+            <ellipse
+              cx="42"
+              cy="25"
+              rx="2"
+              ry="8"
+              fill="rgba(255,255,255,0.5)"
+              opacity="0.7"
+            />
 
             {/* Bubbling animation for reactions */}
             {chemicals.length > 1 && (
               <g>
-                {[...Array(6)].map((_, i) => (
+                {[...Array(5)].map((_, i) => (
                   <circle
                     key={i}
-                    cx={25 + i * 8}
-                    cy={65 - (i % 2) * 5}
+                    cx={30 + i * 8}
+                    cy={95 - (i % 2) * 8}
                     r="1.5"
-                    fill="rgba(255, 255, 255, 0.7)"
+                    fill="rgba(255,255,255,0.8)"
                     className="animate-bounce"
                     style={{
-                      animationDelay: `${i * 0.3}s`,
-                      animationDuration: "1.5s",
+                      animationDelay: `${i * 0.4}s`,
+                      animationDuration: "2s",
                     }}
                   />
                 ))}
               </g>
             )}
-
-            {/* Flask label */}
-            <text
-              x="40"
-              y="85"
-              textAnchor="middle"
-              fontSize="8"
-              fill="#374151"
-              fontWeight="bold"
-            >
-              125mL Erlenmeyer
-            </text>
           </svg>
 
-          {/* Chemical composition display */}
+          {/* Enhanced chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-200 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+              <div className="text-gray-800 font-semibold text-center">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
               <div className="text-gray-600 text-center">
                 {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
                 total
               </div>
+              <div
+                className="w-full h-1 rounded-full mt-1"
+                style={{ backgroundColor: getMixedColor() }}
+              ></div>
             </div>
           )}
+        </div>
+      );
+    }
 
-          {/* Drop success animation */}
-          {isDropping && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
-                ✓ Added!
-              </div>
-            </div>
-          )}
+    if (id === "beaker") {
+      return (
+        <div className="relative">
+          <svg
+            width="80"
+            height="120"
+            viewBox="0 0 80 120"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="beakerGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="50%" stopColor="rgba(248,250,252,0.85)" />
+                <stop offset="100%" stopColor="rgba(226,232,240,0.95)" />
+              </linearGradient>
+              <linearGradient
+                id="beakerLiquid"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+              </linearGradient>
+            </defs>
+
+            {/* Beaker body */}
+            <rect
+              x="15"
+              y="25"
+              width="50"
+              height="75"
+              fill="url(#beakerGlass)"
+              stroke="#94a3b8"
+              strokeWidth="2"
+              rx="4"
+            />
+
+            {/* Beaker spout */}
+            <path
+              d="M62 35 Q68 35 68 40 Q68 45 62 45"
+              fill="none"
+              stroke="#94a3b8"
+              strokeWidth="2"
+            />
+
+            {/* Volume markings */}
+            <g
+              stroke="#6b7280"
+              strokeWidth="1"
+              fill="#4b5563"
+              fontSize="7"
+              fontFamily="Arial"
+            >
+              <line x1="67" y1="40" x2="72" y2="40" />
+              <text x="74" y="43">
+                500
+              </text>
+              <line x1="67" y1="55" x2="70" y2="55" />
+              <line x1="67" y1="65" x2="72" y2="65" />
+              <text x="74" y="68">
+                400
+              </text>
+              <line x1="67" y1="75" x2="70" y2="75" />
+              <line x1="67" y1="85" x2="72" y2="85" />
+              <text x="74" y="88">
+                300
+              </text>
+              <line x1="67" y1="90" x2="70" y2="90" />
+              <text x="74" y="98">
+                200
+              </text>
+            </g>
+
+            {/* Solution in beaker */}
+            {chemicals.length > 0 && (
+              <rect
+                x="18"
+                y={95 - getSolutionHeight() * 0.8}
+                width="44"
+                height={getSolutionHeight() * 0.8 + 5}
+                fill="url(#beakerLiquid)"
+                rx="2"
+                className="transition-all duration-500"
+              />
+            )}
+
+            {/* Glass shine */}
+            <rect
+              x="20"
+              y="30"
+              width="6"
+              height="60"
+              fill="rgba(255,255,255,0.5)"
+              rx="3"
+              opacity="0.8"
+            />
+
+            {/* Base */}
+            <ellipse
+              cx="40"
+              cy="105"
+              rx="25"
+              ry="4"
+              fill="url(#beakerGlass)"
+              stroke="#94a3b8"
+              strokeWidth="1"
+            />
+          </svg>
+        </div>
+      );
+    }
+
+    if (id === "thermometer") {
+      return (
+        <div className="relative">
+          <svg
+            width="25"
+            height="140"
+            viewBox="0 0 25 140"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="thermometerGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="100%" stopColor="rgba(241,245,249,0.9)" />
+              </linearGradient>
+              <linearGradient id="mercury" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#dc2626" />
+                <stop offset="100%" stopColor="#f87171" />
+              </linearGradient>
+            </defs>
+
+            {/* Thermometer tube */}
+            <rect
+              x="8"
+              y="10"
+              width="9"
+              height="110"
+              fill="url(#thermometerGlass)"
+              stroke="#94a3b8"
+              strokeWidth="1.5"
+              rx="4"
+            />
+
+            {/* Mercury bulb */}
+            <circle
+              cx="12.5"
+              cy="125"
+              r="8"
+              fill="url(#mercury)"
+              stroke="#991b1b"
+              strokeWidth="1"
+            />
+
+            {/* Mercury column */}
+            <rect
+              x="11"
+              y="90"
+              width="3"
+              height="35"
+              fill="url(#mercury)"
+              rx="1.5"
+            />
+
+            {/* Temperature scale */}
+            <g
+              stroke="#4b5563"
+              strokeWidth="0.5"
+              fill="#374151"
+              fontSize="5"
+              fontFamily="Arial"
+            >
+              <line x1="18" y1="20" x2="21" y2="20" />
+              <text x="22" y="22">
+                100
+              </text>
+              <line x1="18" y1="35" x2="20" y2="35" />
+              <line x1="18" y1="50" x2="21" y2="50" />
+              <text x="22" y="52">
+                50
+              </text>
+              <line x1="18" y1="65" x2="20" y2="65" />
+              <line x1="18" y1="80" x2="21" y2="80" />
+              <text x="22" y="82">
+                0
+              </text>
+              <line x1="18" y1="95" x2="20" y2="95" />
+              <line x1="18" y1="110" x2="21" y2="110" />
+              <text x="22" y="112">
+                -50
+              </text>
+            </g>
+
+            {/* Glass shine */}
+            <rect
+              x="9"
+              y="15"
+              width="2"
+              height="100"
+              fill="rgba(255,255,255,0.6)"
+              rx="1"
+            />
+          </svg>
         </div>
       );
     }
