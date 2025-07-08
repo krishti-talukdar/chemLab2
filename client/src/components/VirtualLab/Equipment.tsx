@@ -231,49 +231,177 @@ export const Equipment: React.FC<EquipmentProps> = ({
   };
 
   const getEquipmentSpecificRendering = () => {
-    if (id === "burette" && isOnWorkbench) {
+    if (!isOnWorkbench) {
+      return icon; // Use simple icons when not on workbench
+    }
+
+    // Realistic equipment renderings for workbench
+    if (id === "burette") {
       return (
         <div className="relative">
-          {/* Burette specific rendering */}
-          <div className="w-6 h-20 bg-gradient-to-b from-transparent to-blue-100 border-2 border-blue-400 rounded-b-lg relative">
-            {/* Solution in burette */}
-            {chemicals.length > 0 && (
-              <div
-                className="absolute bottom-0 left-0 right-0 rounded-b-lg transition-all duration-500"
-                style={{
-                  backgroundColor: getMixedColor(),
-                  height: `${getSolutionHeight()}%`,
-                  opacity: 0.8,
-                }}
+          <svg
+            width="60"
+            height="160"
+            viewBox="0 0 60 160"
+            className="drop-shadow-lg"
+          >
+            {/* Burette body */}
+            <defs>
+              <linearGradient
+                id="glassGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
               >
-                {/* Liquid surface animation */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 animate-pulse"></div>
-              </div>
-            )}
+                <stop offset="0%" stopColor="rgba(255,255,255,0.9)" />
+                <stop offset="50%" stopColor="rgba(240,248,255,0.8)" />
+                <stop offset="100%" stopColor="rgba(219,234,254,0.9)" />
+              </linearGradient>
+              <linearGradient
+                id="liquidGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.9"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.9"
+                />
+              </linearGradient>
+            </defs>
+
+            {/* Main burette tube */}
+            <rect
+              x="20"
+              y="10"
+              width="20"
+              height="120"
+              fill="url(#glassGradient)"
+              stroke="#94a3b8"
+              strokeWidth="1.5"
+              rx="2"
+            />
+
+            {/* Burette top opening */}
+            <ellipse
+              cx="30"
+              cy="10"
+              rx="10"
+              ry="3"
+              fill="none"
+              stroke="#64748b"
+              strokeWidth="1.5"
+            />
 
             {/* Volume markings */}
-            <div className="absolute -right-8 top-2 text-xs text-gray-600">
-              50
-            </div>
-            <div className="absolute -right-8 top-8 text-xs text-gray-600">
-              40
-            </div>
-            <div className="absolute -right-8 top-14 text-xs text-gray-600">
-              30
-            </div>
+            <g
+              stroke="#6b7280"
+              strokeWidth="0.8"
+              fill="#4b5563"
+              fontSize="6"
+              fontFamily="monospace"
+            >
+              <line x1="42" y1="20" x2="45" y2="20" />
+              <text x="47" y="23">
+                50
+              </text>
+              <line x1="42" y1="40" x2="44" y2="40" />
+              <line x1="42" y1="50" x2="45" y2="50" />
+              <text x="47" y="53">
+                40
+              </text>
+              <line x1="42" y1="70" x2="44" y2="70" />
+              <line x1="42" y1="80" x2="45" y2="80" />
+              <text x="47" y="83">
+                30
+              </text>
+              <line x1="42" y1="100" x2="44" y2="100" />
+              <line x1="42" y1="110" x2="45" y2="110" />
+              <text x="47" y="113">
+                20
+              </text>
+              <line x1="42" y1="125" x2="45" y2="125" />
+              <text x="47" y="128">
+                10
+              </text>
+            </g>
 
-            {/* Burette tap */}
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-              <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-            </div>
-          </div>
+            {/* Solution in burette */}
+            {chemicals.length > 0 && (
+              <rect
+                x="22"
+                y={130 - getSolutionHeight()}
+                width="16"
+                height={getSolutionHeight()}
+                fill="url(#liquidGradient)"
+                rx="1"
+                className="transition-all duration-500"
+              >
+                {/* Liquid surface */}
+                <animate
+                  attributeName="y"
+                  values={`${130 - getSolutionHeight()};${128 - getSolutionHeight()};${130 - getSolutionHeight()}`}
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </rect>
+            )}
 
-          {/* Drop animation when chemicals are added */}
-          {isDropping && (
-            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce"></div>
-            </div>
-          )}
+            {/* Glass shine effect */}
+            <rect
+              x="23"
+              y="15"
+              width="4"
+              height="110"
+              fill="rgba(255,255,255,0.4)"
+              rx="2"
+            />
+
+            {/* Burette stopcock */}
+            <rect
+              x="25"
+              y="135"
+              width="10"
+              height="8"
+              fill="#6b7280"
+              stroke="#4b5563"
+              strokeWidth="1"
+              rx="2"
+            />
+            <circle cx="30" cy="139" r="2" fill="#374151" />
+
+            {/* Tip */}
+            <path
+              d="M28 143 L30 148 L32 143 Z"
+              fill="url(#glassGradient)"
+              stroke="#94a3b8"
+              strokeWidth="1"
+            />
+
+            {/* Drop animation */}
+            {isDropping && (
+              <circle
+                cx="30"
+                cy="150"
+                r="1.5"
+                fill={getMixedColor()}
+                className="animate-bounce"
+              />
+            )}
+          </svg>
         </div>
       );
     }
