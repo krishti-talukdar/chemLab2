@@ -306,9 +306,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
             src={getTestTubeImage()}
             alt="Laboratory Test Tube"
             className={`${
-              cobaltReactionState?.cobaltChlorideAdded
-                ? "w-[36rem] h-[90rem]"
-                : "w-64 h-[40rem]"
+              cobaltReactionState?.cobaltChlorideAdded &&
+              cobaltReactionState?.distilledWaterAdded
+                ? "w-96 h-[60rem]"
+                : cobaltReactionState?.cobaltChlorideAdded
+                  ? "w-[36rem] h-[90rem]"
+                  : "w-64 h-[40rem]"
             } object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
                 ? "scale-108 rotate-2 brightness-115"
