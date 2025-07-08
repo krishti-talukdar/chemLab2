@@ -1118,6 +1118,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         top: isOnWorkbench && position ? position.y : "auto",
         zIndex: isOnWorkbench ? 10 : "auto",
         transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
+        pointerEvents: "auto",
+        userSelect: "none",
       }}
     >
       {/* Enhanced drop zone indicator - only show when not on workbench */}
