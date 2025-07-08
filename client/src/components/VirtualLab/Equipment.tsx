@@ -311,10 +311,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
-              filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.2)) ${
+              filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.15)) ${
                 isDragging
-                  ? "drop-shadow(6px 12px 24px rgba(59,130,246,0.4))"
-                  : ""
+                  ? "drop-shadow(8px 16px 32px rgba(59,130,246,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.3))"
+                  : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
