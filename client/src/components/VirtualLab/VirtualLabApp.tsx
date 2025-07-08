@@ -576,6 +576,23 @@ function VirtualLabApp({
             },
           ];
 
+          // Cobalt chloride reaction logic
+          if (
+            experimentTitle.includes("Equilibrium") &&
+            equipmentId === "test_tubes"
+          ) {
+            if (chemicalId === "cocl2") {
+              setCobaltChlorideAdded(true);
+              setToastMessage(
+                "Blue cobalt chloride crystals added to test tube!",
+              );
+            } else if (chemicalId === "water" && cobaltChlorideAdded) {
+              setDistilledWaterAdded(true);
+              setToastMessage("Add the stirrer to mix the solution");
+              setTimeout(() => setToastMessage(null), 5000);
+            }
+          }
+
           // Show success toast
           setToastMessage(
             `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
