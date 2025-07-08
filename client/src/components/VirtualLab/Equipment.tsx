@@ -333,7 +333,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                     : cobaltReactionState?.colorTransition === "transitioning"
                       ? "#9370DB"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "#20B2AA"
+                        ? "transparent"
                         : getMixedColor(),
                 bottom: "180px",
                 height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
@@ -345,9 +345,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   cobaltReactionState?.colorTransition === "pink"
                     ? "linear-gradient(180deg, #FF69B4E6, #FF69B4FF)"
                     : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, #20B2AAE6, #FF69B4FF)"
+                      ? "linear-gradient(180deg, transparent, #FF69B4FF)"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "linear-gradient(180deg, #20B2AAE6, #20B2AAFF)"
+                        ? "transparent"
                         : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
               }}
             >
