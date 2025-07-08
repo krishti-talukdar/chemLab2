@@ -294,45 +294,122 @@ export const Equipment: React.FC<EquipmentProps> = ({
               transformOrigin: "center bottom",
             }}
           />
-          {/* Solution overlay for test tubes - positioned more accurately */}
-          {chemicals.length > 0 && (
+          {/* Cobalt chloride crystals - show blue crystals before water is added */}
+          {cobaltReactionState?.cobaltChlorideAdded &&
+            !cobaltReactionState?.distilledWaterAdded && (
+              <div className="absolute left-1/2 transform -translate-x-1/2 w-6 bottom-32">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-1.5 h-1.5 bg-blue-600 rounded-sm animate-pulse shadow-sm"
+                    style={{
+                      bottom: `${(i % 4) * 12}px`,
+                      left: `${(i % 3) * 8 + 4}px`,
+                      animationDelay: `${i * 0.3}s`,
+                      animationDuration: "2s",
+                      transform: `rotate(${Math.random() * 45}deg)`,
+                      boxShadow: "0 1px 3px rgba(37, 99, 235, 0.5)",
+                    }}
+                  />
+                ))}
+                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-bold whitespace-nowrap bg-blue-50 px-2 py-1 rounded border shadow-sm">
+                  Blue Crystals
+                </div>
+              </div>
+            )}
+
+          {/* Solution overlay for test tubes - enhanced for cobalt reaction */}
+          {(chemicals.length > 0 ||
+            cobaltReactionState?.distilledWaterAdded) && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-8 rounded-b-full transition-all duration-700 ease-out"
+              className="absolute left-1/2 transform -translate-x-1/2 w-8 rounded-b-full transition-all duration-1000 ease-in-out"
               style={{
-                backgroundColor: getMixedColor(),
+                backgroundColor:
+                  cobaltReactionState?.colorTransition === "pink"
+                    ? "#FFB6C1"
+                    : cobaltReactionState?.colorTransition === "transitioning"
+                      ? "#DA70D6"
+                      : cobaltReactionState?.distilledWaterAdded
+                        ? "#4169E1"
+                        : getMixedColor(),
                 bottom: "128px",
                 height: `${Math.min(getSolutionHeight() * 3, 320)}px`,
                 opacity: 0.9,
                 boxShadow:
                   "inset 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15)",
-                background: `linear-gradient(180deg, ${getMixedColor()}CC, ${getMixedColor()}FF)`,
+                background:
+                  cobaltReactionState?.colorTransition === "pink"
+                    ? "linear-gradient(180deg, #FFB6C1CC, #FFB6C1FF)"
+                    : cobaltReactionState?.colorTransition === "transitioning"
+                      ? "linear-gradient(180deg, #4169E1CC, #FFB6C1FF)"
+                      : cobaltReactionState?.distilledWaterAdded
+                        ? "linear-gradient(180deg, #4169E1CC, #4169E1FF)"
+                        : `linear-gradient(180deg, ${getMixedColor()}CC, ${getMixedColor()}FF)`,
               }}
             >
               {/* Liquid surface meniscus effect */}
               <div
                 className="absolute top-0 left-0 right-0 h-1.5 rounded-full"
                 style={{
-                  backgroundColor: getMixedColor(),
+                  backgroundColor:
+                    cobaltReactionState?.colorTransition === "pink"
+                      ? "#FFB6C1"
+                      : cobaltReactionState?.colorTransition === "transitioning"
+                        ? "#DA70D6"
+                        : cobaltReactionState?.distilledWaterAdded
+                          ? "#4169E1"
+                          : getMixedColor(),
                   opacity: 0.7,
                   transform: "scaleY(0.4)",
                   boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
                 }}
               />
-              {/* Bubbles effect for reactions */}
-              {chemicals.length > 1 && (
-                <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(3)].map((_, i) => (
+
+              {/* Stirring animation when stirrer is active */}
+              {cobaltReactionState?.stirrerActive && (
+                <div className="absolute inset-0">
+                  {/* Stirring rod animation */}
+                  <div
+                    className="absolute w-full h-full animate-spin"
+                    style={{ animationDuration: "2s" }}
+                  >
+                    <div className="absolute w-0.5 h-12 bg-gray-400 rounded-full left-1/2 top-1/4 transform -translate-x-1/2 shadow-md" />
+                  </div>
+                  {/* Swirling liquid effect */}
+                  {[...Array(6)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-1 h-1 bg-white/40 rounded-full animate-bounce"
+                      className="absolute w-1 h-3 bg-white/30 rounded-full animate-spin"
                       style={{
-                        left: `${30 + i * 15}%`,
-                        bottom: `${10 + i * 20}%`,
-                        animationDelay: `${i * 0.5}s`,
-                        animationDuration: "2s",
+                        left: `${30 + (i % 3) * 15}%`,
+                        top: `${20 + (i % 2) * 30}%`,
+                        animationDelay: `${i * 0.2}s`,
+                        animationDuration: "1.5s",
                       }}
                     />
                   ))}
+                </div>
+              )}
+
+              {/* Enhanced bubbles for active stirring */}
+              {(chemicals.length > 1 || cobaltReactionState?.stirrerActive) && (
+                <div className="absolute inset-0 overflow-hidden">
+                  {[...Array(cobaltReactionState?.stirrerActive ? 12 : 3)].map(
+                    (_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-1 h-1 bg-white/50 rounded-full animate-bounce"
+                        style={{
+                          left: `${15 + (i % 4) * 18}%`,
+                          bottom: `${5 + (i % 3) * 25}%`,
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: cobaltReactionState?.stirrerActive
+                            ? "0.8s"
+                            : "2s",
+                        }}
+                      />
+                    ),
+                  )}
                 </div>
               )}
             </div>
