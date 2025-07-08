@@ -196,3 +196,19 @@
     0 0 40px rgba(59, 130, 246, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
+
+/* Stirring rod specific optimizations */
+.stirring-rod-optimized {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.stirring-rod-optimized.dragging {
+  transform: translateZ(0) scale(1.05);
+  transition: none;
+}
+
+.stirring-rod-optimized:not(.dragging) {
+  transition: transform 0.15s ease-out;
+}
