@@ -940,9 +940,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
       )}
 
       <div
-        className={`mb-3 transition-all duration-200 relative ${
+        className={`mb-3 transition-all duration-300 relative ${
           isOnWorkbench ? "text-blue-700" : "text-blue-600"
-        } ${isDragOver ? "scale-110" : ""}`}
+        } ${isDragOver ? "scale-110" : ""} ${isOnWorkbench ? "transform scale-110" : ""}`}
       >
         {getEquipmentSpecificRendering()}
       </div>
