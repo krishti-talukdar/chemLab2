@@ -321,32 +321,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   : 1,
             }}
           />
-          {/* Cobalt chloride crystals - show blue crystals at bottom of test tube */}
-          {cobaltReactionState?.cobaltChlorideAdded &&
-            !cobaltReactionState?.distilledWaterAdded && (
-              <div
-                className="absolute left-1/2 transform -translate-x-1/2 w-4"
-                style={{ bottom: "180px" }}
-              >
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-0.5 h-0.5 bg-gray-400 rounded-sm animate-pulse shadow-sm"
-                    style={{
-                      bottom: `${(i % 3) * 2}px`,
-                      left: `${(i % 3) * 4 + 6}px`,
-                      animationDelay: `${i * 0.3}s`,
-                      animationDuration: "2s",
-                      transform: `rotate(${Math.random() * 45}deg)`,
-                      boxShadow: "0 1px 2px rgba(75, 85, 99, 0.4)",
-                    }}
-                  />
-                ))}
-                <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-semibold whitespace-nowrap bg-gray-50 px-1 py-0.5 rounded text-center">
-                  Crystals
-                </div>
-              </div>
-            )}
 
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
