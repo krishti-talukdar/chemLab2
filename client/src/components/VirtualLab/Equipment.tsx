@@ -302,7 +302,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             key={getTestTubeImage()} // Force re-render when image changes
             src={getTestTubeImage()}
             alt="Laboratory Test Tube"
-            className={`w-64 h-[40rem] object-contain transition-all duration-[3000ms] ease-in-out ${
+            className={`w-[210px] h-[590px] object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
                 ? "scale-108 rotate-2 brightness-115"
                 : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
