@@ -277,7 +277,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2F064e3f327a3f4efba19ffa369adadc3e?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2Fd8b2095055e54c178ed44fcdcbff0611?format=webp&width=800"
             alt="Laboratory Test Tube"
             className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
               isDragging
@@ -304,7 +304,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className="absolute w-0.5 h-0.5 bg-blue-600 rounded-sm animate-pulse shadow-sm"
+                    className="absolute w-0.5 h-0.5 bg-blue-700 rounded-sm animate-pulse shadow-sm"
                     style={{
                       bottom: `${(i % 3) * 2}px`,
                       left: `${(i % 3) * 4 + 6}px`,
@@ -343,11 +343,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   "inset 0 1px 3px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)",
                 background:
                   cobaltReactionState?.colorTransition === "pink"
-                    ? "linear-gradient(180deg, #FFB6C1E6, #FFB6C1FF)"
+                    ? "linear-gradient(180deg, #FF69B4E6, #FF69B4FF)"
                     : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, #4169E1E6, #FFB6C1FF)"
+                      ? "linear-gradient(180deg, #20B2AAE6, #FF69B4FF)"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "linear-gradient(180deg, #4169E1E6, #4169E1FF)"
+                        ? "linear-gradient(180deg, #20B2AAE6, #20B2AAFF)"
                         : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
               }}
             >
