@@ -375,49 +375,23 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   {/* Stirring rod animation - smaller and contained */}
                   <div
                     className="absolute w-full h-full animate-spin"
-                    style={{ animationDuration: "1.5s" }}
+                    style={{ animationDuration: "2s" }}
                   >
-                    <div className="absolute w-0.5 h-6 bg-gray-500 rounded-full left-1/2 top-1/3 transform -translate-x-1/2 shadow-md" />
+                    <div className="absolute w-0.5 h-6 bg-gray-400 rounded-full left-1/2 top-1/3 transform -translate-x-1/2 shadow-sm" />
                   </div>
-                  {/* Enhanced swirling liquid effect with color mixing */}
-                  {[...Array(6)].map((_, i) => (
+                  {/* Gentle swirling liquid effect */}
+                  {[...Array(4)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-0.5 h-2 rounded-full animate-spin"
+                      className="absolute w-0.5 h-2 bg-white/25 rounded-full animate-spin"
                       style={{
-                        backgroundColor:
-                          cobaltReactionState?.colorTransition ===
-                          "transitioning"
-                            ? i % 2 === 0
-                              ? "#48D1CC80"
-                              : "#FF69B480"
-                            : "rgba(255,255,255,0.4)",
-                        left: `${35 + (i % 3) * 15}%`,
-                        top: `${25 + (i % 3) * 15}%`,
-                        animationDelay: `${i * 0.2}s`,
-                        animationDuration: "1.2s",
+                        left: `${40 + (i % 2) * 20}%`,
+                        top: `${30 + (i % 2) * 20}%`,
+                        animationDelay: `${i * 0.3}s`,
+                        animationDuration: "1.8s",
                       }}
                     />
                   ))}
-                  {/* Color transition streaks */}
-                  {cobaltReactionState?.colorTransition === "transitioning" && (
-                    <>
-                      {[...Array(3)].map((_, i) => (
-                        <div
-                          key={`streak-${i}`}
-                          className="absolute w-1 h-4 rounded-full animate-pulse"
-                          style={{
-                            background: `linear-gradient(45deg, #48D1CC, #FF69B4)`,
-                            left: `${30 + i * 20}%`,
-                            top: `${20 + i * 15}%`,
-                            animationDelay: `${i * 0.4}s`,
-                            animationDuration: "1.5s",
-                            opacity: 0.6,
-                          }}
-                        />
-                      ))}
-                    </>
-                  )}
                 </div>
               )}
 
