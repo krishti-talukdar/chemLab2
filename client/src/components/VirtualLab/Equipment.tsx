@@ -298,16 +298,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {cobaltReactionState?.cobaltChlorideAdded &&
             !cobaltReactionState?.distilledWaterAdded && (
               <div
-                className="absolute left-1/2 transform -translate-x-1/2 w-6"
-                style={{ bottom: "140px" }}
+                className="absolute left-1/2 transform -translate-x-1/2 w-5"
+                style={{ bottom: "160px" }}
               >
                 {[...Array(6)].map((_, i) => (
                   <div
                     key={i}
                     className="absolute w-1 h-1 bg-blue-600 rounded-sm animate-pulse shadow-sm"
                     style={{
-                      bottom: `${(i % 3) * 4}px`,
-                      left: `${(i % 3) * 6 + 6}px`,
+                      bottom: `${(i % 3) * 3}px`,
+                      left: `${(i % 3) * 5 + 5}px`,
                       animationDelay: `${i * 0.3}s`,
                       animationDuration: "2s",
                       transform: `rotate(${Math.random() * 45}deg)`,
