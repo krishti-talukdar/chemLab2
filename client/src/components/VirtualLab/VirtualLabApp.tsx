@@ -951,6 +951,7 @@ function VirtualLabApp({
                     position={pos}
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
+                    onRemove={handleEquipmentRemove}
                   />
                 ) : null;
               })}
