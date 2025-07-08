@@ -25,6 +25,7 @@ interface EquipmentProps {
     equipmentId: string,
     amount: number,
   ) => void;
+  onRemove?: (id: string) => void;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -35,13 +36,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
   position,
   chemicals = [],
   onChemicalDrop,
+  onRemove,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
+    setIsDragging(true);
 
     // Create enhanced drag preview
     const dragPreview = document.createElement("div");
@@ -118,6 +122,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }, 0);
   };
 
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleDoubleClick = () => {
+    if (isOnWorkbench && onRemove) {
+      onRemove(id);
+    }
+  };
+
   const getIconSVG = (equipmentId: string) => {
     const svgMap: Record<string, string> = {
       beaker: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 3h5v5.5l3.5 5.5v6c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2v-6l3.5-5.5V3zm1 1v4.5L7 14v6h10v-6l-3.5-5.5V4h-3z"/></svg>`,
@@ -156,8 +170,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         `Added ${chemical.volume || 25}mL of ${chemical.name} to ${name}`,
       );
 
-      // Reset dropping animation after a delay
-      setTimeout(() => setIsDropping(false), 2000);
+      // Reset dropping animation quickly to stop blinking
+      setTimeout(() => setIsDropping(false), 500);
     }
   };
 
@@ -238,32 +252,81 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Use provided images for specific equipment types with bigger sizes
     if (id === "test_tubes") {
       return (
-        <div className="relative">
+        <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0d50895d71a24e10ad11237371bd9440?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fa468b45ae87143d1b54d53a0323f1ccd%2Fa3d366ec3c0f4c23a4840654c930e3a0?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className="w-28 h-48 object-contain drop-shadow-lg"
+            className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
+              isDragging
+                ? "scale-105 rotate-2 brightness-110"
+                : "group-hover:scale-102 group-hover:brightness-105"
+            }`}
+            style={{
+              filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.2)) ${
+                isDragging
+                  ? "drop-shadow(6px 12px 24px rgba(59,130,246,0.4))"
+                  : ""
+              }`,
+              imageRendering: "auto",
+              transformOrigin: "center bottom",
+            }}
           />
-          {/* Solution overlay for test tubes */}
+          {/* Solution overlay for test tubes - positioned more accurately */}
           {chemicals.length > 0 && (
             <div
-              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-12 rounded-b-lg transition-all duration-500"
+              className="absolute left-1/2 transform -translate-x-1/2 w-8 rounded-b-full transition-all duration-700 ease-out"
               style={{
                 backgroundColor: getMixedColor(),
-                height: `${getSolutionHeight() * 0.4}px`,
-                opacity: 0.8,
+                bottom: "128px",
+                height: `${Math.min(getSolutionHeight() * 3, 320)}px`,
+                opacity: 0.9,
+                boxShadow:
+                  "inset 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15)",
+                background: `linear-gradient(180deg, ${getMixedColor()}CC, ${getMixedColor()}FF)`,
               }}
-            ></div>
+            >
+              {/* Liquid surface meniscus effect */}
+              <div
+                className="absolute top-0 left-0 right-0 h-1.5 rounded-full"
+                style={{
+                  backgroundColor: getMixedColor(),
+                  opacity: 0.7,
+                  transform: "scaleY(0.4)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              />
+              {/* Bubbles effect for reactions */}
+              {chemicals.length > 1 && (
+                <div className="absolute inset-0 overflow-hidden">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-white/40 rounded-full animate-bounce"
+                      style={{
+                        left: `${30 + i * 15}%`,
+                        bottom: `${10 + i * 20}%`,
+                        animationDelay: `${i * 0.5}s`,
+                        animationDuration: "2s",
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
+            <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
+              <div className="text-gray-800 font-semibold text-center">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
               <div className="text-gray-600 text-center">
                 {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
               </div>
+              <div
+                className="w-full h-1 rounded-full mt-1"
+                style={{ backgroundColor: getMixedColor() }}
+              />
             </div>
           )}
         </div>
@@ -1102,16 +1165,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
     <div
       draggable
       onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDoubleClick={handleDoubleClick}
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center transition-all duration-300 cursor-grab active:cursor-grabbing relative ${
+      className={`flex flex-col items-center transition-all duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? "p-0 bg-transparent border-0 shadow-none" // Remove box styling on workbench
-          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow"
-      } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""} ${
-        isDropping ? "animate-pulse" : ""
-      } ${!isOnWorkbench ? "hover:scale-105 active:scale-95 active:rotate-2" : ""}`}
+          ? `p-0 bg-transparent border-0 shadow-none hover:scale-105 active:scale-95 ${isDragging ? "opacity-70 scale-95" : ""}` // No box styling - just the equipment, smooth transitions
+          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
+      } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""}`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
         left: isOnWorkbench && position ? position.x : "auto",
@@ -1185,12 +1248,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </div>
       )}
 
-      {/* Drop success animation */}
-      {isDropping && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium animate-bounce">
-            Added!
-          </div>
+      {/* Removal instruction tooltip - show on hover when on workbench */}
+      {isOnWorkbench && !isDragging && (
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs opacity-0 hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+          Double-click to remove
+        </div>
+      )}
+
+      {/* Drag indicator when dragging */}
+      {isDragging && (
+        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium animate-pulse">
+          Moving...
         </div>
       )}
     </div>

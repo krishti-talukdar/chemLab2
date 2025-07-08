@@ -507,6 +507,12 @@ function VirtualLabApp({
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
   );
 
+  const handleEquipmentRemove = useCallback((id: string) => {
+    setEquipmentPositions((prev) => prev.filter((pos) => pos.id !== id));
+    setToastMessage(`Equipment removed from workbench`);
+    setTimeout(() => setToastMessage(null), 2000);
+  }, []);
+
   const calculateChemicalProperties = (
     chemical: any,
     amount: number,
@@ -945,6 +951,7 @@ function VirtualLabApp({
                     position={pos}
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
+                    onRemove={handleEquipmentRemove}
                   />
                 ) : null;
               })}
