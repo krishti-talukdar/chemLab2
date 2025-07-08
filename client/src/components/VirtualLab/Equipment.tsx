@@ -390,32 +390,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
                 }}
               />
-
-              {/* Stirring animation when stirrer is active */}
-              {cobaltReactionState?.stirrerActive && (
-                <div className="absolute inset-0 overflow-hidden">
-                  {/* Stirring rod animation - smaller and contained */}
-                  <div
-                    className="absolute w-full h-full animate-spin"
-                    style={{ animationDuration: "2s" }}
-                  >
-                    <div className="absolute w-0.5 h-6 bg-gray-400 rounded-full left-1/2 top-1/3 transform -translate-x-1/2 shadow-sm" />
-                  </div>
-                  {/* Gentle swirling liquid effect */}
-                  {[...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-0.5 h-2 bg-white/25 rounded-full animate-spin"
-                      style={{
-                        left: `${40 + (i % 2) * 20}%`,
-                        top: `${30 + (i % 2) * 20}%`,
-                        animationDelay: `${i * 0.3}s`,
-                        animationDuration: "1.8s",
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
           )}
           {/* Chemical composition display */}
