@@ -25,6 +25,7 @@ interface EquipmentProps {
     equipmentId: string,
     amount: number,
   ) => void;
+  onRemove?: (id: string) => void;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
