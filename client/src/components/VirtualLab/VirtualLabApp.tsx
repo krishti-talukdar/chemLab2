@@ -352,7 +352,83 @@ function VirtualLabApp({
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
         { id: "test_tubes", name: "Test Tubes", icon: <TestTube size={36} /> },
-        { id: "ice_bath", name: "Ice Bath", icon: <FlaskConical size={36} /> },
+        { id: "dropper", name: "Dropper", icon: <Droplets size={36} /> },
+        {
+          id: "stirring_rod",
+          name: "Stirring Rod",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-gray-600"
+            >
+              <path
+                d="M6 6l24 24"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <circle cx="8" cy="8" r="2" fill="currentColor" />
+              <circle cx="28" cy="28" r="2" fill="currentColor" />
+            </svg>
+          ),
+        },
+        {
+          id: "beaker_hot_water",
+          name: "Hot Water Beaker",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-red-600"
+            >
+              <path
+                d="M6 8h24v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="rgba(239, 68, 68, 0.1)"
+              />
+              <path d="M4 8h28" stroke="currentColor" strokeWidth="2" />
+              <path d="M6 20h24" stroke="currentColor" strokeWidth="1" />
+              <path
+                d="M10 4c0-1 1-2 2-2s2 1 2 2M16 4c0-1 1-2 2-2s2 1 2 2M22 4c0-1 1-2 2-2s2 1 2 2"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+            </svg>
+          ),
+        },
+        {
+          id: "beaker_cold_water",
+          name: "Cold Water Beaker",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-blue-600"
+            >
+              <path
+                d="M6 8h24v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="rgba(59, 130, 246, 0.1)"
+              />
+              <path d="M4 8h28" stroke="currentColor" strokeWidth="2" />
+              <path d="M6 20h24" stroke="currentColor" strokeWidth="1" />
+              <path
+                d="M12 12l2 2 2-2 2 2 2-2 2 2M12 16l2 2 2-2 2 2 2-2 2 2"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+            </svg>
+          ),
+        },
       ];
     }
     return [];
