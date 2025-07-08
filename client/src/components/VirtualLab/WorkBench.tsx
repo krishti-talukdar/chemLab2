@@ -338,6 +338,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
           </div>
 
           <div
+            data-workbench="true"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             className="relative w-full overflow-hidden will-change-auto"
