@@ -329,11 +329,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
               style={{
                 backgroundColor:
                   cobaltReactionState?.colorTransition === "pink"
-                    ? "#FFB6C1"
+                    ? "#FF69B4"
                     : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "#DA70D6"
+                      ? "#9370DB"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "#4169E1"
+                        ? "#20B2AA"
                         : getMixedColor(),
                 bottom: "180px",
                 height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
@@ -357,11 +357,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 style={{
                   backgroundColor:
                     cobaltReactionState?.colorTransition === "pink"
-                      ? "#FFB6C1"
+                      ? "#FF69B4"
                       : cobaltReactionState?.colorTransition === "transitioning"
-                        ? "#DA70D6"
+                        ? "#9370DB"
                         : cobaltReactionState?.distilledWaterAdded
-                          ? "#4169E1"
+                          ? "#20B2AA"
                           : getMixedColor(),
                   opacity: 0.8,
                   transform: "scaleY(0.5)",
