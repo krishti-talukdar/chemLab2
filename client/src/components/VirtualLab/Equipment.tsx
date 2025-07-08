@@ -1120,8 +1120,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
       }}
     >
-      {/* Enhanced drop zone indicator */}
-      {isContainer && isOnWorkbench && (
+      {/* Enhanced drop zone indicator - only show when not on workbench */}
+      {isContainer && !isOnWorkbench && (
         <div
           className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
             isDragOver ? "bg-green-500 scale-125 shadow-lg" : "bg-blue-500"
@@ -1134,15 +1134,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </div>
       )}
 
-      {/* Drop hint text */}
-      {isContainer && isOnWorkbench && isDragOver && (
+      {/* Drop hint text - only show when not on workbench */}
+      {isContainer && !isOnWorkbench && isDragOver && (
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium animate-bounce whitespace-nowrap shadow-lg">
           Drop chemical here!
         </div>
       )}
 
-      {/* Drag over animation */}
-      {isDragOver && (
+      {/* Drag over animation - only when not on workbench */}
+      {isDragOver && !isOnWorkbench && (
         <div className="absolute inset-0 border-4 border-green-400 rounded-lg animate-pulse bg-green-100 opacity-50"></div>
       )}
 
