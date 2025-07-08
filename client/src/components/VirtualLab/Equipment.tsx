@@ -1216,17 +1216,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center transition-all duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
+      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? `p-0 bg-transparent border-0 shadow-none hover:scale-105 active:scale-95 ${isDragging ? "opacity-70 scale-95" : ""}` // No box styling - just the equipment, smooth transitions
+          ? `p-0 bg-transparent border-0 shadow-none ${isDragging ? "opacity-80 z-50" : "hover:scale-105 hover:rotate-0.5"}`
           : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
       } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""}`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
-        left: isOnWorkbench && position ? position.x : "auto",
-        top: isOnWorkbench && position ? position.y : "auto",
-        zIndex: isOnWorkbench ? 10 : "auto",
-        transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
+        left: isOnWorkbench && smoothPosition ? smoothPosition.x : "auto",
+        top: isOnWorkbench && smoothPosition ? smoothPosition.y : "auto",
+        zIndex: isOnWorkbench ? (isDragging ? 50 : 10) : "auto",
+        transform: isOnWorkbench
+          ? isDragging
+            ? `translate(-50%, -50%) scale(1.08) rotate(${Math.sin(Date.now() / 800) * 1.5}deg)`
+            : "translate(-50%, -50%) scale(1)"
+          : "none",
+        transition: isDragging
+          ? "opacity 0.2s ease-out"
+          : "all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)",
+        willChange: isDragging ? "transform, opacity" : "auto",
+        cursor: isOnWorkbench ? (isDragging ? "grabbing" : "grab") : "grab",
       }}
     >
       {/* Enhanced drop zone indicator - only show when not on workbench */}
