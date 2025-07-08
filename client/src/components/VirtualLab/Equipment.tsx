@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Beaker,
   FlaskConical,
@@ -26,6 +26,12 @@ interface EquipmentProps {
     amount: number,
   ) => void;
   onRemove?: (id: string) => void;
+  cobaltReactionState?: {
+    cobaltChlorideAdded: boolean;
+    distilledWaterAdded: boolean;
+    stirrerActive: boolean;
+    colorTransition: "blue" | "transitioning" | "pink";
+  };
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -37,35 +43,51 @@ export const Equipment: React.FC<EquipmentProps> = ({
   chemicals = [],
   onChemicalDrop,
   onRemove,
+  cobaltReactionState,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  // Use immediate positioning for responsive movement
+  const currentPosition = position;
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
     setIsDragging(true);
 
-    // Create enhanced drag preview
+    // Calculate offset from mouse to equipment center for precise positioning
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    setDragOffset({
+      x: e.clientX - rect.left - centerX,
+      y: e.clientY - rect.top - centerY,
+    });
+
+    // Create enhanced drag preview with smooth physics
     const dragPreview = document.createElement("div");
     dragPreview.style.cssText = `
       position: absolute;
       top: -1000px;
       left: -1000px;
-      width: 120px;
-      height: 140px;
-      background: linear-gradient(145deg, #ffffff, #f0f9ff);
+      width: 140px;
+      height: 160px;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
       border: 3px solid #3b82f6;
-      border-radius: 16px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(59, 130, 246, 0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: rotate(-3deg) scale(1.2);
+      transform: rotate(-2deg) scale(1.1);
       z-index: 9999;
       pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      will-change: transform;
+      backdrop-filter: blur(8px);
     `;
 
     // Add enhanced icon
@@ -124,6 +146,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    setDragOffset({ x: 0, y: 0 });
   };
 
   const handleDoubleClick = () => {
@@ -170,8 +193,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         `Added ${chemical.volume || 25}mL of ${chemical.name} to ${name}`,
       );
 
-      // Reset dropping animation quickly to stop blinking
-      setTimeout(() => setIsDropping(false), 500);
+      // Reset dropping animation with smooth transition
+      setTimeout(() => setIsDropping(false), 800);
     }
   };
 
@@ -254,62 +277,143 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fa468b45ae87143d1b54d53a0323f1ccd%2Fa3d366ec3c0f4c23a4840654c930e3a0?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2Fd8b2095055e54c178ed44fcdcbff0611?format=webp&width=800"
             alt="Laboratory Test Tube"
             className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
               isDragging
-                ? "scale-105 rotate-2 brightness-110"
-                : "group-hover:scale-102 group-hover:brightness-105"
+                ? "scale-108 rotate-2 brightness-115"
+                : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
-              filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.2)) ${
+              filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.15)) ${
                 isDragging
-                  ? "drop-shadow(6px 12px 24px rgba(59,130,246,0.4))"
-                  : ""
+                  ? "drop-shadow(8px 16px 32px rgba(59,130,246,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.3))"
+                  : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
             }}
           />
-          {/* Solution overlay for test tubes - positioned more accurately */}
-          {chemicals.length > 0 && (
+          {/* Cobalt chloride crystals - show blue crystals at bottom of test tube */}
+          {cobaltReactionState?.cobaltChlorideAdded &&
+            !cobaltReactionState?.distilledWaterAdded && (
+              <div
+                className="absolute left-1/2 transform -translate-x-1/2 w-4"
+                style={{ bottom: "180px" }}
+              >
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-0.5 h-0.5 bg-blue-700 rounded-sm animate-pulse shadow-sm"
+                    style={{
+                      bottom: `${(i % 3) * 2}px`,
+                      left: `${(i % 3) * 4 + 6}px`,
+                      animationDelay: `${i * 0.3}s`,
+                      animationDuration: "2s",
+                      transform: `rotate(${Math.random() * 45}deg)`,
+                      boxShadow: "0 1px 2px rgba(37, 99, 235, 0.4)",
+                    }}
+                  />
+                ))}
+                <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-1 py-0.5 rounded text-center">
+                  Crystals
+                </div>
+              </div>
+            )}
+
+          {/* Solution overlay for test tubes - strictly contained within test tube */}
+          {(chemicals.length > 0 ||
+            cobaltReactionState?.distilledWaterAdded) && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-8 rounded-b-full transition-all duration-700 ease-out"
+              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
               style={{
-                backgroundColor: getMixedColor(),
-                bottom: "128px",
-                height: `${Math.min(getSolutionHeight() * 3, 320)}px`,
-                opacity: 0.9,
+                backgroundColor:
+                  cobaltReactionState?.colorTransition === "pink"
+                    ? "#FF69B4"
+                    : cobaltReactionState?.colorTransition === "transitioning"
+                      ? "#9370DB"
+                      : cobaltReactionState?.distilledWaterAdded
+                        ? "#20B2AA"
+                        : getMixedColor(),
+                bottom: "180px",
+                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
+                maxHeight: "80px",
+                opacity: 0.85,
                 boxShadow:
-                  "inset 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15)",
-                background: `linear-gradient(180deg, ${getMixedColor()}CC, ${getMixedColor()}FF)`,
+                  "inset 0 1px 3px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)",
+                background:
+                  cobaltReactionState?.colorTransition === "pink"
+                    ? "linear-gradient(180deg, #FF69B4E6, #FF69B4FF)"
+                    : cobaltReactionState?.colorTransition === "transitioning"
+                      ? "linear-gradient(180deg, #20B2AAE6, #FF69B4FF)"
+                      : cobaltReactionState?.distilledWaterAdded
+                        ? "linear-gradient(180deg, #20B2AAE6, #20B2AAFF)"
+                        : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
               }}
             >
               {/* Liquid surface meniscus effect */}
               <div
-                className="absolute top-0 left-0 right-0 h-1.5 rounded-full"
+                className="absolute top-0 left-0 right-0 h-1 rounded-full"
                 style={{
-                  backgroundColor: getMixedColor(),
-                  opacity: 0.7,
-                  transform: "scaleY(0.4)",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                  backgroundColor:
+                    cobaltReactionState?.colorTransition === "pink"
+                      ? "#FF69B4"
+                      : cobaltReactionState?.colorTransition === "transitioning"
+                        ? "#9370DB"
+                        : cobaltReactionState?.distilledWaterAdded
+                          ? "#20B2AA"
+                          : getMixedColor(),
+                  opacity: 0.8,
+                  transform: "scaleY(0.5)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
                 }}
               />
-              {/* Bubbles effect for reactions */}
-              {chemicals.length > 1 && (
+
+              {/* Stirring animation when stirrer is active */}
+              {cobaltReactionState?.stirrerActive && (
                 <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(3)].map((_, i) => (
+                  {/* Stirring rod animation - smaller and contained */}
+                  <div
+                    className="absolute w-full h-full animate-spin"
+                    style={{ animationDuration: "2s" }}
+                  >
+                    <div className="absolute w-0.5 h-6 bg-gray-400 rounded-full left-1/2 top-1/3 transform -translate-x-1/2 shadow-sm" />
+                  </div>
+                  {/* Gentle swirling liquid effect */}
+                  {[...Array(4)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-1 h-1 bg-white/40 rounded-full animate-bounce"
+                      className="absolute w-0.5 h-2 bg-white/25 rounded-full animate-spin"
                       style={{
-                        left: `${30 + i * 15}%`,
-                        bottom: `${10 + i * 20}%`,
-                        animationDelay: `${i * 0.5}s`,
-                        animationDuration: "2s",
+                        left: `${40 + (i % 2) * 20}%`,
+                        top: `${30 + (i % 2) * 20}%`,
+                        animationDelay: `${i * 0.3}s`,
+                        animationDuration: "1.8s",
                       }}
                     />
                   ))}
+                </div>
+              )}
+
+              {/* Controlled bubbles within test tube */}
+              {(chemicals.length > 1 || cobaltReactionState?.stirrerActive) && (
+                <div className="absolute inset-0 overflow-hidden">
+                  {[...Array(cobaltReactionState?.stirrerActive ? 6 : 2)].map(
+                    (_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-0.5 h-0.5 bg-white/60 rounded-full animate-bounce"
+                        style={{
+                          left: `${35 + (i % 2) * 30}%`,
+                          bottom: `${20 + (i % 2) * 20}%`,
+                          animationDelay: `${i * 0.5}s`,
+                          animationDuration: cobaltReactionState?.stirrerActive
+                            ? "1.2s"
+                            : "2s",
+                        }}
+                      />
+                    ),
+                  )}
                 </div>
               )}
             </div>
@@ -1170,17 +1274,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center transition-all duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
+      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? `p-0 bg-transparent border-0 shadow-none hover:scale-105 active:scale-95 ${isDragging ? "opacity-70 scale-95" : ""}` // No box styling - just the equipment, smooth transitions
+          ? `p-0 bg-transparent border-0 shadow-none ${isDragging ? "opacity-80 z-50" : "hover:scale-105 hover:rotate-0.5"}`
           : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
       } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""}`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
-        left: isOnWorkbench && position ? position.x : "auto",
-        top: isOnWorkbench && position ? position.y : "auto",
-        zIndex: isOnWorkbench ? 10 : "auto",
-        transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
+        left: isOnWorkbench && currentPosition ? currentPosition.x : "auto",
+        top: isOnWorkbench && currentPosition ? currentPosition.y : "auto",
+        zIndex: isOnWorkbench ? (isDragging ? 50 : 10) : "auto",
+        transform: isOnWorkbench
+          ? isDragging
+            ? `translate(-50%, -50%) scale(1.08) rotate(${Math.sin(Date.now() / 800) * 1.5}deg)`
+            : "translate(-50%, -50%) scale(1)"
+          : "none",
+        transition: isDragging
+          ? "opacity 0.2s ease-out"
+          : "all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)",
+        willChange: isDragging ? "transform, opacity" : "auto",
+        cursor: isOnWorkbench ? (isDragging ? "grabbing" : "grab") : "grab",
       }}
     >
       {/* Enhanced drop zone indicator - only show when not on workbench */}
@@ -1192,7 +1305,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         >
           <Droplet size={14} className="text-white" />
           {isDragOver && (
-            <div className="absolute inset-0 bg-green-400 rounded-full animate-ping"></div>
+            <div className="absolute inset-0 bg-green-400 rounded-full opacity-30 transition-opacity duration-500"></div>
           )}
         </div>
       )}
@@ -1206,7 +1319,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       {/* Drag over animation - only when not on workbench */}
       {isDragOver && !isOnWorkbench && (
-        <div className="absolute inset-0 border-4 border-green-400 rounded-lg animate-pulse bg-green-100 opacity-50"></div>
+        <div className="absolute inset-0 border-4 border-green-400 rounded-lg bg-green-100 opacity-30 transition-all duration-300 ease-in-out"></div>
       )}
 
       <div

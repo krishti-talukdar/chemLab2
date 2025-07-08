@@ -265,9 +265,19 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
 
     if (id) {
       const rect = e.currentTarget.getBoundingClientRect();
+      // More precise positioning - account for element center
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      onDrop(id, x, y);
+
+      // Ensure minimum distance from edges for better positioning
+      const minMargin = 50;
+      const maxX = rect.width - minMargin;
+      const maxY = rect.height - minMargin;
+
+      const clampedX = Math.max(minMargin, Math.min(x, maxX));
+      const clampedY = Math.max(minMargin, Math.min(y, maxY));
+
+      onDrop(id, clampedX, clampedY);
     }
   };
 
