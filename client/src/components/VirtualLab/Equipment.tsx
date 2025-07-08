@@ -933,6 +933,29 @@ export const Equipment: React.FC<EquipmentProps> = ({
               opacity="0.8"
             />
 
+            {/* Cobalt chloride crystals - show blue crystals at bottom of beaker */}
+            {cobaltReactionState?.cobaltChlorideAdded &&
+              !cobaltReactionState?.distilledWaterAdded && (
+                <g>
+                  {[...Array(8)].map((_, i) => (
+                    <rect
+                      key={i}
+                      x={25 + (i % 3) * 6 + Math.random() * 4}
+                      y={95 + (i % 2) * 3}
+                      width="1.5"
+                      height="1.5"
+                      fill="#2563eb"
+                      rx="0.5"
+                      className="animate-pulse"
+                      style={{
+                        animationDelay: `${i * 0.4}s`,
+                        animationDuration: "2s",
+                      }}
+                    />
+                  ))}
+                </g>
+              )}
+
             {/* Base */}
             <ellipse
               cx="40"
@@ -944,6 +967,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
               strokeWidth="1"
             />
           </svg>
+
+          {/* Crystal label for beaker */}
+          {cobaltReactionState?.cobaltChlorideAdded &&
+            !cobaltReactionState?.distilledWaterAdded && (
+              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-center">
+                Blue Cobalt Crystals
+              </div>
+            )}
         </div>
       );
     }
