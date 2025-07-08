@@ -122,6 +122,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }, 0);
   };
 
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleDoubleClick = () => {
+    if (isOnWorkbench && onRemove) {
+      onRemove(id);
+    }
+  };
+
   const getIconSVG = (equipmentId: string) => {
     const svgMap: Record<string, string> = {
       beaker: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 3h5v5.5l3.5 5.5v6c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2v-6l3.5-5.5V3zm1 1v4.5L7 14v6h10v-6l-3.5-5.5V4h-3z"/></svg>`,
