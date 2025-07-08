@@ -277,7 +277,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2Fd8b2095055e54c178ed44fcdcbff0611?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800"
             alt="Laboratory Test Tube"
             className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
               isDragging
