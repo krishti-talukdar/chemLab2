@@ -325,7 +325,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {(chemicals.length > 0 ||
             cobaltReactionState?.distilledWaterAdded) && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
+              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-2000 ease-in-out overflow-hidden"
               style={{
                 backgroundColor:
                   cobaltReactionState?.colorTransition === "pink"
@@ -333,21 +333,21 @@ export const Equipment: React.FC<EquipmentProps> = ({
                     : cobaltReactionState?.colorTransition === "transitioning"
                       ? "#9370DB"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "#20B2AA"
+                        ? "#48D1CC"
                         : getMixedColor(),
                 bottom: "180px",
                 height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
                 maxHeight: "80px",
-                opacity: 0.85,
+                opacity: 0.9,
                 boxShadow:
                   "inset 0 1px 3px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)",
                 background:
                   cobaltReactionState?.colorTransition === "pink"
                     ? "linear-gradient(180deg, #FF69B4E6, #FF69B4FF)"
                     : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, #20B2AAE6, #FF69B4FF)"
+                      ? "linear-gradient(180deg, #48D1CCCC, #FF69B4E6)"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "linear-gradient(180deg, #20B2AAE6, #20B2AAFF)"
+                        ? "linear-gradient(180deg, #48D1CCE6, #48D1CCFF)"
                         : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
               }}
             >
