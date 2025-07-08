@@ -170,8 +170,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         `Added ${chemical.volume || 25}mL of ${chemical.name} to ${name}`,
       );
 
-      // Reset dropping animation quickly to stop blinking
-      setTimeout(() => setIsDropping(false), 500);
+      // Reset dropping animation with smooth transition
+      setTimeout(() => setIsDropping(false), 800);
     }
   };
 
@@ -254,11 +254,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fa468b45ae87143d1b54d53a0323f1ccd%2Fa3d366ec3c0f4c23a4840654c930e3a0?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2F064e3f327a3f4efba19ffa369adadc3e?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
+            className={`w-64 h-[40rem] object-contain transition-all duration-700 ease-in-out ${
               isDragging
-                ? "scale-105 rotate-2 brightness-110"
+                ? "scale-105 rotate-1 brightness-110"
                 : "group-hover:scale-102 group-hover:brightness-105"
             }`}
             style={{
@@ -1192,7 +1192,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         >
           <Droplet size={14} className="text-white" />
           {isDragOver && (
-            <div className="absolute inset-0 bg-green-400 rounded-full animate-ping"></div>
+            <div className="absolute inset-0 bg-green-400 rounded-full opacity-30 transition-opacity duration-500"></div>
           )}
         </div>
       )}
@@ -1206,7 +1206,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       {/* Drag over animation - only when not on workbench */}
       {isDragOver && !isOnWorkbench && (
-        <div className="absolute inset-0 border-4 border-green-400 rounded-lg animate-pulse bg-green-100 opacity-50"></div>
+        <div className="absolute inset-0 border-4 border-green-400 rounded-lg bg-green-100 opacity-30 transition-all duration-300 ease-in-out"></div>
       )}
 
       <div
