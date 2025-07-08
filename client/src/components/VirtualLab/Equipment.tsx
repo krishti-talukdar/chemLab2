@@ -41,6 +41,91 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
+    e.dataTransfer.effectAllowed = "move";
+
+    // Create enhanced drag preview
+    const dragPreview = document.createElement("div");
+    dragPreview.style.cssText = `
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+      width: 120px;
+      height: 140px;
+      background: linear-gradient(145deg, #ffffff, #f0f9ff);
+      border: 3px solid #3b82f6;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-3deg) scale(1.2);
+      z-index: 9999;
+      pointer-events: none;
+    `;
+
+    // Add enhanced icon
+    const iconContainer = document.createElement("div");
+    iconContainer.style.cssText = `
+      font-size: 48px;
+      color: #1d4ed8;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 8px rgba(29, 78, 216, 0.3));
+    `;
+    iconContainer.innerHTML = getIconSVG(id);
+
+    // Add enhanced label
+    const label = document.createElement("div");
+    label.style.cssText = `
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e40af;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      margin: 0 8px;
+    `;
+    label.textContent = name;
+
+    // Add drag indicator
+    const indicator = document.createElement("div");
+    indicator.style.cssText = `
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(45deg, #10b981, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    `;
+    indicator.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M13 6v5h5l-6 6-6-6h5V6h2z"/></svg>`;
+
+    dragPreview.appendChild(iconContainer);
+    dragPreview.appendChild(label);
+    dragPreview.appendChild(indicator);
+    document.body.appendChild(dragPreview);
+
+    e.dataTransfer.setDragImage(dragPreview, 60, 70);
+
+    // Cleanup
+    setTimeout(() => {
+      if (dragPreview.parentNode) {
+        dragPreview.parentNode.removeChild(dragPreview);
+      }
+    }, 0);
+  };
+
+  const getIconSVG = (equipmentId: string) => {
+    const svgMap: Record<string, string> = {
+      beaker: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 3h5v5.5l3.5 5.5v6c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2v-6l3.5-5.5V3zm1 1v4.5L7 14v6h10v-6l-3.5-5.5V4h-3z"/></svg>`,
+      flask: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2v4.5L6 12v8c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-8l-3-5.5V2H9zm2 2h2v4.5l3 5.5v6H8v-6l3-5.5V4z"/></svg>`,
+      burette: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v18l-1 2-1-2V2zm0 3h2v13h-2V5z"/></svg>`,
+      thermometer: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M17 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0-2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM8 14V4c0-1.66 1.34-3 3-3s3 1.34 3 3v10c1.21.91 2 2.37 2 4 0 2.76-2.24 5-5 5s-5-2.24-5-5c0-1.63.79-3.09 2-4z"/></svg>`,
+    };
+    return svgMap[equipmentId] || svgMap.beaker;
   };
 
   const handleChemicalDragOver = (e: React.DragEvent) => {
