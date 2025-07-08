@@ -170,8 +170,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         `Added ${chemical.volume || 25}mL of ${chemical.name} to ${name}`,
       );
 
-      // Reset dropping animation after a delay
-      setTimeout(() => setIsDropping(false), 2000);
+      // Reset dropping animation quickly to stop blinking
+      setTimeout(() => setIsDropping(false), 500);
     }
   };
 
@@ -256,10 +256,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fa468b45ae87143d1b54d53a0323f1ccd%2Fa3d366ec3c0f4c23a4840654c930e3a0?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className={`w-32 h-80 object-contain transition-all duration-300 ${
+            className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
               isDragging
-                ? "scale-110 rotate-3 brightness-110"
-                : "group-hover:scale-105 group-hover:brightness-105"
+                ? "scale-105 rotate-2 brightness-110"
+                : "group-hover:scale-102 group-hover:brightness-105"
             }`}
             style={{
               filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.2)) ${
@@ -274,11 +274,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {/* Solution overlay for test tubes - positioned more accurately */}
           {chemicals.length > 0 && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-5 rounded-b-full transition-all duration-700 ease-out"
+              className="absolute left-1/2 transform -translate-x-1/2 w-8 rounded-b-full transition-all duration-700 ease-out"
               style={{
                 backgroundColor: getMixedColor(),
-                bottom: "64px",
-                height: `${Math.min(getSolutionHeight() * 1.5, 160)}px`,
+                bottom: "128px",
+                height: `${Math.min(getSolutionHeight() * 3, 320)}px`,
                 opacity: 0.9,
                 boxShadow:
                   "inset 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15)",
@@ -316,7 +316,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+            <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
               <div className="text-gray-800 font-semibold text-center">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
@@ -1170,13 +1170,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center transition-all duration-300 cursor-grab active:cursor-grabbing relative ${
+      className={`flex flex-col items-center transition-all duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? `p-0 bg-transparent border-0 shadow-none hover:scale-105 active:scale-95 ${isDragging ? "opacity-50 scale-95" : ""}` // No box styling - just the equipment
+          ? `p-0 bg-transparent border-0 shadow-none hover:scale-105 active:scale-95 ${isDragging ? "opacity-70 scale-95" : ""}` // No box styling - just the equipment, smooth transitions
           : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
-      } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""} ${
-        isDropping ? "animate-pulse" : ""
-      }`}
+      } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""}`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
         left: isOnWorkbench && position ? position.x : "auto",
