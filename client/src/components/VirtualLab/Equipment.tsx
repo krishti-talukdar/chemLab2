@@ -235,18 +235,52 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return icon; // Use simple icons when not on workbench
     }
 
-    // Use provided images for specific equipment types
+    // Use provided images for specific equipment types with bigger sizes
+    if (id === "test_tubes") {
+      return (
+        <div className="relative">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0d50895d71a24e10ad11237371bd9440?format=webp&width=800"
+            alt="Laboratory Test Tube"
+            className="w-20 h-40 object-contain drop-shadow-lg"
+          />
+          {/* Solution overlay for test tubes */}
+          {chemicals.length > 0 && (
+            <div
+              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-12 rounded-b-lg transition-all duration-500"
+              style={{
+                backgroundColor: getMixedColor(),
+                height: `${getSolutionHeight() * 0.4}px`,
+                opacity: 0.8,
+              }}
+            ></div>
+          )}
+          {/* Chemical composition display */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
+              </div>
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     if (id === "dropper") {
       return (
         <div className="relative">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F3e9d1e61cf2f4ecea8af70ea3f77796e?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F66657d803e14427eaeecd21906ee09f6?format=webp&width=800"
             alt="Laboratory Dropper"
-            className="w-16 h-24 object-contain drop-shadow-lg"
+            className="w-24 h-32 object-contain drop-shadow-lg"
           />
           {/* Enhanced chemical composition display for droppers */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
               <div className="text-gray-800 font-medium text-center">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
@@ -260,29 +294,66 @@ export const Equipment: React.FC<EquipmentProps> = ({
       );
     }
 
-    if (id === "test_tubes") {
+    if (id === "beaker_hot_water") {
       return (
         <div className="relative">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Fb55a205166144149a4e03643a7a2db3c?format=webp&width=800"
-            alt="Laboratory Test Tube"
-            className="w-12 h-32 object-contain drop-shadow-lg"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0048f4f6e5dc45368c0cf303e98c220d?format=webp&width=800"
+            alt="Hot Water Beaker"
+            className="w-28 h-32 object-contain drop-shadow-lg"
           />
-          {/* Solution overlay for test tubes */}
-          {chemicals.length > 0 && (
-            <div
-              className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-8 rounded-b-lg transition-all duration-500"
-              style={{
-                backgroundColor: getMixedColor(),
-                height: `${getSolutionHeight() * 0.3}px`,
-                opacity: 0.8,
-              }}
-            ></div>
-          )}
+          {/* Hot water indicator with steam animation */}
+          <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+            H
+          </div>
+          {/* Steam animation */}
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="w-1.5 h-8 bg-gray-300 opacity-60 rounded-full animate-pulse"
+                style={{
+                  position: "absolute",
+                  left: `${i * 5 - 5}px`,
+                  animationDelay: `${i * 0.5}s`,
+                  animationDuration: "2s",
+                }}
+              />
+            ))}
+          </div>
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
               <div className="text-gray-800 font-medium text-center">
+                Hot Water +{" "}
+                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
+              </div>
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (id === "beaker_cold_water") {
+      return (
+        <div className="relative">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F03a7c3a8f18a4268a63a6a3a9300c780?format=webp&width=800"
+            alt="Cold Water Beaker"
+            className="w-28 h-32 object-contain drop-shadow-lg"
+          />
+          {/* Cold water indicator */}
+          <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+            C
+          </div>
+          {/* Chemical composition display */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                Cold Water +{" "}
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
               <div className="text-gray-600 text-center">
@@ -298,81 +369,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Ffa342dcdb3eb4c8782f05a7a93947616?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Fc57e71c48b934b3389c584fe631276e8?format=webp&width=800"
             alt="Laboratory Stirring Rod"
-            className="w-20 h-8 object-contain drop-shadow-lg"
+            className="w-32 h-12 object-contain drop-shadow-lg"
           />
-        </div>
-      );
-    }
-
-    if (id === "beaker_cold_water") {
-      return (
-        <div className="relative">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F545ae3495cf24f6eb17ccee4a703842a?format=webp&width=800"
-            alt="Cold Water Beaker"
-            className="w-20 h-24 object-contain drop-shadow-lg"
-          />
-          {/* Cold water indicator */}
-          <div className="absolute -top-3 -right-3 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            C
-          </div>
-          {/* Chemical composition display */}
-          {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
-                Cold Water +{" "}
-                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
-              </div>
-              <div className="text-gray-600 text-center">
-                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (id === "beaker_hot_water") {
-      return (
-        <div className="relative">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0ef5698fa8c6429fb380316f5827503c?format=webp&width=800"
-            alt="Hot Water Beaker"
-            className="w-20 h-24 object-contain drop-shadow-lg"
-          />
-          {/* Hot water indicator with steam animation */}
-          <div className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            H
-          </div>
-          {/* Steam animation */}
-          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="w-1 h-6 bg-gray-300 opacity-60 rounded-full animate-pulse"
-                style={{
-                  position: "absolute",
-                  left: `${i * 4 - 4}px`,
-                  animationDelay: `${i * 0.5}s`,
-                  animationDuration: "2s",
-                }}
-              />
-            ))}
-          </div>
-          {/* Chemical composition display */}
-          {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
-                Hot Water +{" "}
-                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
-              </div>
-              <div className="text-gray-600 text-center">
-                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
-              </div>
-            </div>
-          )}
         </div>
       );
     }
