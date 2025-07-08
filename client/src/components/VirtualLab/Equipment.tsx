@@ -348,55 +348,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
               </div>
             )}
 
-          {/* Solution overlay for test tubes - strictly contained within test tube */}
-          {(chemicals.length > 0 ||
-            cobaltReactionState?.distilledWaterAdded) && (
-            <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
-              style={{
-                backgroundColor:
-                  cobaltReactionState?.colorTransition === "pink"
-                    ? "#FF69B4"
-                    : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "#9370DB"
-                      : cobaltReactionState?.distilledWaterAdded
-                        ? "transparent"
-                        : getMixedColor(),
-                bottom: "180px",
-                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
-                maxHeight: "80px",
-                opacity: 0.85,
-                boxShadow:
-                  "inset 0 1px 3px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)",
-                background:
-                  cobaltReactionState?.colorTransition === "pink"
-                    ? "linear-gradient(180deg, #FF69B4E6, #FF69B4FF)"
-                    : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, transparent, #FF69B4FF)"
-                      : cobaltReactionState?.distilledWaterAdded
-                        ? "transparent"
-                        : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
-              }}
-            >
-              {/* Liquid surface meniscus effect */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1 rounded-full"
-                style={{
-                  backgroundColor:
-                    cobaltReactionState?.colorTransition === "pink"
-                      ? "#FF69B4"
-                      : cobaltReactionState?.colorTransition === "transitioning"
-                        ? "#9370DB"
-                        : cobaltReactionState?.distilledWaterAdded
-                          ? "transparent"
-                          : getMixedColor(),
-                  opacity: 0.8,
-                  transform: "scaleY(0.5)",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                }}
-              />
-            </div>
-          )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
             <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
