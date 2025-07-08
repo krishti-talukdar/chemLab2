@@ -1006,6 +1006,12 @@ function VirtualLabApp({
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
                     onRemove={handleEquipmentRemove}
+                    cobaltReactionState={{
+                      cobaltChlorideAdded,
+                      distilledWaterAdded,
+                      stirrerActive,
+                      colorTransition,
+                    }}
                   />
                 ) : null;
               })}
