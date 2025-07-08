@@ -45,6 +45,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
+    setIsDragging(true);
 
     // Create enhanced drag preview
     const dragPreview = document.createElement("div");
