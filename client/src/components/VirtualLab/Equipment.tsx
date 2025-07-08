@@ -328,13 +328,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fc2053654ab564f8eb91577d73cfc950b%2Fec31965a3f6f4a24bd461f0d6c1719c2?format=webp&width=800"
                 alt="Cobalt Chloride Solid"
-                className="absolute bottom-[1.5rem] left-1/2 transform -translate-x-1/2 w-8 h-6 object-contain transition-opacity duration-500"
+                className="absolute w-6 h-4 object-contain transition-opacity duration-500"
                 style={{
+                  bottom: "15%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
                   opacity:
                     cobaltReactionState?.colorTransition === "transitioning"
                       ? 0
                       : 1,
-                  zIndex: 10,
+                  zIndex: 1,
                 }}
               />
             )}
