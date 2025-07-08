@@ -256,53 +256,75 @@ export const Equipment: React.FC<EquipmentProps> = ({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fa468b45ae87143d1b54d53a0323f1ccd%2Fa3d366ec3c0f4c23a4840654c930e3a0?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className={`w-16 h-40 object-contain transition-all duration-300 ${
-              isDragging ? "scale-110 rotate-2" : "group-hover:scale-105"
+            className={`w-24 h-60 object-contain transition-all duration-300 ${
+              isDragging
+                ? "scale-110 rotate-3 brightness-110"
+                : "group-hover:scale-105 group-hover:brightness-105"
             }`}
             style={{
-              filter: `drop-shadow(3px 6px 12px rgba(0,0,0,0.15)) ${
+              filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.2)) ${
                 isDragging
-                  ? "drop-shadow(4px 8px 16px rgba(59,130,246,0.3))"
+                  ? "drop-shadow(6px 12px 24px rgba(59,130,246,0.4))"
                   : ""
               }`,
               imageRendering: "auto",
+              transformOrigin: "center bottom",
             }}
           />
           {/* Solution overlay for test tubes - positioned more accurately */}
           {chemicals.length > 0 && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-3 rounded-b-full transition-all duration-700 ease-out"
+              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-700 ease-out"
               style={{
                 backgroundColor: getMixedColor(),
-                bottom: "32px",
-                height: `${Math.min(getSolutionHeight() * 0.8, 80)}px`,
-                opacity: 0.85,
+                bottom: "48px",
+                height: `${Math.min(getSolutionHeight() * 1.2, 120)}px`,
+                opacity: 0.9,
                 boxShadow:
-                  "inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.1)",
+                  "inset 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15)",
+                background: `linear-gradient(180deg, ${getMixedColor()}CC, ${getMixedColor()}FF)`,
               }}
             >
               {/* Liquid surface meniscus effect */}
               <div
-                className="absolute top-0 left-0 right-0 h-1 rounded-full"
+                className="absolute top-0 left-0 right-0 h-1.5 rounded-full"
                 style={{
                   backgroundColor: getMixedColor(),
-                  opacity: 0.6,
-                  transform: "scaleY(0.3)",
+                  opacity: 0.7,
+                  transform: "scaleY(0.4)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
                 }}
               />
+              {/* Bubbles effect for reactions */}
+              {chemicals.length > 1 && (
+                <div className="absolute inset-0 overflow-hidden">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-white/40 rounded-full animate-bounce"
+                      style={{
+                        left: `${30 + i * 15}%`,
+                        bottom: `${10 + i * 20}%`,
+                        animationDelay: `${i * 0.5}s`,
+                        animationDuration: "2s",
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-14 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-2 py-1 text-xs shadow-lg min-w-max">
-              <div className="text-gray-800 font-medium text-center text-xs">
+            <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+              <div className="text-gray-800 font-semibold text-center">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
-              <div className="text-gray-600 text-center text-xs">
+              <div className="text-gray-600 text-center">
                 {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
               </div>
               <div
-                className="w-full h-0.5 rounded-full mt-1"
+                className="w-full h-1 rounded-full mt-1"
                 style={{ backgroundColor: getMixedColor() }}
               />
             </div>
