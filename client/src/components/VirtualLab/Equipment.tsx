@@ -41,6 +41,91 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
+    e.dataTransfer.effectAllowed = "move";
+
+    // Create enhanced drag preview
+    const dragPreview = document.createElement("div");
+    dragPreview.style.cssText = `
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+      width: 120px;
+      height: 140px;
+      background: linear-gradient(145deg, #ffffff, #f0f9ff);
+      border: 3px solid #3b82f6;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-3deg) scale(1.2);
+      z-index: 9999;
+      pointer-events: none;
+    `;
+
+    // Add enhanced icon
+    const iconContainer = document.createElement("div");
+    iconContainer.style.cssText = `
+      font-size: 48px;
+      color: #1d4ed8;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 8px rgba(29, 78, 216, 0.3));
+    `;
+    iconContainer.innerHTML = getIconSVG(id);
+
+    // Add enhanced label
+    const label = document.createElement("div");
+    label.style.cssText = `
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e40af;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      margin: 0 8px;
+    `;
+    label.textContent = name;
+
+    // Add drag indicator
+    const indicator = document.createElement("div");
+    indicator.style.cssText = `
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(45deg, #10b981, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    `;
+    indicator.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M13 6v5h5l-6 6-6-6h5V6h2z"/></svg>`;
+
+    dragPreview.appendChild(iconContainer);
+    dragPreview.appendChild(label);
+    dragPreview.appendChild(indicator);
+    document.body.appendChild(dragPreview);
+
+    e.dataTransfer.setDragImage(dragPreview, 60, 70);
+
+    // Cleanup
+    setTimeout(() => {
+      if (dragPreview.parentNode) {
+        dragPreview.parentNode.removeChild(dragPreview);
+      }
+    }, 0);
+  };
+
+  const getIconSVG = (equipmentId: string) => {
+    const svgMap: Record<string, string> = {
+      beaker: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 3h5v5.5l3.5 5.5v6c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2v-6l3.5-5.5V3zm1 1v4.5L7 14v6h10v-6l-3.5-5.5V4h-3z"/></svg>`,
+      flask: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2v4.5L6 12v8c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-8l-3-5.5V2H9zm2 2h2v4.5l3 5.5v6H8v-6l3-5.5V4z"/></svg>`,
+      burette: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v18l-1 2-1-2V2zm0 3h2v13h-2V5z"/></svg>`,
+      thermometer: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M17 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0-2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM8 14V4c0-1.66 1.34-3 3-3s3 1.34 3 3v10c1.21.91 2 2.37 2 4 0 2.76-2.24 5-5 5s-5-2.24-5-5c0-1.63.79-3.09 2-4z"/></svg>`,
+    };
+    return svgMap[equipmentId] || svgMap.beaker;
   };
 
   const handleChemicalDragOver = (e: React.DragEvent) => {
@@ -146,223 +231,869 @@ export const Equipment: React.FC<EquipmentProps> = ({
   };
 
   const getEquipmentSpecificRendering = () => {
-    if (id === "burette" && isOnWorkbench) {
+    if (!isOnWorkbench) {
+      return icon; // Use simple icons when not on workbench
+    }
+
+    // Use provided images for specific equipment types with bigger sizes
+    if (id === "test_tubes") {
       return (
         <div className="relative">
-          {/* Burette specific rendering */}
-          <div className="w-6 h-20 bg-gradient-to-b from-transparent to-blue-100 border-2 border-blue-400 rounded-b-lg relative">
-            {/* Solution in burette */}
-            {chemicals.length > 0 && (
-              <div
-                className="absolute bottom-0 left-0 right-0 rounded-b-lg transition-all duration-500"
-                style={{
-                  backgroundColor: getMixedColor(),
-                  height: `${getSolutionHeight()}%`,
-                  opacity: 0.8,
-                }}
-              >
-                {/* Liquid surface animation */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 animate-pulse"></div>
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0d50895d71a24e10ad11237371bd9440?format=webp&width=800"
+            alt="Laboratory Test Tube"
+            className="w-28 h-48 object-contain drop-shadow-lg"
+          />
+          {/* Solution overlay for test tubes */}
+          {chemicals.length > 0 && (
+            <div
+              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-12 rounded-b-lg transition-all duration-500"
+              style={{
+                backgroundColor: getMixedColor(),
+                height: `${getSolutionHeight() * 0.4}px`,
+                opacity: 0.8,
+              }}
+            ></div>
+          )}
+          {/* Chemical composition display */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
-            )}
-
-            {/* Volume markings */}
-            <div className="absolute -right-8 top-2 text-xs text-gray-600">
-              50
-            </div>
-            <div className="absolute -right-8 top-8 text-xs text-gray-600">
-              40
-            </div>
-            <div className="absolute -right-8 top-14 text-xs text-gray-600">
-              30
-            </div>
-
-            {/* Burette tap */}
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-              <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-            </div>
-          </div>
-
-          {/* Drop animation when chemicals are added */}
-          {isDropping && (
-            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce"></div>
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+              </div>
             </div>
           )}
         </div>
       );
     }
 
-    if (id === "erlenmeyer_flask" && isOnWorkbench) {
+    if (id === "dropper") {
       return (
         <div className="relative">
-          {/* Enhanced Erlenmeyer Flask Illustration */}
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F66657d803e14427eaeecd21906ee09f6?format=webp&width=800"
+            alt="Laboratory Dropper"
+            className="w-24 h-32 object-contain drop-shadow-lg"
+          />
+          {/* Enhanced chemical composition display for droppers */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
+              </div>
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)}{" "}
+                drops
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (id === "beaker_hot_water") {
+      return (
+        <div className="relative">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0048f4f6e5dc45368c0cf303e98c220d?format=webp&width=800"
+            alt="Hot Water Beaker"
+            className="w-28 h-32 object-contain drop-shadow-lg"
+          />
+          {/* Hot water indicator with steam animation */}
+          <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+            H
+          </div>
+          {/* Steam animation */}
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="w-1.5 h-8 bg-gray-300 opacity-60 rounded-full animate-pulse"
+                style={{
+                  position: "absolute",
+                  left: `${i * 5 - 5}px`,
+                  animationDelay: `${i * 0.5}s`,
+                  animationDuration: "2s",
+                }}
+              />
+            ))}
+          </div>
+          {/* Chemical composition display */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                Hot Water +{" "}
+                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
+              </div>
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (id === "beaker_cold_water") {
+      return (
+        <div className="relative">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F03a7c3a8f18a4268a63a6a3a9300c780?format=webp&width=800"
+            alt="Cold Water Beaker"
+            className="w-28 h-32 object-contain drop-shadow-lg"
+          />
+          {/* Cold water indicator */}
+          <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+            C
+          </div>
+          {/* Chemical composition display */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                Cold Water +{" "}
+                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
+              </div>
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (id === "stirring_rod") {
+      return (
+        <div className="relative">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Fc57e71c48b934b3389c584fe631276e8?format=webp&width=800"
+            alt="Laboratory Stirring Rod"
+            className="w-24 h-32 object-contain drop-shadow-lg"
+          />
+        </div>
+      );
+    }
+
+    // Realistic equipment renderings for workbench
+    if (id === "burette") {
+      return (
+        <div className="relative">
           <svg
-            width="80"
-            height="100"
-            viewBox="0 0 80 100"
+            width="60"
+            height="160"
+            viewBox="0 0 60 160"
             className="drop-shadow-lg"
           >
-            {/* Flask body */}
-            <path
-              d="M25 20 L25 35 L10 70 L70 70 L55 35 L55 20 Z"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
-              strokeWidth="2"
-            />
-            {/* Flask neck */}
+            {/* Burette body */}
+            <defs>
+              <linearGradient
+                id="glassGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.9)" />
+                <stop offset="50%" stopColor="rgba(240,248,255,0.8)" />
+                <stop offset="100%" stopColor="rgba(219,234,254,0.9)" />
+              </linearGradient>
+              <linearGradient
+                id="liquidGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.9"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.9"
+                />
+              </linearGradient>
+            </defs>
+
+            {/* Main burette tube */}
             <rect
-              x="30"
+              x="20"
               y="10"
               width="20"
-              height="15"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
-              strokeWidth="2"
+              height="120"
+              fill="url(#glassGradient)"
+              stroke="#94a3b8"
+              strokeWidth="1.5"
               rx="2"
             />
-            {/* Flask opening */}
+
+            {/* Burette top opening */}
             <ellipse
-              cx="40"
+              cx="30"
               cy="10"
               rx="10"
-              ry="2"
+              ry="3"
               fill="none"
-              stroke="#2563eb"
+              stroke="#64748b"
+              strokeWidth="1.5"
+            />
+
+            {/* Volume markings */}
+            <g
+              stroke="#6b7280"
+              strokeWidth="0.8"
+              fill="#4b5563"
+              fontSize="6"
+              fontFamily="monospace"
+            >
+              <line x1="42" y1="20" x2="45" y2="20" />
+              <text x="47" y="23">
+                50
+              </text>
+              <line x1="42" y1="40" x2="44" y2="40" />
+              <line x1="42" y1="50" x2="45" y2="50" />
+              <text x="47" y="53">
+                40
+              </text>
+              <line x1="42" y1="70" x2="44" y2="70" />
+              <line x1="42" y1="80" x2="45" y2="80" />
+              <text x="47" y="83">
+                30
+              </text>
+              <line x1="42" y1="100" x2="44" y2="100" />
+              <line x1="42" y1="110" x2="45" y2="110" />
+              <text x="47" y="113">
+                20
+              </text>
+              <line x1="42" y1="125" x2="45" y2="125" />
+              <text x="47" y="128">
+                10
+              </text>
+            </g>
+
+            {/* Solution in burette */}
+            {chemicals.length > 0 && (
+              <rect
+                x="22"
+                y={130 - getSolutionHeight()}
+                width="16"
+                height={getSolutionHeight()}
+                fill="url(#liquidGradient)"
+                rx="1"
+                className="transition-all duration-500"
+              >
+                {/* Liquid surface */}
+                <animate
+                  attributeName="y"
+                  values={`${130 - getSolutionHeight()};${128 - getSolutionHeight()};${130 - getSolutionHeight()}`}
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </rect>
+            )}
+
+            {/* Glass shine effect */}
+            <rect
+              x="23"
+              y="15"
+              width="4"
+              height="110"
+              fill="rgba(255,255,255,0.4)"
+              rx="2"
+            />
+
+            {/* Burette stopcock */}
+            <rect
+              x="25"
+              y="135"
+              width="10"
+              height="8"
+              fill="#6b7280"
+              stroke="#4b5563"
+              strokeWidth="1"
+              rx="2"
+            />
+            <circle cx="30" cy="139" r="2" fill="#374151" />
+
+            {/* Tip */}
+            <path
+              d="M28 143 L30 148 L32 143 Z"
+              fill="url(#glassGradient)"
+              stroke="#94a3b8"
+              strokeWidth="1"
+            />
+
+            {/* Drop animation */}
+            {isDropping && (
+              <circle
+                cx="30"
+                cy="150"
+                r="1.5"
+                fill={getMixedColor()}
+                className="animate-bounce"
+              />
+            )}
+          </svg>
+        </div>
+      );
+    }
+
+    if (id === "flask" || id === "erlenmeyer_flask") {
+      return (
+        <div className="relative">
+          <svg
+            width="100"
+            height="140"
+            viewBox="0 0 100 140"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="flaskGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="30%" stopColor="rgba(248,250,252,0.85)" />
+                <stop offset="70%" stopColor="rgba(241,245,249,0.9)" />
+                <stop offset="100%" stopColor="rgba(226,232,240,0.95)" />
+              </linearGradient>
+              <linearGradient
+                id="flaskLiquid"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+              </linearGradient>
+            </defs>
+
+            {/* Flask body - conical shape */}
+            <path
+              d="M35 30 L35 45 L15 105 L85 105 L65 45 L65 30 Z"
+              fill="url(#flaskGlass)"
+              stroke="#94a3b8"
               strokeWidth="2"
             />
+
+            {/* Flask neck */}
+            <rect
+              x="40"
+              y="15"
+              width="20"
+              height="20"
+              fill="url(#flaskGlass)"
+              stroke="#94a3b8"
+              strokeWidth="2"
+              rx="3"
+            />
+
+            {/* Flask opening */}
+            <ellipse
+              cx="50"
+              cy="15"
+              rx="10"
+              ry="3"
+              fill="none"
+              stroke="#64748b"
+              strokeWidth="2"
+            />
+
+            {/* Volume markings */}
+            <g
+              stroke="#6b7280"
+              strokeWidth="1"
+              fill="#4b5563"
+              fontSize="7"
+              fontFamily="Arial"
+            >
+              <line x1="87" y1="65" x2="92" y2="65" />
+              <text x="94" y="68">
+                1000
+              </text>
+              <line x1="87" y1="75" x2="90" y2="75" />
+              <line x1="87" y1="82" x2="92" y2="82" />
+              <text x="94" y="85">
+                800
+              </text>
+              <line x1="87" y1="89" x2="90" y2="89" />
+              <line x1="87" y1="96" x2="92" y2="96" />
+              <text x="94" y="99">
+                600
+              </text>
+              <line x1="87" y1="100" x2="90" y2="100" />
+              <text x="94" y="108">
+                400
+              </text>
+            </g>
+
+            {/* Label area */}
+            <rect
+              x="25"
+              y="75"
+              width="20"
+              height="12"
+              fill="rgba(255,255,255,0.9)"
+              stroke="#d1d5db"
+              strokeWidth="0.5"
+              rx="2"
+            />
+            <text
+              x="35"
+              y="82"
+              textAnchor="middle"
+              fontSize="6"
+              fill="#374151"
+              fontWeight="bold"
+            >
+              1000ml
+            </text>
 
             {/* Solution in flask */}
             {chemicals.length > 0 && (
               <path
-                d={`M${15 + chemicals.length * 2} ${70 - getSolutionHeight() * 0.4} L${65 - chemicals.length * 2} ${70 - getSolutionHeight() * 0.4} L70 70 L10 70 Z`}
-                fill={getMixedColor()}
-                opacity="0.8"
+                d={`M${20 + chemicals.length} ${105 - getSolutionHeight() * 0.6} L${80 - chemicals.length} ${105 - getSolutionHeight() * 0.6} L85 105 L15 105 Z`}
+                fill="url(#flaskLiquid)"
                 className="transition-all duration-500"
               />
             )}
 
-            {/* Volume markings */}
-            <g stroke="#6b7280" strokeWidth="1" fill="#6b7280">
-              <line x1="72" y1="50" x2="75" y2="50" />
-              <text x="78" y="53" fontSize="6">
-                100mL
-              </text>
-              <line x1="72" y1="60" x2="75" y2="60" />
-              <text x="78" y="63" fontSize="6">
-                50mL
-              </text>
-            </g>
+            {/* Glass shine effects */}
+            <ellipse
+              cx="30"
+              cy="55"
+              rx="3"
+              ry="15"
+              fill="rgba(255,255,255,0.6)"
+              opacity="0.8"
+            />
+            <ellipse
+              cx="42"
+              cy="25"
+              rx="2"
+              ry="8"
+              fill="rgba(255,255,255,0.5)"
+              opacity="0.7"
+            />
 
             {/* Bubbling animation for reactions */}
             {chemicals.length > 1 && (
               <g>
-                {[...Array(6)].map((_, i) => (
+                {[...Array(5)].map((_, i) => (
                   <circle
                     key={i}
-                    cx={25 + i * 8}
-                    cy={65 - (i % 2) * 5}
+                    cx={30 + i * 8}
+                    cy={95 - (i % 2) * 8}
                     r="1.5"
-                    fill="rgba(255, 255, 255, 0.7)"
+                    fill="rgba(255,255,255,0.8)"
                     className="animate-bounce"
                     style={{
-                      animationDelay: `${i * 0.3}s`,
-                      animationDuration: "1.5s",
+                      animationDelay: `${i * 0.4}s`,
+                      animationDuration: "2s",
                     }}
                   />
                 ))}
               </g>
             )}
-
-            {/* Flask label */}
-            <text
-              x="40"
-              y="85"
-              textAnchor="middle"
-              fontSize="8"
-              fill="#374151"
-              fontWeight="bold"
-            >
-              125mL Erlenmeyer
-            </text>
           </svg>
 
-          {/* Chemical composition display */}
+          {/* Enhanced chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
+            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-200 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+              <div className="text-gray-800 font-semibold text-center">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
               <div className="text-gray-600 text-center">
                 {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
                 total
               </div>
-            </div>
-          )}
-
-          {/* Drop success animation */}
-          {isDropping && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
-                ✓ Added!
-              </div>
+              <div
+                className="w-full h-1 rounded-full mt-1"
+                style={{ backgroundColor: getMixedColor() }}
+              ></div>
             </div>
           )}
         </div>
       );
     }
 
+    if (id === "beaker") {
+      return (
+        <div className="relative">
+          <svg
+            width="80"
+            height="120"
+            viewBox="0 0 80 120"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="beakerGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="50%" stopColor="rgba(248,250,252,0.85)" />
+                <stop offset="100%" stopColor="rgba(226,232,240,0.95)" />
+              </linearGradient>
+              <linearGradient
+                id="beakerLiquid"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+              </linearGradient>
+            </defs>
+
+            {/* Beaker body */}
+            <rect
+              x="15"
+              y="25"
+              width="50"
+              height="75"
+              fill="url(#beakerGlass)"
+              stroke="#94a3b8"
+              strokeWidth="2"
+              rx="4"
+            />
+
+            {/* Beaker spout */}
+            <path
+              d="M62 35 Q68 35 68 40 Q68 45 62 45"
+              fill="none"
+              stroke="#94a3b8"
+              strokeWidth="2"
+            />
+
+            {/* Volume markings */}
+            <g
+              stroke="#6b7280"
+              strokeWidth="1"
+              fill="#4b5563"
+              fontSize="7"
+              fontFamily="Arial"
+            >
+              <line x1="67" y1="40" x2="72" y2="40" />
+              <text x="74" y="43">
+                500
+              </text>
+              <line x1="67" y1="55" x2="70" y2="55" />
+              <line x1="67" y1="65" x2="72" y2="65" />
+              <text x="74" y="68">
+                400
+              </text>
+              <line x1="67" y1="75" x2="70" y2="75" />
+              <line x1="67" y1="85" x2="72" y2="85" />
+              <text x="74" y="88">
+                300
+              </text>
+              <line x1="67" y1="90" x2="70" y2="90" />
+              <text x="74" y="98">
+                200
+              </text>
+            </g>
+
+            {/* Solution in beaker */}
+            {chemicals.length > 0 && (
+              <rect
+                x="18"
+                y={95 - getSolutionHeight() * 0.8}
+                width="44"
+                height={getSolutionHeight() * 0.8 + 5}
+                fill="url(#beakerLiquid)"
+                rx="2"
+                className="transition-all duration-500"
+              />
+            )}
+
+            {/* Glass shine */}
+            <rect
+              x="20"
+              y="30"
+              width="6"
+              height="60"
+              fill="rgba(255,255,255,0.5)"
+              rx="3"
+              opacity="0.8"
+            />
+
+            {/* Base */}
+            <ellipse
+              cx="40"
+              cy="105"
+              rx="25"
+              ry="4"
+              fill="url(#beakerGlass)"
+              stroke="#94a3b8"
+              strokeWidth="1"
+            />
+          </svg>
+        </div>
+      );
+    }
+
+    if (id === "thermometer") {
+      return (
+        <div className="relative">
+          <svg
+            width="25"
+            height="140"
+            viewBox="0 0 25 140"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="thermometerGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="100%" stopColor="rgba(241,245,249,0.9)" />
+              </linearGradient>
+              <linearGradient id="mercury" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#dc2626" />
+                <stop offset="100%" stopColor="#f87171" />
+              </linearGradient>
+            </defs>
+
+            {/* Thermometer tube */}
+            <rect
+              x="8"
+              y="10"
+              width="9"
+              height="110"
+              fill="url(#thermometerGlass)"
+              stroke="#94a3b8"
+              strokeWidth="1.5"
+              rx="4"
+            />
+
+            {/* Mercury bulb */}
+            <circle
+              cx="12.5"
+              cy="125"
+              r="8"
+              fill="url(#mercury)"
+              stroke="#991b1b"
+              strokeWidth="1"
+            />
+
+            {/* Mercury column */}
+            <rect
+              x="11"
+              y="90"
+              width="3"
+              height="35"
+              fill="url(#mercury)"
+              rx="1.5"
+            />
+
+            {/* Temperature scale */}
+            <g
+              stroke="#4b5563"
+              strokeWidth="0.5"
+              fill="#374151"
+              fontSize="5"
+              fontFamily="Arial"
+            >
+              <line x1="18" y1="20" x2="21" y2="20" />
+              <text x="22" y="22">
+                100
+              </text>
+              <line x1="18" y1="35" x2="20" y2="35" />
+              <line x1="18" y1="50" x2="21" y2="50" />
+              <text x="22" y="52">
+                50
+              </text>
+              <line x1="18" y1="65" x2="20" y2="65" />
+              <line x1="18" y1="80" x2="21" y2="80" />
+              <text x="22" y="82">
+                0
+              </text>
+              <line x1="18" y1="95" x2="20" y2="95" />
+              <line x1="18" y1="110" x2="21" y2="110" />
+              <text x="22" y="112">
+                -50
+              </text>
+            </g>
+
+            {/* Glass shine */}
+            <rect
+              x="9"
+              y="15"
+              width="2"
+              height="100"
+              fill="rgba(255,255,255,0.6)"
+              rx="1"
+            />
+          </svg>
+        </div>
+      );
+    }
+
+    // Fallback for any equipment not specifically handled above
     return (
       <div className="relative">
-        {icon}
-
-        {/* Solution visualization for other containers */}
-        {isContainer &&
-          chemicals.length > 0 &&
-          isOnWorkbench &&
-          id !== "erlenmeyer_flask" && (
-            <div className="absolute inset-0 flex items-end justify-center">
-              <div
-                className="rounded-b-lg transition-all duration-500 opacity-80"
-                style={{
-                  backgroundColor: getMixedColor(),
-                  height: `${getSolutionHeight()}%`,
-                  width: id === "beaker" ? "70%" : "60%",
-                  minHeight: "8px",
-                }}
+        {isOnWorkbench ? (
+          // Create a realistic glass container for any unspecified equipment
+          <svg
+            width="70"
+            height="90"
+            viewBox="0 0 70 90"
+            className="drop-shadow-lg"
+          >
+            <defs>
+              <linearGradient
+                id="genericGlass"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
               >
-                {/* Enhanced liquid effects */}
-                <div className="relative w-full h-full overflow-hidden rounded-b-lg">
-                  {/* Surface shimmer */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
+                <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                <stop offset="50%" stopColor="rgba(248,250,252,0.85)" />
+                <stop offset="100%" stopColor="rgba(226,232,240,0.95)" />
+              </linearGradient>
+              <linearGradient
+                id="genericLiquid"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+                <stop
+                  offset="50%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.7"
+                />
+                <stop
+                  offset="100%"
+                  stopColor={getMixedColor()}
+                  stopOpacity="0.85"
+                />
+              </linearGradient>
+            </defs>
 
-                  {/* Bubbling animation for reactions */}
-                  {chemicals.length > 1 && (
-                    <div className="absolute inset-0">
-                      {[...Array(4)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-1 h-1 bg-white opacity-70 rounded-full animate-bounce"
-                          style={{
-                            left: `${15 + i * 20}%`,
-                            bottom: `${5 + (i % 2) * 15}px`,
-                            animationDelay: `${i * 0.3}s`,
-                            animationDuration: "1.5s",
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                  )}
+            {/* Generic container */}
+            <rect
+              x="15"
+              y="20"
+              width="40"
+              height="60"
+              fill="url(#genericGlass)"
+              stroke="#94a3b8"
+              strokeWidth="2"
+              rx="3"
+            />
 
-                  {/* Color change animation */}
-                  {chemicals.some((c) => c.id === "phenol") &&
-                    chemicals.some((c) => c.id === "naoh") && (
-                      <div className="absolute inset-0 bg-pink-300 opacity-50 animate-pulse rounded-b-lg"></div>
-                    )}
-                </div>
-              </div>
+            {/* Solution */}
+            {chemicals.length > 0 && (
+              <rect
+                x="18"
+                y={75 - getSolutionHeight() * 0.6}
+                width="34"
+                height={getSolutionHeight() * 0.6 + 5}
+                fill="url(#genericLiquid)"
+                rx="2"
+                className="transition-all duration-500"
+              />
+            )}
+
+            {/* Glass shine */}
+            <rect
+              x="20"
+              y="25"
+              width="4"
+              height="50"
+              fill="rgba(255,255,255,0.5)"
+              rx="2"
+              opacity="0.8"
+            />
+
+            {/* Volume markings */}
+            <g stroke="#6b7280" strokeWidth="0.8" fill="#4b5563" fontSize="6">
+              <line x1="57" y1="35" x2="60" y2="35" />
+              <text x="62" y="38">
+                100
+              </text>
+              <line x1="57" y1="50" x2="59" y2="50" />
+              <line x1="57" y1="65" x2="60" y2="65" />
+              <text x="62" y="68">
+                50
+              </text>
+            </g>
+          </svg>
+        ) : (
+          icon
+        )}
+
+        {/* Enhanced solution visualization for workbench containers */}
+        {isContainer && chemicals.length > 0 && isOnWorkbench && (
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
+            <div className="text-gray-800 font-medium text-center">
+              {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
             </div>
-          )}
+            <div className="text-gray-600 text-center">
+              {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+            </div>
+            <div
+              className="w-full h-1 rounded-full mt-1"
+              style={{ backgroundColor: getMixedColor() }}
+            ></div>
+          </div>
+        )}
       </div>
     );
   };
@@ -374,13 +1105,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-grab active:cursor-grabbing border-2 relative ${
+      className={`flex flex-col items-center transition-all duration-300 cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? "border-blue-400 bg-blue-50"
-          : "border-gray-200 hover:border-blue-400"
-      } ${isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105" : ""} ${
+          ? "p-0 bg-transparent border-0 shadow-none" // Remove box styling on workbench
+          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow"
+      } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""} ${
         isDropping ? "animate-pulse" : ""
-      }`}
+      } ${!isOnWorkbench ? "hover:scale-105 active:scale-95 active:rotate-2" : ""}`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
         left: isOnWorkbench && position ? position.x : "auto",
@@ -389,8 +1120,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
       }}
     >
-      {/* Enhanced drop zone indicator */}
-      {isContainer && isOnWorkbench && (
+      {/* Enhanced drop zone indicator - only show when not on workbench */}
+      {isContainer && !isOnWorkbench && (
         <div
           className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
             isDragOver ? "bg-green-500 scale-125 shadow-lg" : "bg-blue-500"
@@ -403,33 +1134,34 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </div>
       )}
 
-      {/* Drop hint text */}
-      {isContainer && isOnWorkbench && isDragOver && (
+      {/* Drop hint text - only show when not on workbench */}
+      {isContainer && !isOnWorkbench && isDragOver && (
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium animate-bounce whitespace-nowrap shadow-lg">
           Drop chemical here!
         </div>
       )}
 
-      {/* Drag over animation */}
-      {isDragOver && (
+      {/* Drag over animation - only when not on workbench */}
+      {isDragOver && !isOnWorkbench && (
         <div className="absolute inset-0 border-4 border-green-400 rounded-lg animate-pulse bg-green-100 opacity-50"></div>
       )}
 
       <div
-        className={`mb-3 transition-all duration-200 relative ${
+        className={`mb-3 transition-all duration-300 relative ${
           isOnWorkbench ? "text-blue-700" : "text-blue-600"
-        } ${isDragOver ? "scale-110" : ""}`}
+        } ${isDragOver ? "scale-110" : ""} ${isOnWorkbench ? "transform scale-110" : ""}`}
       >
         {getEquipmentSpecificRendering()}
       </div>
 
-      <span
-        className={`text-sm font-semibold text-center transition-colors ${
-          isOnWorkbench ? "text-blue-800" : "text-gray-700"
-        } ${isDragOver ? "text-green-700" : ""}`}
-      >
-        {name}
-      </span>
+      {/* Only show equipment name when not on workbench */}
+      {!isOnWorkbench && (
+        <span
+          className={`text-sm font-semibold text-center transition-colors text-gray-700 ${isDragOver ? "text-green-700" : ""}`}
+        >
+          {name}
+        </span>
+      )}
 
       {/* Enhanced chemical composition display */}
       {chemicals.length > 0 && isOnWorkbench && (
