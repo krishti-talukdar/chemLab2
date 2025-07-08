@@ -624,9 +624,7 @@ function VirtualLabApp({
               setTimeout(() => setToastMessage(null), 3000);
             } else if (chemicalId === "water" && cobaltChlorideAdded) {
               setDistilledWaterAdded(true);
-              setToastMessage(
-                "Cyan solution formed! Now add the stirrer to mix.",
-              );
+              setToastMessage("Add the stirrer");
               setTimeout(() => setToastMessage(null), 5000);
             } else {
               setToastMessage(
