@@ -1200,6 +1200,20 @@ export const Equipment: React.FC<EquipmentProps> = ({
           ></div>
         </div>
       )}
+
+      {/* Removal instruction tooltip - show on hover when on workbench */}
+      {isOnWorkbench && !isDragging && (
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs opacity-0 hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+          Double-click to remove
+        </div>
+      )}
+
+      {/* Drag indicator when dragging */}
+      {isDragging && (
+        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium animate-pulse">
+          Moving...
+        </div>
+      )}
     </div>
   );
 };
