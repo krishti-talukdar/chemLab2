@@ -202,13 +202,26 @@
   will-change: transform;
   backface-visibility: hidden;
   perspective: 1000px;
+  touch-action: none; /* Prevent scrolling during touch drag */
+  user-select: none;
 }
 
 .stirring-rod-optimized.dragging {
   transform: translateZ(0) scale(1.05);
   transition: none;
+  pointer-events: none; /* Prevent interference during drag */
 }
 
 .stirring-rod-optimized:not(.dragging) {
   transition: transform 0.15s ease-out;
+}
+
+/* Pointer event optimizations */
+.stirring-rod-optimized img {
+  pointer-events: none;
+  will-change: transform, filter;
+}
+
+.stirring-rod-optimized:active {
+  cursor: grabbing !important;
 }
