@@ -102,7 +102,7 @@ function VirtualLabApp({
   const [stirrerActive, setStirrerActive] = useState(false);
   const [colorTransition, setColorTransition] = useState<
     "blue" | "transitioning" | "pink"
-  >("blue");
+  >("pink");
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({

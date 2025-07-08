@@ -274,12 +274,35 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
     // Use provided images for specific equipment types with bigger sizes
     if (id === "test_tubes") {
+      // Determine which test tube image to show based on reaction state
+      const getTestTubeImage = () => {
+        // If stirrer is active and we have cobalt + water, transition to pink
+        if (
+          cobaltReactionState?.stirrerActive &&
+          cobaltReactionState?.cobaltChlorideAdded &&
+          cobaltReactionState?.distilledWaterAdded
+        ) {
+          // Pink liquid test tube (after stirring)
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F280bbef2140249df9531563786b4bae0?format=webp&width=800";
+        } else if (
+          cobaltReactionState?.cobaltChlorideAdded &&
+          cobaltReactionState?.distilledWaterAdded
+        ) {
+          // Blue liquid test tube (after adding cobalt chloride and distilled water)
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F0dba4a9e1cb14c0798299e02a71a75b1?format=webp&width=800";
+        } else {
+          // Default empty test tube
+          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800";
+        }
+      };
+
       return (
         <div className="relative group">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2Fd8b2095055e54c178ed44fcdcbff0611?format=webp&width=800"
+            key={getTestTubeImage()} // Force re-render when image changes
+            src={getTestTubeImage()}
             alt="Laboratory Test Tube"
-            className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
+            className={`w-64 h-[40rem] object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
                 ? "scale-108 rotate-2 brightness-115"
                 : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
@@ -292,132 +315,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
+              opacity:
+                cobaltReactionState?.colorTransition === "transitioning"
+                  ? 0.8
+                  : 1,
             }}
           />
-          {/* Cobalt chloride crystals - show blue crystals at bottom of test tube */}
-          {cobaltReactionState?.cobaltChlorideAdded &&
-            !cobaltReactionState?.distilledWaterAdded && (
-              <div
-                className="absolute left-1/2 transform -translate-x-1/2 w-4"
-                style={{ bottom: "180px" }}
-              >
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-0.5 h-0.5 bg-blue-700 rounded-sm animate-pulse shadow-sm"
-                    style={{
-                      bottom: `${(i % 3) * 2}px`,
-                      left: `${(i % 3) * 4 + 6}px`,
-                      animationDelay: `${i * 0.3}s`,
-                      animationDuration: "2s",
-                      transform: `rotate(${Math.random() * 45}deg)`,
-                      boxShadow: "0 1px 2px rgba(37, 99, 235, 0.4)",
-                    }}
-                  />
-                ))}
-                <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-1 py-0.5 rounded text-center">
-                  Crystals
-                </div>
-              </div>
-            )}
 
-          {/* Solution overlay for test tubes - strictly contained within test tube */}
-          {(chemicals.length > 0 ||
-            cobaltReactionState?.distilledWaterAdded) && (
-            <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
-              style={{
-                backgroundColor:
-                  cobaltReactionState?.colorTransition === "pink"
-                    ? "#FF69B4"
-                    : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "#9370DB"
-                      : cobaltReactionState?.distilledWaterAdded
-                        ? "#20B2AA"
-                        : getMixedColor(),
-                bottom: "180px",
-                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
-                maxHeight: "80px",
-                opacity: 0.85,
-                boxShadow:
-                  "inset 0 1px 3px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)",
-                background:
-                  cobaltReactionState?.colorTransition === "pink"
-                    ? "linear-gradient(180deg, #FF69B4E6, #FF69B4FF)"
-                    : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, #20B2AAE6, #FF69B4FF)"
-                      : cobaltReactionState?.distilledWaterAdded
-                        ? "linear-gradient(180deg, #20B2AAE6, #20B2AAFF)"
-                        : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
-              }}
-            >
-              {/* Liquid surface meniscus effect */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1 rounded-full"
-                style={{
-                  backgroundColor:
-                    cobaltReactionState?.colorTransition === "pink"
-                      ? "#FF69B4"
-                      : cobaltReactionState?.colorTransition === "transitioning"
-                        ? "#9370DB"
-                        : cobaltReactionState?.distilledWaterAdded
-                          ? "#20B2AA"
-                          : getMixedColor(),
-                  opacity: 0.8,
-                  transform: "scaleY(0.5)",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                }}
-              />
-
-              {/* Stirring animation when stirrer is active */}
-              {cobaltReactionState?.stirrerActive && (
-                <div className="absolute inset-0 overflow-hidden">
-                  {/* Stirring rod animation - smaller and contained */}
-                  <div
-                    className="absolute w-full h-full animate-spin"
-                    style={{ animationDuration: "2s" }}
-                  >
-                    <div className="absolute w-0.5 h-6 bg-gray-400 rounded-full left-1/2 top-1/3 transform -translate-x-1/2 shadow-sm" />
-                  </div>
-                  {/* Gentle swirling liquid effect */}
-                  {[...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-0.5 h-2 bg-white/25 rounded-full animate-spin"
-                      style={{
-                        left: `${40 + (i % 2) * 20}%`,
-                        top: `${30 + (i % 2) * 20}%`,
-                        animationDelay: `${i * 0.3}s`,
-                        animationDuration: "1.8s",
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Controlled bubbles within test tube */}
-              {(chemicals.length > 1 || cobaltReactionState?.stirrerActive) && (
-                <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(cobaltReactionState?.stirrerActive ? 6 : 2)].map(
-                    (_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-0.5 h-0.5 bg-white/60 rounded-full animate-bounce"
-                        style={{
-                          left: `${35 + (i % 2) * 30}%`,
-                          bottom: `${20 + (i % 2) * 20}%`,
-                          animationDelay: `${i * 0.5}s`,
-                          animationDuration: cobaltReactionState?.stirrerActive
-                            ? "1.2s"
-                            : "2s",
-                        }}
-                      />
-                    ),
-                  )}
-                </div>
-              )}
-            </div>
-          )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
             <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
@@ -1029,6 +933,29 @@ export const Equipment: React.FC<EquipmentProps> = ({
               opacity="0.8"
             />
 
+            {/* Cobalt chloride crystals - show blue crystals at bottom of beaker */}
+            {cobaltReactionState?.cobaltChlorideAdded &&
+              !cobaltReactionState?.distilledWaterAdded && (
+                <g>
+                  {[...Array(8)].map((_, i) => (
+                    <rect
+                      key={i}
+                      x={25 + (i % 3) * 6 + Math.random() * 4}
+                      y={95 + (i % 2) * 3}
+                      width="1.5"
+                      height="1.5"
+                      fill="#2563eb"
+                      rx="0.5"
+                      className="animate-pulse"
+                      style={{
+                        animationDelay: `${i * 0.4}s`,
+                        animationDuration: "2s",
+                      }}
+                    />
+                  ))}
+                </g>
+              )}
+
             {/* Base */}
             <ellipse
               cx="40"
@@ -1040,6 +967,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
               strokeWidth="1"
             />
           </svg>
+
+          {/* Crystal label for beaker */}
+          {cobaltReactionState?.cobaltChlorideAdded &&
+            !cobaltReactionState?.distilledWaterAdded && (
+              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-center">
+                Blue Cobalt Crystals
+              </div>
+            )}
         </div>
       );
     }
