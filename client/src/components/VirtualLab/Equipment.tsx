@@ -242,7 +242,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0d50895d71a24e10ad11237371bd9440?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className="w-28 h-48 object-contain drop-shadow-lg"
+            className="w-56 h-96 object-contain drop-shadow-lg"
           />
           {/* Solution overlay for test tubes */}
           {chemicals.length > 0 && (
