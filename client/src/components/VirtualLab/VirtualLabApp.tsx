@@ -519,16 +519,16 @@ function VirtualLabApp({
           // Start color transition after stirring begins
           setTimeout(() => {
             setColorTransition("transitioning");
-            setToastMessage("Stirring... cyan solution slowly turning pink!");
+            setToastMessage("Solution slowly turning pink...");
             setTimeout(() => setToastMessage(null), 3000);
 
             // Complete transition to pink
             setTimeout(() => {
               setColorTransition("pink");
-              setToastMessage("Complete! Pink hydrated cobalt complex formed!");
+              setToastMessage("Pink hydrated cobalt complex formed!");
               setTimeout(() => setToastMessage(null), 4000);
-            }, 3000);
-          }, 500);
+            }, 2000);
+          }, 1000);
         }
 
         // Check if this completes a guided step for Aspirin Synthesis
