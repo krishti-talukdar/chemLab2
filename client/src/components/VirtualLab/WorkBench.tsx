@@ -255,6 +255,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -265,19 +266,23 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
 
     if (id) {
       const rect = e.currentTarget.getBoundingClientRect();
-      // More precise positioning - account for element center
+      // Immediate positioning for responsive feel
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      // Ensure minimum distance from edges for better positioning
-      const minMargin = 50;
+      // Optimized margin calculation for stirrer
+      const isStirrer = id === "stirring_rod";
+      const minMargin = isStirrer ? 30 : 50;
       const maxX = rect.width - minMargin;
       const maxY = rect.height - minMargin;
 
       const clampedX = Math.max(minMargin, Math.min(x, maxX));
       const clampedY = Math.max(minMargin, Math.min(y, maxY));
 
-      onDrop(id, clampedX, clampedY);
+      // Use requestAnimationFrame for smoother positioning
+      requestAnimationFrame(() => {
+        onDrop(id, clampedX, clampedY);
+      });
     }
   };
 
@@ -335,7 +340,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="relative w-full overflow-hidden"
+            className="relative w-full overflow-hidden will-change-auto"
             style={{
               height: "calc(75vh - 160px)", // Adjusted for top/bottom bars
               minHeight: "500px",
