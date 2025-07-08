@@ -305,10 +305,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fda20e414eefd4a178a69e6012ad97059%2F064e3f327a3f4efba19ffa369adadc3e?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className={`w-64 h-[40rem] object-contain transition-all duration-700 ease-in-out ${
+            className={`w-64 h-[40rem] object-contain transition-all duration-500 ease-out ${
               isDragging
-                ? "scale-105 rotate-1 brightness-110"
-                : "group-hover:scale-102 group-hover:brightness-105"
+                ? "scale-108 rotate-2 brightness-115"
+                : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
               filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.2)) ${
