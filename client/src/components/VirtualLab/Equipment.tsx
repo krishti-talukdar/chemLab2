@@ -371,7 +371,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2Fc57e71c48b934b3389c584fe631276e8?format=webp&width=800"
             alt="Laboratory Stirring Rod"
-            className="w-32 h-12 object-contain drop-shadow-lg"
+            className="w-24 h-32 object-contain drop-shadow-lg"
           />
         </div>
       );
