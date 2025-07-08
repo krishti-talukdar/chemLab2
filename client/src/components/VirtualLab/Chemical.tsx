@@ -215,11 +215,11 @@ export const Chemical: React.FC<ChemicalProps> = ({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={() => onSelect(id)}
-      className={`p-4 rounded-lg cursor-grab active:cursor-grabbing transition-all duration-200 border-2 transform hover:scale-105 ${
+      className={`p-4 rounded-lg cursor-grab active:cursor-grabbing transition-all duration-300 border-2 transform hover:scale-105 chemical-bottle-shadow ${
         selected
-          ? "border-purple-500 bg-purple-50 shadow-lg scale-105 ring-2 ring-purple-300"
-          : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-md"
-      }`}
+          ? "border-purple-500 bg-purple-50 shadow-lg scale-105 ring-2 ring-purple-300 chemical-glow"
+          : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-md hover:chemical-glow"
+      } active:scale-95 active:rotate-1 hover:rotate-1`}
     >
       <div className="flex items-center space-x-3">
         <div className="relative">
