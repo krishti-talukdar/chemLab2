@@ -325,7 +325,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {(chemicals.length > 0 ||
             cobaltReactionState?.distilledWaterAdded) && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-6 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
+              className="absolute left-1/2 transform -translate-x-1/2 w-5 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
               style={{
                 backgroundColor:
                   cobaltReactionState?.colorTransition === "pink"
@@ -335,9 +335,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       : cobaltReactionState?.distilledWaterAdded
                         ? "#4169E1"
                         : getMixedColor(),
-                bottom: "140px",
-                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 2 : 60, 200)}px`,
-                maxHeight: "200px",
+                bottom: "160px",
+                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.5 : 50, 120)}px`,
+                maxHeight: "120px",
                 opacity: 0.9,
                 boxShadow:
                   "inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.1)",
