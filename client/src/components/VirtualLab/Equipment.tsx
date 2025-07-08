@@ -1107,11 +1107,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDrop={isContainer ? handleChemicalDrop : undefined}
       className={`flex flex-col items-center transition-all duration-300 cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? "p-0 bg-transparent border-0 shadow-none" // Remove box styling on workbench
-          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow"
+          ? "p-0 bg-transparent border-0 shadow-none hover:scale-105 active:scale-95" // Keep drag visual feedback on workbench
+          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
       } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""} ${
         isDropping ? "animate-pulse" : ""
-      } ${!isOnWorkbench ? "hover:scale-105 active:scale-95 active:rotate-2" : ""}`}
+      }`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
         left: isOnWorkbench && position ? position.x : "auto",
