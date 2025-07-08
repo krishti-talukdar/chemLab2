@@ -507,14 +507,15 @@ function VirtualLabApp({
           setToastMessage("Stirrer activated! Mixing solution...");
           setTimeout(() => setToastMessage(null), 3000);
 
-          // Auto-remove stirrer after 2 seconds
+          // Auto-remove stirrer after color transition is complete
           setTimeout(() => {
+            setStirrerActive(false);
             setEquipmentPositions((prev) =>
               prev.filter((pos) => pos.id !== "stirring_rod"),
             );
             setToastMessage("Stirrer removed - mixing complete!");
             setTimeout(() => setToastMessage(null), 3000);
-          }, 2000);
+          }, 4000);
 
           // Start color transition after stirring begins
           setTimeout(() => {
