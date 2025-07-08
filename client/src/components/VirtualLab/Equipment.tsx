@@ -304,14 +304,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className="absolute w-0.5 h-0.5 bg-blue-700 rounded-sm animate-pulse shadow-sm"
+                    className="absolute w-0.5 h-0.5 bg-gray-400 rounded-sm animate-pulse shadow-sm"
                     style={{
                       bottom: `${(i % 3) * 2}px`,
                       left: `${(i % 3) * 4 + 6}px`,
                       animationDelay: `${i * 0.3}s`,
                       animationDuration: "2s",
                       transform: `rotate(${Math.random() * 45}deg)`,
-                      boxShadow: "0 1px 2px rgba(37, 99, 235, 0.4)",
+                      boxShadow: "0 1px 2px rgba(75, 85, 99, 0.4)",
                     }}
                   />
                 ))}
