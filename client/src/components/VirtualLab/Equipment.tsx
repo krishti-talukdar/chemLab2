@@ -254,28 +254,33 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F0d50895d71a24e10ad11237371bd9440?format=webp&width=800"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fa468b45ae87143d1b54d53a0323f1ccd%2Fa3d366ec3c0f4c23a4840654c930e3a0?format=webp&width=800"
             alt="Laboratory Test Tube"
-            className="w-64 h-[28rem] object-contain drop-shadow-lg"
+            className="w-20 h-32 object-contain filter drop-shadow-md"
+            style={{
+              imageRendering: "crisp-edges",
+              filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.2))",
+            }}
           />
           {/* Solution overlay for test tubes */}
           {chemicals.length > 0 && (
             <div
-              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-12 rounded-b-lg transition-all duration-500"
+              className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-500"
               style={{
                 backgroundColor: getMixedColor(),
-                height: `${getSolutionHeight() * 0.4}px`,
-                opacity: 0.8,
+                height: `${getSolutionHeight() * 0.3}px`,
+                opacity: 0.9,
+                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
               }}
             ></div>
           )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
-            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
+            <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-2 py-1 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center text-xs">
                 {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
               </div>
-              <div className="text-gray-600 text-center">
+              <div className="text-gray-600 text-center text-xs">
                 {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
               </div>
             </div>
