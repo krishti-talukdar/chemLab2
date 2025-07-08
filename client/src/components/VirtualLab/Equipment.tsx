@@ -298,34 +298,34 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {cobaltReactionState?.cobaltChlorideAdded &&
             !cobaltReactionState?.distilledWaterAdded && (
               <div
-                className="absolute left-1/2 transform -translate-x-1/2 w-5"
-                style={{ bottom: "160px" }}
+                className="absolute left-1/2 transform -translate-x-1/2 w-4"
+                style={{ bottom: "180px" }}
               >
-                {[...Array(6)].map((_, i) => (
+                {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className="absolute w-1 h-1 bg-blue-600 rounded-sm animate-pulse shadow-sm"
+                    className="absolute w-0.5 h-0.5 bg-blue-600 rounded-sm animate-pulse shadow-sm"
                     style={{
-                      bottom: `${(i % 3) * 3}px`,
-                      left: `${(i % 3) * 5 + 5}px`,
+                      bottom: `${(i % 3) * 2}px`,
+                      left: `${(i % 3) * 4 + 6}px`,
                       animationDelay: `${i * 0.3}s`,
                       animationDuration: "2s",
                       transform: `rotate(${Math.random() * 45}deg)`,
-                      boxShadow: "0 1px 3px rgba(37, 99, 235, 0.5)",
+                      boxShadow: "0 1px 2px rgba(37, 99, 235, 0.4)",
                     }}
                   />
                 ))}
-                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-bold whitespace-nowrap bg-blue-50 px-1 py-0.5 rounded text-center">
-                  Blue Crystals
+                <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-1 py-0.5 rounded text-center">
+                  Crystals
                 </div>
               </div>
             )}
 
-          {/* Solution overlay for test tubes - properly contained within test tube */}
+          {/* Solution overlay for test tubes - strictly contained within test tube */}
           {(chemicals.length > 0 ||
             cobaltReactionState?.distilledWaterAdded) && (
             <div
-              className="absolute left-1/2 transform -translate-x-1/2 w-5 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
+              className="absolute left-1/2 transform -translate-x-1/2 w-4 rounded-b-full transition-all duration-1000 ease-in-out overflow-hidden"
               style={{
                 backgroundColor:
                   cobaltReactionState?.colorTransition === "pink"
@@ -335,20 +335,20 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       : cobaltReactionState?.distilledWaterAdded
                         ? "#4169E1"
                         : getMixedColor(),
-                bottom: "160px",
-                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.5 : 50, 120)}px`,
-                maxHeight: "120px",
-                opacity: 0.9,
+                bottom: "180px",
+                height: `${Math.min(chemicals.length > 0 ? getSolutionHeight() * 1.2 : 40, 80)}px`,
+                maxHeight: "80px",
+                opacity: 0.85,
                 boxShadow:
-                  "inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.1)",
+                  "inset 0 1px 3px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)",
                 background:
                   cobaltReactionState?.colorTransition === "pink"
-                    ? "linear-gradient(180deg, #FFB6C1DD, #FFB6C1FF)"
+                    ? "linear-gradient(180deg, #FFB6C1E6, #FFB6C1FF)"
                     : cobaltReactionState?.colorTransition === "transitioning"
-                      ? "linear-gradient(180deg, #4169E1DD, #FFB6C1FF)"
+                      ? "linear-gradient(180deg, #4169E1E6, #FFB6C1FF)"
                       : cobaltReactionState?.distilledWaterAdded
-                        ? "linear-gradient(180deg, #4169E1DD, #4169E1FF)"
-                        : `linear-gradient(180deg, ${getMixedColor()}DD, ${getMixedColor()}FF)`,
+                        ? "linear-gradient(180deg, #4169E1E6, #4169E1FF)"
+                        : `linear-gradient(180deg, ${getMixedColor()}E6, ${getMixedColor()}FF)`,
               }}
             >
               {/* Liquid surface meniscus effect */}
