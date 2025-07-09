@@ -426,7 +426,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return (
         <div className="relative">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F66657d803e14427eaeecd21906ee09f6?format=webp&width=800"
+            src={
+              dropperHasHCl
+                ? "https://cdn.builder.io/api/v1/image/assets%2F9f88423319a248faa5a2c8b5f85cccbb%2Fc58de29c65a94ac897c340cd6a044ba5?format=webp&width=800"
+                : "https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F66657d803e14427eaeecd21906ee09f6?format=webp&width=800"
+            }
             alt="Laboratory Dropper"
             className="w-24 h-32 object-contain drop-shadow-lg"
           />
