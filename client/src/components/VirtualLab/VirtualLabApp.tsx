@@ -643,7 +643,13 @@ function VirtualLabApp({
               setToastMessage(
                 "Color changed from pink to blue as the equilibrium changed!",
               );
-              setTimeout(() => setToastMessage(null), 8000);
+              setTimeout(() => {
+                setToastMessage(null);
+                // Auto-advance to step 3
+                setCurrentStep(3);
+                setToastMessage("Moving to Step 3 automatically...");
+                setTimeout(() => setToastMessage(null), 3000);
+              }, 8000);
             } else {
               setToastMessage(
                 `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
