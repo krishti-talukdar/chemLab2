@@ -367,10 +367,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
         const horizontalDistance = Math.abs(position.x - hotWaterBeaker.x);
         const verticalDistance = position.y - hotWaterBeaker.y;
 
+        // Test tube should be above and aligned (like the attached image)
         return (
-          horizontalDistance < 50 &&
-          verticalDistance < -30 &&
-          verticalDistance > -120
+          horizontalDistance < 60 &&
+          verticalDistance < -40 &&
+          verticalDistance > -100
         );
       };
 
