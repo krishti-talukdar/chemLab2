@@ -627,7 +627,7 @@ function VirtualLabApp({
             if (
               equipmentId === "dropper" &&
               chemicalId === "hcl_conc" &&
-              currentStep === 2
+              stepNumber === 2
             ) {
               setDropperHasHCl(true);
               setToastMessage("Dropper filled with concentrated HCl!");
