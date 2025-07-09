@@ -369,9 +369,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
         // Test tube should be directly above and very close (exact match to user's image)
         return (
-          horizontalDistance < 30 &&
-          verticalDistance < -20 &&
-          verticalDistance > -70
+          horizontalDistance < 25 &&
+          verticalDistance < -15 &&
+          verticalDistance > -60
         );
       };
 
