@@ -620,42 +620,21 @@ function VirtualLabApp({
             },
           ];
 
-          // Equilibrium experiment logic
-          if (experimentTitle.includes("Equilibrium")) {
-            // Handle HCl to dropper
-            if (equipmentId === "dropper" && chemicalId === "hcl_conc") {
-              setDropperHasHCl(true);
-              setToastMessage("Dropper filled with concentrated HCl!");
+          // Cobalt chloride reaction logic
+          if (
+            experimentTitle.includes("Equilibrium") &&
+            equipmentId === "test_tubes"
+          ) {
+            if (chemicalId === "cocl2") {
+              setCobaltChlorideAdded(true);
+              setToastMessage(
+                "Blue cobalt chloride crystals formed in test tube!",
+              );
               setTimeout(() => setToastMessage(null), 3000);
-            }
-            // Handle cobalt chloride in test tubes
-            else if (equipmentId === "test_tubes") {
-              if (chemicalId === "cocl2") {
-                setCobaltChlorideAdded(true);
-                setToastMessage(
-                  "Blue cobalt chloride crystals formed in test tube!",
-                );
-                setTimeout(() => setToastMessage(null), 3000);
-              } else if (chemicalId === "water" && cobaltChlorideAdded) {
-                setDistilledWaterAdded(true);
-                setToastMessage("Add the stirrer");
-                setTimeout(() => setToastMessage(null), 5000);
-              } else if (
-                chemicalId === "hcl_conc" &&
-                cobaltChlorideAdded &&
-                distilledWaterAdded &&
-                stirrerActive
-              ) {
-                setToastMessage(
-                  "Color of solution changes from pink to blue due to Equilibrium Change!",
-                );
-                setTimeout(() => setToastMessage(null), 4000);
-              } else {
-                setToastMessage(
-                  `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
-                );
-                setTimeout(() => setToastMessage(null), 3000);
-              }
+            } else if (chemicalId === "water" && cobaltChlorideAdded) {
+              setDistilledWaterAdded(true);
+              setToastMessage("Add the stirrer");
+              setTimeout(() => setToastMessage(null), 5000);
             } else {
               setToastMessage(
                 `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
