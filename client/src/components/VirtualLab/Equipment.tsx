@@ -350,7 +350,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
         // Check if HCl has been added to pink solution
         const hasHCl = chemicals.some((c) => c.id === "hcl_conc");
         const hasPinkSolution =
-          cobaltReactionState?.stirrerActive &&
           cobaltReactionState?.cobaltChlorideAdded &&
           cobaltReactionState?.distilledWaterAdded;
 
