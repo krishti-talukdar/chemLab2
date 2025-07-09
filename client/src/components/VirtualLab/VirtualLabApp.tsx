@@ -494,8 +494,8 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
         if (existing) {
-          // Step 4 automatic alignment: When dragging hot water beaker near test tube or vice versa
-          if (currentStep === 4 && experimentTitle.includes("Equilibrium")) {
+          // Automatic alignment: When dragging hot water beaker near test tube or vice versa
+          if (experimentTitle.includes("Equilibrium")) {
             if (id === "beaker_hot_water") {
               const testTube = prev.find((pos) => pos.id === "test_tubes");
               if (testTube) {
