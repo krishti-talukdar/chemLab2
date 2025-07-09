@@ -347,12 +347,19 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "test_tubes") {
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
-        // If stirrer is active and we have cobalt + water, transition to pink
-        if (
+        // Check if HCl has been added to pink solution
+        const hasHCl = chemicals.some((c) => c.id === "hcl_conc");
+        const hasPinkSolution =
           cobaltReactionState?.stirrerActive &&
           cobaltReactionState?.cobaltChlorideAdded &&
-          cobaltReactionState?.distilledWaterAdded
-        ) {
+          cobaltReactionState?.distilledWaterAdded;
+
+        // If HCl is added to pink solution, show blue solution
+        if (hasHCl && hasPinkSolution) {
+          return "https://cdn.builder.io/api/v1/image/assets%2F9f88423319a248faa5a2c8b5f85cccbb%2F0d959c0e809c4eefb0274b173c508d79?format=webp&width=800";
+        }
+        // If stirrer is active and we have cobalt + water, transition to pink
+        else if (hasPinkSolution) {
           // Pink liquid test tube (after stirring)
           return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F280bbef2140249df9531563786b4bae0?format=webp&width=800";
         } else if (
