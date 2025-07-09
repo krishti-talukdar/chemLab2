@@ -135,8 +135,14 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                     <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
                     <TooltipContent
                       side="right"
-                      className="text-black border-[#DBD56E] shadow-lg z-[9999]"
-                      style={{ backgroundColor: "#DBD56E", zIndex: 9999 }}
+                      className="text-black border-[#DBD56E] shadow-lg z-[99999] relative"
+                      style={{
+                        backgroundColor: "#DBD56E",
+                        zIndex: 99999,
+                        position: "fixed",
+                      }}
+                      sideOffset={10}
+                      collisionPadding={10}
                     >
                       <p className="font-medium">
                         Step {step.id} completed!
