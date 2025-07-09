@@ -1473,10 +1473,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
             e.stopPropagation();
             e.preventDefault();
           }}
-          className={`absolute w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-sm font-bold transition-colors shadow-lg hover:shadow-xl z-20 ${
+          className={`absolute bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold transition-colors shadow-lg hover:shadow-xl z-30 ${
             id === "test_tubes"
-              ? "top-4 right-4" // Better positioning for large test tube
-              : "-top-2 -right-2" // Default positioning for other equipment
+              ? "w-12 h-12 text-lg top-8 right-8 border-2 border-white" // Large, prominent button for test tube
+              : "w-6 h-6 text-xs -top-2 -right-2" // Default positioning for other equipment
           }`}
           title="Remove equipment"
           style={{ pointerEvents: "auto" }}
