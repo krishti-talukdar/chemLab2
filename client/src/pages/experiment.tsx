@@ -23,7 +23,7 @@ import {
   Play,
   Pause,
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useParams } from "wouter";
 import type { ExperimentStep } from "@shared/schema";
 
 export default function Experiment() {
