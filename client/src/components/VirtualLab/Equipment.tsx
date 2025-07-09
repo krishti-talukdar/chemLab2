@@ -1038,56 +1038,71 @@ export const Equipment: React.FC<EquipmentProps> = ({
                     />
                   ))
                 ) : (
-                  // Wet crystals with water - more realistic appearance
+                  // Wet crystals with water - more visible and realistic appearance
                   <>
-                    {/* Dissolved/floating crystal particles */}
-                    {[...Array(12)].map((_, i) => (
+                    {/* Dissolved/floating crystal particles - made larger and more visible */}
+                    {[...Array(10)].map((_, i) => (
                       <circle
                         key={`dissolved-${i}`}
-                        cx={22 + (i % 4) * 8 + Math.random() * 6}
-                        cy={85 + (i % 3) * 5 + Math.random() * 8}
-                        r={0.5 + Math.random() * 0.5}
-                        fill="#3b82f6"
-                        opacity={0.7 + Math.random() * 0.3}
+                        cx={24 + (i % 4) * 7 + ((i * 2) % 6)}
+                        cy={87 + (i % 3) * 4 + ((i * 1.5) % 5)}
+                        r={1.2 + (i % 3) * 0.5}
+                        fill="#1e40af"
+                        opacity={0.9}
+                        className="animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: "2s",
+                        }}
+                      />
+                    ))}
+
+                    {/* Remaining solid crystals at bottom - made larger and more prominent */}
+                    {[...Array(6)].map((_, i) => (
+                      <rect
+                        key={`solid-${i}`}
+                        x={25 + i * 4 + (i % 2) * 2}
+                        y={95 + (i % 2) * 2}
+                        width="2.5"
+                        height="2.5"
+                        fill="#1d4ed8"
+                        rx="0.5"
+                        opacity={0.95}
                         className="animate-pulse"
                         style={{
                           animationDelay: `${i * 0.3}s`,
-                          animationDuration: "3s",
+                          animationDuration: "1.8s",
                         }}
                       />
                     ))}
 
-                    {/* Remaining solid crystals at bottom */}
-                    {[...Array(5)].map((_, i) => (
-                      <rect
-                        key={`solid-${i}`}
-                        x={26 + i * 5 + Math.random() * 3}
-                        y={96 + Math.random() * 2}
-                        width="1.2"
-                        height="1.2"
-                        fill="#1d4ed8"
-                        rx="0.3"
-                        opacity={0.8}
+                    {/* Extra visible crystal chunks */}
+                    {[...Array(4)].map((_, i) => (
+                      <polygon
+                        key={`chunk-${i}`}
+                        points={`${28 + i * 6},${94} ${30 + i * 6},${96} ${32 + i * 6},${94} ${30 + i * 6},${92}`}
+                        fill="#2563eb"
+                        opacity={0.9}
                         className="animate-pulse"
                         style={{
-                          animationDelay: `${i * 0.5}s`,
-                          animationDuration: "2.5s",
+                          animationDelay: `${i * 0.4}s`,
+                          animationDuration: "2.2s",
                         }}
                       />
                     ))}
 
-                    {/* Water with blue tint from dissolved crystals */}
+                    {/* Water with blue tint from dissolved crystals - more prominent */}
                     <rect
                       x="22"
                       y="88"
                       width="36"
                       height="10"
-                      fill="rgba(59, 130, 246, 0.2)"
+                      fill="rgba(37, 99, 235, 0.3)"
                       rx="2"
-                      opacity="0.6"
+                      opacity="0.8"
                       className="animate-pulse"
                       style={{
-                        animationDuration: "4s",
+                        animationDuration: "3s",
                       }}
                     />
                   </>
