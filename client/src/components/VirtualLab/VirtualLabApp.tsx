@@ -5,6 +5,7 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   FlaskConical,
   Atom,
@@ -795,7 +796,7 @@ function VirtualLabApp({
                                 : "bg-gray-300 text-gray-600"
                           }`}
                         >
-                          {currentGuidedStep > step.id ? "✓" : step.id}
+                          {currentGuidedStep > step.id ? "���" : step.id}
                         </div>
                         <h4 className="font-semibold text-sm text-gray-900">
                           {step.title}
