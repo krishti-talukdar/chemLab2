@@ -621,21 +621,36 @@ function VirtualLabApp({
             },
           ];
 
-          // Cobalt chloride reaction logic
-          if (
-            experimentTitle.includes("Equilibrium") &&
-            equipmentId === "test_tubes"
-          ) {
-            if (chemicalId === "cocl2") {
-              setCobaltChlorideAdded(true);
-              setToastMessage(
-                "Blue cobalt chloride crystals formed in test tube!",
-              );
+          // Equilibrium experiment logic
+          if (experimentTitle.includes("Equilibrium")) {
+            // Handle HCl to dropper in step 2
+            if (
+              equipmentId === "dropper" &&
+              chemicalId === "hcl_conc" &&
+              currentStep === 2
+            ) {
+              setDropperHasHCl(true);
+              setToastMessage("Dropper filled with concentrated HCl!");
               setTimeout(() => setToastMessage(null), 3000);
-            } else if (chemicalId === "water" && cobaltChlorideAdded) {
-              setDistilledWaterAdded(true);
-              setToastMessage("Add the stirrer");
-              setTimeout(() => setToastMessage(null), 5000);
+            }
+            // Handle cobalt chloride in test tubes
+            else if (equipmentId === "test_tubes") {
+              if (chemicalId === "cocl2") {
+                setCobaltChlorideAdded(true);
+                setToastMessage(
+                  "Blue cobalt chloride crystals formed in test tube!",
+                );
+                setTimeout(() => setToastMessage(null), 3000);
+              } else if (chemicalId === "water" && cobaltChlorideAdded) {
+                setDistilledWaterAdded(true);
+                setToastMessage("Add the stirrer");
+                setTimeout(() => setToastMessage(null), 5000);
+              } else {
+                setToastMessage(
+                  `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
+                );
+                setTimeout(() => setToastMessage(null), 3000);
+              }
             } else {
               setToastMessage(
                 `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
