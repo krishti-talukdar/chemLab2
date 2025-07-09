@@ -529,6 +529,10 @@ function VirtualLabApp({
                     Math.pow(y - hotWaterBeaker.y, 2),
                 );
                 if (distance < 200) {
+                  // Clear the message when test tube is dropped into the beaker
+                  if (currentStep === 4) {
+                    setToastMessage(null);
+                  }
                   // Auto-align: Position test tube directly above hot water beaker (exact match to image)
                   return prev.map((pos) =>
                     pos.id === id
