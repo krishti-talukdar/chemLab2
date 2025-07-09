@@ -135,7 +135,8 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                     <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
                     <TooltipContent
                       side="right"
-                      className="bg-green-600 text-white border-green-600"
+                      className="text-black border-[#DBD56E] shadow-lg z-[9999]"
+                      style={{ backgroundColor: "#DBD56E", zIndex: 9999 }}
                     >
                       <p className="font-medium">
                         Step {step.id} completed!
