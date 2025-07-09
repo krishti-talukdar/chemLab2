@@ -599,7 +599,7 @@ function VirtualLabApp({
         return [...prev, { id, x, y, chemicals: [] }];
       });
     },
-    [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
+    [experimentTitle, currentGuidedStep, aspirinGuidedSteps, currentStep],
   );
 
   const handleEquipmentRemove = useCallback((id: string) => {
