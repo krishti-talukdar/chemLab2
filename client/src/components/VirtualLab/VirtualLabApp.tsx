@@ -1040,6 +1040,8 @@ function VirtualLabApp({
                     position={null}
                     chemicals={[]}
                     onChemicalDrop={handleChemicalDrop}
+                    allEquipmentPositions={equipmentPositions}
+                    currentStep={currentStep}
                   />
                 </div>
               ))}
