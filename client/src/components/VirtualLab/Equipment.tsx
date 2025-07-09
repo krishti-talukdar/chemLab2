@@ -379,7 +379,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
               cobaltReactionState?.distilledWaterAdded
                 ? "w-64 h-[40rem]"
                 : cobaltReactionState?.cobaltChlorideAdded
-                  ? "w-[54rem] h-[135rem]"
+                  ? "w-[36rem] h-[90rem]"
                   : "w-64 h-[40rem]"
             } object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
