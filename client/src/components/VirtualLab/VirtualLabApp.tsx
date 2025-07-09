@@ -592,12 +592,9 @@ function VirtualLabApp({
           }
         }
 
-        // Show guidance message when hot water beaker is first dropped
-        if (
-          id === "beaker_hot_water" &&
-          experimentTitle.includes("Equilibrium")
-        ) {
-          setToastMessage("Drop the hot water beaker on the test tube");
+        // Show guidance message when test tube is first dropped
+        if (id === "test_tubes" && experimentTitle.includes("Equilibrium")) {
+          setToastMessage("Drop the test tube into the beaker");
           setTimeout(() => setToastMessage(null), 4000);
         }
 
