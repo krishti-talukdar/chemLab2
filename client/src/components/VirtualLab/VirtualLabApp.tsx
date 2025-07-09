@@ -994,7 +994,6 @@ function VirtualLabApp({
                     setDistilledWaterAdded(false);
                     setStirrerActive(false);
                     setColorTransition("pink");
-                    setDropperHasHCl(false);
                   }}
                 />
               </div>
