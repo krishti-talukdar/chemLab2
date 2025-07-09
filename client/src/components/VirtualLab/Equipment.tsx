@@ -423,12 +423,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "dropper") {
-      console.log("Dropper rendering with dropperHasHCl:", dropperHasHCl);
+      const hasHCl =
+        chemicals.some((c) => c.id === "hcl_conc") || dropperHasHCl;
       return (
         <div className="relative">
           <img
             src={
-              dropperHasHCl
+              hasHCl
                 ? "https://cdn.builder.io/api/v1/image/assets%2F9f88423319a248faa5a2c8b5f85cccbb%2Fc58de29c65a94ac897c340cd6a044ba5?format=webp&width=800"
                 : "https://cdn.builder.io/api/v1/image/assets%2Fab3d7499a8fe404bb2836f6043ac08b4%2F66657d803e14427eaeecd21906ee09f6?format=webp&width=800"
             }
