@@ -494,6 +494,51 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
         if (existing) {
+          // Step 4 automatic alignment: When dragging hot water beaker near test tube or vice versa
+          if (currentStep === 4 && experimentTitle.includes("Equilibrium")) {
+            if (id === "beaker_hot_water") {
+              const testTube = prev.find((pos) => pos.id === "test_tubes");
+              if (testTube) {
+                const distance = Math.sqrt(
+                  Math.pow(x - testTube.x, 2) + Math.pow(y - testTube.y, 2),
+                );
+                if (distance < 120) {
+                  // Auto-align: Position hot water beaker below test tube
+                  setToastMessage("🔥 Test tube positioned for heating!");
+                  setTimeout(() => setToastMessage(null), 3000);
+                  return prev.map((pos) =>
+                    pos.id === id
+                      ? { ...pos, x: testTube.x, y: testTube.y + 100 }
+                      : pos,
+                  );
+                }
+              }
+            } else if (id === "test_tubes") {
+              const hotWaterBeaker = prev.find(
+                (pos) => pos.id === "beaker_hot_water",
+              );
+              if (hotWaterBeaker) {
+                const distance = Math.sqrt(
+                  Math.pow(x - hotWaterBeaker.x, 2) +
+                    Math.pow(y - hotWaterBeaker.y, 2),
+                );
+                if (distance < 120) {
+                  // Auto-align: Position test tube above hot water beaker
+                  setToastMessage("🔥 Test tube positioned for heating!");
+                  setTimeout(() => setToastMessage(null), 3000);
+                  return prev.map((pos) =>
+                    pos.id === id
+                      ? {
+                          ...pos,
+                          x: hotWaterBeaker.x,
+                          y: hotWaterBeaker.y - 100,
+                        }
+                      : pos,
+                  );
+                }
+              }
+            }
+          }
           return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
         }
 
