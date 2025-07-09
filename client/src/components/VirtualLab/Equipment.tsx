@@ -367,11 +367,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
         const horizontalDistance = Math.abs(position.x - hotWaterBeaker.x);
         const verticalDistance = position.y - hotWaterBeaker.y;
 
-        // Test tube should be directly above and very close (like the attached image)
+        // Test tube should be directly above and very close (exact match to user's image)
         return (
-          horizontalDistance < 40 &&
+          horizontalDistance < 30 &&
           verticalDistance < -20 &&
-          verticalDistance > -80
+          verticalDistance > -70
         );
       };
 
