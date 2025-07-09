@@ -497,6 +497,14 @@ function VirtualLabApp({
           // Auto-alignment: When dragging hot water beaker near test tube (for heating)
           if (experimentTitle.includes("Equilibrium")) {
             if (id === "beaker_hot_water") {
+              // Show message for step 4 when hot water beaker is placed
+              if (currentStep === 4) {
+                setToastMessage(
+                  "Drop the test tube into the hot water beaker!",
+                );
+                // Don't clear the message automatically - it will be cleared when test tube is dropped
+              }
+
               const testTube = prev.find((pos) => pos.id === "test_tubes");
               if (testTube) {
                 const distance = Math.sqrt(
@@ -521,6 +529,10 @@ function VirtualLabApp({
                     Math.pow(y - hotWaterBeaker.y, 2),
                 );
                 if (distance < 200) {
+                  // Clear the message when test tube is dropped into the beaker
+                  if (currentStep === 4) {
+                    setToastMessage(null);
+                  }
                   // Auto-align: Position test tube directly above hot water beaker (exact match to image)
                   return prev.map((pos) =>
                     pos.id === id
@@ -590,12 +602,6 @@ function VirtualLabApp({
             setToastMessage(`✓ Step ${currentGuidedStep} completed!`);
             setTimeout(() => setToastMessage(null), 3000);
           }
-        }
-
-        // Show guidance message when test tube is first dropped
-        if (id === "test_tubes" && experimentTitle.includes("Equilibrium")) {
-          setToastMessage("Drop the test tube into the beaker");
-          setTimeout(() => setToastMessage(null), 4000);
         }
 
         return [...prev, { id, x, y, chemicals: [] }];
@@ -1043,9 +1049,7 @@ function VirtualLabApp({
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-gray-600 mr-3">
-                    Step {currentStep} of {experimentSteps.length}
-                  </div>
+                  <div className="text-xs text-gray-600 mr-3"></div>
                 )}
                 <Controls
                   isRunning={isRunning}
