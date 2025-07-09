@@ -531,6 +531,7 @@ function VirtualLabApp({
               if (experimentTitle.includes("Equilibrium")) {
                 setTimeout(() => {
                   onStepComplete();
+                  setCurrentStep(currentStep + 1);
                   setToastMessage("Step completed! Moving to next step...");
                   setTimeout(() => setToastMessage(null), 3000);
                 }, 1000);
