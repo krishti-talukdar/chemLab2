@@ -1108,12 +1108,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
           </svg>
 
           {/* Crystal label for beaker */}
-          {cobaltReactionState?.cobaltChlorideAdded &&
-            !cobaltReactionState?.distilledWaterAdded && (
-              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-center">
-                Blue Cobalt Crystals
-              </div>
-            )}
+          {cobaltReactionState?.cobaltChlorideAdded && (
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-center">
+              {!cobaltReactionState?.distilledWaterAdded
+                ? "Blue Cobalt Crystals"
+                : "Hydrated Cobalt Crystals"}
+            </div>
+          )}
         </div>
       );
     }
