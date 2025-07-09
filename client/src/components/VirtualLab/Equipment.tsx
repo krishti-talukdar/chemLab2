@@ -368,9 +368,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
         const verticalDistance = position.y - hotWaterBeaker.y;
 
         const isHeating =
-          horizontalDistance < 100 &&
+          horizontalDistance < 50 &&
           verticalDistance < -30 &&
-          verticalDistance > -150;
+          verticalDistance > -120;
 
         // Debug log
         if (hotWaterBeaker && position) {
