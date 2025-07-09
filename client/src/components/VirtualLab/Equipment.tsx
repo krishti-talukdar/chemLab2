@@ -1457,6 +1457,20 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </div>
       )}
 
+      {/* Small undo button when on workbench */}
+      {isOnWorkbench && !isDragging && onRemove && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(id);
+          }}
+          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold transition-colors shadow-lg hover:shadow-xl z-10"
+          title="Remove equipment"
+        >
+          ×
+        </button>
+      )}
+
       {/* Removal instruction tooltip - show on hover when on workbench */}
       {isOnWorkbench && !isDragging && (
         <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs opacity-0 hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
