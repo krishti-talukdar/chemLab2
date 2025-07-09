@@ -3,7 +3,6 @@ import { CheckCircle, Circle, Clock, AlertTriangle } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
