@@ -531,7 +531,7 @@ function VirtualLabApp({
                       ? {
                           ...pos,
                           x: hotWaterBeaker.x,
-                          y: hotWaterBeaker.y - 45,
+                          y: hotWaterBeaker.y - 35,
                         }
                       : pos,
                   );
