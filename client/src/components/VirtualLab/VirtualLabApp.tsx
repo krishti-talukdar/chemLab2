@@ -623,19 +623,8 @@ function VirtualLabApp({
 
           // Equilibrium experiment logic
           if (experimentTitle.includes("Equilibrium")) {
-            // Handle HCl to dropper in step 2
-            console.log("Chemical drop:", {
-              equipmentId,
-              chemicalId,
-              stepNumber,
-              experimentTitle,
-            });
-            if (
-              equipmentId === "dropper" &&
-              chemicalId === "hcl_conc" &&
-              stepNumber === 2
-            ) {
-              console.log("Setting dropperHasHCl to true");
+            // Handle HCl to dropper
+            if (equipmentId === "dropper" && chemicalId === "hcl_conc") {
               setDropperHasHCl(true);
               setToastMessage("Dropper filled with concentrated HCl!");
               setTimeout(() => setToastMessage(null), 3000);
