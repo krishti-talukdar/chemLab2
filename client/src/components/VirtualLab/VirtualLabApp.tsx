@@ -633,8 +633,23 @@ function VirtualLabApp({
               setTimeout(() => setToastMessage(null), 3000);
             } else if (chemicalId === "water" && cobaltChlorideAdded) {
               setDistilledWaterAdded(true);
-              setToastMessage("Add the stirrer");
-              setTimeout(() => setToastMessage(null), 5000);
+
+              // Check if we're in step 3 for the reverse equilibrium reaction
+              if (currentStep === 3) {
+                setStep3WaterAdded(true);
+                setToastMessage(
+                  "Color changing back to pink as the equilibrium shifts in the reverse direction!",
+                );
+                setTimeout(() => {
+                  setToastMessage(null);
+                  // Auto-advance to step 4
+                  setCurrentStep(4);
+                  onStepComplete();
+                }, 3000);
+              } else {
+                setToastMessage("Add the stirrer");
+                setTimeout(() => setToastMessage(null), 5000);
+              }
             } else if (
               chemicalId === "hcl_conc" &&
               cobaltChlorideAdded &&
