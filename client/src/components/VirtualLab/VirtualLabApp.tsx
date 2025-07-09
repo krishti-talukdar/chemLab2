@@ -504,8 +504,10 @@ function VirtualLabApp({
                 );
                 if (distance < 200) {
                   // Auto-align: Position hot water beaker directly below test tube (exact match to image)
-                  setToastMessage("🔥 Perfect heating alignment achieved!");
-                  setTimeout(() => setToastMessage(null), 3000);
+                  setToastMessage(
+                    "🔥 ALIGNED! Test tube positioned for heating like in your image!",
+                  );
+                  setTimeout(() => setToastMessage(null), 4000);
                   return prev.map((pos) =>
                     pos.id === id
                       ? { ...pos, x: testTube.x, y: testTube.y + 35 }
