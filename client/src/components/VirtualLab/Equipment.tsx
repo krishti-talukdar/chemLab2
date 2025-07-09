@@ -31,6 +31,7 @@ interface EquipmentProps {
     distilledWaterAdded: boolean;
     stirrerActive: boolean;
     colorTransition: "blue" | "transitioning" | "pink";
+    step3WaterAdded: boolean;
   };
 }
 
