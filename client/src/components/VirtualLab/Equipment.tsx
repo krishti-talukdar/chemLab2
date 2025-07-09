@@ -423,6 +423,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "dropper") {
+      console.log("Dropper rendering with dropperHasHCl:", dropperHasHCl);
       return (
         <div className="relative">
           <img
