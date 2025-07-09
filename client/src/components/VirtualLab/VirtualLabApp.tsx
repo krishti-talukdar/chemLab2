@@ -508,7 +508,7 @@ function VirtualLabApp({
                   setTimeout(() => setToastMessage(null), 3000);
                   return prev.map((pos) =>
                     pos.id === id
-                      ? { ...pos, x: testTube.x, y: testTube.y + 45 }
+                      ? { ...pos, x: testTube.x, y: testTube.y + 35 }
                       : pos,
                   );
                 }
