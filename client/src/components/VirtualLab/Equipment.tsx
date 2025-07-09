@@ -33,6 +33,13 @@ interface EquipmentProps {
     colorTransition: "blue" | "transitioning" | "pink";
     step3WaterAdded: boolean;
   };
+  allEquipmentPositions?: Array<{
+    id: string;
+    x: number;
+    y: number;
+    chemicals: any[];
+  }>;
+  currentStep?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -45,6 +52,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   onChemicalDrop,
   onRemove,
   cobaltReactionState,
+  allEquipmentPositions = [],
+  currentStep = 1,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
@@ -344,6 +353,28 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
     // Use provided images for specific equipment types with bigger sizes
     if (id === "test_tubes") {
+      // Check if test tube is being heated (positioned above hot water beaker in step 4)
+      const isBeingHeated = () => {
+        if (!position) return false;
+
+        const hotWaterBeaker = allEquipmentPositions.find(
+          (pos) => pos.id === "beaker_hot_water",
+        );
+
+        if (!hotWaterBeaker) return false;
+
+        // Check if test tube is positioned above the hot water beaker
+        const horizontalDistance = Math.abs(position.x - hotWaterBeaker.x);
+        const verticalDistance = position.y - hotWaterBeaker.y;
+
+        // Test tube should be directly above and very close (exact match to user's image)
+        return (
+          horizontalDistance < 25 &&
+          verticalDistance < -15 &&
+          verticalDistance > -60
+        );
+      };
+
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
         // Check if HCl has been added to the test tube
@@ -384,6 +415,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         }
       };
 
+      const heating = isBeingHeated();
+
       return (
         <div className="relative group">
           <img
@@ -400,13 +433,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
             } object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
                 ? "scale-108 rotate-2 brightness-115"
-                : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
+                : heating
+                  ? "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5 animate-pulse"
+                  : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
               filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.15)) ${
                 isDragging
                   ? "drop-shadow(8px 16px 32px rgba(59,130,246,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.3))"
-                  : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
+                  : heating
+                    ? "drop-shadow(0 4px 8px rgba(0,0,0,0.1)) drop-shadow(0 0 15px rgba(255,165,0,0.6)) drop-shadow(0 0 25px rgba(255,69,0,0.4))"
+                    : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
@@ -416,6 +453,35 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   : 1,
             }}
           />
+
+          {/* Heating effects when test tube is above hot water beaker */}
+          {heating && (
+            <>
+              {/* Heat waves animation */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-8 bg-gradient-to-t from-orange-400 to-transparent opacity-70 rounded-full"
+                    style={{
+                      left: `${45 + i * 15}%`,
+                      bottom: "60%",
+                      animation: `float 2s ease-in-out infinite ${i * 0.3}s`,
+                      transform: `translateX(-50%) scaleY(${1 + i * 0.2})`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Heating indicator */}
+              <div className="absolute -top-8 -right-8 w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-lg font-bold animate-bounce">
+                🔥
+              </div>
+
+              {/* Gentle heating glow around test tube */}
+              <div className="absolute inset-0 bg-gradient-to-t from-orange-400/20 to-transparent rounded-full animate-pulse pointer-events-none" />
+            </>
+          )}
 
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
@@ -461,6 +527,20 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "beaker_hot_water") {
+      // Check if there's a test tube nearby that could be aligned
+      const hasTestTubeNearby = () => {
+        if (!position) return false;
+        const testTube = allEquipmentPositions.find(
+          (pos) => pos.id === "test_tubes",
+        );
+        if (!testTube) return false;
+        const distance = Math.sqrt(
+          Math.pow(position.x - testTube.x, 2) +
+            Math.pow(position.y - testTube.y, 2),
+        );
+        return distance < 150;
+      };
+
       return (
         <div className="relative">
           <img
@@ -487,6 +567,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
               />
             ))}
           </div>
+
+          {/* Alignment guide when test tube is nearby */}
+          {hasTestTubeNearby() && (
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+              <div className="w-16 h-16 border-2 border-dashed border-orange-400 bg-orange-100/50 rounded-lg animate-pulse flex items-center justify-center">
+                <span className="text-orange-600 text-xs font-bold">
+                  Test Tube
+                </span>
+              </div>
+              <div className="w-0.5 h-8 bg-orange-400 animate-pulse"></div>
+            </div>
+          )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
             <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">

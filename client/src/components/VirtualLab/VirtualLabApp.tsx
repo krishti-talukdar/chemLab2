@@ -494,6 +494,47 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
         if (existing) {
+          // Auto-alignment: When dragging hot water beaker near test tube (for heating)
+          if (experimentTitle.includes("Equilibrium")) {
+            if (id === "beaker_hot_water") {
+              const testTube = prev.find((pos) => pos.id === "test_tubes");
+              if (testTube) {
+                const distance = Math.sqrt(
+                  Math.pow(x - testTube.x, 2) + Math.pow(y - testTube.y, 2),
+                );
+                if (distance < 200) {
+                  // Auto-align: Position hot water beaker directly below test tube (exact match to image)
+                  return prev.map((pos) =>
+                    pos.id === id
+                      ? { ...pos, x: testTube.x, y: testTube.y + 35 }
+                      : pos,
+                  );
+                }
+              }
+            } else if (id === "test_tubes") {
+              const hotWaterBeaker = prev.find(
+                (pos) => pos.id === "beaker_hot_water",
+              );
+              if (hotWaterBeaker) {
+                const distance = Math.sqrt(
+                  Math.pow(x - hotWaterBeaker.x, 2) +
+                    Math.pow(y - hotWaterBeaker.y, 2),
+                );
+                if (distance < 200) {
+                  // Auto-align: Position test tube directly above hot water beaker (exact match to image)
+                  return prev.map((pos) =>
+                    pos.id === id
+                      ? {
+                          ...pos,
+                          x: hotWaterBeaker.x,
+                          y: hotWaterBeaker.y - 35,
+                        }
+                      : pos,
+                  );
+                }
+              }
+            }
+          }
           return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
         }
 
@@ -551,10 +592,16 @@ function VirtualLabApp({
           }
         }
 
+        // Show guidance message when test tube is first dropped
+        if (id === "test_tubes" && experimentTitle.includes("Equilibrium")) {
+          setToastMessage("Drop the test tube into the beaker");
+          setTimeout(() => setToastMessage(null), 4000);
+        }
+
         return [...prev, { id, x, y, chemicals: [] }];
       });
     },
-    [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
+    [experimentTitle, currentGuidedStep, aspirinGuidedSteps, currentStep],
   );
 
   const handleEquipmentRemove = useCallback((id: string) => {
@@ -1040,6 +1087,8 @@ function VirtualLabApp({
                     position={null}
                     chemicals={[]}
                     onChemicalDrop={handleChemicalDrop}
+                    allEquipmentPositions={equipmentPositions}
+                    currentStep={currentStep}
                   />
                 </div>
               ))}
@@ -1079,6 +1128,8 @@ function VirtualLabApp({
                         colorTransition,
                         step3WaterAdded,
                       }}
+                      allEquipmentPositions={equipmentPositions}
+                      currentStep={currentStep}
                     />
                   ) : null;
                 })}

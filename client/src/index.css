@@ -179,6 +179,18 @@
   }
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(-50%);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-15px) translateX(-50%);
+    opacity: 1;
+  }
+}
+
 .liquid-bubble {
   animation: liquidBubble 2s infinite ease-in-out;
 }
