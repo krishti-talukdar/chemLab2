@@ -355,7 +355,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "test_tubes") {
       // Check if test tube is being heated (positioned above hot water beaker in step 4)
       const isBeingHeated = () => {
-        if (currentStep !== 4 || !position) return false;
+        if (!position) return false;
 
         const hotWaterBeaker = allEquipmentPositions.find(
           (pos) => pos.id === "beaker_hot_water",
@@ -369,9 +369,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
         // Test tube should be above (smaller y value) and close horizontally
         return (
-          horizontalDistance < 80 &&
-          verticalDistance < -50 &&
-          verticalDistance > -200
+          horizontalDistance < 100 &&
+          verticalDistance < -30 &&
+          verticalDistance > -150
         );
       };
 
