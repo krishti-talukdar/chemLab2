@@ -27,6 +27,22 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
   steps,
   onStepClick,
 }) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
+  // Auto-scroll to next step when current step changes
+  useEffect(() => {
+    if (scrollContainerRef.current && stepRefs.current[currentStep]) {
+      const stepElement = stepRefs.current[currentStep];
+      if (stepElement) {
+        stepElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }
+  }, [currentStep]);
+
   const getStepIcon = (step: Step, index: number) => {
     if (step.status === "completed") {
       return <CheckCircle className="text-green-500" size={20} />;
