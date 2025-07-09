@@ -140,14 +140,19 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                       borderRadius: "4px",
                       zIndex: 999999,
                       position: "fixed",
+                      whiteSpace: "nowrap",
+                      padding: "8px 12px",
                     }}
                     sideOffset={5}
                     avoidCollisions={true}
                   >
-                    <p className="font-medium text-sm">
+                    <span
+                      className="font-medium text-sm"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
                       Step {step.id} completed!
                       {hasNextStep && ` Move to Step ${nextStepNumber}.`}
-                    </p>
+                    </span>
                   </TooltipContent>
                 </Tooltip>
               );
