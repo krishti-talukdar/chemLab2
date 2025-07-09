@@ -1017,10 +1017,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
             />
 
             {/* Cobalt chloride crystals - show blue crystals at bottom of beaker */}
-            {cobaltReactionState?.cobaltChlorideAdded &&
-              !cobaltReactionState?.distilledWaterAdded && (
-                <g>
-                  {[...Array(8)].map((_, i) => (
+            {cobaltReactionState?.cobaltChlorideAdded && (
+              <g>
+                {!cobaltReactionState?.distilledWaterAdded ? (
+                  // Dry crystals before water is added
+                  [...Array(8)].map((_, i) => (
                     <rect
                       key={i}
                       x={25 + (i % 3) * 6 + Math.random() * 4}
@@ -1035,9 +1036,64 @@ export const Equipment: React.FC<EquipmentProps> = ({
                         animationDuration: "2s",
                       }}
                     />
-                  ))}
-                </g>
-              )}
+                  ))
+                ) : (
+                  // Wet crystals with water - more realistic appearance
+                  <>
+                    {/* Dissolved/floating crystal particles */}
+                    {[...Array(12)].map((_, i) => (
+                      <circle
+                        key={`dissolved-${i}`}
+                        cx={22 + (i % 4) * 8 + Math.random() * 6}
+                        cy={85 + (i % 3) * 5 + Math.random() * 8}
+                        r={0.5 + Math.random() * 0.5}
+                        fill="#3b82f6"
+                        opacity={0.7 + Math.random() * 0.3}
+                        className="animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.3}s`,
+                          animationDuration: "3s",
+                        }}
+                      />
+                    ))}
+
+                    {/* Remaining solid crystals at bottom */}
+                    {[...Array(5)].map((_, i) => (
+                      <rect
+                        key={`solid-${i}`}
+                        x={26 + i * 5 + Math.random() * 3}
+                        y={96 + Math.random() * 2}
+                        width="1.2"
+                        height="1.2"
+                        fill="#1d4ed8"
+                        rx="0.3"
+                        opacity={0.8}
+                        className="animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.5}s`,
+                          animationDuration: "2.5s",
+                        }}
+                      />
+                    ))}
+
+                    {/* Water with blue tint from dissolved crystals */}
+                    <rect
+                      x="22"
+                      y="88"
+                      width="36"
+                      height="10"
+                      fill="rgba(59, 130, 246, 0.2)"
+                      rx="2"
+                      opacity="0.6"
+                      className="animate-pulse"
+                      style={{
+                        animationDuration: "4s",
+                      }}
+                    />
+                  </>
+                )}
+              </g>
+            )}
 
             {/* Base */}
             <ellipse
