@@ -503,12 +503,12 @@ function VirtualLabApp({
                   Math.pow(x - testTube.x, 2) + Math.pow(y - testTube.y, 2),
                 );
                 if (distance < 120) {
-                  // Auto-align: Position hot water beaker below test tube
+                  // Auto-align: Position hot water beaker directly below test tube (like in the image)
                   setToastMessage("🔥 Test tube positioned for heating!");
                   setTimeout(() => setToastMessage(null), 3000);
                   return prev.map((pos) =>
                     pos.id === id
-                      ? { ...pos, x: testTube.x, y: testTube.y + 70 }
+                      ? { ...pos, x: testTube.x, y: testTube.y + 50 }
                       : pos,
                   );
                 }
