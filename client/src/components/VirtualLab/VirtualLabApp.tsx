@@ -1063,6 +1063,7 @@ function VirtualLabApp({
                         stirrerActive,
                         colorTransition,
                       }}
+                      dropperHasHCl={dropperHasHCl}
                     />
                   ) : null;
                 })}
