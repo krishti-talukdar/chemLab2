@@ -433,13 +433,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
             } object-contain transition-all duration-[3000ms] ease-in-out ${
               isDragging
                 ? "scale-108 rotate-2 brightness-115"
-                : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
+                : heating
+                  ? "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5 animate-pulse"
+                  : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
               filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.15)) ${
                 isDragging
                   ? "drop-shadow(8px 16px 32px rgba(59,130,246,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.3))"
-                  : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
+                  : heating
+                    ? "drop-shadow(0 4px 8px rgba(0,0,0,0.1)) drop-shadow(0 0 15px rgba(255,165,0,0.6)) drop-shadow(0 0 25px rgba(255,69,0,0.4))"
+                    : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
@@ -449,6 +453,35 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   : 1,
             }}
           />
+
+          {/* Heating effects when test tube is above hot water beaker */}
+          {heating && (
+            <>
+              {/* Heat waves animation */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-8 bg-gradient-to-t from-orange-400 to-transparent opacity-70 rounded-full"
+                    style={{
+                      left: `${45 + i * 15}%`,
+                      bottom: "60%",
+                      animation: `float 2s ease-in-out infinite ${i * 0.3}s`,
+                      transform: `translateX(-50%) scaleY(${1 + i * 0.2})`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Heating indicator */}
+              <div className="absolute -top-8 -right-8 w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-lg font-bold animate-bounce">
+                🔥
+              </div>
+
+              {/* Gentle heating glow around test tube */}
+              <div className="absolute inset-0 bg-gradient-to-t from-orange-400/20 to-transparent rounded-full animate-pulse pointer-events-none" />
+            </>
+          )}
 
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
