@@ -497,6 +497,14 @@ function VirtualLabApp({
           // Auto-alignment: When dragging hot water beaker near test tube (for heating)
           if (experimentTitle.includes("Equilibrium")) {
             if (id === "beaker_hot_water") {
+              // Show message for step 4 when hot water beaker is placed
+              if (currentStep === 4) {
+                setToastMessage(
+                  "Drop the test tube into the hot water beaker!",
+                );
+                setTimeout(() => setToastMessage(null), 4000);
+              }
+
               const testTube = prev.find((pos) => pos.id === "test_tubes");
               if (testTube) {
                 const distance = Math.sqrt(
