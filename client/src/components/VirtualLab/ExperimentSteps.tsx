@@ -134,17 +134,17 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                   <Tooltip key={step.id}>
                     <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
                     <TooltipContent
-                      side="right"
-                      className="text-black border-[#DBD56E] shadow-lg z-[99999] relative"
+                      side="top"
+                      className="text-black font-medium shadow-xl border-2"
                       style={{
                         backgroundColor: "#DBD56E",
-                        zIndex: 99999,
-                        position: "fixed",
+                        borderColor: "#DBD56E",
+                        zIndex: 999999,
                       }}
-                      sideOffset={10}
-                      collisionPadding={10}
+                      sideOffset={5}
+                      avoidCollisions={true}
                     >
-                      <p className="font-medium">
+                      <p className="font-medium text-sm">
                         Step {step.id} completed!
                         {hasNextStep && ` Move to Step ${nextStepNumber}.`}
                       </p>
