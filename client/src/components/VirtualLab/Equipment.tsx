@@ -1475,7 +1475,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           }}
           className={`absolute bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold transition-colors shadow-lg hover:shadow-xl ${
             id === "test_tubes"
-              ? "w-10 h-10 text-sm bottom-0 right-0 border-2 border-white z-50" // Very close to test tube edge
+              ? "w-8 h-8 text-xs top-4 right-1/2 transform translate-x-1/2 border-2 border-white z-50" // Directly on test tube
               : "w-6 h-6 text-xs -top-2 -right-2 z-30" // Default positioning for other equipment
           }`}
           title="Remove equipment"
