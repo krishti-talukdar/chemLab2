@@ -33,6 +33,13 @@ interface EquipmentProps {
     colorTransition: "blue" | "transitioning" | "pink";
     step3WaterAdded: boolean;
   };
+  allEquipmentPositions?: Array<{
+    id: string;
+    x: number;
+    y: number;
+    chemicals: any[];
+  }>;
+  currentStep?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
