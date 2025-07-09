@@ -1024,6 +1024,7 @@ function VirtualLabApp({
                     setDistilledWaterAdded(false);
                     setStirrerActive(false);
                     setColorTransition("pink");
+                    setStep3WaterAdded(false);
                   }}
                 />
               </div>
