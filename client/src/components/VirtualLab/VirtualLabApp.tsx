@@ -16,7 +16,6 @@ import {
   TestTube,
   Thermometer,
   Droplets,
-  Erlenmeyer,
 } from "lucide-react";
 import type { ExperimentStep } from "@shared/schema";
 
