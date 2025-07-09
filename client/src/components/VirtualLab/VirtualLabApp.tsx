@@ -526,6 +526,15 @@ function VirtualLabApp({
               setColorTransition("pink");
               setToastMessage("Pink hydrated cobalt complex formed!");
               setTimeout(() => setToastMessage(null), 4000);
+
+              // Auto-advance to next step after pink transition
+              if (experimentTitle.includes("Equilibrium")) {
+                setTimeout(() => {
+                  onStepComplete();
+                  setToastMessage("Step completed! Moving to next step...");
+                  setTimeout(() => setToastMessage(null), 3000);
+                }, 1000);
+              }
             }, 2000);
           }, 1000);
         }
