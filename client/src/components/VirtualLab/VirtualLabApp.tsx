@@ -99,11 +99,9 @@ function VirtualLabApp({
   const [cobaltChlorideAdded, setCobaltChlorideAdded] = useState(false);
   const [distilledWaterAdded, setDistilledWaterAdded] = useState(false);
   const [stirrerActive, setStirrerActive] = useState(false);
-  const [stirringAnimation, setStirringAnimation] = useState(false);
   const [colorTransition, setColorTransition] = useState<
     "blue" | "transitioning" | "pink"
   >("pink");
-  const [stirringProgress, setStirringProgress] = useState(0);
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -505,45 +503,31 @@ function VirtualLabApp({
           distilledWaterAdded
         ) {
           setStirrerActive(true);
-          setStirringAnimation(true);
           setToastMessage("Stirrer activated! Mixing solution...");
           setTimeout(() => setToastMessage(null), 3000);
 
-          // Start stirring animation progress
-          const stirringInterval = setInterval(() => {
-            setStirringProgress((prev) => {
-              if (prev >= 100) {
-                clearInterval(stirringInterval);
-                return 100;
-              }
-              return prev + 2;
-            });
-          }, 100);
-
-          // Start color transition after 2 seconds of stirring
-          setTimeout(() => {
-            setColorTransition("transitioning");
-            setToastMessage("Solution slowly turning pink...");
-            setTimeout(() => setToastMessage(null), 3000);
-          }, 2000);
-
-          // Complete transition to pink after 6 seconds total
-          setTimeout(() => {
-            setColorTransition("pink");
-            setToastMessage("Pink hydrated cobalt complex formed!");
-            setTimeout(() => setToastMessage(null), 4000);
-          }, 6000);
-
-          // Auto-remove stirrer after 8 seconds total
+          // Auto-remove stirrer after 2 seconds
           setTimeout(() => {
             setEquipmentPositions((prev) =>
               prev.filter((pos) => pos.id !== "stirring_rod"),
             );
-            setStirrerActive(false);
-            setStirringAnimation(false);
             setToastMessage("Stirrer removed - mixing complete!");
             setTimeout(() => setToastMessage(null), 3000);
-          }, 8000);
+          }, 2000);
+
+          // Start color transition after stirring begins
+          setTimeout(() => {
+            setColorTransition("transitioning");
+            setToastMessage("Solution slowly turning pink...");
+            setTimeout(() => setToastMessage(null), 3000);
+
+            // Complete transition to pink
+            setTimeout(() => {
+              setColorTransition("pink");
+              setToastMessage("Pink hydrated cobalt complex formed!");
+              setTimeout(() => setToastMessage(null), 4000);
+            }, 2000);
+          }, 1000);
         }
 
         // Check if this completes a guided step for Aspirin Synthesis
@@ -1034,9 +1018,7 @@ function VirtualLabApp({
                       cobaltChlorideAdded,
                       distilledWaterAdded,
                       stirrerActive,
-                      stirringAnimation,
                       colorTransition,
-                      stirringProgress,
                     }}
                   />
                 ) : null;
