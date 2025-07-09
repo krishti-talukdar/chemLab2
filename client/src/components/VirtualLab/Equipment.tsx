@@ -1017,10 +1017,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
             />
 
             {/* Cobalt chloride crystals - show blue crystals at bottom of beaker */}
-            {cobaltReactionState?.cobaltChlorideAdded &&
-              !cobaltReactionState?.distilledWaterAdded && (
-                <g>
-                  {[...Array(8)].map((_, i) => (
+            {cobaltReactionState?.cobaltChlorideAdded && (
+              <g>
+                {!cobaltReactionState?.distilledWaterAdded ? (
+                  // Dry crystals before water is added
+                  [...Array(8)].map((_, i) => (
                     <rect
                       key={i}
                       x={25 + (i % 3) * 6 + Math.random() * 4}
@@ -1035,9 +1036,79 @@ export const Equipment: React.FC<EquipmentProps> = ({
                         animationDuration: "2s",
                       }}
                     />
-                  ))}
-                </g>
-              )}
+                  ))
+                ) : (
+                  // Wet crystals with water - more visible and realistic appearance
+                  <>
+                    {/* Dissolved/floating crystal particles - made larger and more visible */}
+                    {[...Array(10)].map((_, i) => (
+                      <circle
+                        key={`dissolved-${i}`}
+                        cx={24 + (i % 4) * 7 + ((i * 2) % 6)}
+                        cy={87 + (i % 3) * 4 + ((i * 1.5) % 5)}
+                        r={1.2 + (i % 3) * 0.5}
+                        fill="#1e40af"
+                        opacity={0.9}
+                        className="animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: "2s",
+                        }}
+                      />
+                    ))}
+
+                    {/* Remaining solid crystals at bottom - made larger and more prominent */}
+                    {[...Array(6)].map((_, i) => (
+                      <rect
+                        key={`solid-${i}`}
+                        x={25 + i * 4 + (i % 2) * 2}
+                        y={95 + (i % 2) * 2}
+                        width="2.5"
+                        height="2.5"
+                        fill="#1d4ed8"
+                        rx="0.5"
+                        opacity={0.95}
+                        className="animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.3}s`,
+                          animationDuration: "1.8s",
+                        }}
+                      />
+                    ))}
+
+                    {/* Extra visible crystal chunks */}
+                    {[...Array(4)].map((_, i) => (
+                      <polygon
+                        key={`chunk-${i}`}
+                        points={`${28 + i * 6},${94} ${30 + i * 6},${96} ${32 + i * 6},${94} ${30 + i * 6},${92}`}
+                        fill="#2563eb"
+                        opacity={0.9}
+                        className="animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.4}s`,
+                          animationDuration: "2.2s",
+                        }}
+                      />
+                    ))}
+
+                    {/* Water with blue tint from dissolved crystals - more prominent */}
+                    <rect
+                      x="22"
+                      y="88"
+                      width="36"
+                      height="10"
+                      fill="rgba(37, 99, 235, 0.3)"
+                      rx="2"
+                      opacity="0.8"
+                      className="animate-pulse"
+                      style={{
+                        animationDuration: "3s",
+                      }}
+                    />
+                  </>
+                )}
+              </g>
+            )}
 
             {/* Base */}
             <ellipse
@@ -1052,12 +1123,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
           </svg>
 
           {/* Crystal label for beaker */}
-          {cobaltReactionState?.cobaltChlorideAdded &&
-            !cobaltReactionState?.distilledWaterAdded && (
-              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-center">
-                Blue Cobalt Crystals
-              </div>
-            )}
+          {cobaltReactionState?.cobaltChlorideAdded && (
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-blue-700 font-semibold whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-center">
+              {!cobaltReactionState?.distilledWaterAdded
+                ? "Blue Cobalt Crystals"
+                : "Hydrated Cobalt Crystals"}
+            </div>
+          )}
         </div>
       );
     }
