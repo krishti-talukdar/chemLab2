@@ -1076,6 +1076,7 @@ function VirtualLabApp({
                         distilledWaterAdded,
                         stirrerActive,
                         colorTransition,
+                        step3WaterAdded,
                       }}
                     />
                   ) : null;
