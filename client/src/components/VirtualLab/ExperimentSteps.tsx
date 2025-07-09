@@ -133,11 +133,12 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                   <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
                   <TooltipContent
                     side="top"
-                    className="text-black font-medium shadow-xl border-2"
+                    className="text-black font-medium shadow-xl border-2 !z-[999999] fixed"
                     style={{
                       backgroundColor: "#DBD56E",
                       borderColor: "#DBD56E",
                       zIndex: 999999,
+                      position: "fixed",
                     }}
                     sideOffset={5}
                     avoidCollisions={true}
