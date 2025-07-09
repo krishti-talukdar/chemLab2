@@ -30,6 +30,7 @@ interface EquipmentProps {
     cobaltChlorideAdded: boolean;
     distilledWaterAdded: boolean;
     stirrerActive: boolean;
+    isStirring: boolean;
     colorTransition: "blue" | "transitioning" | "pink";
   };
 }
@@ -345,19 +346,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "test_tubes") {
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
-        // If stirrer is active and we have cobalt + water, transition to pink
-        if (
-          cobaltReactionState?.stirrerActive &&
-          cobaltReactionState?.cobaltChlorideAdded &&
-          cobaltReactionState?.distilledWaterAdded
-        ) {
-          // Pink liquid test tube (after stirring)
+        // Show pink liquid only after complete transition
+        if (cobaltReactionState?.colorTransition === "pink") {
           return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F280bbef2140249df9531563786b4bae0?format=webp&width=800";
         } else if (
           cobaltReactionState?.cobaltChlorideAdded &&
           cobaltReactionState?.distilledWaterAdded
         ) {
-          // Blue liquid test tube (after adding cobalt chloride and distilled water)
+          // Blue liquid test tube (during stirring or before transition)
           return "https://cdn.builder.io/api/v1/image/assets%2Fc2053654ab564f8eb91577d73cfc950b%2Ff2f21a05efba467181e7b9b481f8d4e1?format=webp&width=800";
         } else if (cobaltReactionState?.cobaltChlorideAdded) {
           // Test tube with cobalt chloride solid at bottom
@@ -400,6 +396,41 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   : 1,
             }}
           />
+
+          {/* Stirring animation overlay */}
+          {cobaltReactionState?.isStirring && (
+            <div className="absolute inset-0 pointer-events-none">
+              {/* Stirring rod animation */}
+              <div
+                className="absolute top-1/2 left-1/2 w-1 h-24 bg-gray-400 rounded-full"
+                style={{
+                  transform: "translate(-50%, -50%)",
+                  animation: "stir-animation 1s ease-in-out infinite",
+                }}
+              />
+
+              {/* Swirling liquid effect */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-6 h-6 border-2 border-blue-300 rounded-full opacity-50"
+                    style={{
+                      animation: `swirl-animation 1.5s ease-in-out infinite`,
+                      animationDelay: `${i * 0.25}s`,
+                      left: `${-12 + i * 4}px`,
+                      top: `${-12 + i * 3}px`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Color transition overlay */}
+              {cobaltReactionState?.colorTransition === "transitioning" && (
+                <div className="absolute inset-0 bg-gradient-to-t from-pink-300 via-purple-200 to-transparent opacity-40 rounded-lg transition-all duration-4000" />
+              )}
+            </div>
+          )}
 
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
