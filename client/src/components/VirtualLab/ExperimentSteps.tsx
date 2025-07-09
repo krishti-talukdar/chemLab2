@@ -1,18 +1,13 @@
-import React, { useEffect, useRef } from "react";
-import { CheckCircle, Circle, Clock, AlertTriangle } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import React, { useEffect, useRef } from 'react';
+import { CheckCircle, Circle, Clock, AlertTriangle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Step {
   id: number;
   title: string;
   description: string;
   duration: number;
-  status: "pending" | "active" | "completed" | "warning";
+  status: 'pending' | 'active' | 'completed' | 'warning';
   requirements?: string[];
 }
 
@@ -25,7 +20,7 @@ interface ExperimentStepsProps {
 export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
   currentStep,
   steps,
-  onStepClick,
+  onStepClick
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -36,19 +31,19 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
       const stepElement = stepRefs.current[currentStep];
       if (stepElement) {
         stepElement.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
+          behavior: 'smooth',
+          block: 'center',
         });
       }
     }
   }, [currentStep]);
 
   const getStepIcon = (step: Step, index: number) => {
-    if (step.status === "completed") {
+    if (step.status === 'completed') {
       return <CheckCircle className="text-green-500" size={20} />;
-    } else if (step.status === "active") {
+    } else if (step.status === 'active') {
       return <Clock className="text-blue-500 animate-pulse" size={20} />;
-    } else if (step.status === "warning") {
+    } else if (step.status === 'warning') {
       return <AlertTriangle className="text-yellow-500" size={20} />;
     } else {
       return <Circle className="text-gray-400" size={20} />;
@@ -56,14 +51,14 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
   };
 
   const getStepBgColor = (step: Step, index: number) => {
-    if (step.status === "completed") {
-      return "bg-green-50 border-green-200";
-    } else if (step.status === "active") {
-      return "bg-blue-50 border-blue-300 shadow-md";
-    } else if (step.status === "warning") {
-      return "bg-yellow-50 border-yellow-200";
+    if (step.status === 'completed') {
+      return 'bg-green-50 border-green-200';
+    } else if (step.status === 'active') {
+      return 'bg-blue-50 border-blue-300 shadow-md';
+    } else if (step.status === 'warning') {
+      return 'bg-yellow-50 border-yellow-200';
     } else {
-      return "bg-gray-50 border-gray-200";
+      return 'bg-gray-50 border-gray-200';
     }
   };
 
@@ -74,14 +69,17 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
         <p className="text-sm opacity-90">Acid-Base Titration</p>
       </div>
 
-      <div className="p-4 max-h-96 overflow-y-auto">
+      <div ref={scrollContainerRef} className="p-4 max-h-96 overflow-y-auto">
         <div className="space-y-3">
-          {steps.map((step, index) => (
-            <div
-              key={step.id}
-              onClick={() => onStepClick(step.id)}
-              className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${getStepBgColor(step, index)}`}
-            >
+          {steps.map((step, index) => {
+            const isCompleted = step.status === 'completed';
+            const stepContent = (
+              <div
+                key={step.id}
+                ref={(el) => (stepRefs.current[step.id] = el)}
+                onClick={() => onStepClick(step.id)}
+                className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${getStepBgColor(step, index)}`}
+              >
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 mt-0.5">
                   {getStepIcon(step, index)}
@@ -100,9 +98,7 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                   </p>
                   {step.requirements && (
                     <div className="mt-2">
-                      <p className="text-xs text-gray-500 mb-1">
-                        Requirements:
-                      </p>
+                      <p className="text-xs text-gray-500 mb-1">Requirements:</p>
                       <ul className="text-xs text-gray-600 space-y-1">
                         {step.requirements.map((req, idx) => (
                           <li key={idx} className="flex items-center space-x-1">
