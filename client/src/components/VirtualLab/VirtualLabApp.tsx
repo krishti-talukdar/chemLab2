@@ -647,9 +647,9 @@ function VirtualLabApp({
                 setToastMessage(null);
                 // Auto-advance to step 3
                 setCurrentStep(3);
-                setToastMessage("Moving to Step 3 automatically...");
+                setToastMessage("Moving to the next step...");
                 setTimeout(() => setToastMessage(null), 3000);
-              }, 8000);
+              }, 2000);
             } else {
               setToastMessage(
                 `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
