@@ -99,9 +99,11 @@ function VirtualLabApp({
   const [cobaltChlorideAdded, setCobaltChlorideAdded] = useState(false);
   const [distilledWaterAdded, setDistilledWaterAdded] = useState(false);
   const [stirrerActive, setStirrerActive] = useState(false);
+  const [stirringAnimation, setStirringAnimation] = useState(false);
   const [colorTransition, setColorTransition] = useState<
     "blue" | "transitioning" | "pink"
   >("pink");
+  const [stirringProgress, setStirringProgress] = useState(0);
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
