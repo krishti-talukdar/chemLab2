@@ -705,7 +705,7 @@ function VirtualLabApp({
         description: "HCl + NaOH → NaCl + H��O",
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "HCl + NaOH → NaCl + H₂O",
+          reaction: "HCl + NaOH → NaCl + H���O",
           reactionType: "Acid-Base Neutralization",
           balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
           products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
