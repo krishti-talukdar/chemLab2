@@ -68,94 +68,93 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow-lg border">
-        <div className="p-4 border-b bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
-          <h2 className="font-semibold">Experiment Procedure</h2>
-          <p className="text-sm opacity-90">Acid-Base Titration</p>
-        </div>
+      <div className="p-4 border-b bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
+        <h2 className="font-semibold">Experiment Procedure</h2>
+        <p className="text-sm opacity-90">Acid-Base Titration</p>
+      </div>
 
-        <div ref={scrollContainerRef} className="p-4 max-h-96 overflow-y-auto">
-          <div className="space-y-3">
-            {steps.map((step, index) => {
-              const isCompleted = step.status === "completed";
-              const stepContent = (
-                <div
-                  key={step.id}
-                  ref={(el) => (stepRefs.current[step.id] = el)}
-                  onClick={() => onStepClick(step.id)}
-                  className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${getStepBgColor(step, index)}`}
-                >
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 mt-0.5">
-                      {getStepIcon(step, index)}
+      <div ref={scrollContainerRef} className="p-4 max-h-96 overflow-y-auto">
+        <div className="space-y-3">
+          {steps.map((step, index) => {
+            const isCompleted = step.status === "completed";
+            const stepContent = (
+              <div
+                key={step.id}
+                ref={(el) => (stepRefs.current[step.id] = el)}
+                onClick={() => onStepClick(step.id)}
+                className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${getStepBgColor(step, index)}`}
+              >
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {getStepIcon(step, index)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium text-gray-900">
+                        Step {step.id}: {step.title}
+                      </h3>
+                      <span className="text-xs text-gray-500">
+                        {step.duration}min
+                      </span>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium text-gray-900">
-                          Step {step.id}: {step.title}
-                        </h3>
-                        <span className="text-xs text-gray-500">
-                          {step.duration}min
-                        </span>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {step.description}
+                    </p>
+                    {step.requirements && (
+                      <div className="mt-2">
+                        <p className="text-xs text-gray-500 mb-1">
+                          Requirements:
+                        </p>
+                        <ul className="text-xs text-gray-600 space-y-1">
+                          {step.requirements.map((req, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-center space-x-1"
+                            >
+                              <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                              <span>{req}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {step.description}
-                      </p>
-                      {step.requirements && (
-                        <div className="mt-2">
-                          <p className="text-xs text-gray-500 mb-1">
-                            Requirements:
-                          </p>
-                          <ul className="text-xs text-gray-600 space-y-1">
-                            {step.requirements.map((req, idx) => (
-                              <li
-                                key={idx}
-                                className="flex items-center space-x-1"
-                              >
-                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                <span>{req}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
+              </div>
+            );
+
+            // Wrap completed steps with tooltip
+            if (isCompleted) {
+              const nextStepNumber = step.id + 1;
+              const hasNextStep = nextStepNumber <= steps.length;
+
+              return (
+                <Tooltip key={step.id}>
+                  <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
+                  <TooltipContent
+                    side="top"
+                    className="text-black font-medium shadow-xl border-2"
+                    style={{
+                      backgroundColor: "#DBD56E",
+                      borderColor: "#DBD56E",
+                      zIndex: 999999,
+                    }}
+                    sideOffset={5}
+                    avoidCollisions={true}
+                  >
+                    <p className="font-medium text-sm">
+                      Step {step.id} completed!
+                      {hasNextStep && ` Move to Step ${nextStepNumber}.`}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               );
+            }
 
-              // Wrap completed steps with tooltip
-              if (isCompleted) {
-                const nextStepNumber = step.id + 1;
-                const hasNextStep = nextStepNumber <= steps.length;
-
-                return (
-                  <Tooltip key={step.id}>
-                    <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      className="text-black font-medium shadow-xl border-2"
-                      style={{
-                        backgroundColor: "#DBD56E",
-                        borderColor: "#DBD56E",
-                        zIndex: 999999,
-                      }}
-                      sideOffset={5}
-                      avoidCollisions={true}
-                    >
-                      <p className="font-medium text-sm">
-                        Step {step.id} completed!
-                        {hasNextStep && ` Move to Step ${nextStepNumber}.`}
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              }
-
-              return stepContent;
-            })}
-          </div>
+            return stepContent;
+          })}
         </div>
       </div>
-    </TooltipProvider>
+    </div>
   );
 };
