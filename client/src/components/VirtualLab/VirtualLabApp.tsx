@@ -641,6 +641,16 @@ function VirtualLabApp({
                 setDistilledWaterAdded(true);
                 setToastMessage("Add the stirrer");
                 setTimeout(() => setToastMessage(null), 5000);
+              } else if (
+                chemicalId === "hcl_conc" &&
+                cobaltChlorideAdded &&
+                distilledWaterAdded &&
+                stirrerActive
+              ) {
+                setToastMessage(
+                  "Color of solution changes from pink to blue due to Equilibrium Change!",
+                );
+                setTimeout(() => setToastMessage(null), 4000);
               } else {
                 setToastMessage(
                   `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
