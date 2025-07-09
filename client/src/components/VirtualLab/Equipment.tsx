@@ -393,10 +393,54 @@ export const Equipment: React.FC<EquipmentProps> = ({
               transformOrigin: "center bottom",
               opacity:
                 cobaltReactionState?.colorTransition === "transitioning"
-                  ? 0.8
+                  ? 0.9
                   : 1,
             }}
           />
+
+          {/* Stirring animation overlay */}
+          {cobaltReactionState?.stirringAnimation && (
+            <div className="absolute inset-0 pointer-events-none">
+              {/* Stirring rod animation inside test tube */}
+              <div
+                className="absolute top-1/2 left-1/2 w-1 h-32 bg-gray-400 rounded-full origin-bottom"
+                style={{
+                  transform: "translate(-50%, -50%)",
+                  animation: "stir 0.8s ease-in-out infinite",
+                }}
+              />
+
+              {/* Swirling liquid effect */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-8 h-8 border-2 border-blue-300 rounded-full opacity-60"
+                    style={{
+                      animation: `swirl 1.5s ease-in-out infinite`,
+                      animationDelay: `${i * 0.2}s`,
+                      left: `${-16 + i * 6}px`,
+                      top: `${-16 + i * 4}px`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Color transition overlay */}
+              {cobaltReactionState?.colorTransition === "transitioning" && (
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-pink-300 via-purple-200 to-transparent rounded-lg opacity-30 transition-opacity duration-2000"
+                  style={{
+                    opacity: Math.min(
+                      0.6,
+                      ((cobaltReactionState?.stirringProgress || 0) / 100) *
+                        0.6,
+                    ),
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
@@ -411,6 +455,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 className="w-full h-1 rounded-full mt-1"
                 style={{ backgroundColor: getMixedColor() }}
               />
+            </div>
+          )}
+
+          {/* Stirring progress indicator */}
+          {cobaltReactionState?.stirringAnimation && (
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+              Stirring...{" "}
+              {Math.round(cobaltReactionState?.stirringProgress || 0)}%
             </div>
           )}
         </div>
