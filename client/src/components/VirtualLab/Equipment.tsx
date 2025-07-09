@@ -353,6 +353,28 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
     // Use provided images for specific equipment types with bigger sizes
     if (id === "test_tubes") {
+      // Check if test tube is being heated (positioned above hot water beaker in step 4)
+      const isBeingHeated = () => {
+        if (currentStep !== 4 || !position) return false;
+
+        const hotWaterBeaker = allEquipmentPositions.find(
+          (pos) => pos.id === "beaker_hot_water",
+        );
+
+        if (!hotWaterBeaker) return false;
+
+        // Check if test tube is positioned above the hot water beaker
+        const horizontalDistance = Math.abs(position.x - hotWaterBeaker.x);
+        const verticalDistance = position.y - hotWaterBeaker.y;
+
+        // Test tube should be above (smaller y value) and close horizontally
+        return (
+          horizontalDistance < 80 &&
+          verticalDistance < -50 &&
+          verticalDistance > -200
+        );
+      };
+
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
         // Check if HCl has been added to the test tube
@@ -392,6 +414,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
           return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800";
         }
       };
+
+      const heating = isBeingHeated();
 
       return (
         <div className="relative group">
