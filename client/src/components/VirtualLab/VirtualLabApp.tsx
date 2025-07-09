@@ -128,7 +128,7 @@ function VirtualLabApp({
         {
           id: "salicylic_acid",
           name: "Salicylic Acid",
-          formula: "C₇H₆O₃",
+          formula: "C₇H���O₃",
           color: "#F8F8FF",
           concentration: "2.0 g",
           volume: 25,
@@ -502,7 +502,7 @@ function VirtualLabApp({
                 const distance = Math.sqrt(
                   Math.pow(x - testTube.x, 2) + Math.pow(y - testTube.y, 2),
                 );
-                if (distance < 150) {
+                if (distance < 200) {
                   // Auto-align: Position hot water beaker directly below test tube (exact match to image)
                   setToastMessage("🔥 Perfect heating alignment achieved!");
                   setTimeout(() => setToastMessage(null), 3000);
