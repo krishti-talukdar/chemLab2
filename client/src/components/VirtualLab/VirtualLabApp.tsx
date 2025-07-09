@@ -1043,9 +1043,7 @@ function VirtualLabApp({
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-gray-600 mr-3">
-                    Step {currentStep} of {experimentSteps.length}
-                  </div>
+                  <div className="text-xs text-gray-600 mr-3"></div>
                 )}
                 <Controls
                   isRunning={isRunning}
