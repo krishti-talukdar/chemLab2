@@ -496,38 +496,64 @@ function VirtualLabApp({
           return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
         }
 
-        // Cobalt chloride stirrer automation
+        // Cobalt chloride stirrer automation - only when dropped onto test tube
         if (
           experimentTitle.includes("Equilibrium") &&
           id === "stirring_rod" &&
           distilledWaterAdded
         ) {
-          setStirrerActive(true);
-          setToastMessage("Stirrer activated! Mixing solution...");
-          setTimeout(() => setToastMessage(null), 3000);
+          // Check if stirring rod is dropped onto the test tube
+          const testTubePosition = prev.find((pos) => pos.id === "test_tubes");
+          let isDroppedOnTestTube = false;
 
-          // Auto-remove stirrer after 2 seconds
-          setTimeout(() => {
-            setEquipmentPositions((prev) =>
-              prev.filter((pos) => pos.id !== "stirring_rod"),
-            );
-            setToastMessage("Stirrer removed - mixing complete!");
+          if (testTubePosition) {
+            // Define collision detection area around test tube (with some tolerance)
+            const testTubeX = testTubePosition.x;
+            const testTubeY = testTubePosition.y;
+            const tolerance = 100; // Increased tolerance for easier targeting
+
+            // Check if stirring rod position is within test tube area
+            if (
+              Math.abs(x - testTubeX) <= tolerance &&
+              Math.abs(y - testTubeY) <= tolerance
+            ) {
+              isDroppedOnTestTube = true;
+            }
+          }
+
+          if (isDroppedOnTestTube) {
+            setStirrerActive(true);
+            setToastMessage("Stirrer activated! Mixing solution...");
             setTimeout(() => setToastMessage(null), 3000);
-          }, 2000);
 
-          // Start color transition after stirring begins
-          setTimeout(() => {
-            setColorTransition("transitioning");
-            setToastMessage("Solution slowly turning pink...");
-            setTimeout(() => setToastMessage(null), 3000);
-
-            // Complete transition to pink
+            // Auto-remove stirrer after 2 seconds
             setTimeout(() => {
-              setColorTransition("pink");
-              setToastMessage("Pink hydrated cobalt complex formed!");
-              setTimeout(() => setToastMessage(null), 4000);
+              setEquipmentPositions((prev) =>
+                prev.filter((pos) => pos.id !== "stirring_rod"),
+              );
+              setToastMessage("Stirrer removed - mixing complete!");
+              setTimeout(() => setToastMessage(null), 3000);
             }, 2000);
-          }, 1000);
+
+            // Start color transition after stirring begins
+            setTimeout(() => {
+              setColorTransition("transitioning");
+              setToastMessage("Solution slowly turning pink...");
+              setTimeout(() => setToastMessage(null), 3000);
+
+              // Complete transition to pink
+              setTimeout(() => {
+                setColorTransition("pink");
+                setToastMessage("Pink hydrated cobalt complex formed!");
+                setTimeout(() => setToastMessage(null), 4000);
+              }, 2000);
+            }, 1000);
+          } else {
+            setToastMessage(
+              "Drop the stirring rod into the test tube to mix the solution!",
+            );
+            setTimeout(() => setToastMessage(null), 3000);
+          }
         }
 
         // Check if this completes a guided step for Aspirin Synthesis
