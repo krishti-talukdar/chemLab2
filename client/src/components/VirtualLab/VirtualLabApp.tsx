@@ -964,9 +964,24 @@ function VirtualLabApp({
                 onStop={() => setIsRunning(false)}
                 onReset={() => {
                   setEquipmentPositions([]);
-                  setResults([]);
+                  setSelectedChemical(null);
                   setIsRunning(false);
-                  setCurrentStep(1);
+                  setResults([]);
+                  setCurrentStep(stepNumber);
+                  setMeasurements({
+                    volume: 0,
+                    concentration: 0,
+                    ph: 7,
+                    molarity: 0,
+                    moles: 0,
+                    temperature: 25,
+                  });
+                  setToastMessage(null);
+                  setCurrentGuidedStep(1);
+                  setCobaltChlorideAdded(false);
+                  setDistilledWaterAdded(false);
+                  setStirrerActive(false);
+                  setColorTransition("pink");
                 }}
               />
             </div>
