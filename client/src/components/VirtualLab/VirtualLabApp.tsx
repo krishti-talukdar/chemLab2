@@ -518,15 +518,15 @@ function VirtualLabApp({
           // Start color transition after stirring begins
           setTimeout(() => {
             setColorTransition("transitioning");
-            setToastMessage("Solution slowly turning pink...");
-            setTimeout(() => setToastMessage(null), 3000);
+            setToastMessage("Color is getting changed to pink");
+            setTimeout(() => setToastMessage(null), 4000);
 
             // Complete transition to pink
             setTimeout(() => {
               setColorTransition("pink");
               setToastMessage("Pink hydrated cobalt complex formed!");
               setTimeout(() => setToastMessage(null), 4000);
-            }, 2000);
+            }, 3000);
           }, 1000);
         }
 
