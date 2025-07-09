@@ -742,10 +742,11 @@ function VirtualLabApp({
   };
 
   return (
-    <div
-      className="w-full bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg overflow-hidden flex"
-      style={{ minHeight: "75vh" }}
-    >
+    <TooltipProvider>
+      <div
+        className="w-full bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg overflow-hidden flex"
+        style={{ minHeight: "75vh" }}
+      >
       {/* Step Procedure Side Panel */}
       <div
         className={`transition-all duration-300 ${showSteps ? "w-80" : "w-12"} flex-shrink-0`}
@@ -796,7 +797,7 @@ function VirtualLabApp({
                                 : "bg-gray-300 text-gray-600"
                           }`}
                         >
-                          {currentGuidedStep > step.id ? "���" : step.id}
+                          {currentGuidedStep > step.id ? "✓" : step.id}
                         </div>
                         <h4 className="font-semibold text-sm text-gray-900">
                           {step.title}
