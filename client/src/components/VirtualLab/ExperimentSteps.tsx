@@ -81,8 +81,8 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
               <div
                 key={step.id}
                 ref={(el) => (stepRefs.current[step.id] = el)}
-                onClick={isCompleted ? undefined : () => onStepClick(step.id)}
-                className={`p-3 rounded-lg border-2 transition-all duration-200 ${getStepBgColor(step, index)} ${isCompleted ? "cursor-not-allowed" : "cursor-pointer"}`}
+                onClick={() => onStepClick(step.id)}
+                className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${getStepBgColor(step, index)}`}
               >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-0.5">
