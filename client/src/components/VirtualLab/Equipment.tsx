@@ -30,7 +30,9 @@ interface EquipmentProps {
     cobaltChlorideAdded: boolean;
     distilledWaterAdded: boolean;
     stirrerActive: boolean;
+    stirringAnimation: boolean;
     colorTransition: "blue" | "transitioning" | "pink";
+    stirringProgress: number;
   };
 }
 
