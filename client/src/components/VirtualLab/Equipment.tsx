@@ -32,6 +32,7 @@ interface EquipmentProps {
     stirrerActive: boolean;
     colorTransition: "blue" | "transitioning" | "pink";
   };
+  dropperHasHCl?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
