@@ -367,23 +367,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
         const horizontalDistance = Math.abs(position.x - hotWaterBeaker.x);
         const verticalDistance = position.y - hotWaterBeaker.y;
 
-        const isHeating =
+        return (
           horizontalDistance < 50 &&
           verticalDistance < -30 &&
-          verticalDistance > -120;
-
-        // Debug log
-        if (hotWaterBeaker && position) {
-          console.log("Test tube heating check:", {
-            horizontalDistance,
-            verticalDistance,
-            isHeating,
-            testTubePos: position,
-            beakerPos: hotWaterBeaker,
-          });
-        }
-
-        return isHeating;
+          verticalDistance > -120
+        );
       };
 
       // Determine which test tube image to show based on reaction state
