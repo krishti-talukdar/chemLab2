@@ -358,7 +358,6 @@ function VirtualLabApp({
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
         { id: "test_tubes", name: "Test Tubes", icon: <TestTube size={36} /> },
-        { id: "dropper", name: "Dropper", icon: <Droplets size={36} /> },
         {
           id: "stirring_rod",
           name: "Stirring Rod",
