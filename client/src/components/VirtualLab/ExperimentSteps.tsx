@@ -132,7 +132,7 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                 <Tooltip key={step.id}>
                   <TooltipTrigger asChild>{stepContent}</TooltipTrigger>
                   <TooltipContent
-                    side="top"
+                    side="left"
                     className="text-white font-medium shadow-xl border-2 !z-[999999] fixed"
                     style={{
                       backgroundColor: "#394C2F",
@@ -143,8 +143,9 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                       whiteSpace: "nowrap",
                       padding: "8px 12px",
                     }}
-                    sideOffset={5}
+                    sideOffset={15}
                     avoidCollisions={true}
+                    collisionPadding={20}
                   >
                     <span
                       className="font-medium text-sm"
