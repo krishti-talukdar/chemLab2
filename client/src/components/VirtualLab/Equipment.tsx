@@ -358,7 +358,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           cobaltReactionState?.distilledWaterAdded
         ) {
           // Blue liquid test tube (after adding cobalt chloride and distilled water)
-          return "https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2F0dba4a9e1cb14c0798299e02a71a75b1?format=webp&width=800";
+          return "https://cdn.builder.io/api/v1/image/assets%2Fc2053654ab564f8eb91577d73cfc950b%2F735d1379bd5c41c8a9d160c289aa93f6?format=webp&width=800";
         } else if (cobaltReactionState?.cobaltChlorideAdded) {
           // Test tube with cobalt chloride solid at bottom
           return "https://cdn.builder.io/api/v1/image/assets%2Fc2053654ab564f8eb91577d73cfc950b%2F4049c3f958624bc1b8c72f54865b618d?format=webp&width=800";
