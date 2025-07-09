@@ -1079,6 +1079,8 @@ function VirtualLabApp({
                         colorTransition,
                         step3WaterAdded,
                       }}
+                      allEquipmentPositions={equipmentPositions}
+                      currentStep={currentStep}
                     />
                   ) : null;
                 })}
