@@ -568,17 +568,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
             ))}
           </div>
 
-          {/* Alignment guide when test tube is nearby */}
-          {hasTestTubeNearby() && (
-            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-dashed border-orange-400 bg-orange-100/50 rounded-lg animate-pulse flex items-center justify-center">
-                <span className="text-orange-600 text-xs font-bold">
-                  Test Tube
-                </span>
-              </div>
-              <div className="w-0.5 h-8 bg-orange-400 animate-pulse"></div>
-            </div>
-          )}
           {/* Chemical composition display */}
           {chemicals.length > 0 && (
             <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-3 py-2 text-xs shadow-lg">
