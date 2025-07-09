@@ -31,6 +31,7 @@ interface EquipmentProps {
     distilledWaterAdded: boolean;
     stirrerActive: boolean;
     colorTransition: "blue" | "transitioning" | "pink";
+    step3WaterAdded: boolean;
   };
 }
 
@@ -348,8 +349,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
         // Check if HCl has been added to the test tube
         const hasHCl = chemicals.some((c) => c.id === "hcl_conc");
 
+        // If step 3 water is added, show the user's provided pink image
+        if (cobaltReactionState?.step3WaterAdded) {
+          return "https://cdn.builder.io/api/v1/image/assets%2Fbb47062bd82c4f868e040d020060d188%2Feeb7df22fe61456fba4189a1ac007f37?format=webp&width=800";
+        }
         // If HCl is added to existing solution, show blue equilibrium image
-        if (
+        else if (
           hasHCl &&
           cobaltReactionState?.cobaltChlorideAdded &&
           cobaltReactionState?.distilledWaterAdded

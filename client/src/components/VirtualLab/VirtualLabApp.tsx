@@ -103,6 +103,7 @@ function VirtualLabApp({
   const [colorTransition, setColorTransition] = useState<
     "blue" | "transitioning" | "pink"
   >("pink");
+  const [step3WaterAdded, setStep3WaterAdded] = useState(false);
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -358,7 +359,6 @@ function VirtualLabApp({
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
         { id: "test_tubes", name: "Test Tubes", icon: <TestTube size={36} /> },
-        { id: "dropper", name: "Dropper", icon: <Droplets size={36} /> },
         {
           id: "stirring_rod",
           name: "Stirring Rod",
@@ -633,8 +633,23 @@ function VirtualLabApp({
               setTimeout(() => setToastMessage(null), 3000);
             } else if (chemicalId === "water" && cobaltChlorideAdded) {
               setDistilledWaterAdded(true);
-              setToastMessage("Add the stirrer");
-              setTimeout(() => setToastMessage(null), 5000);
+
+              // Check if we're in step 3 for the reverse equilibrium reaction
+              if (currentStep === 3) {
+                setStep3WaterAdded(true);
+                setToastMessage(
+                  "Color changing back to pink as the equilibrium shifts in the reverse direction!",
+                );
+                setTimeout(() => {
+                  setToastMessage(null);
+                  // Auto-advance to step 4
+                  setCurrentStep(4);
+                  onStepComplete();
+                }, 3000);
+              } else {
+                setToastMessage("Add the stirrer");
+                setTimeout(() => setToastMessage(null), 5000);
+              }
             } else if (
               chemicalId === "hcl_conc" &&
               cobaltChlorideAdded &&
@@ -647,9 +662,9 @@ function VirtualLabApp({
                 setToastMessage(null);
                 // Auto-advance to step 3
                 setCurrentStep(3);
-                setToastMessage("Moving to Step 3 automatically...");
+                setToastMessage("Moving to the next step...");
                 setTimeout(() => setToastMessage(null), 3000);
-              }, 8000);
+              }, 2000);
             } else {
               setToastMessage(
                 `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
@@ -1009,6 +1024,7 @@ function VirtualLabApp({
                     setDistilledWaterAdded(false);
                     setStirrerActive(false);
                     setColorTransition("pink");
+                    setStep3WaterAdded(false);
                   }}
                 />
               </div>
@@ -1061,6 +1077,7 @@ function VirtualLabApp({
                         distilledWaterAdded,
                         stirrerActive,
                         colorTransition,
+                        step3WaterAdded,
                       }}
                     />
                   ) : null;
