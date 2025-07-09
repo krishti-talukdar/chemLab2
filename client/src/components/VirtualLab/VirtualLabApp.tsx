@@ -1034,7 +1034,9 @@ function VirtualLabApp({
                       cobaltChlorideAdded,
                       distilledWaterAdded,
                       stirrerActive,
+                      stirringAnimation,
                       colorTransition,
+                      stirringProgress,
                     }}
                   />
                 ) : null;
