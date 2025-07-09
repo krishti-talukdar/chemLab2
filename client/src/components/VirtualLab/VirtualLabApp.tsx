@@ -502,7 +502,7 @@ function VirtualLabApp({
                 setToastMessage(
                   "Drop the test tube into the hot water beaker!",
                 );
-                setTimeout(() => setToastMessage(null), 4000);
+                // Don't clear the message automatically - it will be cleared when test tube is dropped
               }
 
               const testTube = prev.find((pos) => pos.id === "test_tubes");
