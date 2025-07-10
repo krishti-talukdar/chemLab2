@@ -64,17 +64,148 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
               </div>
             </div>
 
-            <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-              <h2 className="text-xl font-semibold text-yellow-800 mb-4">
-                📚 Data Section Coming Soon
+            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-lg">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <Beaker className="mr-2 h-6 w-6 text-blue-500" />
+                Color Change Analysis Table
               </h2>
-              <p className="text-gray-700 mb-4">
-                This section will contain detailed insights about the color
-                changes you observed during the experiment.
-              </p>
-              <p className="text-sm text-gray-600">
-                The data and explanations will be added here as requested.
-              </p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                  <thead>
+                    <tr className="bg-gray-800 text-white">
+                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
+                        S.No.
+                      </th>
+                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
+                        Action / Condition Applied
+                      </th>
+                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
+                        Observation (Colour Change)
+                      </th>
+                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
+                        Explanation (Equilibrium Shift)
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-white hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        1
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Prepared cobalt chloride solution in distilled water
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800">
+                          Pink
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Formation of hydrated cobalt complex [Co(H₂O)₆]²⁺
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        2
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Added concentrated HCl
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 mr-2">
+                          Pink
+                        </span>
+                        <span className="text-gray-500">→</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 ml-2">
+                          Blue
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Increase in Cl⁻ concentration shifts equilibrium towards
+                        [CoCl₄]²⁻ (blue complex)
+                      </td>
+                    </tr>
+                    <tr className="bg-white hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        3
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Heated the solution (≈60°C)
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 mr-1">
+                          Pink/Blue
+                        </span>
+                        <span className="text-gray-500">→</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 ml-1">
+                          Darker Blue
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Endothermic forward reaction favoured at higher
+                        temperature
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        4
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Cooled the solution in ice water
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2">
+                          Blue
+                        </span>
+                        <span className="text-gray-500">→</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 ml-2">
+                          Pink
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Exothermic reverse reaction favoured at lower
+                        temperature
+                      </td>
+                    </tr>
+                    <tr className="bg-white hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        5
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Diluted blue solution with distilled water
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2">
+                          Blue
+                        </span>
+                        <span className="text-gray-500">→</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 ml-2">
+                          Pink
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Decrease in Cl⁻ concentration shifts equilibrium back to
+                        hydrated complex
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                  🔬 Le Chatelier's Principle in Action
+                </h3>
+                <p className="text-blue-700 text-sm leading-relaxed">
+                  This experiment demonstrates how chemical equilibrium responds
+                  to changes in concentration, temperature, and dilution. The
+                  reversible reaction between [Co(H₂O)₆]²⁺ (pink) and [CoCl₄]²⁻
+                  (blue) complexes shifts according to Le Chatelier's principle,
+                  helping us understand how systems maintain equilibrium when
+                  disturbed.
+                </p>
+              </div>
             </div>
 
             <Button
