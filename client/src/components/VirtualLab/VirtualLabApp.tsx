@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { Equipment } from "./Equipment";
 import { WorkBench } from "./WorkBench";
 import { Chemical } from "./Chemical";
@@ -104,6 +104,30 @@ function VirtualLabApp({
     "blue" | "transitioning" | "pink"
   >("pink");
   const [step3WaterAdded, setStep3WaterAdded] = useState(false);
+
+  // Listen for automatic step completion events
+  useEffect(() => {
+    const handleStepComplete = (event: CustomEvent) => {
+      if (event.detail?.nextStep === 5 && currentStep === 4) {
+        setCurrentStep(5);
+        onStepComplete();
+        setToastMessage("Moving to Step 5...");
+        setTimeout(() => setToastMessage(null), 3000);
+      }
+    };
+
+    window.addEventListener(
+      "stepComplete",
+      handleStepComplete as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "stepComplete",
+        handleStepComplete as EventListener,
+      );
+    };
+  }, [currentStep, onStepComplete]);
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({

@@ -443,7 +443,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           setHeatingStartTime(Date.now());
           setShowHeatingMessage(true);
 
-          // Hide message after 4 seconds and replace image
+          // Hide message after 1 second and replace image
           setTimeout(() => {
             setShowHeatingMessage(false);
             setUseHeatedImage(true);
@@ -451,12 +451,24 @@ export const Equipment: React.FC<EquipmentProps> = ({
             // Remove beaker and show endothermic message
             setShouldHideBeaker(true);
             setShowEndothermicMessage(true);
+            console.log("Endothermic message should now be visible");
 
-            // Hide endothermic message after 5 seconds and show final image
+            // Hide endothermic message after 1 second and show final image
             setTimeout(() => {
               setShowEndothermicMessage(false);
               setUseFinalImage(true);
-            }, 5000);
+
+              // Auto-advance to step 5 after the message
+              if (onRemove && currentStep === 4) {
+                setTimeout(() => {
+                  // This will trigger step completion in the parent component
+                  const stepCompleteEvent = new CustomEvent("stepComplete", {
+                    detail: { nextStep: 5 },
+                  });
+                  window.dispatchEvent(stepCompleteEvent);
+                }, 500);
+              }
+            }, 1000);
 
             // Remove the hot water beaker from equipment list if onRemove is available
             if (onRemove) {
@@ -464,7 +476,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 onRemove("beaker_hot_water");
               }, 500); // Small delay to show the message first
             }
-          }, 4000);
+          }, 500);
         } else if (!heating && heatingStartTime) {
           // Stopped heating - reset states
           setHeatingStartTime(null);
@@ -551,8 +563,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
           {/* Endothermic reaction message */}
           {showEndothermicMessage && (
-            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-pulse shadow-lg whitespace-nowrap z-50">
-              Solution turned to blue again due to Endothermic reaction!
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
+              🧪 Solution became blue again due to Endothermic Reaction! 🧪
             </div>
           )}
         </div>
