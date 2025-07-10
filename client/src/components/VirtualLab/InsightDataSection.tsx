@@ -84,13 +84,20 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                 Color Change Analysis Table
               </h2>
 
-              {/* Table container with horizontal scroll */}
-              <div className="w-full overflow-x-auto overflow-y-auto max-h-96 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+              {/* Table container with scroll */}
+              <div
+                className="w-full border border-gray-200 rounded-lg"
+                style={{
+                  maxHeight: "400px",
+                  overflowY: "auto",
+                  overflowX: "auto",
+                }}
+              >
                 <table
-                  className="min-w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+                  className="w-full border-collapse border-0"
                   style={{ minWidth: "800px" }}
                 >
-                  <thead>
+                  <thead className="sticky top-0 z-10">
                     <tr className="bg-gray-800 text-white">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
                         S.No.
