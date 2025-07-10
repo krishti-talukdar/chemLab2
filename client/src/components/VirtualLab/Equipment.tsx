@@ -453,7 +453,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             setShowEndothermicMessage(true);
             console.log("Endothermic message should now be visible");
 
-            // Hide endothermic message after 4 seconds and show final image
+            // Hide endothermic message after 1 second and show final image
             setTimeout(() => {
               setShowEndothermicMessage(false);
               setUseFinalImage(true);
@@ -468,7 +468,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   window.dispatchEvent(stepCompleteEvent);
                 }, 500);
               }
-            }, 4000);
+            }, 1000);
 
             // Remove the hot water beaker from equipment list if onRemove is available
             if (onRemove) {
