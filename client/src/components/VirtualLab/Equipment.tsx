@@ -392,6 +392,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
         // Check if HCl has been added to the test tube
         const hasHCl = chemicals.some((c) => c.id === "hcl_conc");
 
+        // If step 4, show the new blue image
+        if (currentStep === 4) {
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2F1e855bbc913a4097867c3b1ca9db9f2a?format=webp&width=800";
+        }
         // If step 3 water is added, show the user's provided pink image
         if (cobaltReactionState?.step3WaterAdded) {
           return "https://cdn.builder.io/api/v1/image/assets%2Fbb47062bd82c4f868e040d020060d188%2Feeb7df22fe61456fba4189a1ac007f37?format=webp&width=800";
