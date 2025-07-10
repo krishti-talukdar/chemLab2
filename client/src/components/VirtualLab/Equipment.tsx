@@ -446,9 +446,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
             setShouldHideBeaker(true);
             setShowEndothermicMessage(true);
 
-            // Hide endothermic message after 5 seconds
+            // Hide endothermic message after 5 seconds and show final image
             setTimeout(() => {
               setShowEndothermicMessage(false);
+              setUseFinalImage(true);
             }, 5000);
 
             // Remove the hot water beaker from equipment list if onRemove is available
