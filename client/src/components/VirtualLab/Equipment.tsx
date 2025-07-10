@@ -532,12 +532,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             alt="Hot Water Beaker"
             className="w-28 h-32 object-contain drop-shadow-lg"
           />
-          {/* Hot water indicator with steam animation */}
-          {currentStep !== 4 && (
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-              H
-            </div>
-          )}
+
           {/* Steam animation */}
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
             {[...Array(3)].map((_, i) => (
