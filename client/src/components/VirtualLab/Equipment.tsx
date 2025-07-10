@@ -443,7 +443,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           setHeatingStartTime(Date.now());
           setShowHeatingMessage(true);
 
-          // Hide message after 4 seconds and replace image
+          // Hide message after 2 seconds and replace image
           setTimeout(() => {
             setShowHeatingMessage(false);
             setUseHeatedImage(true);
@@ -452,11 +452,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
             setShouldHideBeaker(true);
             setShowEndothermicMessage(true);
 
-            // Hide endothermic message after 5 seconds and show final image
+            // Hide endothermic message after 2 seconds and show final image
             setTimeout(() => {
               setShowEndothermicMessage(false);
               setUseFinalImage(true);
-            }, 5000);
+            }, 2000);
 
             // Remove the hot water beaker from equipment list if onRemove is available
             if (onRemove) {
@@ -464,7 +464,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 onRemove("beaker_hot_water");
               }, 500); // Small delay to show the message first
             }
-          }, 4000);
+          }, 2000);
         } else if (!heating && heatingStartTime) {
           // Stopped heating - reset states
           setHeatingStartTime(null);
