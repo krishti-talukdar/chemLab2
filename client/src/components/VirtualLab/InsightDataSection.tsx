@@ -86,10 +86,7 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
 
               {/* Table container with scroll */}
               <div className="w-full border border-gray-200 rounded-lg">
-                <table
-                  className="w-full border-collapse border-0"
-                  style={{ minWidth: "800px" }}
-                >
+                <table className="w-full border-collapse border-0">
                   <thead className="sticky top-0 z-10">
                     <tr className="bg-gray-800 text-white">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
