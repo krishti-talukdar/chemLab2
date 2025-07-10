@@ -5,6 +5,9 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { InsightModal } from "./InsightModal";
+import { CompletionModal } from "./CompletionModal";
+import { InsightDataSection } from "./InsightDataSection";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   FlaskConical,
@@ -104,6 +107,9 @@ function VirtualLabApp({
     "blue" | "transitioning" | "pink"
   >("pink");
   const [step3WaterAdded, setStep3WaterAdded] = useState(false);
+  const [showInsightModal, setShowInsightModal] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showInsightData, setShowInsightData] = useState(false);
 
   // Listen for automatic step completion events
   useEffect(() => {
@@ -113,6 +119,14 @@ function VirtualLabApp({
         onStepComplete();
         setToastMessage("Moving to Step 5...");
         setTimeout(() => setToastMessage(null), 3000);
+      } else if (event.detail?.nextStep === 6 && currentStep === 5) {
+        setCurrentStep(6);
+        onStepComplete();
+        setToastMessage("Solution turned pink! Moving to Step 6...");
+        setTimeout(() => {
+          setToastMessage(null);
+          setShowInsightModal(true);
+        }, 3000);
       }
     };
 
@@ -128,6 +142,32 @@ function VirtualLabApp({
       );
     };
   }, [currentStep, onStepComplete]);
+
+  // Handler functions for insight modal
+  const handleInsightYes = () => {
+    setShowInsightModal(false);
+    setShowInsightData(true);
+  };
+
+  const handleInsightNo = () => {
+    setShowInsightModal(false);
+    setShowCompletionModal(true);
+  };
+
+  const handleInsightDataBack = () => {
+    setShowInsightData(false);
+    setShowInsightModal(true);
+  };
+
+  const handleInsightDataComplete = () => {
+    setShowInsightData(false);
+    setShowCompletionModal(true);
+  };
+
+  const handleCompletionClose = () => {
+    setShowCompletionModal(false);
+    // Optionally navigate back to experiments list
+  };
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -1362,6 +1402,31 @@ function VirtualLabApp({
           </div>
         )}
       </div>
+
+      {/* Render Insight Data Section as overlay when active */}
+      {showInsightData && (
+        <div className="fixed inset-0 z-50 bg-white">
+          <InsightDataSection
+            onBack={handleInsightDataBack}
+            onComplete={handleInsightDataComplete}
+          />
+        </div>
+      )}
+
+      {/* Insight Modal */}
+      <InsightModal
+        open={showInsightModal}
+        onOpenChange={setShowInsightModal}
+        onYes={handleInsightYes}
+        onNo={handleInsightNo}
+      />
+
+      {/* Completion Modal */}
+      <CompletionModal
+        open={showCompletionModal}
+        onOpenChange={setShowCompletionModal}
+        onClose={handleCompletionClose}
+      />
     </TooltipProvider>
   );
 }

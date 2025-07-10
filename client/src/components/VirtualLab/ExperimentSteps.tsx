@@ -82,13 +82,13 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                 key={step.id}
                 ref={(el) => (stepRefs.current[step.id] = el)}
                 onClick={
-                  step.id >= 2 && step.id <= 7
+                  step.id >= 2 && step.id <= 6
                     ? () => onStepClick(step.id)
                     : isCompleted
                       ? undefined
                       : () => onStepClick(step.id)
                 }
-                className={`p-3 rounded-lg border-2 transition-all duration-200 ${getStepBgColor(step, index)} ${(step.id >= 2 && step.id <= 7) || !isCompleted ? "cursor-pointer" : "cursor-default"}`}
+                className={`p-3 rounded-lg border-2 transition-all duration-200 ${getStepBgColor(step, index)} ${(step.id >= 2 && step.id <= 6) || !isCompleted ? "cursor-pointer" : "cursor-default"}`}
               >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-0.5">
