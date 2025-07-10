@@ -5,6 +5,9 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { InsightModal } from "./InsightModal";
+import { CompletionModal } from "./CompletionModal";
+import { InsightDataSection } from "./InsightDataSection";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   FlaskConical,
