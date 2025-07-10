@@ -392,6 +392,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
         // If heated and timer has elapsed, show the heated image
         if (useHeatedImage && heating) {
+          // In step 4, use the new heated image
+          if (currentStep === 4) {
+            return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fb1188745942143ac9c8fd37f58bda34d?format=webp&width=800";
+          }
+          // Default heated image for other steps
           return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2F883d498732f04f049c0c6f6e05b9366d?format=webp&width=800";
         }
 
