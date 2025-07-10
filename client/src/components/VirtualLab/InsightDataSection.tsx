@@ -215,19 +215,99 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                       </td>
                     </tr>
                     <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        6
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Added more concentrated HCl solution
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 mr-2">
+                          Pink
+                        </span>
+                        <span className="text-gray-500">→</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 ml-2">
+                          Intense Blue
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Higher Cl⁻ concentration drives equilibrium further
+                        towards chloride complex formation
+                      </td>
+                    </tr>
+                    <tr className="bg-white hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        7
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Repeated heating and cooling cycles
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-1">
+                          Blue
+                        </span>
+                        <span className="text-gray-500">⇌</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 ml-1">
+                          Pink
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Reversible equilibrium shifts demonstrate temperature
+                        dependence of reaction
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        8
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Added silver nitrate (AgNO₃) solution
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2">
+                          Blue
+                        </span>
+                        <span className="text-gray-500">→</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 ml-2">
+                          Pink
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Ag⁺ ions precipitate Cl⁻ as AgCl, removing chloride and
+                        shifting equilibrium to hydrated complex
+                      </td>
+                    </tr>
+                    <tr className="bg-white hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium">
+                        9
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        Final equilibrium observation
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800">
+                          Stable Pink
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3">
+                        System returns to initial hydrated cobalt complex state
+                        demonstrating equilibrium principles
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
                       <td className="border border-gray-300 px-4 py-3 font-medium text-center">
                         <div className="flex justify-center items-center">
                           <span className="text-gray-500 text-xl">↓</span>
                         </div>
                       </td>
                       <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
-                        Continue to next analysis step
+                        Analysis Complete
                       </td>
                       <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
-                        Observe changes
+                        All observations recorded
                       </td>
                       <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
-                        Apply Le Chatelier's principle
+                        Le Chatelier's principle confirmed
                       </td>
                     </tr>
                   </tbody>
