@@ -85,7 +85,7 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
               </h2>
 
               {/* Table container with horizontal scroll */}
-              <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+              <div className="w-full overflow-x-auto overflow-y-auto max-h-96 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
                 <table
                   className="min-w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-sm"
                   style={{ minWidth: "800px" }}
@@ -205,6 +205,22 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                       <td className="border border-gray-300 px-4 py-3">
                         Decrease in Cl⁻ concentration shifts equilibrium back to
                         hydrated complex
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 font-medium text-center">
+                        <div className="flex justify-center items-center">
+                          <span className="text-gray-500 text-xl">↓</span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
+                        Continue to next analysis step
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
+                        Observe changes
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
+                        Apply Le Chatelier's principle
                       </td>
                     </tr>
                   </tbody>
