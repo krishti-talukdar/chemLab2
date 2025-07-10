@@ -72,6 +72,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [showHeatingMessage, setShowHeatingMessage] = useState(false);
   const [useHeatedImage, setUseHeatedImage] = useState(false);
   const [heatingStartTime, setHeatingStartTime] = useState<number | null>(null);
+  const [showEndothermicMessage, setShowEndothermicMessage] = useState(false);
+  const [shouldHideBeaker, setShouldHideBeaker] = useState(false);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
@@ -438,12 +440,30 @@ export const Equipment: React.FC<EquipmentProps> = ({
           setTimeout(() => {
             setShowHeatingMessage(false);
             setUseHeatedImage(true);
+
+            // Remove beaker and show endothermic message
+            setShouldHideBeaker(true);
+            setShowEndothermicMessage(true);
+
+            // Hide endothermic message after 5 seconds
+            setTimeout(() => {
+              setShowEndothermicMessage(false);
+            }, 5000);
+
+            // Remove the hot water beaker from equipment list if onRemove is available
+            if (onRemove) {
+              setTimeout(() => {
+                onRemove("beaker_hot_water");
+              }, 500); // Small delay to show the message first
+            }
           }, 4000);
         } else if (!heating && heatingStartTime) {
           // Stopped heating - reset states
           setHeatingStartTime(null);
           setShowHeatingMessage(false);
           setUseHeatedImage(false);
+          setShowEndothermicMessage(false);
+          setShouldHideBeaker(false);
         }
       }, [heating, heatingStartTime]);
 
@@ -519,6 +539,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
               Temperature of test tube is rising!
             </div>
           )}
+
+          {/* Endothermic reaction message */}
+          {showEndothermicMessage && (
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-pulse shadow-lg whitespace-nowrap z-50">
+              Solution turned to blue again due to Endothermic reaction!
+            </div>
+          )}
         </div>
       );
     }
@@ -548,6 +575,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "beaker_hot_water") {
+      // Hide beaker if it should be removed due to endothermic reaction
+      if (shouldHideBeaker) {
+        return null;
+      }
+
       // Check if there's a test tube nearby that could be aligned
       const hasTestTubeNearby = () => {
         if (!position) return false;
