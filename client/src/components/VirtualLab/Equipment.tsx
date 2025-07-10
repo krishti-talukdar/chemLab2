@@ -599,7 +599,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 ? "scale-108 rotate-2 brightness-115"
                 : heating
                   ? "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5 animate-pulse"
-                  : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
+                  : cooling
+                    ? "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5 animate-pulse"
+                    : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
               filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.15)) ${
@@ -607,7 +609,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   ? "drop-shadow(8px 16px 32px rgba(59,130,246,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.3))"
                   : heating
                     ? "drop-shadow(0 4px 8px rgba(0,0,0,0.1)) drop-shadow(0 0 15px rgba(255,165,0,0.6)) drop-shadow(0 0 25px rgba(255,69,0,0.4))"
-                    : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
+                    : cooling
+                      ? "drop-shadow(0 4px 8px rgba(0,0,0,0.1)) drop-shadow(0 0 15px rgba(0,191,255,0.6)) drop-shadow(0 0 25px rgba(30,144,255,0.4))"
+                      : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
@@ -647,6 +651,35 @@ export const Equipment: React.FC<EquipmentProps> = ({
             </>
           )}
 
+          {/* Cooling effects when test tube is above cold water beaker */}
+          {cooling && (
+            <>
+              {/* Cold waves animation */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-8 bg-gradient-to-t from-blue-400 to-transparent opacity-70 rounded-full"
+                    style={{
+                      left: `${45 + i * 15}%`,
+                      bottom: "60%",
+                      animation: `float 2s ease-in-out infinite ${i * 0.3}s`,
+                      transform: `translateX(-50%) scaleY(${1 + i * 0.2})`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Cooling indicator */}
+              <div className="absolute -top-8 -right-8 w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-lg font-bold animate-bounce">
+                ❄️
+              </div>
+
+              {/* Gentle cooling glow around test tube */}
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-400/20 to-transparent rounded-full animate-pulse pointer-events-none" />
+            </>
+          )}
+
           {/* Heating message */}
           {showHeatingMessage && (
             <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-lg whitespace-nowrap z-50">
@@ -654,10 +687,24 @@ export const Equipment: React.FC<EquipmentProps> = ({
             </div>
           )}
 
+          {/* Cooling message */}
+          {showCoolingMessage && (
+            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-lg whitespace-nowrap z-50">
+              Temperature of test tube is falling!
+            </div>
+          )}
+
           {/* Endothermic reaction message */}
           {showEndothermicMessage && (
             <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
               🧪 Solution became blue again due to Endothermic Reaction! 🧪
+            </div>
+          )}
+
+          {/* Exothermic reaction message */}
+          {showExothermicMessage && (
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
+              🧪 Solution became pink again due to Exothermic Reaction! 🧪
             </div>
           )}
         </div>
