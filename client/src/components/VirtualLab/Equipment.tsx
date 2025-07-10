@@ -385,32 +385,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
-        console.log(
-          "getTestTubeImage called - currentStep:",
-          currentStep,
-          "useHeatedImage:",
-          useHeatedImage,
-          "useFinalImage:",
-          useFinalImage,
-        );
-
         // If final image should be shown (after endothermic reaction message)
         if (useFinalImage) {
-          console.log("Using final image");
           return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fa69b69c7f47a433993fca4f013c4c0f2?format=webp&width=800";
         }
 
         // If heated and timer has elapsed, show the heated image
         if (useHeatedImage) {
-          console.log("useHeatedImage is true, currentStep:", currentStep);
-          // In step 4, use the new heated image
-          if (currentStep === 4) {
-            console.log("Using step 4 heated image");
-            return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fb1188745942143ac9c8fd37f58bda34d?format=webp&width=800";
-          }
-          // Default heated image for other steps
-          console.log("Using default heated image for step:", currentStep);
-          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2F883d498732f04f049c0c6f6e05b9366d?format=webp&width=800";
+          // Use the new heated image (since user is in experiment 3)
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fb1188745942143ac9c8fd37f58bda34d?format=webp&width=800";
         }
 
         // Check if HCl has been added to the test tube
