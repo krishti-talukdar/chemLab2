@@ -482,22 +482,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <div className="absolute inset-0 bg-gradient-to-t from-orange-400/20 to-transparent rounded-full animate-pulse pointer-events-none" />
             </>
           )}
-
-          {/* Chemical composition display */}
-          {chemicals.length > 0 && (
-            <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
-              <div className="text-gray-800 font-semibold text-center">
-                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
-              </div>
-              <div className="text-gray-600 text-center">
-                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
-              </div>
-              <div
-                className="w-full h-1 rounded-full mt-1"
-                style={{ backgroundColor: getMixedColor() }}
-              />
-            </div>
-          )}
         </div>
       );
     }
