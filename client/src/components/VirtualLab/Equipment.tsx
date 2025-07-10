@@ -385,8 +385,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
+        console.log(
+          "getTestTubeImage called - currentStep:",
+          currentStep,
+          "useHeatedImage:",
+          useHeatedImage,
+          "useFinalImage:",
+          useFinalImage,
+        );
+
         // If final image should be shown (after endothermic reaction message)
         if (useFinalImage) {
+          console.log("Using final image");
           return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fa69b69c7f47a433993fca4f013c4c0f2?format=webp&width=800";
         }
 
