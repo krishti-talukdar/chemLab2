@@ -466,6 +466,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           setUseHeatedImage(false);
           setShowEndothermicMessage(false);
           setShouldHideBeaker(false);
+          setUseFinalImage(false);
         }
       }, [heating, heatingStartTime]);
 
