@@ -76,6 +76,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [shouldHideBeaker, setShouldHideBeaker] = useState(false);
   const [useFinalImage, setUseFinalImage] = useState(false);
 
+  // Cooling states for test tube (Step 5)
+  const [showCoolingMessage, setShowCoolingMessage] = useState(false);
+  const [useCooledImage, setUseCooledImage] = useState(false);
+  const [coolingStartTime, setCoolingStartTime] = useState<number | null>(null);
+  const [showExothermicMessage, setShowExothermicMessage] = useState(false);
+  const [shouldHideColdBeaker, setShouldHideColdBeaker] = useState(false);
+  const [useCooledFinalImage, setUseCooledFinalImage] = useState(false);
+
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
@@ -383,8 +391,40 @@ export const Equipment: React.FC<EquipmentProps> = ({
         );
       };
 
+      // Check if test tube is being cooled (positioned above cold water beaker in step 5)
+      const isBeingCooled = () => {
+        if (!position) return false;
+
+        const coldWaterBeaker = allEquipmentPositions.find(
+          (pos) => pos.id === "beaker_cold_water",
+        );
+
+        if (!coldWaterBeaker) return false;
+
+        // Check if test tube is positioned above the cold water beaker
+        const horizontalDistance = Math.abs(position.x - coldWaterBeaker.x);
+        const verticalDistance = position.y - coldWaterBeaker.y;
+
+        // Test tube should be directly above and very close
+        return (
+          horizontalDistance < 25 &&
+          verticalDistance < -15 &&
+          verticalDistance > -60
+        );
+      };
+
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
+        // If cooled final image should be shown (after exothermic reaction message in step 5)
+        if (useCooledFinalImage) {
+          return "https://cdn.builder.io/api/v1/image/assets%2Fbb47062bd82c4f868e040d020060d188%2Feeb7df22fe61456fba4189a1ac007f37?format=webp&width=800";
+        }
+
+        // If cooled and timer has elapsed, show the cooled image
+        if (useCooledImage) {
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fb1188745942143ac9c8fd37f58bda34d?format=webp&width=800";
+        }
+
         // If final image should be shown (after endothermic reaction message)
         if (useFinalImage) {
           return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fa69b69c7f47a433993fca4f013c4c0f2?format=webp&width=800";
@@ -435,6 +475,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       };
 
       const heating = isBeingHeated();
+      const cooling = isBeingCooled();
 
       // Handle heating state changes
       useEffect(() => {
@@ -487,6 +528,58 @@ export const Equipment: React.FC<EquipmentProps> = ({
           setUseFinalImage(false);
         }
       }, [heating, heatingStartTime]);
+
+      // Handle cooling state changes (Step 5)
+      useEffect(() => {
+        if (cooling && !coolingStartTime && currentStep === 5) {
+          // Start cooling - show message immediately
+          setCoolingStartTime(Date.now());
+          setShowCoolingMessage(true);
+
+          // Hide message after 1 second and replace image
+          setTimeout(() => {
+            setShowCoolingMessage(false);
+            setUseCooledImage(true);
+
+            // Remove cold beaker and show exothermic message
+            setShouldHideColdBeaker(true);
+            setShowExothermicMessage(true);
+            console.log("Exothermic message should now be visible");
+
+            // Hide exothermic message after 1 second and show final image
+            setTimeout(() => {
+              setShowExothermicMessage(false);
+              setUseCooledFinalImage(true);
+
+              // Auto-advance to step 6 after the message
+              if (onRemove && currentStep === 5) {
+                setTimeout(() => {
+                  // This will trigger step completion in the parent component
+                  const stepCompleteEvent = new CustomEvent("stepComplete", {
+                    detail: { nextStep: 6 },
+                  });
+                  window.dispatchEvent(stepCompleteEvent);
+                }, 500);
+              }
+            }, 1000);
+
+            // Remove the cold water beaker from equipment list if onRemove is available
+            if (onRemove) {
+              setTimeout(() => {
+                onRemove("beaker_cold_water");
+              }, 500); // Small delay to show the message first
+            }
+          }, 500);
+        } else if (!cooling && coolingStartTime) {
+          // Stopped cooling - reset states
+          setCoolingStartTime(null);
+          setShowCoolingMessage(false);
+          setUseCooledImage(false);
+          setShowExothermicMessage(false);
+          setShouldHideColdBeaker(false);
+          setUseCooledFinalImage(false);
+        }
+      }, [cooling, coolingStartTime, currentStep]);
 
       return (
         <div className="relative group">
