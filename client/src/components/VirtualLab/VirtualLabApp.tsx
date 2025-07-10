@@ -1402,6 +1402,31 @@ function VirtualLabApp({
           </div>
         )}
       </div>
+
+      {/* Render Insight Data Section as overlay when active */}
+      {showInsightData && (
+        <div className="fixed inset-0 z-50 bg-white">
+          <InsightDataSection
+            onBack={handleInsightDataBack}
+            onComplete={handleInsightDataComplete}
+          />
+        </div>
+      )}
+
+      {/* Insight Modal */}
+      <InsightModal
+        open={showInsightModal}
+        onOpenChange={setShowInsightModal}
+        onYes={handleInsightYes}
+        onNo={handleInsightNo}
+      />
+
+      {/* Completion Modal */}
+      <CompletionModal
+        open={showCompletionModal}
+        onOpenChange={setShowCompletionModal}
+        onClose={handleCompletionClose}
+      />
     </TooltipProvider>
   );
 }
