@@ -12,8 +12,8 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
   onComplete,
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 overflow-y-auto">
-      <div className="max-w-7xl mx-auto">
+    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-7xl mx-auto h-full overflow-y-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 sm:mb-6 border-2 border-blue-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -84,13 +84,10 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                 Color Change Analysis Table
               </h2>
 
-              {/* Table container with horizontal scroll */}
-              <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-                <table
-                  className="min-w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-sm"
-                  style={{ minWidth: "800px" }}
-                >
-                  <thead>
+              {/* Table container with scroll */}
+              <div className="w-full border border-gray-200 rounded-lg">
+                <table className="w-full border-collapse border-0">
+                  <thead className="sticky top-0 z-10">
                     <tr className="bg-gray-800 text-white">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
                         S.No.
