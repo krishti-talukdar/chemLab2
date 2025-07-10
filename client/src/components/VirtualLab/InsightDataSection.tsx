@@ -284,22 +284,6 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                         demonstrating equilibrium principles
                       </td>
                     </tr>
-                    <tr className="bg-gray-50 hover:bg-gray-100 transition-colors">
-                      <td className="border border-gray-300 px-4 py-3 font-medium text-center">
-                        <div className="flex justify-center items-center">
-                          <span className="text-gray-500 text-xl">↓</span>
-                        </div>
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
-                        Analysis Complete
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
-                        All observations recorded
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-center text-gray-600 italic">
-                        Le Chatelier's principle confirmed
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
