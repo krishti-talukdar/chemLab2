@@ -68,6 +68,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const lastUpdateTime = useRef(0);
   const animationFrameId = useRef<number>();
 
+  // Heating states for test tube
+  const [showHeatingMessage, setShowHeatingMessage] = useState(false);
+  const [useHeatedImage, setUseHeatedImage] = useState(false);
+  const [heatingStartTime, setHeatingStartTime] = useState<number | null>(null);
+  const [showEndothermicMessage, setShowEndothermicMessage] = useState(false);
+  const [shouldHideBeaker, setShouldHideBeaker] = useState(false);
+  const [useFinalImage, setUseFinalImage] = useState(false);
+
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
@@ -377,6 +385,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
+        // If final image should be shown (after endothermic reaction message)
+        if (useFinalImage) {
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fa69b69c7f47a433993fca4f013c4c0f2?format=webp&width=800";
+        }
+
+        // If heated and timer has elapsed, show the heated image
+        if (useHeatedImage) {
+          // Use the new heated image (since user is in experiment 3)
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fb1188745942143ac9c8fd37f58bda34d?format=webp&width=800";
+        }
+
         // Check if HCl has been added to the test tube
         const hasHCl = chemicals.some((c) => c.id === "hcl_conc");
 
@@ -416,6 +435,46 @@ export const Equipment: React.FC<EquipmentProps> = ({
       };
 
       const heating = isBeingHeated();
+
+      // Handle heating state changes
+      useEffect(() => {
+        if (heating && !heatingStartTime) {
+          // Start heating - show message immediately
+          setHeatingStartTime(Date.now());
+          setShowHeatingMessage(true);
+
+          // Hide message after 4 seconds and replace image
+          setTimeout(() => {
+            setShowHeatingMessage(false);
+            setUseHeatedImage(true);
+
+            // Remove beaker and show endothermic message
+            setShouldHideBeaker(true);
+            setShowEndothermicMessage(true);
+
+            // Hide endothermic message after 5 seconds and show final image
+            setTimeout(() => {
+              setShowEndothermicMessage(false);
+              setUseFinalImage(true);
+            }, 5000);
+
+            // Remove the hot water beaker from equipment list if onRemove is available
+            if (onRemove) {
+              setTimeout(() => {
+                onRemove("beaker_hot_water");
+              }, 500); // Small delay to show the message first
+            }
+          }, 4000);
+        } else if (!heating && heatingStartTime) {
+          // Stopped heating - reset states
+          setHeatingStartTime(null);
+          setShowHeatingMessage(false);
+          setUseHeatedImage(false);
+          setShowEndothermicMessage(false);
+          setShouldHideBeaker(false);
+          setUseFinalImage(false);
+        }
+      }, [heating, heatingStartTime]);
 
       return (
         <div className="relative group">
@@ -483,19 +542,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
             </>
           )}
 
-          {/* Chemical composition display */}
-          {chemicals.length > 0 && (
-            <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-lg min-w-max">
-              <div className="text-gray-800 font-semibold text-center">
-                {chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
-              </div>
-              <div className="text-gray-600 text-center">
-                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
-              </div>
-              <div
-                className="w-full h-1 rounded-full mt-1"
-                style={{ backgroundColor: getMixedColor() }}
-              />
+          {/* Heating message */}
+          {showHeatingMessage && (
+            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-lg whitespace-nowrap z-50">
+              Temperature of test tube is rising!
+            </div>
+          )}
+
+          {/* Endothermic reaction message */}
+          {showEndothermicMessage && (
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-pulse shadow-lg whitespace-nowrap z-50">
+              Solution turned to blue again due to Endothermic reaction!
             </div>
           )}
         </div>
@@ -527,6 +584,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "beaker_hot_water") {
+      // Hide beaker if it should be removed due to endothermic reaction
+      if (shouldHideBeaker) {
+        return null;
+      }
+
       // Check if there's a test tube nearby that could be aligned
       const hasTestTubeNearby = () => {
         if (!position) return false;
@@ -548,12 +610,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             alt="Hot Water Beaker"
             className="w-28 h-32 object-contain drop-shadow-lg"
           />
-          {/* Hot water indicator with steam animation */}
-          {currentStep !== 4 && (
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-              H
-            </div>
-          )}
+
           {/* Steam animation */}
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
             {[...Array(3)].map((_, i) => (
@@ -1532,28 +1589,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
         >
           {name}
         </span>
-      )}
-
-      {/* Enhanced chemical composition display */}
-      {chemicals.length > 0 && isOnWorkbench && (
-        <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
-          <div className="text-gray-800 font-medium">
-            {chemicals
-              .map((chemical) => chemical.name.split(" ")[0])
-              .join(" + ")}
-          </div>
-          <div className="text-gray-600 text-center">
-            {chemicals
-              .reduce((sum, chemical) => sum + chemical.amount, 0)
-              .toFixed(1)}{" "}
-            mL
-          </div>
-          {/* Color indicator */}
-          <div
-            className="w-full h-1 rounded-full mt-1"
-            style={{ backgroundColor: getMixedColor() }}
-          ></div>
-        </div>
       )}
 
       {/* Small undo button when on workbench */}
