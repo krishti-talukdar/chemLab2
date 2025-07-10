@@ -107,6 +107,9 @@ function VirtualLabApp({
     "blue" | "transitioning" | "pink"
   >("pink");
   const [step3WaterAdded, setStep3WaterAdded] = useState(false);
+  const [showInsightModal, setShowInsightModal] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showInsightData, setShowInsightData] = useState(false);
 
   // Listen for automatic step completion events
   useEffect(() => {
