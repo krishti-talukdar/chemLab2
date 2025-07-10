@@ -452,11 +452,22 @@ export const Equipment: React.FC<EquipmentProps> = ({
             setShouldHideBeaker(true);
             setShowEndothermicMessage(true);
 
-            // Hide endothermic message after 1 second and show final image
+            // Hide endothermic message after 3 seconds and show final image
             setTimeout(() => {
               setShowEndothermicMessage(false);
               setUseFinalImage(true);
-            }, 1000);
+
+              // Auto-advance to step 5 after the message
+              if (onRemove && currentStep === 4) {
+                setTimeout(() => {
+                  // This will trigger step completion in the parent component
+                  const stepCompleteEvent = new CustomEvent("stepComplete", {
+                    detail: { nextStep: 5 },
+                  });
+                  window.dispatchEvent(stepCompleteEvent);
+                }, 500);
+              }
+            }, 3000);
 
             // Remove the hot water beaker from equipment list if onRemove is available
             if (onRemove) {
@@ -552,7 +563,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {/* Endothermic reaction message */}
           {showEndothermicMessage && (
             <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-pulse shadow-lg whitespace-nowrap z-50">
-              Solution turned to blue again due to Endothermic reaction!
+              Solution became blue again due to Endothermic Reaction!
             </div>
           )}
         </div>
