@@ -76,6 +76,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [shouldHideBeaker, setShouldHideBeaker] = useState(false);
   const [useFinalImage, setUseFinalImage] = useState(false);
 
+  // Cooling states for test tube (Step 5)
+  const [showCoolingMessage, setShowCoolingMessage] = useState(false);
+  const [useCooledImage, setUseCooledImage] = useState(false);
+  const [coolingStartTime, setCoolingStartTime] = useState<number | null>(null);
+  const [showExothermicMessage, setShowExothermicMessage] = useState(false);
+  const [shouldHideColdBeaker, setShouldHideColdBeaker] = useState(false);
+  const [useCooledFinalImage, setUseCooledFinalImage] = useState(false);
+
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
@@ -383,8 +391,40 @@ export const Equipment: React.FC<EquipmentProps> = ({
         );
       };
 
+      // Check if test tube is being cooled (positioned above cold water beaker in step 5)
+      const isBeingCooled = () => {
+        if (!position) return false;
+
+        const coldWaterBeaker = allEquipmentPositions.find(
+          (pos) => pos.id === "beaker_cold_water",
+        );
+
+        if (!coldWaterBeaker) return false;
+
+        // Check if test tube is positioned above the cold water beaker
+        const horizontalDistance = Math.abs(position.x - coldWaterBeaker.x);
+        const verticalDistance = position.y - coldWaterBeaker.y;
+
+        // Test tube should be directly above and very close
+        return (
+          horizontalDistance < 25 &&
+          verticalDistance < -15 &&
+          verticalDistance > -60
+        );
+      };
+
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
+        // If cooled final image should be shown (after exothermic reaction message in step 5)
+        if (useCooledFinalImage) {
+          return "https://cdn.builder.io/api/v1/image/assets%2Fbb47062bd82c4f868e040d020060d188%2Feeb7df22fe61456fba4189a1ac007f37?format=webp&width=800";
+        }
+
+        // If cooled and timer has elapsed, show the cooled image
+        if (useCooledImage) {
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fb1188745942143ac9c8fd37f58bda34d?format=webp&width=800";
+        }
+
         // If final image should be shown (after endothermic reaction message)
         if (useFinalImage) {
           return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2Fa69b69c7f47a433993fca4f013c4c0f2?format=webp&width=800";
@@ -435,6 +475,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       };
 
       const heating = isBeingHeated();
+      const cooling = isBeingCooled();
 
       // Handle heating state changes
       useEffect(() => {
@@ -488,6 +529,58 @@ export const Equipment: React.FC<EquipmentProps> = ({
         }
       }, [heating, heatingStartTime]);
 
+      // Handle cooling state changes (Step 5)
+      useEffect(() => {
+        if (cooling && !coolingStartTime && currentStep === 5) {
+          // Start cooling - show message immediately
+          setCoolingStartTime(Date.now());
+          setShowCoolingMessage(true);
+
+          // Hide message after 1 second and replace image
+          setTimeout(() => {
+            setShowCoolingMessage(false);
+            setUseCooledImage(true);
+
+            // Remove cold beaker and show exothermic message
+            setShouldHideColdBeaker(true);
+            setShowExothermicMessage(true);
+            console.log("Exothermic message should now be visible");
+
+            // Hide exothermic message after 1 second and show final image
+            setTimeout(() => {
+              setShowExothermicMessage(false);
+              setUseCooledFinalImage(true);
+
+              // Auto-advance to step 6 after the message
+              if (onRemove && currentStep === 5) {
+                setTimeout(() => {
+                  // This will trigger step completion in the parent component
+                  const stepCompleteEvent = new CustomEvent("stepComplete", {
+                    detail: { nextStep: 6 },
+                  });
+                  window.dispatchEvent(stepCompleteEvent);
+                }, 500);
+              }
+            }, 1000);
+
+            // Remove the cold water beaker from equipment list if onRemove is available
+            if (onRemove) {
+              setTimeout(() => {
+                onRemove("beaker_cold_water");
+              }, 500); // Small delay to show the message first
+            }
+          }, 500);
+        } else if (!cooling && coolingStartTime) {
+          // Stopped cooling - reset states
+          setCoolingStartTime(null);
+          setShowCoolingMessage(false);
+          setUseCooledImage(false);
+          setShowExothermicMessage(false);
+          setShouldHideColdBeaker(false);
+          setUseCooledFinalImage(false);
+        }
+      }, [cooling, coolingStartTime, currentStep]);
+
       return (
         <div className="relative group">
           <img
@@ -506,7 +599,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 ? "scale-108 rotate-2 brightness-115"
                 : heating
                   ? "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5 animate-pulse"
-                  : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
+                  : cooling
+                    ? "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5 animate-pulse"
+                    : "group-hover:scale-103 group-hover:brightness-108 group-hover:rotate-0.5"
             }`}
             style={{
               filter: `drop-shadow(4px 8px 16px rgba(0,0,0,0.15)) ${
@@ -514,7 +609,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   ? "drop-shadow(8px 16px 32px rgba(59,130,246,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.3))"
                   : heating
                     ? "drop-shadow(0 4px 8px rgba(0,0,0,0.1)) drop-shadow(0 0 15px rgba(255,165,0,0.6)) drop-shadow(0 0 25px rgba(255,69,0,0.4))"
-                    : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
+                    : cooling
+                      ? "drop-shadow(0 4px 8px rgba(0,0,0,0.1)) drop-shadow(0 0 15px rgba(0,191,255,0.6)) drop-shadow(0 0 25px rgba(30,144,255,0.4))"
+                      : "drop-shadow(0 4px 8px rgba(0,0,0,0.1))"
               }`,
               imageRendering: "auto",
               transformOrigin: "center bottom",
@@ -554,6 +651,35 @@ export const Equipment: React.FC<EquipmentProps> = ({
             </>
           )}
 
+          {/* Cooling effects when test tube is above cold water beaker */}
+          {cooling && (
+            <>
+              {/* Cold waves animation */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-8 bg-gradient-to-t from-blue-400 to-transparent opacity-70 rounded-full"
+                    style={{
+                      left: `${45 + i * 15}%`,
+                      bottom: "60%",
+                      animation: `float 2s ease-in-out infinite ${i * 0.3}s`,
+                      transform: `translateX(-50%) scaleY(${1 + i * 0.2})`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Cooling indicator */}
+              <div className="absolute -top-8 -right-8 w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-lg font-bold animate-bounce">
+                ❄️
+              </div>
+
+              {/* Gentle cooling glow around test tube */}
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-400/20 to-transparent rounded-full animate-pulse pointer-events-none" />
+            </>
+          )}
+
           {/* Heating message */}
           {showHeatingMessage && (
             <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-lg whitespace-nowrap z-50">
@@ -561,10 +687,24 @@ export const Equipment: React.FC<EquipmentProps> = ({
             </div>
           )}
 
+          {/* Cooling message */}
+          {showCoolingMessage && (
+            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-lg whitespace-nowrap z-50">
+              Temperature of test tube is falling!
+            </div>
+          )}
+
           {/* Endothermic reaction message */}
           {showEndothermicMessage && (
             <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
               🧪 Solution became blue again due to Endothermic Reaction! 🧪
+            </div>
+          )}
+
+          {/* Exothermic reaction message */}
+          {showExothermicMessage && (
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
+              🧪 Solution became pink again due to Exothermic Reaction! 🧪
             </div>
           )}
         </div>
@@ -656,6 +796,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "beaker_cold_water") {
+      // Hide beaker if it should be removed due to exothermic reaction
+      if (shouldHideColdBeaker) {
+        return null;
+      }
+
       return (
         <div className="relative">
           <img
@@ -663,6 +808,23 @@ export const Equipment: React.FC<EquipmentProps> = ({
             alt="Cold Water Beaker"
             className="w-28 h-32 object-contain drop-shadow-lg"
           />
+
+          {/* Cold ice crystals animation */}
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 bg-cyan-300 opacity-80 rounded-full animate-pulse"
+                style={{
+                  position: "absolute",
+                  left: `${i * 6 - 9}px`,
+                  animationDelay: `${i * 0.4}s`,
+                  animationDuration: "1.5s",
+                }}
+              />
+            ))}
+          </div>
+
           {/* Cold water indicator */}
           <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
             C
