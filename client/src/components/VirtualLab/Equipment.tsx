@@ -468,7 +468,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   window.dispatchEvent(stepCompleteEvent);
                 }, 500);
               }
-            }, 3000);
+            }, 1000);
 
             // Remove the hot water beaker from equipment list if onRemove is available
             if (onRemove) {
