@@ -528,6 +528,14 @@ function VirtualLabApp({
                 );
                 // Don't clear the message automatically - it will be cleared when test tube is dropped
               }
+            } else if (id === "beaker_cold_water") {
+              // Show message for step 5 when cold water beaker is placed
+              if (currentStep === 5) {
+                setToastMessage(
+                  "Drop the test tube into the cold water beaker!",
+                );
+                // Don't clear the message automatically - it will be cleared when test tube is dropped
+              }
 
               const testTube = prev.find((pos) => pos.id === "test_tubes");
               if (testTube) {
@@ -547,6 +555,10 @@ function VirtualLabApp({
               const hotWaterBeaker = prev.find(
                 (pos) => pos.id === "beaker_hot_water",
               );
+              const coldWaterBeaker = prev.find(
+                (pos) => pos.id === "beaker_cold_water",
+              );
+
               if (hotWaterBeaker) {
                 const distance = Math.sqrt(
                   Math.pow(x - hotWaterBeaker.x, 2) +
@@ -564,6 +576,28 @@ function VirtualLabApp({
                           ...pos,
                           x: hotWaterBeaker.x,
                           y: hotWaterBeaker.y - 35,
+                        }
+                      : pos,
+                  );
+                }
+              }
+
+              // Step 5: Handle cooling when test tube is dropped into cold water beaker
+              if (coldWaterBeaker && currentStep === 5) {
+                const distance = Math.sqrt(
+                  Math.pow(x - coldWaterBeaker.x, 2) +
+                    Math.pow(y - coldWaterBeaker.y, 2),
+                );
+                if (distance < 200) {
+                  // Clear any existing message when test tube is dropped into cold beaker
+                  setToastMessage(null);
+                  // Auto-align: Position test tube directly above cold water beaker
+                  return prev.map((pos) =>
+                    pos.id === id
+                      ? {
+                          ...pos,
+                          x: coldWaterBeaker.x,
+                          y: coldWaterBeaker.y - 35,
                         }
                       : pos,
                   );
