@@ -12,7 +12,7 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
   onComplete,
 }) => {
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 overflow-y-auto">
+    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 sm:mb-6 border-2 border-blue-200">
