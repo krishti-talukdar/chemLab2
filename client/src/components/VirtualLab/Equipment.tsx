@@ -68,6 +68,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const lastUpdateTime = useRef(0);
   const animationFrameId = useRef<number>();
 
+  // Heating states for test tube
+  const [showHeatingMessage, setShowHeatingMessage] = useState(false);
+  const [useHeatedImage, setUseHeatedImage] = useState(false);
+  const [heatingStartTime, setHeatingStartTime] = useState<number | null>(null);
+
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
@@ -377,6 +382,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       // Determine which test tube image to show based on reaction state
       const getTestTubeImage = () => {
+        // If heated and timer has elapsed, show the heated image
+        if (useHeatedImage && heating) {
+          return "https://cdn.builder.io/api/v1/image/assets%2F3095198ab756429ab32367b162cbcf39%2F883d498732f04f049c0c6f6e05b9366d?format=webp&width=800";
+        }
+
         // Check if HCl has been added to the test tube
         const hasHCl = chemicals.some((c) => c.id === "hcl_conc");
 
@@ -416,6 +426,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
       };
 
       const heating = isBeingHeated();
+
+      // Handle heating state changes
+      useEffect(() => {
+        if (heating && !heatingStartTime) {
+          // Start heating - show message immediately
+          setHeatingStartTime(Date.now());
+          setShowHeatingMessage(true);
+
+          // Hide message after 4 seconds and replace image
+          setTimeout(() => {
+            setShowHeatingMessage(false);
+            setUseHeatedImage(true);
+          }, 4000);
+        } else if (!heating && heatingStartTime) {
+          // Stopped heating - reset states
+          setHeatingStartTime(null);
+          setShowHeatingMessage(false);
+          setUseHeatedImage(false);
+        }
+      }, [heating, heatingStartTime]);
 
       return (
         <div className="relative group">
@@ -481,6 +511,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
               {/* Gentle heating glow around test tube */}
               <div className="absolute inset-0 bg-gradient-to-t from-orange-400/20 to-transparent rounded-full animate-pulse pointer-events-none" />
             </>
+          )}
+
+          {/* Heating message */}
+          {showHeatingMessage && (
+            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-lg whitespace-nowrap z-50">
+              Temperature of test tube is rising!
+            </div>
           )}
         </div>
       );
