@@ -42,36 +42,54 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
         </div>
 
         {/* Content Container */}
-        <div className="bg-white rounded-lg shadow-lg border-2 border-blue-200 overflow-hidden">
-          <div className="text-center space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="space-y-6">
+          {/* Color indicators section */}
+          <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-blue-200">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
                 <Droplets className="h-8 w-8 text-pink-500 mx-auto mb-2" />
-                <h3 className="font-semibold text-pink-800">Pink Solution</h3>
-                <p className="text-sm text-pink-600">Hydrated cobalt complex</p>
+                <h3 className="font-semibold text-pink-800 text-center">
+                  Pink Solution
+                </h3>
+                <p className="text-sm text-pink-600 text-center">
+                  Hydrated cobalt complex
+                </p>
               </div>
               <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                 <Beaker className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-                <h3 className="font-semibold text-blue-800">Blue Solution</h3>
-                <p className="text-sm text-blue-600">Chloride complex</p>
+                <h3 className="font-semibold text-blue-800 text-center">
+                  Blue Solution
+                </h3>
+                <p className="text-sm text-blue-600 text-center">
+                  Chloride complex
+                </p>
               </div>
               <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
                 <Thermometer className="h-8 w-8 text-orange-500 mx-auto mb-2" />
-                <h3 className="font-semibold text-orange-800">
+                <h3 className="font-semibold text-orange-800 text-center">
                   Temperature Effect
                 </h3>
-                <p className="text-sm text-orange-600">Equilibrium shifts</p>
+                <p className="text-sm text-orange-600 text-center">
+                  Equilibrium shifts
+                </p>
               </div>
             </div>
+          </div>
 
-            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-lg">
-              <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+          {/* Table Section */}
+          <div className="bg-white rounded-lg shadow-lg border-2 border-blue-200">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center justify-center">
                 <Beaker className="mr-2 h-6 w-6 text-blue-500" />
                 Color Change Analysis Table
               </h2>
 
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+              {/* Table container with horizontal scroll */}
+              <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+                <table
+                  className="min-w-full border-collapse border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+                  style={{ minWidth: "800px" }}
+                >
                   <thead>
                     <tr className="bg-gray-800 text-white">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">
