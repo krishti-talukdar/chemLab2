@@ -113,6 +113,11 @@ function VirtualLabApp({
         onStepComplete();
         setToastMessage("Moving to Step 5...");
         setTimeout(() => setToastMessage(null), 3000);
+      } else if (event.detail?.nextStep === 6 && currentStep === 5) {
+        setCurrentStep(6);
+        onStepComplete();
+        setToastMessage("Solution turned pink! Moving to Step 6...");
+        setTimeout(() => setToastMessage(null), 3000);
       }
     };
 
