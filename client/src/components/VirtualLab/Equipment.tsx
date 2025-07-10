@@ -74,6 +74,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [heatingStartTime, setHeatingStartTime] = useState<number | null>(null);
   const [showEndothermicMessage, setShowEndothermicMessage] = useState(false);
   const [shouldHideBeaker, setShouldHideBeaker] = useState(false);
+  const [useFinalImage, setUseFinalImage] = useState(false);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
