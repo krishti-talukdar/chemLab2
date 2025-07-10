@@ -143,6 +143,32 @@ function VirtualLabApp({
     };
   }, [currentStep, onStepComplete]);
 
+  // Handler functions for insight modal
+  const handleInsightYes = () => {
+    setShowInsightModal(false);
+    setShowInsightData(true);
+  };
+
+  const handleInsightNo = () => {
+    setShowInsightModal(false);
+    setShowCompletionModal(true);
+  };
+
+  const handleInsightDataBack = () => {
+    setShowInsightData(false);
+    setShowInsightModal(true);
+  };
+
+  const handleInsightDataComplete = () => {
+    setShowInsightData(false);
+    setShowCompletionModal(true);
+  };
+
+  const handleCompletionClose = () => {
+    setShowCompletionModal(false);
+    // Optionally navigate back to experiments list
+  };
+
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
     id: stepData.id,
