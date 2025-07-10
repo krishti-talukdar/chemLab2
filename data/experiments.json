@@ -207,13 +207,6 @@
       },
       {
         "id": 6,
-        "title": "Concentration Changes",
-        "description": "Systematically add different concentrations of chloride ions and observe the corresponding equilibrium shifts.",
-        "duration": "12 minutes",
-        "completed": false
-      },
-      {
-        "id": 7,
         "title": "Record Observations",
         "description": "Document all color changes and relate them to Le Chatelier's principle. Calculate equilibrium constants where applicable.",
         "duration": "7 minutes",
