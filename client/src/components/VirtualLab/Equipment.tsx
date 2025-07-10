@@ -451,6 +451,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             // Remove beaker and show endothermic message
             setShouldHideBeaker(true);
             setShowEndothermicMessage(true);
+            console.log("Endothermic message should now be visible");
 
             // Hide endothermic message after 3 seconds and show final image
             setTimeout(() => {
@@ -562,8 +563,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
           {/* Endothermic reaction message */}
           {showEndothermicMessage && (
-            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-pulse shadow-lg whitespace-nowrap z-50">
-              Solution became blue again due to Endothermic Reaction!
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
+              🧪 Solution became blue again due to Endothermic Reaction! 🧪
             </div>
           )}
         </div>
