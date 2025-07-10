@@ -225,7 +225,10 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                 </p>
               </div>
             </div>
+          </div>
 
+          {/* Completion Button Section */}
+          <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-blue-200 text-center">
             <Button
               onClick={onComplete}
               className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-lg transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
