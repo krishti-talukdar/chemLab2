@@ -12,20 +12,20 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
   onComplete,
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 overflow-y-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6 border-2 border-blue-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 sm:mb-6 border-2 border-blue-200">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center space-x-3">
               <div className="bg-blue-500 rounded-full p-2">
                 <Beaker className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-blue-800">
+                <h1 className="text-xl sm:text-2xl font-bold text-blue-800">
                   Color Change Analysis
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-sm sm:text-base">
                   Understanding Le Chatelier's Principle
                 </p>
               </div>
@@ -33,7 +33,7 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
             <Button
               onClick={onBack}
               variant="outline"
-              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50 w-fit"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -41,8 +41,8 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
           </div>
         </div>
 
-        {/* Content Placeholder */}
-        <div className="bg-white rounded-lg shadow-lg p-8 border-2 border-blue-200">
+        {/* Content Container */}
+        <div className="bg-white rounded-lg shadow-lg border-2 border-blue-200 overflow-hidden">
           <div className="text-center space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
@@ -200,7 +200,7 @@ export const InsightDataSection: React.FC<InsightDataSectionProps> = ({
                 <p className="text-blue-700 text-sm leading-relaxed">
                   This experiment demonstrates how chemical equilibrium responds
                   to changes in concentration, temperature, and dilution. The
-                  reversible reaction between [Co(H₂O)₆]²⁺ (pink) and [CoCl₄]²⁻
+                  reversible reaction between [Co(H₂O)₆]²⁺ (pink) and [CoCl��]²⁻
                   (blue) complexes shifts according to Le Chatelier's principle,
                   helping us understand how systems maintain equilibrium when
                   disturbed.
