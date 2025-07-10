@@ -123,7 +123,10 @@ function VirtualLabApp({
         setCurrentStep(6);
         onStepComplete();
         setToastMessage("Solution turned pink! Moving to Step 6...");
-        setTimeout(() => setToastMessage(null), 3000);
+        setTimeout(() => {
+          setToastMessage(null);
+          setShowInsightModal(true);
+        }, 3000);
       }
     };
 
