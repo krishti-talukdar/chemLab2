@@ -796,6 +796,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "beaker_cold_water") {
+      // Hide beaker if it should be removed due to exothermic reaction
+      if (shouldHideColdBeaker) {
+        return null;
+      }
+
       return (
         <div className="relative">
           <img
@@ -803,6 +808,23 @@ export const Equipment: React.FC<EquipmentProps> = ({
             alt="Cold Water Beaker"
             className="w-28 h-32 object-contain drop-shadow-lg"
           />
+
+          {/* Cold ice crystals animation */}
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 bg-cyan-300 opacity-80 rounded-full animate-pulse"
+                style={{
+                  position: "absolute",
+                  left: `${i * 6 - 9}px`,
+                  animationDelay: `${i * 0.4}s`,
+                  animationDuration: "1.5s",
+                }}
+              />
+            ))}
+          </div>
+
           {/* Cold water indicator */}
           <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
             C
