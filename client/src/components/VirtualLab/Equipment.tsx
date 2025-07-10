@@ -476,7 +476,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 onRemove("beaker_hot_water");
               }, 500); // Small delay to show the message first
             }
-          }, 1000);
+          }, 500);
         } else if (!heating && heatingStartTime) {
           // Stopped heating - reset states
           setHeatingStartTime(null);
