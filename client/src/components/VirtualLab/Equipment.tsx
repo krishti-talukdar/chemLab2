@@ -559,12 +559,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
             setShowExothermicMessage(true);
             console.log("Exothermic message should now be visible");
 
-            // Hide exothermic message after 1 second and show final image
+            // Keep exothermic message visible for longer, then hide and show final image
             setTimeout(() => {
               setShowExothermicMessage(false);
               setUseCooledFinalImage(true);
 
-              // Auto-advance to step 6 after the message
+              // Auto-advance to step 6 after keeping the message visible longer
               if (onRemove && currentStep === 5) {
                 setTimeout(() => {
                   // This will trigger step completion in the parent component
@@ -574,7 +574,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   window.dispatchEvent(stepCompleteEvent);
                 }, 500);
               }
-            }, 1000);
+            }, 4000); // Keep exothermic message visible for 4 seconds
 
             // Remove the cold water beaker from equipment list if onRemove is available
             if (onRemove) {
