@@ -903,7 +903,7 @@ function VirtualLabApp({
         id: Date.now().toString(),
         type: "reaction",
         title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH → NaCl + H��O",
+        description: "HCl + NaOH �� NaCl + H��O",
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
           reaction: "HCl + NaOH → NaCl + H���O",
@@ -1000,10 +1000,11 @@ function VirtualLabApp({
                         </p>
 
                         {currentGuidedStep === step.id && (
-                          <div className="mt-2 ml-8 p-2 bg-yellow-100 border border-yellow-300 rounded text-xs">
-                            <span className="font-medium text-yellow-800">
-                              👆 Current step
-                            </span>
+                          <div className="mt-2 ml-8 flex items-center gap-2">
+                            <div className="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                              CURRENT STEP
+                            </div>
                           </div>
                         )}
                       </div>
