@@ -547,10 +547,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
           setCoolingStartTime(Date.now());
           setShowCoolingMessage(true);
 
-          // Hide message after 1 second and replace image
+          // Keep cooling message visible and replace image
+          setUseCooledImage(true);
+
+          // Keep cooling message visible for longer, then show exothermic message
           setTimeout(() => {
             setShowCoolingMessage(false);
-            setUseCooledImage(true);
 
             // Remove cold beaker and show exothermic message
             setShouldHideColdBeaker(true);
