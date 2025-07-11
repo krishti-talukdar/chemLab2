@@ -18,6 +18,7 @@ export const Controls: React.FC<ControlsProps> = ({
   onSave,
   onExport,
   isRunning,
+  experimentStarted = false,
 }) => {
   return (
     <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-lg shadow-md border">
