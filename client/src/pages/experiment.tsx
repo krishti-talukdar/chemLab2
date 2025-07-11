@@ -42,6 +42,7 @@ export default function Experiment() {
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const [experimentStarted, setExperimentStarted] = useState(false);
 
   useEffect(() => {
     if (progress) {
@@ -51,7 +52,7 @@ export default function Experiment() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (isRunning) {
+    if (isRunning && experimentStarted) {
       interval = setInterval(() => {
         setTimer((timer) => timer + 1);
       }, 1000);
@@ -61,7 +62,7 @@ export default function Experiment() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, timer]);
+  }, [isRunning, timer, experimentStarted]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -70,7 +71,14 @@ export default function Experiment() {
   };
 
   const toggleTimer = () => {
-    setIsRunning(!isRunning);
+    if (experimentStarted) {
+      setIsRunning(!isRunning);
+    }
+  };
+
+  const handleStartExperiment = () => {
+    setExperimentStarted(true);
+    setIsRunning(true);
   };
 
   const handleCompleteStep = () => {
@@ -98,9 +106,8 @@ export default function Experiment() {
   };
 
   const handlePreviousStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+    // Disable going back to previous steps - steps are linear and non-reversible
+    return;
   };
 
   if (experimentLoading) {
@@ -191,7 +198,32 @@ export default function Experiment() {
         </div>
 
         {/* Main Lab Area - Full Width */}
-        <div className="w-full">
+        <div className="w-full relative">
+          {/* Experiment Not Started Overlay */}
+          {!experimentStarted && (
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
+              <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-md">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Play className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Ready to Start?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Click on the "Start Experiment" button to get started with the
+                  experiment!
+                </p>
+                <button
+                  onClick={handleStartExperiment}
+                  className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors mx-auto"
+                >
+                  <Play className="w-5 h-5" />
+                  <span>Start Experiment</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           <Card className="min-h-[80vh]">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -216,8 +248,9 @@ export default function Experiment() {
                     <Button
                       variant="outline"
                       onClick={handlePreviousStep}
-                      disabled={currentStep === 0}
+                      disabled={true}
                       size="sm"
+                      className="opacity-50 cursor-not-allowed"
                     >
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
@@ -248,6 +281,10 @@ export default function Experiment() {
                 totalSteps={experiment.stepDetails.length}
                 experimentTitle={experiment.title}
                 allSteps={experiment.stepDetails}
+                experimentStarted={experimentStarted}
+                onStartExperiment={handleStartExperiment}
+                isRunning={isRunning}
+                setIsRunning={setIsRunning}
               />
             </CardContent>
           </Card>

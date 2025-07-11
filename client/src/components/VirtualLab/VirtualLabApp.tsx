@@ -20,6 +20,7 @@ import {
   TestTube,
   Thermometer,
   Droplets,
+  Play,
 } from "lucide-react";
 import type { ExperimentStep } from "@shared/schema";
 
@@ -71,6 +72,10 @@ interface VirtualLabProps {
   totalSteps: number;
   experimentTitle: string;
   allSteps: ExperimentStep[];
+  experimentStarted: boolean;
+  onStartExperiment: () => void;
+  isRunning: boolean;
+  setIsRunning: (running: boolean) => void;
 }
 
 function VirtualLabApp({
@@ -81,12 +86,16 @@ function VirtualLabApp({
   totalSteps,
   experimentTitle,
   allSteps,
+  experimentStarted,
+  onStartExperiment,
+  isRunning,
+  setIsRunning,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
   >([]);
   const [selectedChemical, setSelectedChemical] = useState<string | null>(null);
-  const [isRunning, setIsRunning] = useState(false);
+  // Remove local isRunning state as it's now passed as prop
   const [results, setResults] = useState<Result[]>([]);
   const [showSteps, setShowSteps] = useState(true);
   const [currentStep, setCurrentStep] = useState(stepNumber);
@@ -126,7 +135,7 @@ function VirtualLabApp({
         setTimeout(() => {
           setToastMessage(null);
           setShowInsightModal(true);
-        }, 3000);
+        }, 800);
       }
     };
 
@@ -910,8 +919,7 @@ function VirtualLabApp({
   };
 
   const handleStartExperiment = () => {
-    setIsRunning(true);
-    onStepComplete();
+    onStartExperiment();
   };
 
   const handleClearResults = () => {
@@ -919,7 +927,10 @@ function VirtualLabApp({
   };
 
   const handleStepClick = (stepId: number) => {
-    setCurrentStep(stepId);
+    // Only allow clicking on current or next available step, not previous completed steps
+    if (stepId >= currentStep) {
+      setCurrentStep(stepId);
+    }
   };
 
   return (
@@ -1153,6 +1164,7 @@ function VirtualLabApp({
                   isRunning={isRunning}
                   onStart={handleStartExperiment}
                   onStop={() => setIsRunning(false)}
+                  experimentStarted={experimentStarted}
                   onReset={() => {
                     setEquipmentPositions([]);
                     setSelectedChemical(null);
@@ -1185,12 +1197,15 @@ function VirtualLabApp({
                     id={equipment.id}
                     name={equipment.name}
                     icon={equipment.icon}
-                    onDrag={handleEquipmentDrop}
+                    onDrag={experimentStarted ? handleEquipmentDrop : () => {}}
                     position={null}
                     chemicals={[]}
-                    onChemicalDrop={handleChemicalDrop}
+                    onChemicalDrop={
+                      experimentStarted ? handleChemicalDrop : () => {}
+                    }
                     allEquipmentPositions={equipmentPositions}
                     currentStep={currentStep}
+                    disabled={!experimentStarted}
                   />
                 </div>
               ))}
@@ -1202,8 +1217,8 @@ function VirtualLabApp({
             {/* Lab Work Surface */}
             <div className="flex-1 p-6 relative">
               <WorkBench
-                onDrop={handleEquipmentDrop}
-                selectedChemical={selectedChemical}
+                onDrop={experimentStarted ? handleEquipmentDrop : () => {}}
+                selectedChemical={experimentStarted ? selectedChemical : null}
                 isRunning={isRunning}
                 experimentTitle={experimentTitle}
                 currentGuidedStep={currentGuidedStep}
@@ -1218,11 +1233,17 @@ function VirtualLabApp({
                       id={pos.id}
                       name={equipment.name}
                       icon={equipment.icon}
-                      onDrag={handleEquipmentDrop}
+                      onDrag={
+                        experimentStarted ? handleEquipmentDrop : () => {}
+                      }
                       position={pos}
                       chemicals={pos.chemicals}
-                      onChemicalDrop={handleChemicalDrop}
-                      onRemove={handleEquipmentRemove}
+                      onChemicalDrop={
+                        experimentStarted ? handleChemicalDrop : () => {}
+                      }
+                      onRemove={
+                        experimentStarted ? handleEquipmentRemove : () => {}
+                      }
                       cobaltReactionState={{
                         cobaltChlorideAdded,
                         distilledWaterAdded,
@@ -1232,6 +1253,7 @@ function VirtualLabApp({
                       }}
                       allEquipmentPositions={equipmentPositions}
                       currentStep={currentStep}
+                      disabled={!experimentStarted}
                     />
                   ) : null;
                 })}
@@ -1262,8 +1284,13 @@ function VirtualLabApp({
                     color={chemical.color}
                     concentration={chemical.concentration}
                     volume={chemical.volume}
-                    onSelect={handleChemicalSelect}
-                    selected={selectedChemical === chemical.id}
+                    onSelect={
+                      experimentStarted ? handleChemicalSelect : () => {}
+                    }
+                    selected={
+                      experimentStarted && selectedChemical === chemical.id
+                    }
+                    disabled={!experimentStarted}
                   />
                 </div>
               ))}
