@@ -135,7 +135,7 @@ function VirtualLabApp({
         setTimeout(() => {
           setToastMessage(null);
           setShowInsightModal(true);
-        }, 3000);
+        }, 800);
       }
     };
 
