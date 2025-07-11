@@ -198,6 +198,13 @@ export default function Experiment() {
           <Progress value={progressPercentage} className="h-2" />
         </div>
 
+        {/* Step Tracker */}
+        <StepTracker
+          currentStep={currentStep + 1}
+          totalSteps={experiment.stepDetails.length}
+          experimentStarted={experimentStarted}
+        />
+
         {/* Main Lab Area - Full Width */}
         <div className="w-full relative">
           {/* Experiment Not Started Overlay */}
