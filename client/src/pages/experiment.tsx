@@ -42,6 +42,7 @@ export default function Experiment() {
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const [experimentStarted, setExperimentStarted] = useState(false);
 
   useEffect(() => {
     if (progress) {
@@ -51,7 +52,7 @@ export default function Experiment() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (isRunning) {
+    if (isRunning && experimentStarted) {
       interval = setInterval(() => {
         setTimer((timer) => timer + 1);
       }, 1000);
@@ -61,7 +62,7 @@ export default function Experiment() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, timer]);
+  }, [isRunning, timer, experimentStarted]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -70,7 +71,14 @@ export default function Experiment() {
   };
 
   const toggleTimer = () => {
-    setIsRunning(!isRunning);
+    if (experimentStarted) {
+      setIsRunning(!isRunning);
+    }
+  };
+
+  const handleStartExperiment = () => {
+    setExperimentStarted(true);
+    setIsRunning(true);
   };
 
   const handleCompleteStep = () => {
@@ -248,6 +256,10 @@ export default function Experiment() {
                 totalSteps={experiment.stepDetails.length}
                 experimentTitle={experiment.title}
                 allSteps={experiment.stepDetails}
+                experimentStarted={experimentStarted}
+                onStartExperiment={handleStartExperiment}
+                isRunning={isRunning}
+                setIsRunning={setIsRunning}
               />
             </CardContent>
           </Card>
