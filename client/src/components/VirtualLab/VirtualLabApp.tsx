@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Equipment } from "./Equipment";
 import { WorkBench } from "./WorkBench";
 import { Chemical } from "./Chemical";
