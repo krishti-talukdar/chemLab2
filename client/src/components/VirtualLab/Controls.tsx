@@ -1,5 +1,5 @@
-import React from 'react';
-import { Play, Pause, RotateCcw, Save, Download } from 'lucide-react';
+import React from "react";
+import { Play, Pause, RotateCcw, Save, Download } from "lucide-react";
 
 interface ControlsProps {
   onStart: () => void;
@@ -8,6 +8,7 @@ interface ControlsProps {
   onSave?: () => void;
   onExport?: () => void;
   isRunning: boolean;
+  experimentStarted?: boolean;
 }
 
 export const Controls: React.FC<ControlsProps> = ({
@@ -16,7 +17,7 @@ export const Controls: React.FC<ControlsProps> = ({
   onReset,
   onSave,
   onExport,
-  isRunning
+  isRunning,
 }) => {
   return (
     <div className="flex flex-wrap items-center gap-4 p-4 bg-white rounded-lg shadow-md border">
@@ -24,14 +25,14 @@ export const Controls: React.FC<ControlsProps> = ({
         onClick={isRunning ? onStop : onStart}
         className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
           isRunning
-            ? 'bg-orange-500 hover:bg-orange-600 text-white'
-            : 'bg-green-500 hover:bg-green-600 text-white'
+            ? "bg-orange-500 hover:bg-orange-600 text-white"
+            : "bg-green-500 hover:bg-green-600 text-white"
         }`}
       >
         {isRunning ? <Pause size={20} /> : <Play size={20} />}
-        <span>{isRunning ? 'Pause' : 'Start'} Experiment</span>
+        <span>{isRunning ? "Pause" : "Start"} Experiment</span>
       </button>
-      
+
       <button
         onClick={onReset}
         className="flex items-center space-x-2 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
@@ -39,9 +40,9 @@ export const Controls: React.FC<ControlsProps> = ({
         <RotateCcw size={20} />
         <span>Reset</span>
       </button>
-      
+
       <div className="border-l border-gray-300 h-8"></div>
-      
+
       {onSave && (
         <button
           onClick={onSave}
@@ -51,7 +52,7 @@ export const Controls: React.FC<ControlsProps> = ({
           <span>Save Setup</span>
         </button>
       )}
-      
+
       {onExport && (
         <button
           onClick={onExport}
