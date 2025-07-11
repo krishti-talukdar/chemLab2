@@ -93,7 +93,7 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                     {getStepIcon(step, index)}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-1">
                       <h3 className="font-medium text-gray-900">
                         Step {step.id}: {step.title}
                       </h3>
@@ -101,6 +101,14 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                         {step.duration}min
                       </span>
                     </div>
+                    {step.status === "active" && (
+                      <div className="mb-2">
+                        <span className="inline-flex items-center px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">
+                          <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-1"></div>
+                          CURRENT STEP
+                        </span>
+                      </div>
+                    )}
                     <p className="text-sm text-gray-600 mt-1">
                       {step.description}
                     </p>

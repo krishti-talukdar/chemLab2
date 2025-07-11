@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Equipment } from "./Equipment";
 import { WorkBench } from "./WorkBench";
 import { Chemical } from "./Chemical";
@@ -76,6 +77,7 @@ interface VirtualLabProps {
   onStartExperiment: () => void;
   isRunning: boolean;
   setIsRunning: (running: boolean) => void;
+  onResetTimer: () => void;
 }
 
 function VirtualLabApp({
@@ -90,6 +92,7 @@ function VirtualLabApp({
   onStartExperiment,
   isRunning,
   setIsRunning,
+  onResetTimer,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
@@ -173,9 +176,12 @@ function VirtualLabApp({
     setShowCompletionModal(true);
   };
 
+  const [, setLocation] = useLocation();
+
   const handleCompletionClose = () => {
     setShowCompletionModal(false);
-    // Optionally navigate back to experiments list
+    // Navigate back to experiments list (home page)
+    setLocation("/");
   };
 
   // Use dynamic experiment steps from allSteps prop
@@ -1000,10 +1006,11 @@ function VirtualLabApp({
                         </p>
 
                         {currentGuidedStep === step.id && (
-                          <div className="mt-2 ml-8 p-2 bg-yellow-100 border border-yellow-300 rounded text-xs">
-                            <span className="font-medium text-yellow-800">
-                              👆 Current step
-                            </span>
+                          <div className="mt-2 ml-8 flex items-center gap-2">
+                            <div className="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                              CURRENT STEP
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1137,10 +1144,16 @@ function VirtualLabApp({
           {/* Equipment Bar - Top Horizontal */}
           <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-gray-800 text-sm flex items-center">
-                <Atom className="w-4 h-4 mr-2 text-blue-600" />
-                {experimentTitle} - Equipment
-              </h4>
+              <div className="flex items-center space-x-3">
+                <h4 className="font-semibold text-gray-800 text-sm flex items-center">
+                  <Atom className="w-4 h-4 mr-2 text-blue-600" />
+                  {experimentTitle} - Equipment
+                </h4>
+                <span className="inline-flex items-center px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse mr-1"></div>
+                  STEP {currentStep}
+                </span>
+              </div>
               <div className="flex items-center space-x-2">
                 {experimentTitle.includes("Aspirin") ? (
                   <div className="text-xs text-gray-600 mr-3 flex items-center space-x-2">
@@ -1186,6 +1199,7 @@ function VirtualLabApp({
                     setStirrerActive(false);
                     setColorTransition("pink");
                     setStep3WaterAdded(false);
+                    onResetTimer();
                   }}
                 />
               </div>

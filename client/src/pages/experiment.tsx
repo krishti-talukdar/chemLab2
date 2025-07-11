@@ -254,9 +254,15 @@ export default function Experiment() {
                     >
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
-                    <span className="text-sm text-gray-600 px-2">
-                      {currentStep + 1} / {experiment.stepDetails.length}
-                    </span>
+                    <div className="flex items-center space-x-2 px-2">
+                      <span className="text-sm text-gray-600">
+                        {currentStep + 1} / {experiment.stepDetails.length}
+                      </span>
+                      <span className="inline-flex items-center px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse mr-1"></div>
+                        STEP {currentStep + 1}
+                      </span>
+                    </div>
                     <Button
                       variant="outline"
                       onClick={handleNextStep}
@@ -285,6 +291,7 @@ export default function Experiment() {
                 onStartExperiment={handleStartExperiment}
                 isRunning={isRunning}
                 setIsRunning={setIsRunning}
+                onResetTimer={() => setTimer(0)}
               />
             </CardContent>
           </Card>
