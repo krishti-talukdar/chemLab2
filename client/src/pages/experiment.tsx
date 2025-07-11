@@ -106,9 +106,8 @@ export default function Experiment() {
   };
 
   const handlePreviousStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+    // Disable going back to previous steps - steps are linear and non-reversible
+    return;
   };
 
   if (experimentLoading) {
