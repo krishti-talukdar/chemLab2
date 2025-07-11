@@ -9,6 +9,7 @@ interface ChemicalProps {
   selected: boolean;
   concentration?: string;
   volume?: number;
+  disabled?: boolean;
 }
 
 export const Chemical: React.FC<ChemicalProps> = ({
@@ -20,9 +21,14 @@ export const Chemical: React.FC<ChemicalProps> = ({
   selected,
   concentration,
   volume,
+  disabled = false,
 }) => {
   const [dragAmount, setDragAmount] = React.useState(volume || 25);
   const handleDragStart = (e: React.DragEvent) => {
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData(
       "chemical",
       JSON.stringify({
@@ -211,15 +217,17 @@ export const Chemical: React.FC<ChemicalProps> = ({
 
   return (
     <div
-      draggable
+      draggable={!disabled}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      onClick={() => onSelect(id)}
-      className={`p-4 rounded-lg cursor-grab active:cursor-grabbing transition-all duration-300 border-2 transform hover:scale-105 chemical-bottle-shadow ${
-        selected
-          ? "border-purple-500 bg-purple-50 shadow-lg scale-105 ring-2 ring-purple-300 chemical-glow"
-          : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-md hover:chemical-glow"
-      } active:scale-95 active:rotate-1 hover:rotate-1`}
+      onClick={() => !disabled && onSelect(id)}
+      className={`p-4 rounded-lg transition-all duration-300 border-2 transform chemical-bottle-shadow ${
+        disabled
+          ? "cursor-not-allowed opacity-50 border-gray-200 bg-gray-100"
+          : selected
+            ? "cursor-grab active:cursor-grabbing border-purple-500 bg-purple-50 shadow-lg scale-105 ring-2 ring-purple-300 chemical-glow hover:scale-105 active:scale-95 active:rotate-1 hover:rotate-1"
+            : "cursor-grab active:cursor-grabbing border-gray-200 bg-white hover:border-purple-300 hover:shadow-md hover:chemical-glow hover:scale-105 active:scale-95 active:rotate-1 hover:rotate-1"
+      }`}
     >
       <div className="flex items-center space-x-3">
         <div className="relative">
