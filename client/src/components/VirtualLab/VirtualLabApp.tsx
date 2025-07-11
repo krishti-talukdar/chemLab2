@@ -176,9 +176,12 @@ function VirtualLabApp({
     setShowCompletionModal(true);
   };
 
+  const [, setLocation] = useLocation();
+
   const handleCompletionClose = () => {
     setShowCompletionModal(false);
-    // Optionally navigate back to experiments list
+    // Navigate back to experiments list (home page)
+    setLocation("/");
   };
 
   // Use dynamic experiment steps from allSteps prop
