@@ -1218,12 +1218,15 @@ function VirtualLabApp({
                     id={equipment.id}
                     name={equipment.name}
                     icon={equipment.icon}
-                    onDrag={handleEquipmentDrop}
+                    onDrag={experimentStarted ? handleEquipmentDrop : () => {}}
                     position={null}
                     chemicals={[]}
-                    onChemicalDrop={handleChemicalDrop}
+                    onChemicalDrop={
+                      experimentStarted ? handleChemicalDrop : () => {}
+                    }
                     allEquipmentPositions={equipmentPositions}
                     currentStep={currentStep}
+                    disabled={!experimentStarted}
                   />
                 </div>
               ))}
