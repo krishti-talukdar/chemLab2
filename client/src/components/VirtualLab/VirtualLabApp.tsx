@@ -903,7 +903,7 @@ function VirtualLabApp({
         id: Date.now().toString(),
         type: "reaction",
         title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH �� NaCl + H��O",
+        description: "HCl + NaOH → NaCl + H��O",
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
           reaction: "HCl + NaOH → NaCl + H���O",
@@ -1138,10 +1138,16 @@ function VirtualLabApp({
           {/* Equipment Bar - Top Horizontal */}
           <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-gray-800 text-sm flex items-center">
-                <Atom className="w-4 h-4 mr-2 text-blue-600" />
-                {experimentTitle} - Equipment
-              </h4>
+              <div className="flex items-center space-x-3">
+                <h4 className="font-semibold text-gray-800 text-sm flex items-center">
+                  <Atom className="w-4 h-4 mr-2 text-blue-600" />
+                  {experimentTitle} - Equipment
+                </h4>
+                <span className="inline-flex items-center px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse mr-1"></div>
+                  STEP {currentStep}
+                </span>
+              </div>
               <div className="flex items-center space-x-2">
                 {experimentTitle.includes("Aspirin") ? (
                   <div className="text-xs text-gray-600 mr-3 flex items-center space-x-2">
