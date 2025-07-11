@@ -1697,8 +1697,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
   return (
     <div
       ref={elementRef}
-      draggable={id !== "stirring_rod"}
-      onDragStart={id !== "stirring_rod" ? handleDragStart : undefined}
+      draggable={!disabled && id !== "stirring_rod"}
+      onDragStart={
+        !disabled && id !== "stirring_rod" ? handleDragStart : undefined
+      }
       onDragEnd={id !== "stirring_rod" ? handleDragEnd : undefined}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
