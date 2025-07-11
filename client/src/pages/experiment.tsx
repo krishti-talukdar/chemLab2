@@ -8,7 +8,6 @@ import {
 import { getUserId } from "@/lib/utils";
 import Header from "@/components/header";
 import VirtualLabApp from "@/components/VirtualLab/VirtualLabApp";
-import StepTracker from "@/components/step-tracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -197,13 +196,6 @@ export default function Experiment() {
           </div>
           <Progress value={progressPercentage} className="h-2" />
         </div>
-
-        {/* Step Tracker */}
-        <StepTracker
-          currentStep={currentStep + 1}
-          totalSteps={experiment.stepDetails.length}
-          experimentStarted={experimentStarted}
-        />
 
         {/* Main Lab Area - Full Width */}
         <div className="w-full relative">
