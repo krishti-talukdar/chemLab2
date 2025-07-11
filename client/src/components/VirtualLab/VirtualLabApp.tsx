@@ -927,7 +927,10 @@ function VirtualLabApp({
   };
 
   const handleStepClick = (stepId: number) => {
-    setCurrentStep(stepId);
+    // Only allow clicking on current or next available step, not previous completed steps
+    if (stepId >= currentStep) {
+      setCurrentStep(stepId);
+    }
   };
 
   return (
