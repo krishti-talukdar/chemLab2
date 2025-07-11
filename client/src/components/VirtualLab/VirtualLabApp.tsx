@@ -71,6 +71,10 @@ interface VirtualLabProps {
   totalSteps: number;
   experimentTitle: string;
   allSteps: ExperimentStep[];
+  experimentStarted: boolean;
+  onStartExperiment: () => void;
+  isRunning: boolean;
+  setIsRunning: (running: boolean) => void;
 }
 
 function VirtualLabApp({
@@ -81,12 +85,16 @@ function VirtualLabApp({
   totalSteps,
   experimentTitle,
   allSteps,
+  experimentStarted,
+  onStartExperiment,
+  isRunning,
+  setIsRunning,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
   >([]);
   const [selectedChemical, setSelectedChemical] = useState<string | null>(null);
-  const [isRunning, setIsRunning] = useState(false);
+  // Remove local isRunning state as it's now passed as prop
   const [results, setResults] = useState<Result[]>([]);
   const [showSteps, setShowSteps] = useState(true);
   const [currentStep, setCurrentStep] = useState(stepNumber);
@@ -910,8 +918,7 @@ function VirtualLabApp({
   };
 
   const handleStartExperiment = () => {
-    setIsRunning(true);
-    onStepComplete();
+    onStartExperiment();
   };
 
   const handleClearResults = () => {
@@ -1123,6 +1130,30 @@ function VirtualLabApp({
 
         {/* Main Lab Content */}
         <div className="flex-1 flex flex-col">
+          {/* Experiment Not Started Overlay */}
+          {!experimentStarted && (
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 flex items-center justify-center">
+              <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-md">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Play className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Ready to Start?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Click on the "Start Experiment" button to get started with the
+                  experiment!
+                </p>
+                <button
+                  onClick={handleStartExperiment}
+                  className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors mx-auto"
+                >
+                  <Play className="w-5 h-5" />
+                  <span>Start Experiment</span>
+                </button>
+              </div>
+            </div>
+          )}
           {/* Equipment Bar - Top Horizontal */}
           <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-3">
             <div className="flex items-center justify-between">
@@ -1153,6 +1184,7 @@ function VirtualLabApp({
                   isRunning={isRunning}
                   onStart={handleStartExperiment}
                   onStop={() => setIsRunning(false)}
+                  experimentStarted={experimentStarted}
                   onReset={() => {
                     setEquipmentPositions([]);
                     setSelectedChemical(null);
@@ -1202,8 +1234,8 @@ function VirtualLabApp({
             {/* Lab Work Surface */}
             <div className="flex-1 p-6 relative">
               <WorkBench
-                onDrop={handleEquipmentDrop}
-                selectedChemical={selectedChemical}
+                onDrop={experimentStarted ? handleEquipmentDrop : () => {}}
+                selectedChemical={experimentStarted ? selectedChemical : null}
                 isRunning={isRunning}
                 experimentTitle={experimentTitle}
                 currentGuidedStep={currentGuidedStep}
@@ -1262,8 +1294,13 @@ function VirtualLabApp({
                     color={chemical.color}
                     concentration={chemical.concentration}
                     volume={chemical.volume}
-                    onSelect={handleChemicalSelect}
-                    selected={selectedChemical === chemical.id}
+                    onSelect={
+                      experimentStarted ? handleChemicalSelect : () => {}
+                    }
+                    selected={
+                      experimentStarted && selectedChemical === chemical.id
+                    }
+                    disabled={!experimentStarted}
                   />
                 </div>
               ))}
