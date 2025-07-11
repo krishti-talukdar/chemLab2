@@ -76,6 +76,7 @@ interface VirtualLabProps {
   onStartExperiment: () => void;
   isRunning: boolean;
   setIsRunning: (running: boolean) => void;
+  onResetTimer: () => void;
 }
 
 function VirtualLabApp({
