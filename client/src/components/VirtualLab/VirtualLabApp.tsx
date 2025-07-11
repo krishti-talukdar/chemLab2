@@ -20,6 +20,7 @@ import {
   TestTube,
   Thermometer,
   Droplets,
+  Play,
 } from "lucide-react";
 import type { ExperimentStep } from "@shared/schema";
 
