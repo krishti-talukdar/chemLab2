@@ -1195,6 +1195,7 @@ function VirtualLabApp({
                     setStirrerActive(false);
                     setColorTransition("pink");
                     setStep3WaterAdded(false);
+                    onResetTimer();
                   }}
                 />
               </div>
