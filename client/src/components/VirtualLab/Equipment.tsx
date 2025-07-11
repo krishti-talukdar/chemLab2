@@ -40,6 +40,7 @@ interface EquipmentProps {
     chemicals: any[];
   }>;
   currentStep?: number;
+  disabled?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
