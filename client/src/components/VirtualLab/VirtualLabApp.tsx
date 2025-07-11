@@ -1131,30 +1131,6 @@ function VirtualLabApp({
 
         {/* Main Lab Content */}
         <div className="flex-1 flex flex-col">
-          {/* Experiment Not Started Overlay */}
-          {!experimentStarted && (
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 flex items-center justify-center">
-              <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-md">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Play className="w-8 h-8 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Ready to Start?
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Click on the "Start Experiment" button to get started with the
-                  experiment!
-                </p>
-                <button
-                  onClick={handleStartExperiment}
-                  className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors mx-auto"
-                >
-                  <Play className="w-5 h-5" />
-                  <span>Start Experiment</span>
-                </button>
-              </div>
-            </div>
-          )}
           {/* Equipment Bar - Top Horizontal */}
           <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-3">
             <div className="flex items-center justify-between">
