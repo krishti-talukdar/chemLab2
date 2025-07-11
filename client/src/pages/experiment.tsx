@@ -248,8 +248,9 @@ export default function Experiment() {
                     <Button
                       variant="outline"
                       onClick={handlePreviousStep}
-                      disabled={currentStep === 0}
+                      disabled={true}
                       size="sm"
+                      className="opacity-50 cursor-not-allowed"
                     >
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
