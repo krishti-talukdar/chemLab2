@@ -291,6 +291,7 @@ export default function Experiment() {
                 onStartExperiment={handleStartExperiment}
                 isRunning={isRunning}
                 setIsRunning={setIsRunning}
+                onResetTimer={() => setTimer(0)}
               />
             </CardContent>
           </Card>
