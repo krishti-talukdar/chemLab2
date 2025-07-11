@@ -87,6 +87,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [useCooledFinalImage, setUseCooledFinalImage] = useState(false);
 
   const handleDragStart = (e: React.DragEvent) => {
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
     setIsDragging(true);
