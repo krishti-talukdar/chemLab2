@@ -31,7 +31,13 @@ export const Controls: React.FC<ControlsProps> = ({
         }`}
       >
         {isRunning ? <Pause size={20} /> : <Play size={20} />}
-        <span>{isRunning ? "Pause" : "Start"} Experiment</span>
+        <span>
+          {!experimentStarted
+            ? "Start Experiment"
+            : isRunning
+              ? "Pause Experiment"
+              : "Resume Experiment"}
+        </span>
       </button>
 
       <button
