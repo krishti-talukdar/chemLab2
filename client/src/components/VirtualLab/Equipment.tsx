@@ -503,13 +503,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
             setShowEndothermicMessage(true);
             console.log("Endothermic message should now be visible");
 
-            // Hide endothermic message after 1 second and show final image
-            setTimeout(() => {
-              setShowEndothermicMessage(false);
-              setUseFinalImage(true);
+            // Keep endothermic message visible and show final image
+            setUseFinalImage(true);
 
-              // Auto-advance to step 5 after the message
-              if (onRemove && currentStep === 4) {
+            // Auto-advance to step 5 after keeping the message visible for longer
+            if (onRemove && currentStep === 4) {
+              setTimeout(() => {
+                // Hide the message before advancing
+                setShowEndothermicMessage(false);
+
                 setTimeout(() => {
                   // This will trigger step completion in the parent component
                   const stepCompleteEvent = new CustomEvent("stepComplete", {
@@ -517,8 +519,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   });
                   window.dispatchEvent(stepCompleteEvent);
                 }, 500);
-              }
-            }, 1000);
+              }, 4000); // Keep message visible for 4 seconds
+            }
 
             // Remove the hot water beaker from equipment list if onRemove is available
             if (onRemove) {
@@ -705,7 +707,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
           {/* Endothermic reaction message */}
           {showEndothermicMessage && (
-            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold animate-bounce shadow-xl whitespace-nowrap z-[9999] border-2 border-white">
               🧪 Solution became blue again due to Endothermic Reaction! 🧪
             </div>
           )}
