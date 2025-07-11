@@ -55,6 +55,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
   cobaltReactionState,
   allEquipmentPositions = [],
   currentStep = 1,
+  disabled = false,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
