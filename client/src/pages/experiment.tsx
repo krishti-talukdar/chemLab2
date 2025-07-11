@@ -8,6 +8,7 @@ import {
 import { getUserId } from "@/lib/utils";
 import Header from "@/components/header";
 import VirtualLabApp from "@/components/VirtualLab/VirtualLabApp";
+import StepTracker from "@/components/step-tracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
