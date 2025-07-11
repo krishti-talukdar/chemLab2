@@ -1254,11 +1254,17 @@ function VirtualLabApp({
                       id={pos.id}
                       name={equipment.name}
                       icon={equipment.icon}
-                      onDrag={handleEquipmentDrop}
+                      onDrag={
+                        experimentStarted ? handleEquipmentDrop : () => {}
+                      }
                       position={pos}
                       chemicals={pos.chemicals}
-                      onChemicalDrop={handleChemicalDrop}
-                      onRemove={handleEquipmentRemove}
+                      onChemicalDrop={
+                        experimentStarted ? handleChemicalDrop : () => {}
+                      }
+                      onRemove={
+                        experimentStarted ? handleEquipmentRemove : () => {}
+                      }
                       cobaltReactionState={{
                         cobaltChlorideAdded,
                         distilledWaterAdded,
@@ -1268,6 +1274,7 @@ function VirtualLabApp({
                       }}
                       allEquipmentPositions={equipmentPositions}
                       currentStep={currentStep}
+                      disabled={!experimentStarted}
                     />
                   ) : null;
                 })}
