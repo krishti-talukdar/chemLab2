@@ -582,7 +582,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 onRemove("beaker_cold_water");
               }, 500); // Small delay to show the message first
             }
-          }, 500);
+          }, 3000); // Keep cooling message visible for 3 seconds
         } else if (!cooling && coolingStartTime) {
           // Stopped cooling - reset states
           setCoolingStartTime(null);
