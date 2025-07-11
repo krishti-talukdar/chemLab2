@@ -1709,11 +1709,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center cursor-grab active:cursor-grabbing relative ${id === "stirring_rod" ? "stirring-rod-optimized" : ""} ${
+      className={`flex flex-col items-center relative ${id === "stirring_rod" ? "stirring-rod-optimized" : ""} ${
+        disabled
+          ? "cursor-not-allowed opacity-50"
+          : "cursor-grab active:cursor-grabbing"
+      } ${
         isOnWorkbench
-          ? `p-0 bg-transparent border-0 shadow-none ${isDragging ? "opacity-80 z-50" : "hover:scale-105 hover:rotate-0.5"}`
-          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
-      } ${!isOnWorkbench && isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""}`}
+          ? `p-0 bg-transparent border-0 shadow-none ${isDragging ? "opacity-80 z-50" : !disabled ? "hover:scale-105 hover:rotate-0.5" : ""}`
+          : disabled
+            ? "p-4 bg-gray-100 rounded-lg shadow-md border-2 border-gray-200"
+            : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:equipment-glow equipment-shadow hover:scale-105 active:scale-95 active:rotate-2"
+      } ${!isOnWorkbench && isContainer && isDragOver && !disabled ? "border-green-500 bg-green-50 scale-105 drop-zone-active" : ""}`}
       style={{
         position: isOnWorkbench ? "absolute" : "relative",
         left: isOnWorkbench && currentPosition ? currentPosition.x : "auto",
