@@ -155,8 +155,8 @@ export const ExperimentSteps: React.FC<ExperimentStepsProps> = ({
                       className="font-medium text-sm"
                       style={{ whiteSpace: "nowrap" }}
                     >
-                      Step {step.id} completed!
-                      {hasNextStep && ` Move to Step ${nextStepNumber}.`}
+                      Step {step.id} completed! Cannot return to previous steps.
+                      {hasNextStep && ` Continue to Step ${nextStepNumber}.`}
                     </span>
                   </TooltipContent>
                 </Tooltip>
