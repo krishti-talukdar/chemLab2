@@ -35,6 +35,16 @@ export default function Experiment() {
     isLoading: experimentLoading,
     error,
   } = useExperiment(experimentId);
+
+  // Debug logging
+  React.useEffect(() => {
+    console.log("Experiment debug:", {
+      experimentId,
+      experimentLoading,
+      experiment,
+      error,
+    });
+  }, [experimentId, experimentLoading, experiment, error]);
   const { data: progress } = useExperimentProgress(experimentId);
   const updateProgressMutation = useUpdateProgress();
 
