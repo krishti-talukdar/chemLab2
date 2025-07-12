@@ -53,6 +53,7 @@ export default function Experiment() {
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [experimentStarted, setExperimentStarted] = useState(false);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   useEffect(() => {
     if (progress) {
