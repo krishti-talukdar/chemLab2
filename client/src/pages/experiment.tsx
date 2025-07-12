@@ -122,7 +122,7 @@ export default function Experiment() {
   };
 
   const handleNextStep = () => {
-    if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
+    if (currentStep < (currentExperiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
