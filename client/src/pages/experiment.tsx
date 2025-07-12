@@ -124,8 +124,8 @@ export default function Experiment() {
     return (
       <div className="bg-gray-50">
         <Header />
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="text-center py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <div className="text-center py-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             <p className="text-gray-600 mt-4">Loading experiment...</p>
           </div>
