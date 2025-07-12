@@ -124,15 +124,10 @@ export default function Experiment() {
     return (
       <div className="bg-gray-50">
         <Header />
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Skeleton className="h-8 w-64 mb-6" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <Skeleton className="h-64 w-full rounded-lg" />
-            </div>
-            <div>
-              <Skeleton className="h-32 w-full rounded-lg" />
-            </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading experiment...</p>
           </div>
         </div>
       </div>
