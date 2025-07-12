@@ -144,10 +144,73 @@ export default function Experiment() {
     );
   }
 
+  // Fallback experiment data for experiment 3 (Chemical Equilibrium)
+  const fallbackExperiment = {
+    id: 3,
+    title: "Chemical Equilibrium",
+    description:
+      "Investigate Le Chatelier's principle by observing how changes in concentration, temperature, and pressure affect chemical equilibrium.",
+    stepDetails: [
+      {
+        id: 1,
+        title: "Prepare Solutions",
+        description:
+          "Take a test tube and add cobalt chloride crystals. Add distilled water slowly and stir until it dissolves.",
+        duration: "5 minutes",
+        completed: false,
+      },
+      {
+        id: 2,
+        title: "Add Concentrated HCl",
+        description:
+          "Slowly add drops of concentrated HCl to the cobalt solution. Observe the color change from pink to blue.",
+        duration: "8 minutes",
+        completed: false,
+      },
+      {
+        id: 3,
+        title: "Dilute with Water",
+        description:
+          "Add distilled water to the blue solution. Observe the color change back to pink.",
+        duration: "5 minutes",
+        completed: false,
+      },
+      {
+        id: 4,
+        title: "Temperature Effect - Heating",
+        description:
+          "Heat the pink solution in a water bath. Observe how temperature affects equilibrium.",
+        duration: "10 minutes",
+        completed: false,
+      },
+      {
+        id: 5,
+        title: "Temperature Effect - Cooling",
+        description:
+          "Cool the heated solution in an ice bath. Observe the equilibrium shift.",
+        duration: "8 minutes",
+        completed: false,
+      },
+      {
+        id: 6,
+        title: "Record Observations",
+        description:
+          "Document all color changes and relate them to Le Chatelier's principle.",
+        duration: "7 minutes",
+        completed: false,
+      },
+    ],
+  };
+
+  // Use fallback if experiment is not loaded and timeout has passed
+  const currentExperiment =
+    experiment ||
+    (loadingTimeout && experimentId === 3 ? fallbackExperiment : null);
+
   if (
-    !experiment ||
-    !experiment.stepDetails ||
-    experiment.stepDetails.length === 0
+    !currentExperiment ||
+    !currentExperiment.stepDetails ||
+    currentExperiment.stepDetails.length === 0
   ) {
     return (
       <div className="min-h-screen bg-gray-50">
