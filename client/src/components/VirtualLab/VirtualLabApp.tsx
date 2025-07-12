@@ -6,6 +6,7 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { ChemicalFormulas } from "./ChemicalFormulas";
 import { InsightModal } from "./InsightModal";
 import { CompletionModal } from "./CompletionModal";
 import { InsightDataSection } from "./InsightDataSection";
@@ -1017,11 +1018,14 @@ function VirtualLabApp({
                     ))}
                   </div>
                 ) : (
-                  <ExperimentSteps
-                    currentStep={currentStep}
-                    steps={experimentSteps}
-                    onStepClick={handleStepClick}
-                  />
+                  <>
+                    <ExperimentSteps
+                      currentStep={currentStep}
+                      steps={experimentSteps}
+                      onStepClick={handleStepClick}
+                    />
+                    <ChemicalFormulas experimentTitle={experimentTitle} />
+                  </>
                 )}
 
                 {/* Concentration Measurement Panel - For Experiments 2 & 3 */}
