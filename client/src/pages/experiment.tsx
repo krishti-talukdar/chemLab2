@@ -130,7 +130,7 @@ export default function Experiment() {
     return;
   };
 
-  if (experimentLoading) {
+  if (experimentLoading && !loadingTimeout) {
     return (
       <div className="bg-gray-50">
         <Header />
