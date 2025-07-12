@@ -259,9 +259,9 @@ export default function Experiment() {
         {/* Experiment Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {experiment.title}
+            {currentExperiment.title}
           </h1>
-          <p className="text-gray-600 mb-4">{experiment.description}</p>
+          <p className="text-gray-600 mb-4">{currentExperiment.description}</p>
 
           {/* Progress Bar */}
           <div className="flex items-center justify-between mb-2">
