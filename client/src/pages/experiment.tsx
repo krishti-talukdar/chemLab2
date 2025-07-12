@@ -235,9 +235,9 @@ export default function Experiment() {
     );
   }
 
-  const currentStepData = experiment.stepDetails[currentStep];
+  const currentStepData = currentExperiment.stepDetails[currentStep];
   const progressPercentage = Math.round(
-    ((currentStep + 1) / experiment.stepDetails.length) * 100,
+    ((currentStep + 1) / currentExperiment.stepDetails.length) * 100,
   );
 
   return (
