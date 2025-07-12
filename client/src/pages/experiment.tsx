@@ -106,15 +106,17 @@ export default function Experiment() {
       experimentId: experimentId,
       currentStep: Math.min(
         currentStep + 1,
-        experiment?.stepDetails.length || 0 - 1,
+        currentExperiment?.stepDetails.length || 0 - 1,
       ),
-      completed: currentStep === (experiment?.stepDetails.length || 0) - 1,
+      completed:
+        currentStep === (currentExperiment?.stepDetails.length || 0) - 1,
       progressPercentage: Math.round(
-        ((currentStep + 2) / (experiment?.stepDetails.length || 1)) * 100,
+        ((currentStep + 2) / (currentExperiment?.stepDetails.length || 1)) *
+          100,
       ),
     });
 
-    if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
+    if (currentStep < (currentExperiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
