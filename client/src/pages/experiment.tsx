@@ -36,7 +36,7 @@ export default function Experiment() {
     error,
   } = useExperiment(experimentId);
 
-  // Debug logging
+  // Debug logging and timeout
   React.useEffect(() => {
     console.log("Experiment debug:", {
       experimentId,
@@ -44,6 +44,15 @@ export default function Experiment() {
       experiment,
       error,
     });
+
+    // Force end loading state after 3 seconds
+    if (experimentLoading) {
+      const timeout = setTimeout(() => {
+        setLoadingTimeout(true);
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
   }, [experimentId, experimentLoading, experiment, error]);
   const { data: progress } = useExperimentProgress(experimentId);
   const updateProgressMutation = useUpdateProgress();
