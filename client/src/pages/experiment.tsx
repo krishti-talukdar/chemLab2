@@ -118,10 +118,10 @@ export default function Experiment() {
           <Skeleton className="h-8 w-64 mb-6" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <Skeleton className="h-96 w-full rounded-lg" />
+              <Skeleton className="h-64 w-full rounded-lg" />
             </div>
             <div>
-              <Skeleton className="h-48 w-full rounded-lg" />
+              <Skeleton className="h-32 w-full rounded-lg" />
             </div>
           </div>
         </div>
