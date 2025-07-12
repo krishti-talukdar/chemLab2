@@ -362,9 +362,9 @@ export default function Experiment() {
                 onStepComplete={handleCompleteStep}
                 isActive={isActive}
                 stepNumber={currentStep + 1}
-                totalSteps={experiment.stepDetails.length}
-                experimentTitle={experiment.title}
-                allSteps={experiment.stepDetails}
+                totalSteps={currentExperiment.stepDetails.length}
+                experimentTitle={currentExperiment.title}
+                allSteps={currentExperiment.stepDetails}
                 experimentStarted={experimentStarted}
                 onStartExperiment={handleStartExperiment}
                 isRunning={isRunning}
