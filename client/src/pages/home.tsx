@@ -14,27 +14,23 @@ import type { Experiment } from "@shared/schema";
 export default function Home() {
   const { data: experiments, isLoading: experimentsLoading } = useExperiments();
   const { data: userProgress } = useUserProgress();
-  const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null);
+  const [selectedExperiment, setSelectedExperiment] =
+    useState<Experiment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Experiments");
 
-  const categories = [
-    "All Experiments",
-    "Organic Chemistry",
-    "Inorganic Chemistry",
-    "Acid-Base",
-    "Equilibrium",
-    "Synthesis",
-    "Beginner"
-  ];
+  const categories = ["All Experiments", "Equilibrium"];
 
-  const filteredExperiments = experiments?.filter(exp => {
-    if (selectedCategory === "All Experiments") return true;
-    return exp.category === selectedCategory || exp.difficulty === selectedCategory;
-  }) || [];
+  const filteredExperiments =
+    experiments?.filter((exp) => {
+      if (selectedCategory === "All Experiments") return true;
+      return (
+        exp.category === selectedCategory || exp.difficulty === selectedCategory
+      );
+    }) || [];
 
   const getProgressForExperiment = (experimentId: number) => {
-    return userProgress?.find(p => p.experimentId === experimentId);
+    return userProgress?.find((p) => p.experimentId === experimentId);
   };
 
   const handleViewDetails = (experiment: Experiment) => {
@@ -47,18 +43,21 @@ export default function Home() {
       <Header />
       <HeroSection />
       <StatsSection />
-      
+
       {/* Experiments Section */}
       <section id="experiments" className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Available Experiments</h3>
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Available Experiments
+            </h3>
             <p className="text-xl text-lab-gray max-w-2xl mx-auto">
-              Choose from our collection of interactive chemistry experiments, each designed to provide 
-              hands-on learning experience with real-world applications.
+              Choose from our collection of interactive chemistry experiments,
+              each designed to provide hands-on learning experience with
+              real-world applications.
             </p>
           </div>
-          
+
           {/* Filter Pills */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {categories.map((category) => (
@@ -81,7 +80,10 @@ export default function Home() {
           {experimentsLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div
+                  key={i}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden"
+                >
                   <Skeleton className="w-full h-48" />
                   <div className="p-6">
                     <Skeleton className="h-6 w-3/4 mb-4" />
@@ -94,7 +96,9 @@ export default function Home() {
             </div>
           ) : filteredExperiments.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-lab-gray text-lg">No experiments found for the selected category.</p>
+              <p className="text-lab-gray text-lg">
+                No experiments found for the selected category.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

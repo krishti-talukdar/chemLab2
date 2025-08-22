@@ -1,5 +1,6 @@
 [
   {
+
     "title": "Acid-Base Titration",
     "description": "Determine the concentration of an unknown acid solution using a standard base solution. Master the art of precise measurements and endpoint detection.",
     "category": "Acid-Base",
@@ -65,6 +66,7 @@
     "safetyInfo": "Handle all chemicals with care. NaOH is caustic and can cause burns. HCl is corrosive. Always wear safety goggles and handle glassware carefully. Work in a well-ventilated area."
   },
   {
+
     "title": "Chemical Equilibrium",
     "description": "Investigate Le Chatelier's principle by observing how changes in concentration, temperature, and pressure affect chemical equilibrium. Study the cobalt(II) chloride equilibrium system.",
     "category": "Equilibrium",
