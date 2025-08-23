@@ -362,7 +362,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({ results, onClear }) 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <BarChart3 className="text-blue-600" size={20} />
-            <h4 className="font-semibold text-blue-900">Acid-Base Titration Results</h4>
+            <h4 className="font-semibold text-blue-900">Experiment Results</h4>
           </div>
           <div className="flex space-x-2">
             <button
