@@ -37,7 +37,6 @@ chemlab-virtual/
 ### Educational Content
 - 2 complete chemistry experiments:
   - Aspirin Synthesis (Organic Chemistry)
-  - Acid-Base Titration (Analytical Chemistry)
 - Step-by-step guided procedures
 - Built-in knowledge check quizzes
 - Progress tracking and completion certificates

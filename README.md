@@ -102,10 +102,6 @@ chemlab-virtual/
    - Practice temperature control and timing
    - Understand reaction mechanisms
 
-2. **Acid-Base Titration**
-   - Master analytical chemistry techniques
-   - Learn about pH indicators
-   - Practice precise measurements
 
 ## 🎮 How to Use
 

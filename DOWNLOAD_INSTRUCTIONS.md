@@ -48,7 +48,6 @@ The complete package includes:
 
 ### Educational Content
 - **Aspirin Synthesis**: Organic chemistry esterification
-- **Acid-Base Titration**: Analytical chemistry procedures
 - Step-by-step guided instructions
 - Built-in knowledge check quizzes
 - Progress tracking and completion status
