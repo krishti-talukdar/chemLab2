@@ -2,6 +2,14 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Equipment } from "./Equipment";
 import { WorkBench } from "./WorkBench";
 import { Chemical } from "./Chemical";
+import DissolutionAnimation from "./DissolutionAnimation";
+import CalculationDisplay from "./CalculationDisplay";
+import StirringAnimation from "./StirringAnimation";
+import MeniscusGuide from "./MeniscusGuide";
+import WeighingAnimation from "./WeighingAnimation";
+import TransferAnimation from "./TransferAnimation";
+import MolecularVisualization from "./MolecularVisualization";
+import ErrorCalculation from "./ErrorCalculation";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FlaskConical, Scale, BookOpen, Calculator } from "lucide-react";
 import {
@@ -61,6 +69,13 @@ function OxalicAcidVirtualLab({
   });
   const [measurements, setMeasurements] = useState<Measurements>(DEFAULT_MEASUREMENTS);
   const [results, setResults] = useState<Result[]>([]);
+  const [showCalculation, setShowCalculation] = useState(false);
+  const [showDissolution, setShowDissolution] = useState(false);
+  const [showWeighing, setShowWeighing] = useState(false);
+  const [showTransfer, setShowTransfer] = useState(false);
+  const [showMeniscus, setShowMeniscus] = useState(false);
+  const [showMolecular, setShowMolecular] = useState(false);
+  const [showErrorAnalysis, setShowErrorAnalysis] = useState(false);
 
   const addResult = useCallback((result: Omit<Result, "id" | "timestamp">) => {
     const newResult: Result = {
@@ -72,41 +87,45 @@ function OxalicAcidVirtualLab({
   }, []);
 
   const handleCalculation = useCallback(() => {
-    // Calculate required mass for 0.1 M solution in 250 mL
-    const molarity = 0.1;
-    const volume = 0.25; // L
-    const molecularWeight = 126.07; // g/mol
-    const requiredMass = molarity * volume * molecularWeight;
+    setShowCalculation(true);
+    setShowMolecular(true);
+  }, []);
 
+  const handleCalculationComplete = useCallback((mass: number) => {
     setMeasurements(prev => ({
       ...prev,
-      targetMass: requiredMass,
+      targetMass: mass,
     }));
 
     addResult({
       type: "calculation",
       title: "Mass Calculation Complete",
-      description: `Required mass: ${requiredMass.toFixed(4)} g`,
+      description: `Required mass: ${mass.toFixed(4)} g`,
       calculation: {
-        massWeighed: requiredMass,
-        molarity: molarity,
-        moles: molarity * volume,
+        massWeighed: mass,
+        molarity: 0.1,
+        moles: 0.1 * 0.25,
         procedure: "M = n/V, n = m/MW, therefore m = M × V × MW",
         notes: [
-          `Molarity = ${molarity} M`,
-          `Volume = ${volume} L`,
-          `Molecular Weight = ${molecularWeight} g/mol`,
-          `Required mass = ${requiredMass.toFixed(4)} g`
+          `Molarity = 0.1 M`,
+          `Volume = 0.25 L`,
+          `Molecular Weight = 126.07 g/mol`,
+          `Required mass = ${mass.toFixed(4)} g`
         ],
       },
     });
+
+    setShowCalculation(false);
+    setTimeout(() => setShowMolecular(false), 2000);
   }, [addResult]);
 
   const handleWeighing = useCallback(() => {
-    // Simulate weighing with slight variation
+    setShowWeighing(true);
+  }, []);
+
+  const handleWeighingComplete = useCallback((actualMass: number) => {
     const targetMass = measurements.targetMass;
-    const actualMass = targetMass + (Math.random() - 0.5) * 0.01; // ±0.005g variation
-    
+
     setMeasurements(prev => ({
       ...prev,
       massWeighed: actualMass,
@@ -124,43 +143,56 @@ function OxalicAcidVirtualLab({
         accuracy: Math.abs((actualMass - targetMass) / targetMass * 100).toFixed(3) + "% error",
       },
     });
+
+    setShowWeighing(false);
   }, [measurements.targetMass, addResult]);
 
   const handleDissolving = useCallback(() => {
-    setPreparationState(prev => ({ 
-      ...prev, 
-      waterAdded: true, 
-      stirrerActive: true 
+    setPreparationState(prev => ({
+      ...prev,
+      waterAdded: true,
+      stirrerActive: true
     }));
 
+    setShowDissolution(true);
+
     setTimeout(() => {
-      setPreparationState(prev => ({ 
-        ...prev, 
-        dissolved: true, 
-        stirrerActive: false 
+      setPreparationState(prev => ({
+        ...prev,
+        dissolved: true,
+        stirrerActive: false
       }));
-      
+
       addResult({
         type: "success",
         title: "Dissolution Complete",
         description: "Oxalic acid completely dissolved in water",
       });
-    }, 3000);
+
+      setShowDissolution(false);
+    }, 5000);
   }, [addResult]);
 
   const handleTransfer = useCallback(() => {
+    setShowTransfer(true);
+  }, []);
+
+  const handleTransferComplete = useCallback(() => {
     setPreparationState(prev => ({ ...prev, transferredToFlask: true }));
-    
+
     addResult({
       type: "success",
       title: "Transfer Complete",
       description: "Solution transferred to volumetric flask",
     });
+
+    setShowTransfer(false);
   }, [addResult]);
 
   const handleNearMark = useCallback(() => {
     setPreparationState(prev => ({ ...prev, nearMark: true }));
-    
+    setShowMeniscus(true);
+
     addResult({
       type: "warning",
       title: "Near Volume Mark",
@@ -170,25 +202,27 @@ function OxalicAcidVirtualLab({
 
   const handleFinalVolume = useCallback(() => {
     setPreparationState(prev => ({ ...prev, finalVolume: true }));
-    
+
     addResult({
       type: "success",
       title: "Volume Adjusted",
       description: "Meniscus aligned with 250 mL mark",
     });
+
+    setShowMeniscus(false);
   }, [addResult]);
 
   const handleFinalMixing = useCallback(() => {
     setPreparationState(prev => ({ ...prev, mixed: true }));
-    
+
     const finalMolarity = measurements.massWeighed / (126.07 * 0.25);
     const percentError = Math.abs((finalMolarity - 0.1) / 0.1 * 100);
-    
+
     setMeasurements(prev => ({
       ...prev,
       actualMolarity: finalMolarity,
     }));
-    
+
     addResult({
       type: "success",
       title: "Standardization Complete",
@@ -205,6 +239,11 @@ function OxalicAcidVirtualLab({
         ],
       },
     });
+
+    // Show error analysis after mixing
+    setTimeout(() => {
+      setShowErrorAnalysis(true);
+    }, 1000);
   }, [measurements.massWeighed, addResult]);
 
   const handleStepAction = useCallback(() => {
@@ -266,6 +305,53 @@ function OxalicAcidVirtualLab({
   return (
     <TooltipProvider>
       <div className="h-full bg-white rounded-lg shadow-lg overflow-hidden">
+        {/* Animation Components */}
+        <CalculationDisplay
+          isVisible={showCalculation}
+          targetMolarity={0.1}
+          targetVolume={0.25}
+          molecularWeight={126.07}
+          onCalculationComplete={handleCalculationComplete}
+        />
+
+        <WeighingAnimation
+          isActive={showWeighing}
+          targetMass={measurements.targetMass}
+          onWeighingComplete={handleWeighingComplete}
+        />
+
+        <TransferAnimation
+          isActive={showTransfer}
+          fromContainer="beaker"
+          toContainer="flask"
+          solutionColor="#87ceeb"
+          transferVolume={100}
+          onTransferComplete={handleTransferComplete}
+        />
+
+        <MeniscusGuide
+          isActive={showMeniscus}
+          targetVolume={250}
+          currentVolume={245}
+          onVolumeReached={handleFinalVolume}
+        />
+
+        <MolecularVisualization
+          isVisible={showMolecular}
+          molecule="oxalic_acid"
+          showHydration={true}
+          animate3D={true}
+        />
+
+        <ErrorCalculation
+          actualMass={measurements.massWeighed}
+          targetMass={measurements.targetMass}
+          actualMolarity={measurements.actualMolarity}
+          targetMolarity={0.1}
+          isVisible={showErrorAnalysis}
+          onAnalysisComplete={() => setShowErrorAnalysis(false)}
+        />
+
         <WorkBench
           step={step}
           experimentStarted={experimentStarted}
