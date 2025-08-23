@@ -19,7 +19,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Experiments");
 
-  const categories = ["All Experiments", "Equilibrium"];
+  const categories = ["All Experiments", "Quantitative Analysis", "Equilibrium"];
 
   const filteredExperiments =
     experiments?.filter((exp) => {

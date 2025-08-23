@@ -16,7 +16,7 @@ export default function Experiment() {
     switch (experimentId) {
       case 1:
         return <OxalicAcidApp onBack={() => window.history.back()} />;
-      case 3:
+      case 2:
         return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
       default:
         return (
@@ -27,7 +27,7 @@ export default function Experiment() {
               </h2>
               <p className="text-gray-600 mb-6">
                 The requested experiment (ID: {experimentId}) is not available.
-                Available experiments: Oxalic Acid Standardization (ID: 1) and Chemical Equilibrium (ID: 3).
+                Available experiments: Oxalic Acid Standardization (ID: 1) and Chemical Equilibrium (ID: 2).
               </p>
               <Link href="/">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
