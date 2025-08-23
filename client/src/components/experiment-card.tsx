@@ -21,8 +21,6 @@ export default function ExperimentCard({ experiment, progress, onViewDetails }: 
     switch (category) {
       case 'Organic Chemistry':
         return 'bg-blue-100 text-blue-700';
-      case 'Acid-Base':
-        return 'bg-green-100 text-green-700';
       case 'Equilibrium':
         return 'bg-purple-100 text-purple-700';
       default:

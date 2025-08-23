@@ -63,9 +63,8 @@ cp .env.example .env
 npm run dev
 
 # You should see output like:
-# Loaded experiment 1: Aspirin Synthesis
-# Loaded experiment 2: Acid-Base Titration
-# Total experiments loaded: 2
+# Loaded experiment 1: Chemical Equilibrium
+# Total experiments loaded: 1
 # [express] serving on port 5000
 ```
 

@@ -238,33 +238,6 @@ function VirtualLabApp({
           volume: 100,
         },
       ];
-    } else if (experimentTitle.includes("Acid-Base")) {
-      return [
-        {
-          id: "hcl",
-          name: "Hydrochloric Acid",
-          formula: "HCl",
-          color: "#FFE135",
-          concentration: "0.1 M",
-          volume: 25,
-        },
-        {
-          id: "naoh",
-          name: "Sodium Hydroxide",
-          formula: "NaOH",
-          color: "#87CEEB",
-          concentration: "0.1 M",
-          volume: 50,
-        },
-        {
-          id: "phenol",
-          name: "Phenolphthalein",
-          formula: "C₂₀H₁₄O₄",
-          color: "#FFB6C1",
-          concentration: "Indicator",
-          volume: 10,
-        },
-      ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
         {
@@ -424,17 +397,6 @@ function VirtualLabApp({
             </svg>
           ),
         },
-      ];
-    } else if (experimentTitle.includes("Acid-Base")) {
-      return [
-        { id: "burette", name: "50mL Burette", icon: <TestTube size={36} /> },
-        {
-          id: "conical_flask",
-          name: "250mL Conical Flask",
-          icon: <FlaskConical size={36} />,
-        },
-        { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
-        { id: "beaker", name: "Beaker", icon: <Beaker size={36} /> },
       ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
@@ -867,11 +829,8 @@ function VirtualLabApp({
             );
             handleReaction(newChemicals, totalVolume);
 
-            // Update measurements for experiments 2 and 3
-            if (
-              experimentTitle.includes("Acid-Base") ||
-              experimentTitle.includes("Equilibrium")
-            ) {
+            // Update measurements for equilibrium experiment
+            if (experimentTitle.includes("Equilibrium")) {
               // Use the most recent chemical for calculations
               const recentChemical = newChemicals[newChemicals.length - 1];
               const calculations = calculateChemicalProperties(
@@ -900,29 +859,8 @@ function VirtualLabApp({
   };
 
   const handleReaction = (chemicals: any[], totalVolume: number) => {
-    // Simplified reaction detection
-    const hasAcid = chemicals.some((c) => c.id === "hcl");
-    const hasBase = chemicals.some((c) => c.id === "naoh");
-    const hasIndicator = chemicals.some((c) => c.id === "phenol");
-
-    if (hasAcid && hasBase) {
-      const result: Result = {
-        id: Date.now().toString(),
-        type: "reaction",
-        title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH → NaCl + H��O",
-        timestamp: new Date().toLocaleTimeString(),
-        calculation: {
-          reaction: "HCl + NaOH → NaCl + H���O",
-          reactionType: "Acid-Base Neutralization",
-          balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
-          products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
-          yield: 95,
-        },
-      };
-
-      setResults((prev) => [...prev, result]);
-    }
+    // Simplified reaction detection for equilibrium experiments
+    // Add specific reaction logic here if needed
   };
 
   const handleStartExperiment = () => {
@@ -1028,9 +966,8 @@ function VirtualLabApp({
                   </>
                 )}
 
-                {/* Concentration Measurement Panel - For Experiments 2 & 3 */}
-                {(experimentTitle.includes("Acid-Base") ||
-                  experimentTitle.includes("Equilibrium")) && (
+                {/* Concentration Measurement Panel - For Equilibrium Experiment */}
+                {experimentTitle.includes("Equilibrium") && (
                   <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold text-gray-900 text-sm flex items-center">
@@ -1089,22 +1026,6 @@ function VirtualLabApp({
                         </div>
                       )}
 
-                      {experimentTitle.includes("Acid-Base") &&
-                        measurements.volume > 0 && (
-                          <div className="bg-gray-50 p-2 rounded border-t border-gray-200">
-                            <div className="text-xs text-gray-600 font-medium mb-1">
-                              Titration Status
-                            </div>
-                            <div className="text-xs">
-                              <span className="text-gray-600">Endpoint: </span>
-                              <span className="font-medium text-gray-900">
-                                {measurements.ph > 8.5
-                                  ? "Reached"
-                                  : "Not reached"}
-                              </span>
-                            </div>
-                          </div>
-                        )}
 
                       {experimentTitle.includes("Equilibrium") && (
                         <div className="bg-gray-50 p-2 rounded border-t border-gray-200">

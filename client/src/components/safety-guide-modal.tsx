@@ -64,15 +64,6 @@ export default function SafetyGuideModal({ children }: SafetyGuideModalProps) {
                     <li>• Always add chemicals in the specified order</li>
                   </ul>
                 </div>
-                <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
-                  <h4 className="font-medium text-blue-800">Acid-Base Titration Safety</h4>
-                  <ul className="text-sm text-blue-700 mt-2 space-y-1">
-                    <li>• NaOH solution: Caustic, avoid contact with skin</li>
-                    <li>• HCl solution: Corrosive acid, handle carefully</li>
-                    <li>• Phenolphthalein: Indicator solution, use sparingly</li>
-                    <li>• Rinse all glassware thoroughly before use</li>
-                  </ul>
-                </div>
               </div>
             </section>
 
