@@ -859,29 +859,8 @@ function VirtualLabApp({
   };
 
   const handleReaction = (chemicals: any[], totalVolume: number) => {
-    // Simplified reaction detection
-    const hasAcid = chemicals.some((c) => c.id === "hcl");
-    const hasBase = chemicals.some((c) => c.id === "naoh");
-    const hasIndicator = chemicals.some((c) => c.id === "phenol");
-
-    if (hasAcid && hasBase) {
-      const result: Result = {
-        id: Date.now().toString(),
-        type: "reaction",
-        title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH → NaCl + H��O",
-        timestamp: new Date().toLocaleTimeString(),
-        calculation: {
-          reaction: "HCl + NaOH → NaCl + H���O",
-          reactionType: "Acid-Base Neutralization",
-          balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
-          products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
-          yield: 95,
-        },
-      };
-
-      setResults((prev) => [...prev, result]);
-    }
+    // Simplified reaction detection for equilibrium experiments
+    // Add specific reaction logic here if needed
   };
 
   const handleStartExperiment = () => {
