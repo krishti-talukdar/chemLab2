@@ -19,12 +19,6 @@ export const ColorMixingSystem: React.FC<ColorMixingSystemProps> = ({
 }) => {
   // Chemical reaction rules
   const reactions = {
-    "hcl+naoh": {
-      name: "Acid-Base Neutralization",
-      color: "#E8F5E8",
-      description: "HCl + NaOH → NaCl + H₂O",
-      indicator: "pH changes from acidic to neutral",
-    },
     "agno3+hcl": {
       name: "Silver Chloride Precipitation",
       color: "#F5F5F5",
