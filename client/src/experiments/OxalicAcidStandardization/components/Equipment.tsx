@@ -5,6 +5,8 @@ import {
   Beaker,
   Pipette,
 } from "lucide-react";
+import StirringAnimation from "./StirringAnimation";
+import DissolutionAnimation from "./DissolutionAnimation";
 import type { EquipmentPosition, SolutionPreparationState } from "../types";
 
 interface EquipmentProps {
@@ -151,13 +153,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
         );
         
       case "beaker":
+        const hasOxalicAcid = chemicals.some(c => c.id === "oxalic_acid");
+        const hasWater = chemicals.some(c => c.id === "distilled_water");
+
         return (
           <div className="text-center relative">
             <Beaker className="w-8 h-8 mx-auto mb-2 text-gray-600" />
             <div className="text-xs space-y-1">
               <div>100 mL</div>
-              {chemicals.length > 0 && (
-                <div 
+
+              {/* Show stirring animation when both chemicals are present and stirring is active */}
+              {preparationState?.stirrerActive && hasOxalicAcid && hasWater ? (
+                <StirringAnimation
+                  isActive={true}
+                  containerWidth={32}
+                  containerHeight={48}
+                  stirringSpeed="medium"
+                  solutionColor="#87ceeb"
+                />
+              ) : chemicals.length > 0 ? (
+                <div
                   className="w-4 h-6 mx-auto rounded-b border"
                   style={{
                     backgroundColor: chemicals[0]?.color || "#87CEEB",
@@ -165,9 +180,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
                     height: `${Math.min(24, totalVolume / 2)}px`
                   }}
                 />
-              )}
-              {preparationState?.stirrerActive && (
-                <div className="text-blue-600 animate-spin">⟲</div>
+              ) : null}
+
+              {/* Show dissolution animation when crystals are dissolving */}
+              {hasOxalicAcid && hasWater && !preparationState?.dissolved && (
+                <div className="absolute inset-0 pointer-events-none">
+                  <DissolutionAnimation
+                    isActive={true}
+                    containerWidth={32}
+                    containerHeight={48}
+                    onComplete={() => {}}
+                  />
+                </div>
               )}
             </div>
           </div>
