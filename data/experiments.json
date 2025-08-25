@@ -208,7 +208,7 @@
     "duration": 40,
     "steps": 7,
     "rating": 4.6,
-    "imageUrl": "https://cdn.builder.io/api/v1/image/assets%2Fc24faf597fce47eab7f5bad479ba9b3f%2F204d93a2917447a0a1ce35c2188dbbc9?format=webp&width=800",
+    "imageUrl": "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=400",
     "equipment": [
       "Test Tubes",
       "Test Tube Rack",
@@ -252,7 +252,7 @@
       {
         "id": 5,
         "title": "Temperature Effect - Heating",
-        "description": "Heat the equilibrium mixture in a water bath to 60°C. The forward reaction is endothermic, so heating favors blue [CoCl₄]²⁻ formation.",
+        "description": "Heat the equilibrium mixture in a water bath to 60°C. The forward reaction is endothermic, so heating favors blue [CoCl���]²⁻ formation.",
         "duration": "8 minutes",
         "completed": false
       },
