@@ -142,5 +142,143 @@
       }
     ],
     "safetyInfo": "Concentrated HCl is highly corrosive. Cobalt compounds are toxic if ingested. Always wear safety goggles, gloves, and work in a well-ventilated area. Handle hot and cold solutions with appropriate equipment."
+  },
+  {
+    "title": "Chemical Equilibrium 1",
+    "description": "To study the shift of equilibrium between ferric ions and thiocyanate ions by increasing the concentration of either ions. Observe the formation and dissociation of the blood-red FeSCN²⁺ complex.",
+    "category": "Equilibrium",
+    "difficulty": "Intermediate",
+    "duration": 35,
+    "steps": 6,
+    "rating": 4.8,
+    "imageUrl": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400",
+    "equipment": [
+      "Test Tubes",
+      "Test Tube Rack",
+      "Dropper Pipettes",
+      "Graduated Cylinders",
+      "Stirring Rods",
+      "Measuring Cylinders",
+      "White Background",
+      "Beakers"
+    ],
+    "stepDetails": [
+      {
+        "id": 1,
+        "title": "Prepare Stock Solutions",
+        "description": "Prepare 0.1M FeCl₃ solution and 0.1M KSCN solution. Label each solution clearly for identification.",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "Establish Initial Equilibrium",
+        "description": "In a test tube, mix equal volumes (5mL each) of FeCl₃ and KSCN solutions. Observe the formation of blood-red FeSCN²⁺ complex. This represents the equilibrium: Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺",
+        "duration": "5 minutes",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "title": "Divide Into Four Tubes",
+        "description": "Divide the equilibrium solution into 4 equal portions in separate test tubes. Label them as Control, +Fe³⁺, +SCN⁻, and +OH⁻.",
+        "duration": "3 minutes",
+        "completed": false
+      },
+      {
+        "id": 4,
+        "title": "Add Excess Fe³⁺ Ions",
+        "description": "To the +Fe³⁺ tube, add 2-3 drops of concentrated FeCl₃ solution. Observe the color change and intensity. Record how the equilibrium shifts according to Le Chatelier's principle.",
+        "duration": "6 minutes",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "title": "Add Excess SCN⁻ Ions",
+        "description": "To the +SCN⁻ tube, add 2-3 drops of concentrated KSCN solution. Observe the color change and compare with the previous tube. Note the direction of equilibrium shift.",
+        "duration": "6 minutes",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "title": "Remove Fe³⁺ with OH⁻",
+        "description": "To the +OH⁻ tube, add 2-3 drops of NaOH solution. The OH⁻ ions will precipitate Fe³⁺ as Fe(OH)₃, removing it from equilibrium. Observe the color change and document results.",
+        "duration": "7 minutes",
+        "completed": false
+      }
+    ],
+    "safetyInfo": "Iron(III) chloride is corrosive and can stain skin and clothing. Potassium thiocyanate is toxic if ingested. Sodium hydroxide is caustic. Always wear safety goggles and gloves. Handle all chemicals in a well-ventilated area."
+  },
+  {
+    "title": "Chemical Equilibrium 2",
+    "description": "To study the shift in equilibrium between [Co(H₂O)₆]²⁺ and Cl⁻ by changing the concentration of either ions. Observe dramatic color changes between pink hydrated and blue chloride complexes.",
+    "category": "Equilibrium",
+    "difficulty": "Intermediate",
+    "duration": 40,
+    "steps": 7,
+    "rating": 4.6,
+    "imageUrl": "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=400",
+    "equipment": [
+      "Test Tubes",
+      "Test Tube Rack",
+      "Dropper Pipettes",
+      "Hot Water Bath",
+      "Ice Bath",
+      "Graduated Cylinders",
+      "Stirring Rods",
+      "Thermometer",
+      "Beakers"
+    ],
+    "stepDetails": [
+      {
+        "id": 1,
+        "title": "Prepare Cobalt Solution",
+        "description": "Dissolve a small amount of cobalt(II) chloride hexahydrate (CoCl₂·6H₂O) in distilled water. Observe the pink color of the hydrated [Co(H₂O)₆]²⁺ complex.",
+        "duration": "5 minutes",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "Establish Equilibrium System",
+        "description": "The equilibrium system is: [Co(H₂O)₆]²⁺ + 4Cl⁻ ⇌ [CoCl₄]²⁻ + 6H₂O. The pink form represents the hydrated complex, while blue represents the chloride complex.",
+        "duration": "3 minutes",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "title": "Add Concentrated HCl",
+        "description": "Slowly add concentrated HCl (source of Cl⁻ ions) to the pink solution. Observe the color change to blue as equilibrium shifts toward [CoCl₄]²⁻ formation.",
+        "duration": "6 minutes",
+        "completed": false
+      },
+      {
+        "id": 4,
+        "title": "Dilute with Water",
+        "description": "Add distilled water to the blue solution to increase H₂O concentration. Observe the shift back to pink as equilibrium favors [Co(H₂O)₆]²⁺ formation.",
+        "duration": "5 minutes",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "title": "Temperature Effect - Heating",
+        "description": "Heat the equilibrium mixture in a water bath to 60°C. The forward reaction is endothermic, so heating favors blue [CoCl���]²⁻ formation.",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "title": "Temperature Effect - Cooling",
+        "description": "Cool the heated solution in an ice bath to 0°C. Cooling favors the exothermic reverse reaction, shifting equilibrium toward pink [Co(H₂O)₆]²⁺.",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 7,
+        "title": "Analyze and Document",
+        "description": "Record all observations and color changes. Explain each shift using Le Chatelier's principle. Relate concentration and temperature effects to equilibrium position.",
+        "duration": "5 minutes",
+        "completed": false
+      }
+    ],
+    "safetyInfo": "Concentrated HCl is highly corrosive and produces toxic vapors. Cobalt compounds are suspected carcinogens and toxic if ingested. Always use in a fume hood or well-ventilated area. Wear safety goggles, gloves, and appropriate protective clothing."
   }
 ]

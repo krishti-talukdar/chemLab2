@@ -73,14 +73,19 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
           : ""
       }`}
       style={{
-        background: isDragOver
-          ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%)"
-          : "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-        backgroundImage: `
-          radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 25%),
-          radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.1) 0%, transparent 25%),
-          linear-gradient(45deg, transparent 45%, rgba(59, 130, 246, 0.05) 50%, transparent 55%)
-        `,
+        backgroundImage: isDragOver
+          ? `
+            radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%),
+            radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 25%),
+            radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.1) 0%, transparent 25%),
+            linear-gradient(45deg, transparent 45%, rgba(59, 130, 246, 0.05) 50%, transparent 55%)
+          `
+          : `
+            linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%),
+            radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 25%),
+            radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.1) 0%, transparent 25%),
+            linear-gradient(45deg, transparent 45%, rgba(59, 130, 246, 0.05) 50%, transparent 55%)
+          `,
       }}
     >
       {/* Laboratory surface pattern */}
