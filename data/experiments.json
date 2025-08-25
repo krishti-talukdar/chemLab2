@@ -208,7 +208,7 @@
     "duration": 40,
     "steps": 7,
     "rating": 4.6,
-    "imageUrl": "https://images.pexels.com/photos/7722957/pexels-photo-7722957.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=400",
+    "imageUrl": "https://cdn.builder.io/api/v1/image/assets%2Fc24faf597fce47eab7f5bad479ba9b3f%2F204d93a2917447a0a1ce35c2188dbbc9?format=webp&width=800",
     "equipment": [
       "Test Tubes",
       "Test Tube Rack",
