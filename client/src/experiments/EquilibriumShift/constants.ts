@@ -90,8 +90,8 @@ export const GUIDED_STEPS = [
   {
     id: 4,
     title: "Add HCl and Observe Color Change",
-    description: "Click on the HCl bottle to add concentrated HCl to the test tube. Watch the color change from pink → purple → blue as equilibrium shifts right to form [CoCl₄]²⁻.",
-    action: "Click HCl bottle to add acid",
+    description: "Click the HCl bottle TWICE to add concentrated HCl. First click: pink → purple (equilibrium shifting). Second click: purple → blue (equilibrium fully shifted to [CoCl₄]²⁻).",
+    action: "Click HCl bottle twice to add acid",
     equipment: ["test-tube", "concentrated-hcl"],
     completed: false
   },
