@@ -28,7 +28,7 @@ const EquilibriumShiftData = {
     {
       id: 2,
       title: "Add Concentrated HCl",
-      description: "Click the HCl reagent bottle to add drops. Watch the dropper animation and observe the color change from pink to blue as Cl⁻ ions shift equilibrium right.",
+      description: "Click the HCl reagent bottle twice. First click: observe pink to purple transition. Second click: complete the shift from purple to blue as Cl⁻ ions fully shift equilibrium right.",
       duration: "4 minutes",
       safety: "HCl is corrosive - handle with care",
       completed: false
@@ -43,14 +43,14 @@ const EquilibriumShiftData = {
     {
       id: 4,
       title: "Add Distilled Water",
-      description: "Click the water bottle to dilute the solution. Watch as the color changes back to pink, demonstrating the reverse equilibrium shift.",
+      description: "Click the water bottle twice. First click: observe blue to purple transition. Second click: complete the reverse shift from purple to pink as dilution shifts equilibrium left.",
       duration: "4 minutes",
       completed: false
     },
     {
       id: 5,
       title: "Repeat and Experiment",
-      description: "Alternate between adding HCl and water to observe multiple equilibrium shifts. Notice the smooth color transitions and timing.",
+      description: "Alternate between adding HCl (2 clicks: pink→purple→blue) and water (2 clicks: blue→purple→pink) to observe multiple equilibrium shifts. Notice the gradual color transitions through purple intermediate state.",
       duration: "8 minutes",
       completed: false
     },

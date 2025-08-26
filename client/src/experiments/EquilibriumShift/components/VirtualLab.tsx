@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
+import { Link } from "wouter";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
 import { 
@@ -57,6 +59,11 @@ export default function VirtualLab({
     isActive: boolean;
   }>>([]);
   const [activeEquipment, setActiveEquipment] = useState<string>("");
+  const [hclClickCount, setHclClickCount] = useState<number>(0);
+  const [waterClickCount, setWaterClickCount] = useState<number>(0);
+  const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
+  const [experimentCompleted, setExperimentCompleted] = useState<boolean>(false);
+  const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -111,6 +118,9 @@ export default function VirtualLab({
       return;
     }
 
+    // Store the previous state for undo
+    const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
+
     // Add equipment to workbench
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
@@ -119,6 +129,13 @@ export default function VirtualLab({
         position: { x, y },
         isActive: false
       }];
+    });
+
+    // Track this action for undo
+    setLastAction({
+      type: 'equipment_placed',
+      equipmentId,
+      data: { previousState, newPosition: { x, y } }
     });
 
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
@@ -151,90 +168,209 @@ export default function VirtualLab({
     const currentStepData = GUIDED_STEPS[currentStep - 1];
     
     if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
-      // Add HCl and change color to blue
+      // Two-step HCl addition: 1st click -> purple, 2nd click -> blue
       setActiveEquipment(equipmentId);
       setDropperAction({
         id: Date.now().toString(),
         reagentId: 'hcl',
         targetId: 'test-tube',
-        amount: 2,
+        amount: 1,
         timestamp: Date.now(),
         isAnimating: true
       });
 
-      setShowToast("Adding HCl... Cl⁻ ions shifting equilibrium right!");
+      const newClickCount = hclClickCount + 1;
+      setHclClickCount(newClickCount);
 
-      setTimeout(() => {
-        setDropperAction(null);
-        animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
-        setTestTube(prev => ({
-          ...prev,
-          contents: [...prev.contents, 'HCl'],
-        }));
-        
-        const logEntry: ExperimentLog = {
-          id: Date.now().toString(),
-          timestamp: Date.now(),
-          action: 'Added HCl',
-          reagent: 'Concentrated HCl',
-          amount: 2,
-          colorBefore: testTube.colorHex,
-          colorAfter: COLORS.BLUE,
-          observation: 'Solution changed from pink to blue - equilibrium shifted right',
-          equilibriumShift: 'right'
-        };
-        setExperimentLog(prev => [...prev, logEntry]);
-        
-        setActiveEquipment("");
-        setTimeout(() => setShowToast(""), 3000);
-        handleStepComplete();
-      }, ANIMATION.DROPPER_DURATION);
+      if (newClickCount === 1) {
+        // First click: pink -> purple
+        setShowToast("Adding HCl... Equilibrium starting to shift!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
+          setTestTube(prev => ({
+            ...prev,
+            contents: [...prev.contents, 'HCl'],
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added HCl (1st time)',
+            reagent: 'Concentrated HCl',
+            amount: 1,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.PURPLE,
+            observation: 'Solution changing from pink to purple - equilibrium shifting',
+            equilibriumShift: 'right'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          // Track this action for undo
+          setLastAction({
+            type: 'reagent_added',
+            equipmentId: 'concentrated-hcl',
+            data: {
+              clickCount: newClickCount - 1,
+              previousColor: testTube.colorHex,
+              previousState: equilibriumState
+            }
+          });
+
+          setActiveEquipment("");
+          setShowToast("Purple color! Click HCl again to complete the shift.");
+          setTimeout(() => setShowToast(""), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+
+      } else if (newClickCount === 2) {
+        // Second click: purple -> blue
+        setShowToast("Adding more HCl... Completing equilibrium shift!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
+          setTestTube(prev => ({
+            ...prev,
+            contents: [...prev.contents, 'HCl'],
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added HCl (2nd time)',
+            reagent: 'Concentrated HCl',
+            amount: 1,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.BLUE,
+            observation: 'Solution changed from purple to blue - equilibrium fully shifted right',
+            equilibriumShift: 'right'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          // Track this action for undo
+          setLastAction({
+            type: 'reagent_added',
+            equipmentId: 'concentrated-hcl',
+            data: {
+              clickCount: newClickCount - 1,
+              previousColor: testTube.colorHex,
+              previousState: equilibriumState
+            }
+          });
+
+          setActiveEquipment("");
+          setTimeout(() => setShowToast(""), 3000);
+          handleStepComplete();
+        }, ANIMATION.DROPPER_DURATION);
+      }
 
     } else if (equipmentId === 'distilled-water' && currentStep === 6) {
-      // Add water and change color back to pink
+      // Two-step water addition: 1st click -> purple, 2nd click -> pink
       setActiveEquipment(equipmentId);
       setDropperAction({
         id: Date.now().toString(),
         reagentId: 'water',
         targetId: 'test-tube',
-        amount: 5,
+        amount: 3,
         timestamp: Date.now(),
         isAnimating: true
       });
 
-      setShowToast("Adding water... Diluting Cl⁻ ions, shifting equilibrium left!");
+      const newWaterClickCount = waterClickCount + 1;
+      setWaterClickCount(newWaterClickCount);
 
-      setTimeout(() => {
-        setDropperAction(null);
-        animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
-        setTestTube(prev => ({
-          ...prev,
-          volume: prev.volume + 5,
-        }));
-        
-        const logEntry: ExperimentLog = {
-          id: Date.now().toString(),
-          timestamp: Date.now(),
-          action: 'Added Water',
-          reagent: 'Distilled Water',
-          amount: 5,
-          colorBefore: testTube.colorHex,
-          colorAfter: COLORS.PINK,
-          observation: 'Solution changed from blue to pink - equilibrium shifted left',
-          equilibriumShift: 'left'
-        };
-        setExperimentLog(prev => [...prev, logEntry]);
-        
-        setActiveEquipment("");
-        setTimeout(() => setShowToast(""), 3000);
-        handleStepComplete();
-      }, ANIMATION.DROPPER_DURATION);
+      if (newWaterClickCount === 1) {
+        // First click: blue -> purple
+        setShowToast("Adding water... Equilibrium starting to shift back!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
+          setTestTube(prev => ({
+            ...prev,
+            volume: prev.volume + 3,
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added Water (1st time)',
+            reagent: 'Distilled Water',
+            amount: 3,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.PURPLE,
+            observation: 'Solution changing from blue to purple - equilibrium shifting back',
+            equilibriumShift: 'left'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          setActiveEquipment("");
+          setShowToast("Purple color! Click water again to complete the reverse shift.");
+          setTimeout(() => setShowToast(""), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+
+      } else if (newWaterClickCount === 2) {
+        // Second click: purple -> pink
+        setShowToast("Adding more water... Completing reverse equilibrium shift!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+          setTestTube(prev => ({
+            ...prev,
+            volume: prev.volume + 3,
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added Water (2nd time)',
+            reagent: 'Distilled Water',
+            amount: 3,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.PINK,
+            observation: 'Solution changed from purple to pink - equilibrium fully shifted left',
+            equilibriumShift: 'left'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          setActiveEquipment("");
+          setTimeout(() => setShowToast(""), 3000);
+          handleStepComplete();
+        }, ANIMATION.DROPPER_DURATION);
+      }
 
     } else {
       setShowToast("Follow the current step instructions");
       setTimeout(() => setShowToast(""), 2000);
     }
   }, [currentStep, testTube.colorHex, animateColorTransition]);
+
+  // Handle undo action
+  const handleUndo = useCallback(() => {
+    if (!lastAction) return;
+
+    if (lastAction.type === 'equipment_placed') {
+      const { equipmentId, data } = lastAction;
+
+      if (data.previousState) {
+        // Restore to previous position
+        setEquipmentOnBench(prev =>
+          prev.map(eq => eq.id === equipmentId ? data.previousState : eq)
+        );
+      } else {
+        // Remove equipment if it wasn't previously on the bench
+        setEquipmentOnBench(prev => prev.filter(eq => eq.id !== equipmentId));
+      }
+
+      setShowToast(`Undid: ${equipmentId?.replace('-', ' ')} placement`);
+      setTimeout(() => setShowToast(""), 2000);
+
+      // Clear the last action
+      setLastAction(null);
+    }
+  }, [lastAction]);
 
   // Handle step completion
   const handleStepComplete = () => {
@@ -248,7 +384,8 @@ export default function VirtualLab({
           setTimeout(() => setShowToast(""), 3000);
         }, 500);
       } else {
-        setShowToast("Experiment completed! You can now experiment freely.");
+        setExperimentCompleted(true);
+        setShowToast("Experiment completed! Click 'View Results' for detailed analysis.");
         setTimeout(() => setShowToast(""), 4000);
       }
     }
@@ -265,6 +402,11 @@ export default function VirtualLab({
     setCompletedSteps([]);
     setEquipmentOnBench([]);
     setActiveEquipment("");
+    setHclClickCount(0);
+    setWaterClickCount(0);
+    setShowResultsModal(false);
+    setExperimentCompleted(false);
+    setLastAction(null);
     setShowToast("");
     onReset();
   };
@@ -319,10 +461,26 @@ export default function VirtualLab({
               <p className="text-sm text-gray-600 mb-2">
                 {currentStepData.description}
               </p>
-              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                <ArrowRight className="w-3 h-3 mr-1" />
-                {currentStepData.action}
-              </div>
+              {currentStep === 2 ? (
+                <button
+                  onClick={() => {
+                    setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
+                    setTimeout(() => {
+                      handleStepComplete();
+                      setShowToast("");
+                    }, 1500);
+                  }}
+                  className="inline-flex items-center px-3 py-1 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-xs font-medium transition-colors duration-200 cursor-pointer"
+                >
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  {currentStepData.action}
+                </button>
+              ) : (
+                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  {currentStepData.action}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -355,22 +513,46 @@ export default function VirtualLab({
               </div>
             </div>
 
-            {/* Equilibrium Equation */}
+            {/* Equilibrium Equation - Made wider */}
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Chemical Equilibrium</h4>
-              <div className="text-center text-sm font-mono">
-                <span style={{ color: COLORS.PINK }}>[Co(H₂O)₆]²⁺</span>
-                <span className="mx-2">+</span>
-                <span>4Cl⁻</span>
-                <span className="mx-3">⇌</span>
-                <span style={{ color: COLORS.BLUE }}>[CoCl₄]²⁻</span>
-                <span className="mx-2">+</span>
-                <span>6H₂O</span>
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Equilibrium</h4>
+              <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
+                <div className="flex flex-wrap items-center justify-center gap-1">
+                  <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
+                  <span className="mx-1">+</span>
+                  <span className="font-bold">4Cl⁻</span>
+                  <span className="mx-2 text-lg">⇌</span>
+                  <span style={{ color: COLORS.BLUE }} className="font-bold">[CoCl₄]²⁻</span>
+                  <span className="mx-1">+</span>
+                  <span className="font-bold">6H₂O</span>
+                </div>
               </div>
-              <div className="text-center text-xs text-gray-500 mt-1">
+              <div className="text-center text-xs text-gray-500 mt-2">
                 Pink hydrated ⇌ Blue chloride
               </div>
             </div>
+
+            {/* Undo Button - Only show when equipment is on workbench */}
+            {equipmentOnBench.length > 0 && lastAction && (
+              <Button
+                onClick={handleUndo}
+                variant="outline"
+                className="w-full bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center justify-center space-x-2"
+              >
+                <Undo className="w-4 h-4" />
+                <span>Undo Last Action</span>
+              </Button>
+            )}
+
+            {/* Results Button - Only show when experiment is completed */}
+            {experimentCompleted && (
+              <Button
+                onClick={() => setShowResultsModal(true)}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
+              >
+                📊 View Results & Analysis
+              </Button>
+            )}
 
             {/* Reset Button */}
             <Button
@@ -407,7 +589,7 @@ export default function VirtualLab({
                     onInteract={handleEquipmentInteract}
                     isActive={activeEquipment === equipment.id}
                     color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
-                    volume={equipment.id === 'test-tube' ? (testTube.volume / 15) * 100 : undefined}
+                    volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
                   />
                 ) : null;
               })}
@@ -487,6 +669,179 @@ export default function VirtualLab({
             </div>
           </div>
         )}
+
+        {/* Results Analysis Modal */}
+        <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent flex items-center">
+                <TrendingUp className="w-6 h-6 mr-2 text-blue-600" />
+                Experiment Results & Analysis
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Complete analysis of your Equilibrium Shift experiment with [Co(H₂O)₆]²⁺ vs Cl⁻ Ions
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 mt-4">
+              {/* Experiment Summary */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <FlaskConical className="w-5 h-5 mr-2 text-blue-600" />
+                  Experiment Summary
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="text-2xl font-bold text-green-600">{completedSteps.length}</div>
+                    <div className="text-sm text-gray-600">Steps Completed</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="text-2xl font-bold text-blue-600">{experimentLog.length}</div>
+                    <div className="text-sm text-gray-600">Actions Performed</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="text-2xl font-bold text-purple-600">{Math.round(testTube.volume)}mL</div>
+                    <div className="text-sm text-gray-600">Final Volume</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chemical Equilibrium Analysis */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Chemical Equilibrium Analysis</h3>
+                <div className="space-y-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-700 mb-2">Equilibrium Equation</h4>
+                    <div className="text-center text-lg font-mono bg-white rounded p-3 border">
+                      <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
+                      <span className="mx-3">+</span>
+                      <span className="font-bold">4Cl⁻</span>
+                      <span className="mx-4 text-xl">⇌</span>
+                      <span style={{ color: COLORS.BLUE }} className="font-bold">[CoCl₄]²⁻</span>
+                      <span className="mx-3">+</span>
+                      <span className="font-bold">6H₂O</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
+                      <h4 className="font-semibold text-pink-800 mb-2">Hydrated Complex [Co(H₂O)₆]²⁺</h4>
+                      <ul className="text-sm text-pink-700 space-y-1">
+                        <li>• Pink color</li>
+                        <li>• Octahedral geometry</li>
+                        <li>• Favored by excess H₂O</li>
+                        <li>• Low Cl⁻ concentration</li>
+                      </ul>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <h4 className="font-semibold text-blue-800 mb-2">Chloride Complex [CoCl₄]²⁻</h4>
+                      <ul className="text-sm text-blue-700 space-y-1">
+                        <li>• Blue color</li>
+                        <li>• Tetrahedral geometry</li>
+                        <li>• Favored by excess Cl⁻</li>
+                        <li>• High Cl⁻ concentration</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Timeline */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-gray-600" />
+                  Action Timeline
+                </h3>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {experimentLog.map((log, index) => (
+                    <div key={log.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-800">{log.action}</div>
+                        <div className="text-sm text-gray-600">{log.observation}</div>
+                        <div className="flex items-center space-x-4 mt-2 text-xs">
+                          <span className="flex items-center">
+                            <span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: log.colorBefore }}></span>
+                            Before: {log.colorBefore}
+                          </span>
+                          <span>→</span>
+                          <span className="flex items-center">
+                            <span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: log.colorAfter }}></span>
+                            After: {log.colorAfter}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Le Chatelier's Principle Demonstration */}
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Le Chatelier's Principle Demonstrated</h3>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4">
+                    <h4 className="font-semibold text-purple-800 mb-2">Adding HCl (Stress: ↑ Cl⁻ concentration)</h4>
+                    <p className="text-sm text-gray-700">
+                      The system responds by shifting right to consume excess Cl⁻ ions, forming more [CoCl₄]²⁻ complex (blue color).
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4">
+                    <h4 className="font-semibold text-pink-800 mb-2">Adding Water (Stress: ↓ Cl⁻ concentration)</h4>
+                    <p className="text-sm text-gray-700">
+                      The system responds by shifting left to counteract the dilution, forming more [Co(H₂O)₆]²⁺ complex (pink color).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Final State */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Final Experimental State</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-2">Current Solution</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div
+                          className="w-6 h-6 rounded-full border-2 border-gray-300"
+                          style={{ backgroundColor: equilibriumState.colorHex }}
+                        ></div>
+                        <span className="text-sm font-medium capitalize">{equilibriumState.dominantComplex} Complex</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{equilibriumState.explanation}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-2">Contents Analysis</h4>
+                    <div className="space-y-1">
+                      <div className="text-sm">Volume: <span className="font-medium">{Math.round(testTube.volume)} mL</span></div>
+                      <div className="text-sm">Components: <span className="font-medium">{testTube.contents.join(', ')}</span></div>
+                      <div className="text-sm">Color: <span className="font-medium">{testTube.color}</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-between mt-6">
+              <Link href="/">
+                <Button className="bg-gray-500 hover:bg-gray-600 text-white flex items-center space-x-2">
+                  <Home className="w-4 h-4" />
+                  <span>Return to Experiments</span>
+                </Button>
+              </Link>
+              <Button
+                onClick={() => setShowResultsModal(false)}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                Close Analysis
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );

@@ -94,10 +94,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
       className="relative group"
     >
       {/* Equipment container */}
-      <div 
-        className={`relative bg-white rounded-xl shadow-lg border-2 p-4 min-w-[100px] min-h-[120px] transition-all duration-200 cursor-pointer ${
+      <div
+        className={`relative bg-white rounded-xl shadow-lg border-2 p-4 transition-all duration-200 cursor-pointer ${
           isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
-        }`}
+        } ${id === 'test-tube' ? 'min-w-[100px] min-h-[140px]' : 'min-w-[90px] min-h-[120px]'}`}
         onClick={handleClick}
       >
         {/* Remove button */}
@@ -119,47 +119,54 @@ export const Equipment: React.FC<EquipmentProps> = ({
         <div className="flex flex-col items-center">
           {id === 'test-tube' ? (
             <div className="relative">
-              <div className="w-8 h-24 bg-gray-200 rounded-t-full rounded-b-lg border-2 border-gray-400 relative overflow-hidden">
+              <div className="relative w-12 h-28">
+                {/* Test tube image */}
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fabfa12ceeba14d95b00014fbc7d41d9a%2Fce67a26571c44f31b921fd4e88ba3830?format=webp&width=800"
+                  alt="Test tube"
+                  className="w-full h-full object-contain"
+                />
+                {/* Pink liquid overlay when volume > 0 */}
                 {volume > 0 && (
-                  <div 
-                    className="absolute bottom-0 left-0 right-0 transition-all duration-500"
-                    style={{ 
-                      height: `${Math.max(10, volume)}%`,
+                  <div
+                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-6 rounded-b-lg transition-all duration-500"
+                    style={{
+                      height: `${Math.max(15, (volume / 100) * 80)}px`,
                       backgroundColor: color,
-                      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.1)'
+                      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.2)',
+                      opacity: 0.9
                     }}
                   />
                 )}
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gray-300 border-b border-gray-400"></div>
               </div>
-              <span className="text-xs font-medium mt-2">{name}</span>
+              <span className="text-xs font-medium mt-1 text-center block">{name}</span>
               {volume > 0 && (
-                <span className="text-xs text-gray-600">{volume}% full</span>
+                <span className="text-xs text-gray-600 text-center block">{Math.round(volume)}% full</span>
               )}
             </div>
           ) : id === 'distilled-water' ? (
             <div className="flex flex-col items-center">
-              <div 
-                className="w-12 h-16 rounded-lg border-2 border-gray-300 relative overflow-hidden mb-2"
+              <div
+                className="w-14 h-20 rounded-lg border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
                 style={{ backgroundColor: '#e0f2fe' }}
               >
                 <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-blue-200 to-transparent opacity-60"></div>
-                <Beaker className="w-6 h-6 absolute top-1 left-1/2 transform -translate-x-1/2 text-blue-600 opacity-50" />
+                <Beaker className="w-7 h-7 absolute top-2 left-1/2 transform -translate-x-1/2 text-blue-600 opacity-50" />
               </div>
               <span className="text-xs font-medium text-center">{name}</span>
-              <span className="text-xs text-blue-600">H₂O</span>
+              <span className="text-xs text-blue-600 font-semibold">H₂O</span>
             </div>
           ) : id === 'concentrated-hcl' ? (
             <div className="flex flex-col items-center">
-              <div 
-                className="w-12 h-16 rounded-lg border-2 border-gray-300 relative overflow-hidden mb-2"
+              <div
+                className="w-14 h-20 rounded-lg border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
                 style={{ backgroundColor: '#fffacd' }}
               >
                 <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-yellow-200 to-transparent opacity-60"></div>
-                <Droplets className="w-6 h-6 absolute top-1 left-1/2 transform -translate-x-1/2 text-yellow-600 opacity-50" />
+                <Droplets className="w-7 h-7 absolute top-2 left-1/2 transform -translate-x-1/2 text-yellow-600 opacity-50" />
               </div>
               <span className="text-xs font-medium text-center">{name}</span>
-              <span className="text-xs text-yellow-600">HCl (12M)</span>
+              <span className="text-xs text-yellow-600 font-semibold">HCl (12M)</span>
             </div>
           ) : (
             <div className="flex flex-col items-center">
