@@ -119,22 +119,29 @@ export const Equipment: React.FC<EquipmentProps> = ({
         <div className="flex flex-col items-center">
           {id === 'test-tube' ? (
             <div className="relative">
-              <div className="w-8 h-24 bg-gray-200 rounded-t-full rounded-b-lg border-2 border-gray-400 relative overflow-hidden">
+              <div className="relative w-12 h-28">
+                {/* Test tube image */}
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fabfa12ceeba14d95b00014fbc7d41d9a%2Fb40731f1cc28469db8310292c89127b7?format=webp&width=800"
+                  alt="Test tube"
+                  className="w-full h-full object-contain"
+                />
+                {/* Pink liquid overlay when volume > 0 */}
                 {volume > 0 && (
-                  <div 
-                    className="absolute bottom-0 left-0 right-0 transition-all duration-500"
-                    style={{ 
-                      height: `${Math.max(10, volume)}%`,
+                  <div
+                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-6 rounded-b-lg transition-all duration-500"
+                    style={{
+                      height: `${Math.max(15, (volume / 100) * 80)}px`,
                       backgroundColor: color,
-                      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.1)'
+                      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.2)',
+                      opacity: 0.9
                     }}
                   />
                 )}
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gray-300 border-b border-gray-400"></div>
               </div>
-              <span className="text-xs font-medium mt-2">{name}</span>
+              <span className="text-xs font-medium mt-1 text-center block">{name}</span>
               {volume > 0 && (
-                <span className="text-xs text-gray-600">{volume}% full</span>
+                <span className="text-xs text-gray-600 text-center block">{Math.round(volume)}% full</span>
               )}
             </div>
           ) : id === 'distilled-water' ? (
