@@ -69,3 +69,12 @@ export interface ExperimentLog {
   observation: string;
   equilibriumShift: 'left' | 'right' | 'none';
 }
+
+export interface GuidedStep {
+  id: number;
+  title: string;
+  description: string;
+  action: string;
+  equipment: string[];
+  completed: boolean;
+}
