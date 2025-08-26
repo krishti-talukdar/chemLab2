@@ -119,21 +119,21 @@ export const Equipment: React.FC<EquipmentProps> = ({
         <div className="flex flex-col items-center">
           {id === 'test-tube' ? (
             <div className="relative">
-              <div className="relative w-12 h-28">
+              <div className="relative w-16 h-36">
                 {/* Test tube image */}
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fabfa12ceeba14d95b00014fbc7d41d9a%2Fce67a26571c44f31b921fd4e88ba3830?format=webp&width=800"
                   alt="Test tube"
                   className="w-full h-full object-contain"
                 />
-                {/* Pink liquid overlay when volume > 0 */}
+                {/* Colored liquid overlay when volume > 0 */}
                 {volume > 0 && (
                   <div
-                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-6 rounded-b-lg transition-all duration-500"
+                    className="absolute bottom-3 left-1/2 transform -translate-x-1/2 w-8 rounded-b-lg transition-all duration-500"
                     style={{
-                      height: `${Math.max(15, (volume / 100) * 80)}px`,
+                      height: `${Math.max(20, (volume / 100) * 100)}px`,
                       backgroundColor: color,
-                      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.2)',
+                      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.2)',
                       opacity: 0.9
                     }}
                   />
