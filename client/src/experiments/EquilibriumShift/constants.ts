@@ -61,14 +61,56 @@ export const EQUILIBRIUM_STATES: Record<string, EquilibriumState> = {
   }
 };
 
-// Guided mode step instructions
+// 6-step guided instructions
 export const GUIDED_STEPS = [
-  "Observe the initial pink solution containing [Co(H₂O)₆]²⁺ complex in the test tube.",
-  "Click 'Add HCl' to introduce Cl⁻ ions and watch the equilibrium shift right.",
-  "Observe the gradual color change from pink → purple → blue as [CoCl₄]²⁻ forms.",
-  "Click 'Add Water' to dilute the Cl⁻ concentration and shift equilibrium left.",
-  "Watch the color change back from blue → purple → pink as [Co(H₂O)₆]²⁺ reforms.",
-  "Experiment freely by alternating additions to observe Le Chatelier's principle!"
+  {
+    id: 1,
+    title: "Setup Laboratory Equipment",
+    description: "Drag the test tube from the equipment section to the workbench. This will be your main reaction vessel.",
+    action: "Drag test tube to workbench",
+    equipment: ["test-tube"],
+    completed: false
+  },
+  {
+    id: 2,
+    title: "Add Initial Cobalt Solution",
+    description: "The test tube now contains pink [Co(H₂O)₆]²⁺ complex solution. Observe the initial pink color representing the hydrated cobalt complex.",
+    action: "Observe pink solution",
+    equipment: ["test-tube"],
+    completed: false
+  },
+  {
+    id: 3,
+    title: "Prepare HCl Reagent",
+    description: "Drag the concentrated HCl bottle to the workbench. This will provide Cl⁻ ions to shift the equilibrium.",
+    action: "Drag HCl bottle to workbench",
+    equipment: ["test-tube", "concentrated-hcl"],
+    completed: false
+  },
+  {
+    id: 4,
+    title: "Add HCl and Observe Color Change",
+    description: "Click on the HCl bottle to add concentrated HCl to the test tube. Watch the color change from pink → purple → blue as equilibrium shifts right to form [CoCl₄]²⁻.",
+    action: "Click HCl bottle to add acid",
+    equipment: ["test-tube", "concentrated-hcl"],
+    completed: false
+  },
+  {
+    id: 5,
+    title: "Prepare Distilled Water",
+    description: "Drag the distilled water bottle to the workbench. This will be used to dilute the solution and shift equilibrium back.",
+    action: "Drag water bottle to workbench",
+    equipment: ["test-tube", "concentrated-hcl", "distilled-water"],
+    completed: false
+  },
+  {
+    id: 6,
+    title: "Add Water and Reverse Equilibrium",
+    description: "Click on the water bottle to add distilled water. Watch the color change back from blue → purple → pink as equilibrium shifts left to reform [Co(H₂O)₆]²⁺. You can repeat steps 4-6 to observe Le Chatelier's principle!",
+    action: "Click water bottle to add water",
+    equipment: ["test-tube", "concentrated-hcl", "distilled-water"],
+    completed: false
+  }
 ];
 
 // Animation durations (in milliseconds)
