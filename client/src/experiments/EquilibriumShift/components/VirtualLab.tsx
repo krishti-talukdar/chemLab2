@@ -290,9 +290,11 @@ export default function VirtualLab({
       if (newWaterClickCount === 1) {
         // First click: blue -> purple
         setShowToast("Adding water... Equilibrium starting to shift back!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
           setTestTube(prev => ({
             ...prev,
