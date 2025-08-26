@@ -302,6 +302,7 @@ export default function VirtualLab({
     setCompletedSteps([]);
     setEquipmentOnBench([]);
     setActiveEquipment("");
+    setHclClickCount(0);
     setShowToast("");
     onReset();
   };
