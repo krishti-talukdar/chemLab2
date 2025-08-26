@@ -171,7 +171,7 @@ export default function VirtualLab({
           ...prev,
           colorHex: COLORS.PINK,
           contents: ['CoCl₂', 'H₂O'],
-          volume: 10
+          volume: 100
         }));
         setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution");
         setTimeout(() => setShowToast(""), 3000);
@@ -732,7 +732,7 @@ export default function VirtualLab({
                   <div className="grid grid-cols-1 gap-2">
                     <div className="bg-gray-50 rounded-lg p-3">
                       <h4 className="font-semibold text-sm text-gray-700 mb-2">Step 6: Add Water</h4>
-                      <p className="text-xs text-gray-600 mb-2">Click Water twice to shift equilibrium back to pink [Co(H₂O)��]²⁺</p>
+                      <p className="text-xs text-gray-600 mb-2">Click Water twice to shift equilibrium back to pink [Co(H₂O)₆]²⁺</p>
                       <div className="flex items-center space-x-2 text-xs">
                         <span>Water added: {waterClickCount}/2</span>
                         <div className="flex space-x-1">
