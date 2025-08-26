@@ -321,7 +321,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (1st time)',
             reagent: 'Distilled Water',
-            amount: 3,
+            amount: 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from blue to purple - equilibrium shifting back',
