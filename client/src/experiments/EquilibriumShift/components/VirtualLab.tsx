@@ -157,7 +157,7 @@ export default function VirtualLab({
         setTestTube(prev => ({
           ...prev,
           colorHex: COLORS.PINK,
-          contents: ['CoCl₂', 'H₂O'],
+          contents: ['CoCl₂', 'H���O'],
           volume: 10
         }));
         setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution");
@@ -322,9 +322,11 @@ export default function VirtualLab({
       } else if (newWaterClickCount === 2) {
         // Second click: purple -> pink
         setShowToast("Adding more water... Completing reverse equilibrium shift!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
           setTestTube(prev => ({
             ...prev,
