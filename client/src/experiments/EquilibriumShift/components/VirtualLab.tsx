@@ -58,6 +58,7 @@ export default function VirtualLab({
   }>>([]);
   const [activeEquipment, setActiveEquipment] = useState<string>("");
   const [hclClickCount, setHclClickCount] = useState<number>(0);
+  const [waterClickCount, setWaterClickCount] = useState<number>(0);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -228,44 +229,80 @@ export default function VirtualLab({
       }
 
     } else if (equipmentId === 'distilled-water' && currentStep === 6) {
-      // Add water and change color back to pink
+      // Two-step water addition: 1st click -> purple, 2nd click -> pink
       setActiveEquipment(equipmentId);
       setDropperAction({
         id: Date.now().toString(),
         reagentId: 'water',
         targetId: 'test-tube',
-        amount: 5,
+        amount: 3,
         timestamp: Date.now(),
         isAnimating: true
       });
 
-      setShowToast("Adding water... Diluting Cl⁻ ions, shifting equilibrium left!");
+      const newWaterClickCount = waterClickCount + 1;
+      setWaterClickCount(newWaterClickCount);
 
-      setTimeout(() => {
-        setDropperAction(null);
-        animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
-        setTestTube(prev => ({
-          ...prev,
-          volume: prev.volume + 5,
-        }));
-        
-        const logEntry: ExperimentLog = {
-          id: Date.now().toString(),
-          timestamp: Date.now(),
-          action: 'Added Water',
-          reagent: 'Distilled Water',
-          amount: 5,
-          colorBefore: testTube.colorHex,
-          colorAfter: COLORS.PINK,
-          observation: 'Solution changed from blue to pink - equilibrium shifted left',
-          equilibriumShift: 'left'
-        };
-        setExperimentLog(prev => [...prev, logEntry]);
-        
-        setActiveEquipment("");
-        setTimeout(() => setShowToast(""), 3000);
-        handleStepComplete();
-      }, ANIMATION.DROPPER_DURATION);
+      if (newWaterClickCount === 1) {
+        // First click: blue -> purple
+        setShowToast("Adding water... Equilibrium starting to shift back!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
+          setTestTube(prev => ({
+            ...prev,
+            volume: prev.volume + 3,
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added Water (1st time)',
+            reagent: 'Distilled Water',
+            amount: 3,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.PURPLE,
+            observation: 'Solution changing from blue to purple - equilibrium shifting back',
+            equilibriumShift: 'left'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          setActiveEquipment("");
+          setShowToast("Purple color! Click water again to complete the reverse shift.");
+          setTimeout(() => setShowToast(""), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+
+      } else if (newWaterClickCount === 2) {
+        // Second click: purple -> pink
+        setShowToast("Adding more water... Completing reverse equilibrium shift!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+          setTestTube(prev => ({
+            ...prev,
+            volume: prev.volume + 3,
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added Water (2nd time)',
+            reagent: 'Distilled Water',
+            amount: 3,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.PINK,
+            observation: 'Solution changed from purple to pink - equilibrium fully shifted left',
+            equilibriumShift: 'left'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          setActiveEquipment("");
+          setTimeout(() => setShowToast(""), 3000);
+          handleStepComplete();
+        }, ANIMATION.DROPPER_DURATION);
+      }
 
     } else {
       setShowToast("Follow the current step instructions");
@@ -303,6 +340,7 @@ export default function VirtualLab({
     setEquipmentOnBench([]);
     setActiveEquipment("");
     setHclClickCount(0);
+    setWaterClickCount(0);
     setShowToast("");
     onReset();
   };
