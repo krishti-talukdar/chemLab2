@@ -248,6 +248,17 @@ export default function VirtualLab({
           };
           setExperimentLog(prev => [...prev, logEntry]);
 
+          // Track this action for undo
+          setLastAction({
+            type: 'reagent_added',
+            equipmentId: 'concentrated-hcl',
+            data: {
+              clickCount: newClickCount - 1,
+              previousColor: testTube.colorHex,
+              previousState: equilibriumState
+            }
+          });
+
           setActiveEquipment("");
           setTimeout(() => setShowToast(""), 3000);
           handleStepComplete();
