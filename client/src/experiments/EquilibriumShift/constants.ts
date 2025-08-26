@@ -32,7 +32,7 @@ export const REAGENT_BOTTLES: ReagentBottle[] = [
 // Initial test tube state
 export const INITIAL_TESTTUBE: TestTube = {
   id: 'main-tube',
-  volume: 10, // mL
+  volume: 100, // mL (100% full)
   color: 'Pink',
   colorHex: COLORS.PINK,
   contents: ['CoCl₂', 'H₂O'],
