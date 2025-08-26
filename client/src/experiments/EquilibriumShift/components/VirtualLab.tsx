@@ -319,10 +319,26 @@ export default function VirtualLab({
               <p className="text-sm text-gray-600 mb-2">
                 {currentStepData.description}
               </p>
-              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                <ArrowRight className="w-3 h-3 mr-1" />
-                {currentStepData.action}
-              </div>
+              {currentStep === 2 ? (
+                <button
+                  onClick={() => {
+                    setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
+                    setTimeout(() => {
+                      handleStepComplete();
+                      setShowToast("");
+                    }, 1500);
+                  }}
+                  className="inline-flex items-center px-3 py-1 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-xs font-medium transition-colors duration-200 cursor-pointer"
+                >
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  {currentStepData.action}
+                </button>
+              ) : (
+                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  {currentStepData.action}
+                </div>
+              )}
             </div>
           </div>
         </div>
