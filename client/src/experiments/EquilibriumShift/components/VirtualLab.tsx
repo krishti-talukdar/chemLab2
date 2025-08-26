@@ -262,7 +262,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (2nd time)',
             reagent: 'Concentrated HCl',
-            amount: 1,
+            amount: 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.BLUE,
             observation: 'Solution changed from purple to blue - equilibrium fully shifted right',
