@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench } from "lucide-react";
+import { WorkBench } from "./WorkBench";
+import { Equipment, LAB_EQUIPMENT } from "./Equipment";
 import { 
   COLORS, 
-  REAGENT_BOTTLES, 
   INITIAL_TESTTUBE, 
   EQUILIBRIUM_STATES, 
   GUIDED_STEPS,
@@ -46,6 +47,16 @@ export default function VirtualLab({
   const [dropperAction, setDropperAction] = useState<DropperAction | null>(null);
   const [experimentLog, setExperimentLog] = useState<ExperimentLog[]>([]);
   const [showToast, setShowToast] = useState<string>("");
+  
+  // Workbench state
+  const [currentStep, setCurrentStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [equipmentOnBench, setEquipmentOnBench] = useState<Array<{
+    id: string;
+    position: { x: number; y: number };
+    isActive: boolean;
+  }>>([]);
+  const [activeEquipment, setActiveEquipment] = useState<string>("");
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -90,122 +101,157 @@ export default function VirtualLab({
     }, ANIMATION.COLOR_TRANSITION_DURATION / totalSteps);
   }, []);
 
-  // Handle adding HCl
-  const handleAddHCl = () => {
-    if (!experimentStarted || dropperAction?.isAnimating) return;
-
-    const currentColor = testTube.colorHex;
-    let newState: EquilibriumState;
-    let targetColor: string;
-
-    // Determine the transition based on current state
-    if (equilibriumState.dominantComplex === 'hydrated') {
-      // Pink -> Purple (transition)
-      newState = EQUILIBRIUM_STATES.transition;
-      targetColor = COLORS.PURPLE;
-    } else if (equilibriumState.dominantComplex === 'transition') {
-      // Purple -> Blue
-      newState = EQUILIBRIUM_STATES.chloride;
-      targetColor = COLORS.BLUE;
-    } else {
-      // Already blue - intensify blue
-      newState = EQUILIBRIUM_STATES.chloride;
-      targetColor = COLORS.BLUE;
+  // Handle equipment drop on workbench
+  const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
+    // Check if this equipment is required for current step
+    const currentStepData = GUIDED_STEPS[currentStep - 1];
+    if (!currentStepData.equipment.includes(equipmentId)) {
+      setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
+      setTimeout(() => setShowToast(""), 3000);
+      return;
     }
 
-    // Start dropper animation
-    setDropperAction({
-      id: Date.now().toString(),
-      reagentId: 'hcl',
-      targetId: 'main-tube',
-      amount: 2,
-      timestamp: Date.now(),
-      isAnimating: true
+    // Add equipment to workbench
+    setEquipmentOnBench(prev => {
+      const filtered = prev.filter(eq => eq.id !== equipmentId);
+      return [...filtered, {
+        id: equipmentId,
+        position: { x, y },
+        isActive: false
+      }];
     });
 
-    // Show animation feedback
-    setShowToast("Adding HCl... Cl⁻ ions shifting equilibrium right!");
+    setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
+    setTimeout(() => setShowToast(""), 2000);
 
-    // Animate dropper for 1.5 seconds, then start color transition
-    setTimeout(() => {
-      setDropperAction(null);
-      animateColorTransition(currentColor, targetColor, newState);
-      
-      // Log the action
-      const logEntry: ExperimentLog = {
+    // Auto-complete step if it's just placing equipment
+    if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
+      setTimeout(() => {
+        handleStepComplete();
+      }, 1000);
+    }
+
+    // Special handling for test tube - automatically add initial solution
+    if (equipmentId === 'test-tube' && currentStep === 1) {
+      setTimeout(() => {
+        setTestTube(prev => ({
+          ...prev,
+          colorHex: COLORS.PINK,
+          contents: ['CoCl₂', 'H₂O'],
+          volume: 10
+        }));
+        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution");
+        setTimeout(() => setShowToast(""), 3000);
+      }, 1500);
+    }
+  }, [currentStep, completedSteps]);
+
+  // Handle equipment interaction
+  const handleEquipmentInteract = useCallback((equipmentId: string) => {
+    const currentStepData = GUIDED_STEPS[currentStep - 1];
+    
+    if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
+      // Add HCl and change color to blue
+      setActiveEquipment(equipmentId);
+      setDropperAction({
         id: Date.now().toString(),
-        timestamp: Date.now(),
-        action: 'Added HCl',
-        reagent: 'Concentrated HCl',
+        reagentId: 'hcl',
+        targetId: 'test-tube',
         amount: 2,
-        colorBefore: currentColor,
-        colorAfter: targetColor,
-        observation: `Solution changing from ${equilibriumState.dominantComplex} to ${newState.dominantComplex}`,
-        equilibriumShift: 'right'
-      };
-      setExperimentLog(prev => [...prev, logEntry]);
-      
-      setTimeout(() => setShowToast(""), 3000);
-    }, ANIMATION.DROPPER_DURATION);
-  };
-
-  // Handle adding water
-  const handleAddWater = () => {
-    if (!experimentStarted || dropperAction?.isAnimating) return;
-
-    const currentColor = testTube.colorHex;
-    let newState: EquilibriumState;
-    let targetColor: string;
-
-    // Determine the transition based on current state
-    if (equilibriumState.dominantComplex === 'chloride') {
-      // Blue -> Purple (transition)
-      newState = EQUILIBRIUM_STATES.transition;
-      targetColor = COLORS.PURPLE;
-    } else if (equilibriumState.dominantComplex === 'transition') {
-      // Purple -> Pink
-      newState = EQUILIBRIUM_STATES.hydrated;
-      targetColor = COLORS.PINK;
-    } else {
-      // Already pink - maintain pink
-      newState = EQUILIBRIUM_STATES.hydrated;
-      targetColor = COLORS.PINK;
-    }
-
-    // Start dropper animation
-    setDropperAction({
-      id: Date.now().toString(),
-      reagentId: 'water',
-      targetId: 'main-tube',
-      amount: 5,
-      timestamp: Date.now(),
-      isAnimating: true
-    });
-
-    // Show animation feedback
-    setShowToast("Adding water... Diluting Cl⁻ ions, shifting equilibrium left!");
-
-    // Animate dropper for 1.5 seconds, then start color transition
-    setTimeout(() => {
-      setDropperAction(null);
-      animateColorTransition(currentColor, targetColor, newState);
-      
-      // Log the action
-      const logEntry: ExperimentLog = {
-        id: Date.now().toString(),
         timestamp: Date.now(),
-        action: 'Added Water',
-        reagent: 'Distilled Water',
+        isAnimating: true
+      });
+
+      setShowToast("Adding HCl... Cl⁻ ions shifting equilibrium right!");
+
+      setTimeout(() => {
+        setDropperAction(null);
+        animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
+        setTestTube(prev => ({
+          ...prev,
+          contents: [...prev.contents, 'HCl'],
+        }));
+        
+        const logEntry: ExperimentLog = {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          action: 'Added HCl',
+          reagent: 'Concentrated HCl',
+          amount: 2,
+          colorBefore: testTube.colorHex,
+          colorAfter: COLORS.BLUE,
+          observation: 'Solution changed from pink to blue - equilibrium shifted right',
+          equilibriumShift: 'right'
+        };
+        setExperimentLog(prev => [...prev, logEntry]);
+        
+        setActiveEquipment("");
+        setTimeout(() => setShowToast(""), 3000);
+        handleStepComplete();
+      }, ANIMATION.DROPPER_DURATION);
+
+    } else if (equipmentId === 'distilled-water' && currentStep === 6) {
+      // Add water and change color back to pink
+      setActiveEquipment(equipmentId);
+      setDropperAction({
+        id: Date.now().toString(),
+        reagentId: 'water',
+        targetId: 'test-tube',
         amount: 5,
-        colorBefore: currentColor,
-        colorAfter: targetColor,
-        observation: `Solution changing from ${equilibriumState.dominantComplex} to ${newState.dominantComplex}`,
-        equilibriumShift: 'left'
-      };
-      setExperimentLog(prev => [...prev, logEntry]);
+        timestamp: Date.now(),
+        isAnimating: true
+      });
+
+      setShowToast("Adding water... Diluting Cl⁻ ions, shifting equilibrium left!");
+
+      setTimeout(() => {
+        setDropperAction(null);
+        animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+        setTestTube(prev => ({
+          ...prev,
+          volume: prev.volume + 5,
+        }));
+        
+        const logEntry: ExperimentLog = {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          action: 'Added Water',
+          reagent: 'Distilled Water',
+          amount: 5,
+          colorBefore: testTube.colorHex,
+          colorAfter: COLORS.PINK,
+          observation: 'Solution changed from blue to pink - equilibrium shifted left',
+          equilibriumShift: 'left'
+        };
+        setExperimentLog(prev => [...prev, logEntry]);
+        
+        setActiveEquipment("");
+        setTimeout(() => setShowToast(""), 3000);
+        handleStepComplete();
+      }, ANIMATION.DROPPER_DURATION);
+
+    } else {
+      setShowToast("Follow the current step instructions");
+      setTimeout(() => setShowToast(""), 2000);
+    }
+  }, [currentStep, testTube.colorHex, animateColorTransition]);
+
+  // Handle step completion
+  const handleStepComplete = () => {
+    if (!completedSteps.includes(currentStep)) {
+      setCompletedSteps(prev => [...prev, currentStep]);
       
-      setTimeout(() => setShowToast(""), 3000);
-    }, ANIMATION.DROPPER_DURATION);
+      if (currentStep < GUIDED_STEPS.length) {
+        setTimeout(() => {
+          setCurrentStep(currentStep + 1);
+          setShowToast(`Step ${currentStep} completed! Moving to step ${currentStep + 1}`);
+          setTimeout(() => setShowToast(""), 3000);
+        }, 500);
+      } else {
+        setShowToast("Experiment completed! You can now experiment freely.");
+        setTimeout(() => setShowToast(""), 4000);
+      }
+    }
   };
 
   // Reset experiment
@@ -215,168 +261,103 @@ export default function VirtualLab({
     setColorTransition(null);
     setDropperAction(null);
     setExperimentLog([]);
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setEquipmentOnBench([]);
+    setActiveEquipment("");
     setShowToast("");
     onReset();
   };
 
-  // Get current guided step instruction
-  const getCurrentInstruction = () => {
-    if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
-      return GUIDED_STEPS[mode.currentGuidedStep] || GUIDED_STEPS[0];
-    }
-    return null;
-  };
+  const currentStepData = GUIDED_STEPS[currentStep - 1];
 
   return (
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
-        {/* Guided Mode Instructions */}
-        {mode.current === 'guided' && (
-          <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Info className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800">Step {(mode.currentGuidedStep || 0) + 1}</h4>
-                  <p className="text-sm text-gray-600">{getCurrentInstruction()}</p>
-                </div>
-              </div>
-              {(mode.currentGuidedStep || 0) > 0 && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={onStepComplete}
-                  className="flex items-center space-x-1"
-                >
-                  <span>Next</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
+        {/* Step Progress Bar */}
+        <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Experiment Progress</h3>
+            <span className="text-sm text-blue-600 font-medium">
+              Step {currentStep} of {GUIDED_STEPS.length}
+            </span>
+          </div>
+          
+          {/* Progress indicators */}
+          <div className="flex space-x-2 mb-4">
+            {GUIDED_STEPS.map((step, index) => (
+              <div
+                key={step.id}
+                className={`flex-1 h-2 rounded-full ${
+                  completedSteps.includes(step.id)
+                    ? 'bg-green-500'
+                    : currentStep === step.id
+                    ? 'bg-blue-500'
+                    : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Current step info */}
+          <div className="flex items-start space-x-3">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              completedSteps.includes(currentStep) 
+                ? 'bg-green-500 text-white' 
+                : 'bg-blue-500 text-white'
+            }`}>
+              {completedSteps.includes(currentStep) ? (
+                <CheckCircle className="w-4 h-4" />
+              ) : (
+                <span className="text-sm font-bold">{currentStep}</span>
               )}
             </div>
-          </div>
-        )}
-
-        {/* Main Lab Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
-          {/* Reagent Bottles - Left */}
-          <div className="lg:col-span-1 space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <Beaker className="w-5 h-5 mr-2 text-blue-600" />
-              Reagents
-            </h3>
-            
-            {REAGENT_BOTTLES.map((reagent) => (
-              <div key={reagent.id} className="relative">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={reagent.id === 'hcl' ? handleAddHCl : handleAddWater}
-                      disabled={!experimentStarted || dropperAction?.isAnimating}
-                      className={`w-full p-4 rounded-xl border-2 transition-all duration-200 transform hover:scale-105 ${
-                        !experimentStarted || dropperAction?.isAnimating
-                          ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-50'
-                          : 'border-blue-200 bg-white hover:border-blue-400 hover:shadow-lg cursor-pointer'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div 
-                          className="w-16 h-20 mx-auto mb-3 rounded-lg border-2 border-gray-300 relative overflow-hidden"
-                          style={{ backgroundColor: reagent.color }}
-                        >
-                          <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-current to-transparent opacity-60"></div>
-                          <FlaskConical className="w-8 h-8 absolute top-1 left-1/2 transform -translate-x-1/2 text-gray-600 opacity-50" />
-                        </div>
-                        <h4 className="font-semibold text-sm text-gray-800">{reagent.name}</h4>
-                        <p className="text-xs text-gray-600">{reagent.formula}</p>
-                        <p className="text-xs text-blue-600 mt-1">{reagent.concentration}</p>
-                      </div>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
-                    <p>{reagent.description}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                {/* Dropper Animation */}
-                {dropperAction?.reagentId === reagent.id && (
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-                    <div className="animate-bounce">
-                      <Droplets className="w-6 h-6 text-blue-500" />
-                      <div className="flex space-x-1 mt-1">
-                        {[...Array(3)].map((_, i) => (
-                          <div 
-                            key={i}
-                            className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"
-                            style={{ animationDelay: `${i * 0.2}s` }}
-                          ></div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-800 mb-1">
+                {currentStepData.title}
+              </h4>
+              <p className="text-sm text-gray-600 mb-2">
+                {currentStepData.description}
+              </p>
+              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <ArrowRight className="w-3 h-3 mr-1" />
+                {currentStepData.action}
               </div>
-            ))}
-
-            {/* Reset Button */}
-            <Button
-              onClick={handleResetExperiment}
-              variant="outline"
-              className="w-full mt-6 bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
-            >
-              Reset Experiment
-            </Button>
+            </div>
           </div>
+        </div>
 
-          {/* Test Tube Area - Center */}
-          <div className="lg:col-span-2 flex flex-col items-center justify-center relative">
-            <div className="relative">
-              {/* Test Tube */}
-              <div className="w-24 h-64 bg-gray-200 rounded-t-full rounded-b-lg border-4 border-gray-400 relative overflow-hidden shadow-xl">
-                {/* Solution */}
-                <div 
-                  className="absolute bottom-0 left-0 right-0 transition-all duration-300 rounded-b-lg"
-                  style={{ 
-                    height: '85%', 
-                    backgroundColor: testTube.colorHex,
-                    boxShadow: `inset 0 0 20px rgba(0,0,0,0.1)`
-                  }}
-                >
-                  {/* Bubbling effect during transitions */}
-                  {colorTransition?.isAnimating && (
-                    <div className="absolute inset-0">
-                      {[...Array(8)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-2 h-2 bg-white rounded-full opacity-60 animate-ping"
-                          style={{
-                            left: `${20 + (i % 4) * 15}%`,
-                            bottom: `${10 + Math.random() * 60}%`,
-                            animationDelay: `${i * 0.3}s`,
-                            animationDuration: '1s'
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                
-                {/* Test tube rim */}
-                <div className="absolute top-0 left-0 right-0 h-4 bg-gray-300 border-b-2 border-gray-400"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+          {/* Equipment Section - Left */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Wrench className="w-5 h-5 mr-2 text-blue-600" />
+                Equipment
+              </h3>
+              
+              <div className="space-y-3">
+                {LAB_EQUIPMENT.map((equipment) => (
+                  <Equipment
+                    key={equipment.id}
+                    id={equipment.id}
+                    name={equipment.name}
+                    icon={equipment.icon}
+                    disabled={!experimentStarted}
+                  />
+                ))}
               </div>
 
-              {/* Test Tube Label */}
-              <div className="mt-4 text-center">
-                <p className="text-sm font-medium text-gray-700">Main Reaction Vessel</p>
-                <p className="text-xs text-gray-500">Volume: {testTube.volume} mL</p>
-                <p className="text-xs text-gray-500">Temperature: {testTube.temperature}°C</p>
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-xs text-blue-700">
+                  <strong>Tip:</strong> Drag equipment to the workbench following the step-by-step instructions.
+                </p>
               </div>
             </div>
 
             {/* Equilibrium Equation */}
-            <div className="mt-8 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">Chemical Equilibrium</h4>
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Chemical Equilibrium</h4>
               <div className="text-center text-sm font-mono">
                 <span style={{ color: COLORS.PINK }}>[Co(H₂O)₆]²⁺</span>
                 <span className="mx-2">+</span>
@@ -390,71 +371,112 @@ export default function VirtualLab({
                 Pink hydrated ⇌ Blue chloride
               </div>
             </div>
+
+            {/* Reset Button */}
+            <Button
+              onClick={handleResetExperiment}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+            >
+              Reset Experiment
+            </Button>
           </div>
 
-          {/* Dynamic Explanation Panel - Right */}
-          <div className="lg:col-span-1 space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <Info className="w-5 h-5 mr-2 text-green-600" />
-              Live Analysis
-            </h3>
+          {/* Workbench - Center */}
+          <div className="lg:col-span-6">
+            <WorkBench
+              onDrop={handleEquipmentDrop}
+              isRunning={isRunning}
+              currentStep={currentStep}
+            >
+              {/* Positioned Equipment */}
+              {equipmentOnBench.map((equipment) => {
+                const equipmentData = LAB_EQUIPMENT.find(eq => eq.id === equipment.id);
+                return equipmentData ? (
+                  <Equipment
+                    key={equipment.id}
+                    id={equipment.id}
+                    name={equipmentData.name}
+                    icon={equipmentData.icon}
+                    position={equipment.position}
+                    onRemove={(id) => {
+                      setEquipmentOnBench(prev => prev.filter(eq => eq.id !== id));
+                      setShowToast(`${id.replace('-', ' ')} removed from workbench`);
+                      setTimeout(() => setShowToast(""), 2000);
+                    }}
+                    onInteract={handleEquipmentInteract}
+                    isActive={activeEquipment === equipment.id}
+                    color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
+                    volume={equipment.id === 'test-tube' ? (testTube.volume / 15) * 100 : undefined}
+                  />
+                ) : null;
+              })}
+            </WorkBench>
+          </div>
 
-            {/* Current State */}
-            <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200">
-              <h4 className="font-semibold text-sm text-gray-700 mb-2">Current State</h4>
-              <div className="flex items-center space-x-2 mb-2">
-                <div 
-                  className="w-4 h-4 rounded-full border border-gray-300"
-                  style={{ backgroundColor: equilibriumState.colorHex }}
-                ></div>
-                <span className="text-sm capitalize">{equilibriumState.dominantComplex}</span>
+          {/* Analysis Panel - Right */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Info className="w-5 h-5 mr-2 text-green-600" />
+                Live Analysis
+              </h3>
+
+              {/* Current State */}
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Current State</h4>
+                <div className="flex items-center space-x-2 mb-2">
+                  <div 
+                    className="w-4 h-4 rounded-full border border-gray-300"
+                    style={{ backgroundColor: equilibriumState.colorHex }}
+                  ></div>
+                  <span className="text-sm capitalize">{equilibriumState.dominantComplex}</span>
+                </div>
+                <p className="text-xs text-gray-600">{equilibriumState.explanation}</p>
               </div>
-              <p className="text-xs text-gray-600">{equilibriumState.explanation}</p>
-            </div>
 
-            {/* Equilibrium Direction */}
-            <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200">
-              <h4 className="font-semibold text-sm text-gray-700 mb-2">Equilibrium Direction</h4>
-              <div className="flex items-center justify-center space-x-2">
-                <ArrowLeft 
-                  className={`w-6 h-6 ${
-                    equilibriumState.equilibriumDirection === 'left' 
-                      ? 'text-pink-500' 
-                      : 'text-gray-300'
-                  }`} 
-                />
-                <span className="text-xs">⇌</span>
-                <ArrowRight 
-                  className={`w-6 h-6 ${
-                    equilibriumState.equilibriumDirection === 'right' 
-                      ? 'text-blue-500' 
-                      : 'text-gray-300'
-                  }`} 
-                />
-              </div>
-              <p className="text-xs text-center text-gray-600 mt-2">
-                {equilibriumState.equilibriumDirection === 'left' && 'Favoring hydrated complex'}
-                {equilibriumState.equilibriumDirection === 'right' && 'Favoring chloride complex'}
-                {equilibriumState.equilibriumDirection === 'neutral' && 'Equilibrium shifting'}
-              </p>
-            </div>
-
-            {/* Recent Actions Log */}
-            {experimentLog.length > 0 && (
-              <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200">
-                <h4 className="font-semibold text-sm text-gray-700 mb-2">Recent Actions</h4>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {experimentLog.slice(-3).reverse().map((log) => (
-                    <div key={log.id} className="text-xs p-2 bg-gray-50 rounded">
-                      <div className="font-medium">{log.action}</div>
-                      <div className="text-gray-600">{log.observation}</div>
+              {/* Steps Completed */}
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
+                <div className="space-y-1">
+                  {GUIDED_STEPS.map((step) => (
+                    <div key={step.id} className={`flex items-center space-x-2 text-xs ${
+                      completedSteps.includes(step.id) ? 'text-green-600' : 'text-gray-400'
+                    }`}>
+                      <CheckCircle className="w-3 h-3" />
+                      <span>{step.title}</span>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
+
+              {/* Recent Actions */}
+              {experimentLog.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-700 mb-2">Recent Actions</h4>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {experimentLog.slice(-3).reverse().map((log) => (
+                      <div key={log.id} className="text-xs p-2 bg-gray-50 rounded">
+                        <div className="font-medium">{log.action}</div>
+                        <div className="text-gray-600">{log.observation}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Dropper Animation */}
+        {dropperAction && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            <div className="animate-bounce bg-white rounded-lg p-4 shadow-xl border-2 border-blue-300">
+              <Droplets className="w-8 h-8 text-blue-500 mx-auto" />
+              <p className="text-sm text-center mt-2">Adding solution...</p>
+            </div>
+          </div>
+        )}
 
         {/* Toast Notification */}
         {showToast && (
