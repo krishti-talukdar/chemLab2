@@ -345,7 +345,7 @@ export default function VirtualLab({
           animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
           setTestTube(prev => ({
             ...prev,
-            volume: prev.volume + 3,
+            volume: Math.min(prev.volume + 10, 100),
           }));
 
           const logEntry: ExperimentLog = {
