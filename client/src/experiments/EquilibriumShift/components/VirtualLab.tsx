@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench, X, TrendingUp, Flask, Clock } from "lucide-react";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
 import { 
@@ -594,6 +595,173 @@ export default function VirtualLab({
             </div>
           </div>
         )}
+
+        {/* Results Analysis Modal */}
+        <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent flex items-center">
+                <TrendingUp className="w-6 h-6 mr-2 text-blue-600" />
+                Experiment Results & Analysis
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Complete analysis of your Equilibrium Shift experiment with [Co(H₂O)₆]²⁺ vs Cl⁻ Ions
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 mt-4">
+              {/* Experiment Summary */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Flask className="w-5 h-5 mr-2 text-blue-600" />
+                  Experiment Summary
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="text-2xl font-bold text-green-600">{completedSteps.length}</div>
+                    <div className="text-sm text-gray-600">Steps Completed</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="text-2xl font-bold text-blue-600">{experimentLog.length}</div>
+                    <div className="text-sm text-gray-600">Actions Performed</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="text-2xl font-bold text-purple-600">{Math.round(testTube.volume)}mL</div>
+                    <div className="text-sm text-gray-600">Final Volume</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chemical Equilibrium Analysis */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Chemical Equilibrium Analysis</h3>
+                <div className="space-y-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-700 mb-2">Equilibrium Equation</h4>
+                    <div className="text-center text-lg font-mono bg-white rounded p-3 border">
+                      <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
+                      <span className="mx-3">+</span>
+                      <span className="font-bold">4Cl⁻</span>
+                      <span className="mx-4 text-xl">⇌</span>
+                      <span style={{ color: COLORS.BLUE }} className="font-bold">[CoCl₄]²⁻</span>
+                      <span className="mx-3">+</span>
+                      <span className="font-bold">6H₂O</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
+                      <h4 className="font-semibold text-pink-800 mb-2">Hydrated Complex [Co(H₂O)₆]²⁺</h4>
+                      <ul className="text-sm text-pink-700 space-y-1">
+                        <li>• Pink color</li>
+                        <li>• Octahedral geometry</li>
+                        <li>• Favored by excess H₂O</li>
+                        <li>• Low Cl⁻ concentration</li>
+                      </ul>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <h4 className="font-semibold text-blue-800 mb-2">Chloride Complex [CoCl₄]²⁻</h4>
+                      <ul className="text-sm text-blue-700 space-y-1">
+                        <li>• Blue color</li>
+                        <li>• Tetrahedral geometry</li>
+                        <li>• Favored by excess Cl⁻</li>
+                        <li>• High Cl⁻ concentration</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Timeline */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-gray-600" />
+                  Action Timeline
+                </h3>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {experimentLog.map((log, index) => (
+                    <div key={log.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-800">{log.action}</div>
+                        <div className="text-sm text-gray-600">{log.observation}</div>
+                        <div className="flex items-center space-x-4 mt-2 text-xs">
+                          <span className="flex items-center">
+                            <span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: log.colorBefore }}></span>
+                            Before: {log.colorBefore}
+                          </span>
+                          <span>→</span>
+                          <span className="flex items-center">
+                            <span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: log.colorAfter }}></span>
+                            After: {log.colorAfter}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Le Chatelier's Principle Demonstration */}
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Le Chatelier's Principle Demonstrated</h3>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4">
+                    <h4 className="font-semibold text-purple-800 mb-2">Adding HCl (Stress: ↑ Cl⁻ concentration)</h4>
+                    <p className="text-sm text-gray-700">
+                      The system responds by shifting right to consume excess Cl⁻ ions, forming more [CoCl₄]²⁻ complex (blue color).
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4">
+                    <h4 className="font-semibold text-pink-800 mb-2">Adding Water (Stress: ↓ Cl⁻ concentration)</h4>
+                    <p className="text-sm text-gray-700">
+                      The system responds by shifting left to counteract the dilution, forming more [Co(H₂O)₆]²⁺ complex (pink color).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Final State */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Final Experimental State</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-2">Current Solution</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div
+                          className="w-6 h-6 rounded-full border-2 border-gray-300"
+                          style={{ backgroundColor: equilibriumState.colorHex }}
+                        ></div>
+                        <span className="text-sm font-medium capitalize">{equilibriumState.dominantComplex} Complex</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{equilibriumState.explanation}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-2">Contents Analysis</h4>
+                    <div className="space-y-1">
+                      <div className="text-sm">Volume: <span className="font-medium">{Math.round(testTube.volume)} mL</span></div>
+                      <div className="text-sm">Components: <span className="font-medium">{testTube.contents.join(', ')}</span></div>
+                      <div className="text-sm">Color: <span className="font-medium">{testTube.color}</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-6">
+              <Button
+                onClick={() => setShowResultsModal(false)}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                Close Analysis
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
