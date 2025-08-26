@@ -50,7 +50,7 @@ const EquilibriumShiftData = {
     {
       id: 5,
       title: "Repeat and Experiment",
-      description: "Alternate between adding HCl and water to observe multiple equilibrium shifts. Notice the smooth color transitions and timing.",
+      description: "Alternate between adding HCl (2 clicks: pink→purple→blue) and water (2 clicks: blue→purple→pink) to observe multiple equilibrium shifts. Notice the gradual color transitions through purple intermediate state.",
       duration: "8 minutes",
       completed: false
     },
