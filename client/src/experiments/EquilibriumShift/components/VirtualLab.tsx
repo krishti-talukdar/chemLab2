@@ -516,7 +516,7 @@ export default function VirtualLab({
                     onInteract={handleEquipmentInteract}
                     isActive={activeEquipment === equipment.id}
                     color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
-                    volume={equipment.id === 'test-tube' ? (testTube.volume / 15) * 100 : undefined}
+                    volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
                   />
                 ) : null;
               })}
