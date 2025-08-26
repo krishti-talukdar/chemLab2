@@ -113,7 +113,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
             }}
             size="sm"
             variant="outline"
-            className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 text-white border-red-500 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+            className={`absolute w-6 h-6 p-0 bg-red-500 text-white border-red-500 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity ${
+              id === 'test-tube' ? 'top-0 right-0' : '-top-2 -right-2'
+            }`}
           >
             <X className="w-3 h-3" />
           </Button>
