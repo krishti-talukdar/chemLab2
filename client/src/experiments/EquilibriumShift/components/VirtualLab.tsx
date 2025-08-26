@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench, X, TrendingUp, Clock, Home } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
 import { Link } from "wouter";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
@@ -63,6 +63,7 @@ export default function VirtualLab({
   const [waterClickCount, setWaterClickCount] = useState<number>(0);
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
   const [experimentCompleted, setExperimentCompleted] = useState<boolean>(false);
+  const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -117,6 +118,9 @@ export default function VirtualLab({
       return;
     }
 
+    // Store the previous state for undo
+    const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
+
     // Add equipment to workbench
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
@@ -125,6 +129,13 @@ export default function VirtualLab({
         position: { x, y },
         isActive: false
       }];
+    });
+
+    // Track this action for undo
+    setLastAction({
+      type: 'equipment_placed',
+      equipmentId,
+      data: { previousState, newPosition: { x, y } }
     });
 
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
@@ -454,22 +465,36 @@ export default function VirtualLab({
               </div>
             </div>
 
-            {/* Equilibrium Equation */}
+            {/* Equilibrium Equation - Made wider */}
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Chemical Equilibrium</h4>
-              <div className="text-center text-sm font-mono">
-                <span style={{ color: COLORS.PINK }}>[Co(H₂O)₆]²⁺</span>
-                <span className="mx-2">+</span>
-                <span>4Cl⁻</span>
-                <span className="mx-3">⇌</span>
-                <span style={{ color: COLORS.BLUE }}>[CoCl₄]²⁻</span>
-                <span className="mx-2">+</span>
-                <span>6H₂O</span>
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Equilibrium</h4>
+              <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
+                <div className="flex flex-wrap items-center justify-center gap-1">
+                  <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
+                  <span className="mx-1">+</span>
+                  <span className="font-bold">4Cl⁻</span>
+                  <span className="mx-2 text-lg">⇌</span>
+                  <span style={{ color: COLORS.BLUE }} className="font-bold">[CoCl₄]²⁻</span>
+                  <span className="mx-1">+</span>
+                  <span className="font-bold">6H₂O</span>
+                </div>
               </div>
-              <div className="text-center text-xs text-gray-500 mt-1">
+              <div className="text-center text-xs text-gray-500 mt-2">
                 Pink hydrated ⇌ Blue chloride
               </div>
             </div>
+
+            {/* Undo Button - Only show when equipment is on workbench */}
+            {equipmentOnBench.length > 0 && lastAction && (
+              <Button
+                onClick={handleUndo}
+                variant="outline"
+                className="w-full bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center justify-center space-x-2"
+              >
+                <Undo className="w-4 h-4" />
+                <span>Undo Last Action</span>
+              </Button>
+            )}
 
             {/* Results Button - Only show when experiment is completed */}
             {experimentCompleted && (
