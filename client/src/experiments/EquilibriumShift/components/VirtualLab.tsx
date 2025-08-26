@@ -111,6 +111,16 @@ export default function VirtualLab({
     }, ANIMATION.COLOR_TRANSITION_DURATION / totalSteps);
   }, []);
 
+  // Predefined positions for equipment layout
+  const getEquipmentPosition = (equipmentId: string) => {
+    const positions = {
+      'test-tube': { x: 200, y: 250 },          // Left side, center
+      'concentrated-hcl': { x: 500, y: 180 },  // Right side, top
+      'distilled-water': { x: 500, y: 320 }    // Right side, bottom
+    };
+    return positions[equipmentId as keyof typeof positions] || { x: 300, y: 250 };
+  };
+
   // Handle equipment drop on workbench
   const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
     // Check if this equipment is required for current step
@@ -124,12 +134,15 @@ export default function VirtualLab({
     // Store the previous state for undo
     const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
 
+    // Get predefined position for this equipment
+    const predefinedPosition = getEquipmentPosition(equipmentId);
+
     // Add equipment to workbench
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
       return [...filtered, {
         id: equipmentId,
-        position: { x, y },
+        position: predefinedPosition,
         isActive: false
       }];
     });
