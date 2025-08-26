@@ -207,6 +207,17 @@ export default function VirtualLab({
           };
           setExperimentLog(prev => [...prev, logEntry]);
 
+          // Track this action for undo
+          setLastAction({
+            type: 'reagent_added',
+            equipmentId: 'concentrated-hcl',
+            data: {
+              clickCount: newClickCount - 1,
+              previousColor: testTube.colorHex,
+              previousState: equilibriumState
+            }
+          });
+
           setActiveEquipment("");
           setShowToast("Purple color! Click HCl again to complete the shift.");
           setTimeout(() => setShowToast(""), 3000);
@@ -707,7 +718,7 @@ export default function VirtualLab({
                       <ul className="text-sm text-pink-700 space-y-1">
                         <li>• Pink color</li>
                         <li>• Octahedral geometry</li>
-                        <li>�� Favored by excess H₂O</li>
+                        <li>• Favored by excess H₂O</li>
                         <li>• Low Cl⁻ concentration</li>
                       </ul>
                     </div>
