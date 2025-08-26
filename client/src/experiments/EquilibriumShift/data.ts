@@ -28,7 +28,7 @@ const EquilibriumShiftData = {
     {
       id: 2,
       title: "Add Concentrated HCl",
-      description: "Click the HCl reagent bottle to add drops. Watch the dropper animation and observe the color change from pink to blue as Cl⁻ ions shift equilibrium right.",
+      description: "Click the HCl reagent bottle twice. First click: observe pink to purple transition. Second click: complete the shift from purple to blue as Cl⁻ ions fully shift equilibrium right.",
       duration: "4 minutes",
       safety: "HCl is corrosive - handle with care",
       completed: false
