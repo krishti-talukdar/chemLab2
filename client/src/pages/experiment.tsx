@@ -3,6 +3,7 @@ import React from "react";
 import Header from "@/components/header";
 import ChemicalEquilibriumApp from "@/experiments/ChemicalEquilibrium/components/ChemicalEquilibriumApp";
 import OxalicAcidApp from "@/experiments/OxalicAcidStandardization/components/OxalicAcidApp";
+import EquilibriumShiftApp from "@/experiments/EquilibriumShift/components/EquilibriumShiftApp";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
@@ -15,8 +16,14 @@ export default function Experiment() {
   const getExperimentComponent = () => {
     switch (experimentId) {
       case 1:
-        return <OxalicAcidApp onBack={() => window.history.back()} />;
+        return <EquilibriumShiftApp onBack={() => window.history.back()} />;
       case 2:
+        return <OxalicAcidApp onBack={() => window.history.back()} />;
+      case 3:
+        return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
+      case 4:
+        return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
+      case 5:
         return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
       default:
         return (
@@ -27,7 +34,7 @@ export default function Experiment() {
               </h2>
               <p className="text-gray-600 mb-6">
                 The requested experiment (ID: {experimentId}) is not available.
-                Available experiments: Oxalic Acid Standardization (ID: 1) and Chemical Equilibrium (ID: 2).
+                Please select a valid experiment from the home page.
               </p>
               <Link href="/">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
