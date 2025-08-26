@@ -402,6 +402,17 @@ export default function VirtualLab({
   // Handle step completion
   const handleStepComplete = () => {
     if (!completedSteps.includes(currentStep)) {
+      // Save current state to history before completing step
+      const currentState = {
+        testTube: { ...testTube },
+        equilibriumState: { ...equilibriumState },
+        experimentLog: [...experimentLog],
+        equipmentOnBench: [...equipmentOnBench],
+        hclClickCount,
+        waterClickCount
+      };
+      setStepHistory(prev => [...prev, { step: currentStep, state: currentState }]);
+
       // Call parent's step completion handler
       onStepComplete(currentStep);
 
