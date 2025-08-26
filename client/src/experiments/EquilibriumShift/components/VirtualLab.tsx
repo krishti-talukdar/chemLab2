@@ -59,6 +59,8 @@ export default function VirtualLab({
   const [activeEquipment, setActiveEquipment] = useState<string>("");
   const [hclClickCount, setHclClickCount] = useState<number>(0);
   const [waterClickCount, setWaterClickCount] = useState<number>(0);
+  const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
+  const [experimentCompleted, setExperimentCompleted] = useState<boolean>(false);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -322,7 +324,8 @@ export default function VirtualLab({
           setTimeout(() => setShowToast(""), 3000);
         }, 500);
       } else {
-        setShowToast("Experiment completed! You can now experiment freely.");
+        setExperimentCompleted(true);
+        setShowToast("Experiment completed! Click 'View Results' for detailed analysis.");
         setTimeout(() => setShowToast(""), 4000);
       }
     }
@@ -341,6 +344,8 @@ export default function VirtualLab({
     setActiveEquipment("");
     setHclClickCount(0);
     setWaterClickCount(0);
+    setShowResultsModal(false);
+    setExperimentCompleted(false);
     setShowToast("");
     onReset();
   };
