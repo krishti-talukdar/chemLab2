@@ -57,6 +57,7 @@ export default function VirtualLab({
     isActive: boolean;
   }>>([]);
   const [activeEquipment, setActiveEquipment] = useState<string>("");
+  const [hclClickCount, setHclClickCount] = useState<number>(0);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -151,44 +152,80 @@ export default function VirtualLab({
     const currentStepData = GUIDED_STEPS[currentStep - 1];
     
     if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
-      // Add HCl and change color to blue
+      // Two-step HCl addition: 1st click -> purple, 2nd click -> blue
       setActiveEquipment(equipmentId);
       setDropperAction({
         id: Date.now().toString(),
         reagentId: 'hcl',
         targetId: 'test-tube',
-        amount: 2,
+        amount: 1,
         timestamp: Date.now(),
         isAnimating: true
       });
 
-      setShowToast("Adding HCl... Cl⁻ ions shifting equilibrium right!");
+      const newClickCount = hclClickCount + 1;
+      setHclClickCount(newClickCount);
 
-      setTimeout(() => {
-        setDropperAction(null);
-        animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
-        setTestTube(prev => ({
-          ...prev,
-          contents: [...prev.contents, 'HCl'],
-        }));
-        
-        const logEntry: ExperimentLog = {
-          id: Date.now().toString(),
-          timestamp: Date.now(),
-          action: 'Added HCl',
-          reagent: 'Concentrated HCl',
-          amount: 2,
-          colorBefore: testTube.colorHex,
-          colorAfter: COLORS.BLUE,
-          observation: 'Solution changed from pink to blue - equilibrium shifted right',
-          equilibriumShift: 'right'
-        };
-        setExperimentLog(prev => [...prev, logEntry]);
-        
-        setActiveEquipment("");
-        setTimeout(() => setShowToast(""), 3000);
-        handleStepComplete();
-      }, ANIMATION.DROPPER_DURATION);
+      if (newClickCount === 1) {
+        // First click: pink -> purple
+        setShowToast("Adding HCl... Equilibrium starting to shift!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
+          setTestTube(prev => ({
+            ...prev,
+            contents: [...prev.contents, 'HCl'],
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added HCl (1st time)',
+            reagent: 'Concentrated HCl',
+            amount: 1,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.PURPLE,
+            observation: 'Solution changing from pink to purple - equilibrium shifting',
+            equilibriumShift: 'right'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          setActiveEquipment("");
+          setShowToast("Purple color! Click HCl again to complete the shift.");
+          setTimeout(() => setShowToast(""), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+
+      } else if (newClickCount === 2) {
+        // Second click: purple -> blue
+        setShowToast("Adding more HCl... Completing equilibrium shift!");
+
+        setTimeout(() => {
+          setDropperAction(null);
+          animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
+          setTestTube(prev => ({
+            ...prev,
+            contents: [...prev.contents, 'HCl'],
+          }));
+
+          const logEntry: ExperimentLog = {
+            id: Date.now().toString(),
+            timestamp: Date.now(),
+            action: 'Added HCl (2nd time)',
+            reagent: 'Concentrated HCl',
+            amount: 1,
+            colorBefore: testTube.colorHex,
+            colorAfter: COLORS.BLUE,
+            observation: 'Solution changed from purple to blue - equilibrium fully shifted right',
+            equilibriumShift: 'right'
+          };
+          setExperimentLog(prev => [...prev, logEntry]);
+
+          setActiveEquipment("");
+          setTimeout(() => setShowToast(""), 3000);
+          handleStepComplete();
+        }, ANIMATION.DROPPER_DURATION);
+      }
 
     } else if (equipmentId === 'distilled-water' && currentStep === 6) {
       // Add water and change color back to pink
