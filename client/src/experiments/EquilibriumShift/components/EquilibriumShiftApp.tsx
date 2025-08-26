@@ -16,6 +16,7 @@ export default function EquilibriumShiftApp({
   onBack,
 }: EquilibriumShiftAppProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
@@ -59,6 +60,7 @@ export default function EquilibriumShiftApp({
     setIsRunning(false);
     setTimer(0);
     setCurrentStep(0);
+    setCompletedSteps([]);
     setMode({ current: 'free' });
   };
 
@@ -69,8 +71,15 @@ export default function EquilibriumShiftApp({
     setMode(newMode);
   };
 
-  const handleStepComplete = () => {
+  const handleStepComplete = (stepId?: number) => {
     if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
+      // Mark current step as completed
+      const stepToComplete = stepId || mode.currentGuidedStep + 1;
+      if (!completedSteps.includes(stepToComplete)) {
+        setCompletedSteps(prev => [...prev, stepToComplete]);
+      }
+
+      // Move to next step
       if (mode.currentGuidedStep < experiment.stepDetails.length - 1) {
         setMode({
           ...mode,
@@ -78,12 +87,18 @@ export default function EquilibriumShiftApp({
         });
         setCurrentStep(mode.currentGuidedStep + 1);
       }
+    } else {
+      // Free mode - just mark step as completed
+      const stepToComplete = stepId || currentStep + 1;
+      if (!completedSteps.includes(stepToComplete)) {
+        setCompletedSteps(prev => [...prev, stepToComplete]);
+      }
     }
   };
 
   const currentStepData = experiment.stepDetails[currentStep];
   const progressPercentage = Math.round(
-    ((currentStep + 1) / experiment.stepDetails.length) * 100,
+    (completedSteps.length / experiment.stepDetails.length) * 100,
   );
 
   return (
@@ -140,19 +155,15 @@ export default function EquilibriumShiftApp({
                 Progress
               </span>
               <span className="text-sm text-blue-600 font-semibold">
-                {mode.current === 'guided' ? 
-                  Math.round(((mode.currentGuidedStep || 0) + 1) / experiment.stepDetails.length * 100) : 
-                  progressPercentage}%
+                {progressPercentage}%
               </span>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <Progress 
-            value={mode.current === 'guided' ? 
-              ((mode.currentGuidedStep || 0) + 1) / experiment.stepDetails.length * 100 : 
-              progressPercentage} 
-            className="h-2" 
+          <Progress
+            value={progressPercentage}
+            className="h-2"
           />
         </div>
 
@@ -224,17 +235,10 @@ export default function EquilibriumShiftApp({
                 mode={mode}
                 onStepComplete={handleStepComplete}
                 onReset={handleReset}
+                completedSteps={completedSteps}
               />
             </CardContent>
           </Card>
-        </div>
-
-        {/* Safety Information */}
-        <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-yellow-800 mb-2">
-            Safety Information
-          </h3>
-          <p className="text-yellow-700 text-sm">{experiment.safetyInfo}</p>
         </div>
       </div>
     </div>

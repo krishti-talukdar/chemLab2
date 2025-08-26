@@ -95,9 +95,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
     >
       {/* Equipment container */}
       <div
-        className={`relative bg-white rounded-xl shadow-lg border-2 p-4 transition-all duration-200 cursor-pointer ${
-          isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
-        } ${id === 'test-tube' ? 'min-w-[100px] min-h-[140px]' : 'min-w-[90px] min-h-[120px]'}`}
+        className={`relative transition-all duration-200 cursor-pointer ${
+          id === 'test-tube'
+            ? `min-w-[240px] min-h-[360px] ${isActive ? 'scale-105' : ''}`
+            : `bg-white rounded-xl shadow-lg border-2 p-4 min-w-[90px] min-h-[120px] ${
+                isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
+              }`
+        }`}
         onClick={handleClick}
       >
         {/* Remove button */}
@@ -109,7 +113,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
             }}
             size="sm"
             variant="outline"
-            className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 text-white border-red-500 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+            className={`absolute w-6 h-6 p-0 bg-red-500 text-white border-red-500 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity ${
+              id === 'test-tube' ? 'top-0 right-0' : '-top-2 -right-2'
+            }`}
           >
             <X className="w-3 h-3" />
           </Button>
@@ -119,29 +125,30 @@ export const Equipment: React.FC<EquipmentProps> = ({
         <div className="flex flex-col items-center">
           {id === 'test-tube' ? (
             <div className="relative">
-              <div className="relative w-12 h-28">
+              <div className="relative w-32 h-72">
                 {/* Test tube image */}
                 <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fabfa12ceeba14d95b00014fbc7d41d9a%2Fce67a26571c44f31b921fd4e88ba3830?format=webp&width=800"
+                  src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F3f3b9fb2343b4e74a0b66661affefadb?format=webp&width=800"
                   alt="Test tube"
                   className="w-full h-full object-contain"
                 />
-                {/* Pink liquid overlay when volume > 0 */}
+                {/* Colored liquid overlay when volume > 0 */}
                 {volume > 0 && (
                   <div
-                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-6 rounded-b-lg transition-all duration-500"
+                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-10 rounded-b-3xl transition-all duration-500"
                     style={{
-                      height: `${Math.max(15, (volume / 100) * 80)}px`,
+                      height: `${Math.max(25, (volume / 100) * 160)}px`,
                       backgroundColor: color,
-                      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.2)',
-                      opacity: 0.9
+                      boxShadow: 'inset 0 0 15px rgba(0,0,0,0.2)',
+                      opacity: 0.85,
+                      clipPath: 'inset(0 0 0 0 round 0 0 20px 20px)'
                     }}
                   />
                 )}
               </div>
-              <span className="text-xs font-medium mt-1 text-center block">{name}</span>
+              <span className="text-sm font-medium mt-2 text-center block">{name}</span>
               {volume > 0 && (
-                <span className="text-xs text-gray-600 text-center block">{Math.round(volume)}% full</span>
+                <span className="text-sm text-gray-600 text-center block">{Math.round(volume)}% full</span>
               )}
             </div>
           ) : id === 'distilled-water' ? (

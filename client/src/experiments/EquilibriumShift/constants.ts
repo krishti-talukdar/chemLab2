@@ -16,7 +16,7 @@ export const REAGENT_BOTTLES: ReagentBottle[] = [
     name: 'Concentrated HCl',
     formula: 'HCl (12M)',
     color: COLORS.HCL,
-    description: 'Adds Cl⁻ ions → shifts equilibrium right → blue color',
+    description: 'Adds Cl⁻ ions → shifts equilibrium right �� blue color',
     concentration: '12.0 M'
   },
   {
@@ -32,7 +32,7 @@ export const REAGENT_BOTTLES: ReagentBottle[] = [
 // Initial test tube state
 export const INITIAL_TESTTUBE: TestTube = {
   id: 'main-tube',
-  volume: 10, // mL
+  volume: 60, // mL (60% full)
   color: 'Pink',
   colorHex: COLORS.PINK,
   contents: ['CoCl₂', 'H₂O'],

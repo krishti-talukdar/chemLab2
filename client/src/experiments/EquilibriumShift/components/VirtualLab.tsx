@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
 import { Link } from "wouter";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
@@ -29,8 +29,9 @@ interface VirtualLabProps {
   isRunning: boolean;
   setIsRunning: (running: boolean) => void;
   mode: ExperimentMode;
-  onStepComplete: () => void;
+  onStepComplete: (stepId?: number) => void;
   onReset: () => void;
+  completedSteps: number[];
 }
 
 export default function VirtualLab({
@@ -41,6 +42,7 @@ export default function VirtualLab({
   mode,
   onStepComplete,
   onReset,
+  completedSteps,
 }: VirtualLabProps) {
   // Lab state
   const [testTube, setTestTube] = useState<TestTube>(INITIAL_TESTTUBE);
@@ -52,7 +54,6 @@ export default function VirtualLab({
   
   // Workbench state
   const [currentStep, setCurrentStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [equipmentOnBench, setEquipmentOnBench] = useState<Array<{
     id: string;
     position: { x: number; y: number };
@@ -64,6 +65,8 @@ export default function VirtualLab({
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
   const [experimentCompleted, setExperimentCompleted] = useState<boolean>(false);
   const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
+  const [stepHistory, setStepHistory] = useState<{step: number, state: any}[]>([]);
+  const [showAddingSolutions, setShowAddingSolutions] = useState(false);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -108,6 +111,16 @@ export default function VirtualLab({
     }, ANIMATION.COLOR_TRANSITION_DURATION / totalSteps);
   }, []);
 
+  // Predefined positions for equipment layout
+  const getEquipmentPosition = (equipmentId: string) => {
+    const positions = {
+      'test-tube': { x: 200, y: 250 },          // Left side, center
+      'concentrated-hcl': { x: 500, y: 180 },  // Right side, top
+      'distilled-water': { x: 500, y: 320 }    // Right side, bottom
+    };
+    return positions[equipmentId as keyof typeof positions] || { x: 300, y: 250 };
+  };
+
   // Handle equipment drop on workbench
   const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
     // Check if this equipment is required for current step
@@ -121,12 +134,15 @@ export default function VirtualLab({
     // Store the previous state for undo
     const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
 
+    // Get predefined position for this equipment
+    const predefinedPosition = getEquipmentPosition(equipmentId);
+
     // Add equipment to workbench
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
       return [...filtered, {
         id: equipmentId,
-        position: { x, y },
+        position: predefinedPosition,
         isActive: false
       }];
     });
@@ -135,7 +151,7 @@ export default function VirtualLab({
     setLastAction({
       type: 'equipment_placed',
       equipmentId,
-      data: { previousState, newPosition: { x, y } }
+      data: { previousState, newPosition: predefinedPosition }
     });
 
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
@@ -155,9 +171,9 @@ export default function VirtualLab({
           ...prev,
           colorHex: COLORS.PINK,
           contents: ['CoCl₂', 'H₂O'],
-          volume: 10
+          volume: 60
         }));
-        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution");
+        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution (60% full)");
         setTimeout(() => setShowToast(""), 3000);
       }, 1500);
     }
@@ -185,13 +201,16 @@ export default function VirtualLab({
       if (newClickCount === 1) {
         // First click: pink -> purple
         setShowToast("Adding HCl... Equilibrium starting to shift!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
+            volume: Math.min(prev.volume + 10, 100)
           }));
 
           const logEntry: ExperimentLog = {
@@ -199,7 +218,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (1st time)',
             reagent: 'Concentrated HCl',
-            amount: 1,
+            amount: 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from pink to purple - equilibrium shifting',
@@ -226,13 +245,16 @@ export default function VirtualLab({
       } else if (newClickCount === 2) {
         // Second click: purple -> blue
         setShowToast("Adding more HCl... Completing equilibrium shift!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
+            volume: Math.min(prev.volume + 10, 100)
           }));
 
           const logEntry: ExperimentLog = {
@@ -240,7 +262,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (2nd time)',
             reagent: 'Concentrated HCl',
-            amount: 1,
+            amount: 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.BLUE,
             observation: 'Solution changed from purple to blue - equilibrium fully shifted right',
@@ -283,13 +305,15 @@ export default function VirtualLab({
       if (newWaterClickCount === 1) {
         // First click: blue -> purple
         setShowToast("Adding water... Equilibrium starting to shift back!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
           setTestTube(prev => ({
             ...prev,
-            volume: prev.volume + 3,
+            volume: Math.min(prev.volume + 10, 100),
           }));
 
           const logEntry: ExperimentLog = {
@@ -297,7 +321,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (1st time)',
             reagent: 'Distilled Water',
-            amount: 3,
+            amount: 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from blue to purple - equilibrium shifting back',
@@ -313,13 +337,15 @@ export default function VirtualLab({
       } else if (newWaterClickCount === 2) {
         // Second click: purple -> pink
         setShowToast("Adding more water... Completing reverse equilibrium shift!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
           setTestTube(prev => ({
             ...prev,
-            volume: prev.volume + 3,
+            volume: Math.min(prev.volume + 10, 100),
           }));
 
           const logEntry: ExperimentLog = {
@@ -327,7 +353,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (2nd time)',
             reagent: 'Distilled Water',
-            amount: 3,
+            amount: 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PINK,
             observation: 'Solution changed from purple to pink - equilibrium fully shifted left',
@@ -372,11 +398,47 @@ export default function VirtualLab({
     }
   }, [lastAction]);
 
+  // Handle step undo - go back to previous step
+  const handleStepUndo = useCallback(() => {
+    if (stepHistory.length > 0 && currentStep > 1) {
+      const lastState = stepHistory[stepHistory.length - 1];
+
+      // Restore previous state
+      setTestTube(lastState.state.testTube);
+      setEquilibriumState(lastState.state.equilibriumState);
+      setExperimentLog(lastState.state.experimentLog);
+      setEquipmentOnBench(lastState.state.equipmentOnBench);
+      setHclClickCount(lastState.state.hclClickCount);
+      setWaterClickCount(lastState.state.waterClickCount);
+
+      // Go back to previous step
+      setCurrentStep(currentStep - 1);
+
+      // Remove the last state from history
+      setStepHistory(prev => prev.slice(0, -1));
+
+      setShowToast(`Undid step ${currentStep}. Returned to step ${currentStep - 1}`);
+      setTimeout(() => setShowToast(""), 3000);
+    }
+  }, [stepHistory, currentStep]);
+
   // Handle step completion
   const handleStepComplete = () => {
     if (!completedSteps.includes(currentStep)) {
-      setCompletedSteps(prev => [...prev, currentStep]);
-      
+      // Save current state to history before completing step
+      const currentState = {
+        testTube: { ...testTube },
+        equilibriumState: { ...equilibriumState },
+        experimentLog: [...experimentLog],
+        equipmentOnBench: [...equipmentOnBench],
+        hclClickCount,
+        waterClickCount
+      };
+      setStepHistory(prev => [...prev, { step: currentStep, state: currentState }]);
+
+      // Call parent's step completion handler
+      onStepComplete(currentStep);
+
       if (currentStep < GUIDED_STEPS.length) {
         setTimeout(() => {
           setCurrentStep(currentStep + 1);
@@ -399,7 +461,6 @@ export default function VirtualLab({
     setDropperAction(null);
     setExperimentLog([]);
     setCurrentStep(1);
-    setCompletedSteps([]);
     setEquipmentOnBench([]);
     setActiveEquipment("");
     setHclClickCount(0);
@@ -407,6 +468,8 @@ export default function VirtualLab({
     setShowResultsModal(false);
     setExperimentCompleted(false);
     setLastAction(null);
+    setStepHistory([]);
+    setShowAddingSolutions(false);
     setShowToast("");
     onReset();
   };
@@ -541,6 +604,18 @@ export default function VirtualLab({
               >
                 <Undo className="w-4 h-4" />
                 <span>Undo Last Action</span>
+              </Button>
+            )}
+
+            {/* Step Undo Button - Only show when there's step history */}
+            {stepHistory.length > 0 && currentStep > 1 && (
+              <Button
+                onClick={handleStepUndo}
+                variant="outline"
+                className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100 flex items-center justify-center space-x-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Undo Step {currentStep}</span>
               </Button>
             )}
 
