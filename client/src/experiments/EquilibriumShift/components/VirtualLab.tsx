@@ -375,6 +375,30 @@ export default function VirtualLab({
     }
   }, [lastAction]);
 
+  // Handle step undo - go back to previous step
+  const handleStepUndo = useCallback(() => {
+    if (stepHistory.length > 0 && currentStep > 1) {
+      const lastState = stepHistory[stepHistory.length - 1];
+
+      // Restore previous state
+      setTestTube(lastState.state.testTube);
+      setEquilibriumState(lastState.state.equilibriumState);
+      setExperimentLog(lastState.state.experimentLog);
+      setEquipmentOnBench(lastState.state.equipmentOnBench);
+      setHclClickCount(lastState.state.hclClickCount);
+      setWaterClickCount(lastState.state.waterClickCount);
+
+      // Go back to previous step
+      setCurrentStep(currentStep - 1);
+
+      // Remove the last state from history
+      setStepHistory(prev => prev.slice(0, -1));
+
+      setShowToast(`Undid step ${currentStep}. Returned to step ${currentStep - 1}`);
+      setTimeout(() => setShowToast(""), 3000);
+    }
+  }, [stepHistory, currentStep]);
+
   // Handle step completion
   const handleStepComplete = () => {
     if (!completedSteps.includes(currentStep)) {
@@ -521,7 +545,7 @@ export default function VirtualLab({
               <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Equilibrium</h4>
               <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
                 <div className="flex flex-wrap items-center justify-center gap-1">
-                  <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H��O)₆]²⁺</span>
+                  <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
                   <span className="mx-1">+</span>
                   <span className="font-bold">4Cl⁻</span>
                   <span className="mx-2 text-lg">⇌</span>
@@ -733,7 +757,7 @@ export default function VirtualLab({
                         <li>• Pink color</li>
                         <li>• Octahedral geometry</li>
                         <li>• Favored by excess H₂O</li>
-                        <li>�� Low Cl⁻ concentration</li>
+                        <li>• Low Cl⁻ concentration</li>
                       </ul>
                     </div>
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
