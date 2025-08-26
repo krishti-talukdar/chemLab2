@@ -43,7 +43,7 @@ const EquilibriumShiftData = {
     {
       id: 4,
       title: "Add Distilled Water",
-      description: "Click the water bottle to dilute the solution. Watch as the color changes back to pink, demonstrating the reverse equilibrium shift.",
+      description: "Click the water bottle twice. First click: observe blue to purple transition. Second click: complete the reverse shift from purple to pink as dilution shifts equilibrium left.",
       duration: "4 minutes",
       completed: false
     },
