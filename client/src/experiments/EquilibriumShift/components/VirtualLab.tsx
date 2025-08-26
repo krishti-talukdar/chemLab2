@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
 import { Link } from "wouter";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
