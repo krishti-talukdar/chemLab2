@@ -613,7 +613,7 @@ export default function VirtualLab({
               {/* Experiment Summary */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <Flask className="w-5 h-5 mr-2 text-blue-600" />
+                  <FlaskConical className="w-5 h-5 mr-2 text-blue-600" />
                   Experiment Summary
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -639,7 +639,7 @@ export default function VirtualLab({
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-700 mb-2">Equilibrium Equation</h4>
                     <div className="text-center text-lg font-mono bg-white rounded p-3 border">
-                      <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²���</span>
+                      <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
                       <span className="mx-3">+</span>
                       <span className="font-bold">4Cl⁻</span>
                       <span className="mx-4 text-xl">⇌</span>
