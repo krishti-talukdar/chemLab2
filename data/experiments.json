@@ -1,5 +1,70 @@
 [
   {
+    "title": "Equilibrium Shift: [Co(H₂O)₆]²⁺ vs Cl⁻ Ions",
+    "description": "Interactive virtual lab to study equilibrium shifts between cobalt complexes. Observe dramatic color changes from pink to blue as you add HCl or water, demonstrating Le Chatelier's principle in real-time.",
+    "category": "Chemical Equilibrium",
+    "difficulty": "Intermediate",
+    "duration": 25,
+    "steps": 6,
+    "rating": 4.9,
+    "imageUrl": "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400",
+    "equipment": [
+      "Test Tube",
+      "Reagent Bottles",
+      "Graduated Droppers",
+      "Stirring Rod",
+      "Thermometer",
+      "Color Chart"
+    ],
+    "stepDetails": [
+      {
+        "id": 1,
+        "title": "Observe Initial State",
+        "description": "Examine the pink solution in the test tube, representing the [Co(H₂O)₆]²⁺ hydrated complex. Note the equilibrium equation displayed.",
+        "duration": "2 minutes",
+        "temperature": "Room temperature",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "Add Concentrated HCl",
+        "description": "Click the HCl reagent bottle to add drops. Watch the dropper animation and observe the color change from pink to blue as Cl⁻ ions shift equilibrium right.",
+        "duration": "4 minutes",
+        "safety": "HCl is corrosive - handle with care",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "title": "Observe Blue Complex",
+        "description": "Study the blue [CoCl₄]²⁻ complex that forms. Read the dynamic explanation panel to understand the equilibrium shift.",
+        "duration": "3 minutes",
+        "completed": false
+      },
+      {
+        "id": 4,
+        "title": "Add Distilled Water",
+        "description": "Click the water bottle to dilute the solution. Watch as the color changes back to pink, demonstrating the reverse equilibrium shift.",
+        "duration": "4 minutes",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "title": "Repeat and Experiment",
+        "description": "Alternate between adding HCl and water to observe multiple equilibrium shifts. Notice the smooth color transitions and timing.",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "title": "Step-by-Step Mode",
+        "description": "Use guided mode for structured learning with detailed instructions at each step. Perfect for understanding the underlying chemistry.",
+        "duration": "4 minutes",
+        "completed": false
+      }
+    ],
+    "safetyInfo": "This is a virtual simulation. In real lab conditions: Concentrated HCl is highly corrosive and produces toxic vapors. Cobalt compounds are toxic and potentially carcinogenic. Always use proper ventilation, safety goggles, and gloves. Handle all chemicals in a fume hood."
+  },
+  {
     "title": "Preparation of Standard Solution of Oxalic Acid",
     "description": "Learn to prepare a standard solution of oxalic acid dihydrate with accurate concentration. Master fundamental quantitative analysis techniques including weighing, dissolution, and volumetric preparation.",
     "category": "Quantitative Analysis",
@@ -144,69 +209,83 @@
     "safetyInfo": "Concentrated HCl is highly corrosive. Cobalt compounds are toxic if ingested. Always wear safety goggles, gloves, and work in a well-ventilated area. Handle hot and cold solutions with appropriate equipment."
   },
   {
-    "title": "Chemical Equilibrium 1",
-    "description": "To study the shift of equilibrium between ferric ions and thiocyanate ions by increasing the concentration of either ions. Observe the formation and dissociation of the blood-red FeSCN²⁺ complex.",
-    "category": "Equilibrium",
+    "title": "Study of Equilibrium Shift between Ferric Ions and Thiocyanate Ions",
+    "description": "Comprehensive virtual lab to study the shift of chemical equilibrium in the Fe³⁺ + SCN⁻ ⇌ [FeSCN]²⁺ reaction. Observe formation of blood-red complex and measure color intensity changes using Le Chatelier's principle.",
+    "category": "Chemical Equilibrium",
     "difficulty": "Intermediate",
-    "duration": 35,
-    "steps": 6,
+    "duration": 65,
+    "steps": 8,
     "rating": 4.8,
     "imageUrl": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400",
     "equipment": [
-      "Test Tubes",
-      "Test Tube Rack",
-      "Dropper Pipettes",
-      "Graduated Cylinders",
-      "Stirring Rods",
-      "Measuring Cylinders",
-      "White Background",
-      "Beakers"
+      "Test Tubes (12 pieces)",
+      "Test Tube Racks (2 pieces)",
+      "Graduated Pipettes",
+      "Burettes",
+      "Volumetric Flasks",
+      "Beakers",
+      "Colorimeter (optional)",
+      "White Background"
     ],
     "stepDetails": [
       {
         "id": 1,
-        "title": "Prepare Stock Solutions",
-        "description": "Prepare 0.1M FeCl₃ solution and 0.1M KSCN solution. Label each solution clearly for identification.",
-        "duration": "8 minutes",
-        "completed": false
-      },
-      {
-        "id": 2,
-        "title": "Establish Initial Equilibrium",
-        "description": "In a test tube, mix equal volumes (5mL each) of FeCl₃ and KSCN solutions. Observe the formation of blood-red FeSCN²⁺ complex. This represents the equilibrium: Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺",
+        "title": "Setup Solutions",
+        "description": "Prepare 0.002 M Fe³⁺ solution in 0.1 M HNO₃, 0.002 M KSCN solution, and 0.1 M HNO₃ filler. The HNO₃ prevents Fe³⁺ hydrolysis.",
         "duration": "5 minutes",
         "completed": false
       },
       {
+        "id": 2,
+        "title": "Part A - Setup Test Tubes T1-T6",
+        "description": "Add exactly 5.00 mL of 0.002 M Fe³⁺ solution to each of the six test tubes labeled T1-T6.",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
         "id": 3,
-        "title": "Divide Into Four Tubes",
-        "description": "Divide the equilibrium solution into 4 equal portions in separate test tubes. Label them as Control, +Fe³⁺, +SCN⁻, and +OH⁻.",
-        "duration": "3 minutes",
+        "title": "Part A - Add Variable SCN⁻ Volumes",
+        "description": "Add varying volumes of SCN⁻ solution: T1(0mL), T2(0.5mL), T3(1mL), T4(2mL), T5(3mL), T6(4mL). Observe blood-red color formation.",
+        "duration": "10 minutes",
         "completed": false
       },
       {
         "id": 4,
-        "title": "Add Excess Fe³⁺ Ions",
-        "description": "To the +Fe³⁺ tube, add 2-3 drops of concentrated FeCl₃ solution. Observe the color change and intensity. Record how the equilibrium shifts according to Le Chatelier's principle.",
-        "duration": "6 minutes",
+        "title": "Part A - Fill with HNO₃",
+        "description": "Fill each tube to exactly 10.00 mL total volume using 0.1 M HNO₃. Mix well and observe color intensity differences.",
+        "duration": "8 minutes",
         "completed": false
       },
       {
         "id": 5,
-        "title": "Add Excess SCN⁻ Ions",
-        "description": "To the +SCN⁻ tube, add 2-3 drops of concentrated KSCN solution. Observe the color change and compare with the previous tube. Note the direction of equilibrium shift.",
+        "title": "Part B - Setup Test Tubes T7-T12",
+        "description": "Add exactly 1.00 mL of 0.002 M SCN⁻ solution to each of the six test tubes labeled T7-T12.",
         "duration": "6 minutes",
         "completed": false
       },
       {
         "id": 6,
-        "title": "Remove Fe³⁺ with OH⁻",
-        "description": "To the +OH⁻ tube, add 2-3 drops of NaOH solution. The OH⁻ ions will precipitate Fe³⁺ as Fe(OH)₃, removing it from equilibrium. Observe the color change and document results.",
-        "duration": "7 minutes",
+        "title": "Part B - Add Variable Fe³⁺ Volumes",
+        "description": "Add varying volumes of Fe³⁺ solution: T7(0.5mL), T8(1mL), T9(2mL), T10(3mL), T11(4mL), T12(5mL). Notice increasing red intensity.",
+        "duration": "10 minutes",
+        "completed": false
+      },
+      {
+        "id": 7,
+        "title": "Part B - Fill with HNO₃",
+        "description": "Fill each tube to exactly 10.00 mL total volume using 0.1 M HNO₃. Mix thoroughly and compare color intensities.",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 8,
+        "title": "Analysis & Observations",
+        "description": "Document color intensity patterns, relate to Le Chatelier's principle, and optionally measure absorbance using colorimeter.",
+        "duration": "10 minutes",
         "completed": false
       }
     ],
-    "safetyInfo": "Iron(III) chloride is corrosive and can stain skin and clothing. Potassium thiocyanate is toxic if ingested. Sodium hydroxide is caustic. Always wear safety goggles and gloves. Handle all chemicals in a well-ventilated area."
+    "safetyInfo": "Virtual simulation - safe for all users. In real laboratory: Iron(III) compounds are corrosive and can stain. Potassium thiocyanate is toxic if ingested. Nitric acid is corrosive. Always wear safety goggles, gloves, and work in well-ventilated area. Handle all chemicals with appropriate care."
   },
   {
     "title": "Chemical Equilibrium 2",

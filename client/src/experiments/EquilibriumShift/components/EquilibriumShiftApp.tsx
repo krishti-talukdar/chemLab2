@@ -1,0 +1,242 @@
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, BookOpen } from "lucide-react";
+import { Link } from "wouter";
+import VirtualLab from "./VirtualLab";
+import EquilibriumShiftData from "../data";
+import { ExperimentMode } from "../types";
+
+interface EquilibriumShiftAppProps {
+  onBack?: () => void;
+}
+
+export default function EquilibriumShiftApp({
+  onBack,
+}: EquilibriumShiftAppProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [experimentStarted, setExperimentStarted] = useState(false);
+  const [mode, setMode] = useState<ExperimentMode>({ current: 'free' });
+
+  const experiment = EquilibriumShiftData;
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isRunning && experimentStarted) {
+      interval = setInterval(() => {
+        setTimer((timer) => timer + 1);
+      }, 1000);
+    } else if (!isRunning && timer !== 0) {
+      if (interval) clearInterval(interval);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRunning, timer, experimentStarted]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const toggleTimer = () => {
+    if (experimentStarted) {
+      setIsRunning(!isRunning);
+    }
+  };
+
+  const handleStartExperiment = () => {
+    setExperimentStarted(true);
+    setIsRunning(true);
+  };
+
+  const handleReset = () => {
+    setExperimentStarted(false);
+    setIsRunning(false);
+    setTimer(0);
+    setCurrentStep(0);
+    setMode({ current: 'free' });
+  };
+
+  const toggleMode = () => {
+    const newMode: ExperimentMode = mode.current === 'free' 
+      ? { current: 'guided', currentGuidedStep: 0 }
+      : { current: 'free' };
+    setMode(newMode);
+  };
+
+  const handleStepComplete = () => {
+    if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
+      if (mode.currentGuidedStep < experiment.stepDetails.length - 1) {
+        setMode({
+          ...mode,
+          currentGuidedStep: mode.currentGuidedStep + 1
+        });
+        setCurrentStep(mode.currentGuidedStep + 1);
+      }
+    }
+  };
+
+  const currentStepData = experiment.stepDetails[currentStep];
+  const progressPercentage = Math.round(
+    ((currentStep + 1) / experiment.stepDetails.length) * 100,
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header with breadcrumb */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center mb-6">
+          {onBack ? (
+            <button
+              onClick={onBack}
+              className="text-blue-600 hover:text-blue-700 flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Experiments
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="text-blue-600 hover:text-blue-700 flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Experiments
+            </Link>
+          )}
+        </div>
+
+        {/* Experiment Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {experiment.title}
+          </h1>
+          <p className="text-gray-600 mb-4">{experiment.description}</p>
+
+          {/* Mode Toggle and Progress */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={toggleMode}
+                variant={mode.current === 'guided' ? 'default' : 'outline'}
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>{mode.current === 'guided' ? 'Guided Mode' : 'Free Mode'}</span>
+              </Button>
+              {mode.current === 'guided' && (
+                <span className="text-sm text-gray-600">
+                  Step {(mode.currentGuidedStep || 0) + 1} of {experiment.stepDetails.length}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">
+                Progress
+              </span>
+              <span className="text-sm text-blue-600 font-semibold">
+                {mode.current === 'guided' ? 
+                  Math.round(((mode.currentGuidedStep || 0) + 1) / experiment.stepDetails.length * 100) : 
+                  progressPercentage}%
+              </span>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <Progress 
+            value={mode.current === 'guided' ? 
+              ((mode.currentGuidedStep || 0) + 1) / experiment.stepDetails.length * 100 : 
+              progressPercentage} 
+            className="h-2" 
+          />
+        </div>
+
+        {/* Main Lab Area */}
+        <div className="w-full relative">
+          {/* Experiment Not Started Overlay */}
+          {!experimentStarted && (
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
+              <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Play className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Ready to Explore Equilibrium?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Start your interactive journey with cobalt complexes! Watch dramatic color changes 
+                  as you shift equilibrium between pink [Co(H₂O)₆]²⁺ and blue [CoCl₄]²⁻.
+                </p>
+                <button
+                  onClick={handleStartExperiment}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white rounded-lg font-medium transition-all duration-200 mx-auto transform hover:scale-105"
+                >
+                  <Play className="w-5 h-5" />
+                  <span>Start Virtual Lab</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <Card className="min-h-[85vh] shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50">
+              <CardTitle className="flex items-center justify-between">
+                <span className="text-2xl bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent">
+                  {experiment.title} - Interactive Virtual Lab
+                </span>
+                <div className="flex items-center space-x-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleTimer}
+                    className="flex items-center bg-white/80"
+                  >
+                    {isRunning ? (
+                      <Pause className="h-4 w-4 mr-1" />
+                    ) : (
+                      <Play className="h-4 w-4 mr-1" />
+                    )}
+                    {formatTime(timer)}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleReset}
+                    className="flex items-center bg-white/80"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    Reset
+                  </Button>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <VirtualLab
+                experimentStarted={experimentStarted}
+                onStartExperiment={handleStartExperiment}
+                isRunning={isRunning}
+                setIsRunning={setIsRunning}
+                mode={mode}
+                onStepComplete={handleStepComplete}
+                onReset={handleReset}
+              />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Safety Information */}
+        <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+            Safety Information
+          </h3>
+          <p className="text-yellow-700 text-sm">{experiment.safetyInfo}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
