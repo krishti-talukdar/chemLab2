@@ -106,8 +106,8 @@ export const GUIDED_STEPS = [
   {
     id: 6,
     title: "Add Water and Reverse Equilibrium",
-    description: "Click on the water bottle to add distilled water. Watch the color change back from blue → purple → pink as equilibrium shifts left to reform [Co(H₂O)₆]²⁺. You can repeat steps 4-6 to observe Le Chatelier's principle!",
-    action: "Click water bottle to add water",
+    description: "Click the water bottle TWICE to add distilled water. First click: blue → purple (equilibrium shifting back). Second click: purple → pink (equilibrium fully reversed to [Co(H₂O)₆]²⁺).",
+    action: "Click water bottle twice to add water",
     equipment: ["test-tube", "concentrated-hcl", "distilled-water"],
     completed: false
   }
