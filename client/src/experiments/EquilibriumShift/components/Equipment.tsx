@@ -122,7 +122,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         )}
 
         {/* Equipment visual based on type */}
-        <div className="flex flex-col items-center">
+        <div className={`flex flex-col items-center ${id === 'test-tube' ? '' : 'p-4'}`}>
           {id === 'test-tube' ? (
             <div className="relative">
               <div className="relative w-32 h-72">
