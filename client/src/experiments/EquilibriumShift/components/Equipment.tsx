@@ -97,7 +97,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       <div
         className={`relative bg-white rounded-xl shadow-lg border-2 p-4 transition-all duration-200 cursor-pointer ${
           isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
-        } ${id === 'test-tube' ? 'min-w-[120px] min-h-[180px]' : 'min-w-[90px] min-h-[120px]'}`}
+        } ${id === 'test-tube' ? 'min-w-[240px] min-h-[360px]' : 'min-w-[90px] min-h-[120px]'}`}
         onClick={handleClick}
       >
         {/* Remove button */}
@@ -119,7 +119,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         <div className="flex flex-col items-center">
           {id === 'test-tube' ? (
             <div className="relative">
-              <div className="relative w-16 h-36">
+              <div className="relative w-32 h-72">
                 {/* Test tube image */}
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fabfa12ceeba14d95b00014fbc7d41d9a%2Fce67a26571c44f31b921fd4e88ba3830?format=webp&width=800"
@@ -129,19 +129,19 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 {/* Colored liquid overlay when volume > 0 */}
                 {volume > 0 && (
                   <div
-                    className="absolute bottom-3 left-1/2 transform -translate-x-1/2 w-8 rounded-b-lg transition-all duration-500"
+                    className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-16 rounded-b-lg transition-all duration-500"
                     style={{
-                      height: `${Math.max(20, (volume / 100) * 100)}px`,
+                      height: `${Math.max(40, (volume / 100) * 200)}px`,
                       backgroundColor: color,
-                      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.2)',
+                      boxShadow: 'inset 0 0 20px rgba(0,0,0,0.2)',
                       opacity: 0.9
                     }}
                   />
                 )}
               </div>
-              <span className="text-xs font-medium mt-1 text-center block">{name}</span>
+              <span className="text-sm font-medium mt-2 text-center block">{name}</span>
               {volume > 0 && (
-                <span className="text-xs text-gray-600 text-center block">{Math.round(volume)}% full</span>
+                <span className="text-sm text-gray-600 text-center block">{Math.round(volume)}% full</span>
               )}
             </div>
           ) : id === 'distilled-water' ? (
