@@ -469,6 +469,16 @@ export default function VirtualLab({
               </div>
             </div>
 
+            {/* Results Button - Only show when experiment is completed */}
+            {experimentCompleted && (
+              <Button
+                onClick={() => setShowResultsModal(true)}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
+              >
+                📊 View Results & Analysis
+              </Button>
+            )}
+
             {/* Reset Button */}
             <Button
               onClick={handleResetExperiment}
