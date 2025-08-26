@@ -171,9 +171,9 @@ export default function VirtualLab({
           ...prev,
           colorHex: COLORS.PINK,
           contents: ['CoCl₂', 'H₂O'],
-          volume: 100
+          volume: 60
         }));
-        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution");
+        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution (60% full)");
         setTimeout(() => setShowToast(""), 3000);
       }, 1500);
     }
