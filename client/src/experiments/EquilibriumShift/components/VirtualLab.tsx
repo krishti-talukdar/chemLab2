@@ -65,6 +65,8 @@ export default function VirtualLab({
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
   const [experimentCompleted, setExperimentCompleted] = useState<boolean>(false);
   const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
+  const [stepHistory, setStepHistory] = useState<{step: number, state: any}[]>([]);
+  const [showAddingSolutions, setShowAddingSolutions] = useState(false);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -519,7 +521,7 @@ export default function VirtualLab({
               <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Equilibrium</h4>
               <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
                 <div className="flex flex-wrap items-center justify-center gap-1">
-                  <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
+                  <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H��O)₆]²⁺</span>
                   <span className="mx-1">+</span>
                   <span className="font-bold">4Cl⁻</span>
                   <span className="mx-2 text-lg">⇌</span>
@@ -731,7 +733,7 @@ export default function VirtualLab({
                         <li>• Pink color</li>
                         <li>• Octahedral geometry</li>
                         <li>• Favored by excess H₂O</li>
-                        <li>• Low Cl⁻ concentration</li>
+                        <li>�� Low Cl⁻ concentration</li>
                       </ul>
                     </div>
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
