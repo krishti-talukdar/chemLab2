@@ -325,6 +325,31 @@ export default function VirtualLab({
     }
   }, [currentStep, testTube.colorHex, animateColorTransition]);
 
+  // Handle undo action
+  const handleUndo = useCallback(() => {
+    if (!lastAction) return;
+
+    if (lastAction.type === 'equipment_placed') {
+      const { equipmentId, data } = lastAction;
+
+      if (data.previousState) {
+        // Restore to previous position
+        setEquipmentOnBench(prev =>
+          prev.map(eq => eq.id === equipmentId ? data.previousState : eq)
+        );
+      } else {
+        // Remove equipment if it wasn't previously on the bench
+        setEquipmentOnBench(prev => prev.filter(eq => eq.id !== equipmentId));
+      }
+
+      setShowToast(`Undid: ${equipmentId?.replace('-', ' ')} placement`);
+      setTimeout(() => setShowToast(""), 2000);
+
+      // Clear the last action
+      setLastAction(null);
+    }
+  }, [lastAction]);
+
   // Handle step completion
   const handleStepComplete = () => {
     if (!completedSteps.includes(currentStep)) {
@@ -359,6 +384,7 @@ export default function VirtualLab({
     setWaterClickCount(0);
     setShowResultsModal(false);
     setExperimentCompleted(false);
+    setLastAction(null);
     setShowToast("");
     onReset();
   };
@@ -681,7 +707,7 @@ export default function VirtualLab({
                       <ul className="text-sm text-pink-700 space-y-1">
                         <li>• Pink color</li>
                         <li>• Octahedral geometry</li>
-                        <li>• Favored by excess H₂O</li>
+                        <li>�� Favored by excess H₂O</li>
                         <li>• Low Cl⁻ concentration</li>
                       </ul>
                     </div>
