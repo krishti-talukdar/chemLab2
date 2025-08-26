@@ -97,7 +97,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       <div
         className={`relative bg-white rounded-xl shadow-lg border-2 p-4 transition-all duration-200 cursor-pointer ${
           isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
-        } ${id === 'test-tube' ? 'min-w-[100px] min-h-[140px]' : 'min-w-[90px] min-h-[120px]'}`}
+        } ${id === 'test-tube' ? 'min-w-[120px] min-h-[180px]' : 'min-w-[90px] min-h-[120px]'}`}
         onClick={handleClick}
       >
         {/* Remove button */}
