@@ -95,9 +95,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
     >
       {/* Equipment container */}
       <div
-        className={`relative bg-white rounded-xl shadow-lg border-2 p-4 transition-all duration-200 cursor-pointer ${
-          isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
-        } ${id === 'test-tube' ? 'min-w-[240px] min-h-[360px]' : 'min-w-[90px] min-h-[120px]'}`}
+        className={`relative transition-all duration-200 cursor-pointer ${
+          id === 'test-tube'
+            ? `min-w-[240px] min-h-[360px] ${isActive ? 'scale-105' : ''}`
+            : `bg-white rounded-xl shadow-lg border-2 p-4 min-w-[90px] min-h-[120px] ${
+                isActive ? 'border-blue-400 shadow-xl scale-105' : 'border-gray-200 hover:border-gray-300'
+              }`
+        }`}
         onClick={handleClick}
       >
         {/* Remove button */}
