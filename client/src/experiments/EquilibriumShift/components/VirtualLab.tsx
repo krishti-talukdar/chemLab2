@@ -188,9 +188,11 @@ export default function VirtualLab({
       if (newClickCount === 1) {
         // First click: pink -> purple
         setShowToast("Adding HCl... Equilibrium starting to shift!");
+        setShowAddingSolutions(true);
 
         setTimeout(() => {
           setDropperAction(null);
+          setShowAddingSolutions(false);
           animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
           setTestTube(prev => ({
             ...prev,
