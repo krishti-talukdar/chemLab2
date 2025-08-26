@@ -210,6 +210,7 @@ export default function VirtualLab({
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
+            volume: Math.min(prev.volume + 10, 100)
           }));
 
           const logEntry: ExperimentLog = {
