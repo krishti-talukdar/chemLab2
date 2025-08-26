@@ -122,7 +122,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <div className="relative w-32 h-72">
                 {/* Test tube image */}
                 <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fabfa12ceeba14d95b00014fbc7d41d9a%2Fce67a26571c44f31b921fd4e88ba3830?format=webp&width=800"
+                  src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F3f3b9fb2343b4e74a0b66661affefadb?format=webp&width=800"
                   alt="Test tube"
                   className="w-full h-full object-contain"
                 />
