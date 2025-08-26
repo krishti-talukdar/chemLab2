@@ -592,6 +592,18 @@ export default function VirtualLab({
               </Button>
             )}
 
+            {/* Step Undo Button - Only show when there's step history */}
+            {stepHistory.length > 0 && currentStep > 1 && (
+              <Button
+                onClick={handleStepUndo}
+                variant="outline"
+                className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100 flex items-center justify-center space-x-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Undo Step {currentStep}</span>
+              </Button>
+            )}
+
             {/* Results Button - Only show when experiment is completed */}
             {experimentCompleted && (
               <Button
