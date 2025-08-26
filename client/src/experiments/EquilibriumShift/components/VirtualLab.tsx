@@ -29,8 +29,9 @@ interface VirtualLabProps {
   isRunning: boolean;
   setIsRunning: (running: boolean) => void;
   mode: ExperimentMode;
-  onStepComplete: () => void;
+  onStepComplete: (stepId?: number) => void;
   onReset: () => void;
+  completedSteps: number[];
 }
 
 export default function VirtualLab({
@@ -41,6 +42,7 @@ export default function VirtualLab({
   mode,
   onStepComplete,
   onReset,
+  completedSteps,
 }: VirtualLabProps) {
   // Lab state
   const [testTube, setTestTube] = useState<TestTube>(INITIAL_TESTTUBE);
@@ -52,7 +54,6 @@ export default function VirtualLab({
   
   // Workbench state
   const [currentStep, setCurrentStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [equipmentOnBench, setEquipmentOnBench] = useState<Array<{
     id: string;
     position: { x: number; y: number };
@@ -375,8 +376,9 @@ export default function VirtualLab({
   // Handle step completion
   const handleStepComplete = () => {
     if (!completedSteps.includes(currentStep)) {
-      setCompletedSteps(prev => [...prev, currentStep]);
-      
+      // Call parent's step completion handler
+      onStepComplete(currentStep);
+
       if (currentStep < GUIDED_STEPS.length) {
         setTimeout(() => {
           setCurrentStep(currentStep + 1);
@@ -399,7 +401,6 @@ export default function VirtualLab({
     setDropperAction(null);
     setExperimentLog([]);
     setCurrentStep(1);
-    setCompletedSteps([]);
     setEquipmentOnBench([]);
     setActiveEquipment("");
     setHclClickCount(0);
