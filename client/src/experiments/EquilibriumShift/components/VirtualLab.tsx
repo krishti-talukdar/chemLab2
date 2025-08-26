@@ -151,7 +151,7 @@ export default function VirtualLab({
     setLastAction({
       type: 'equipment_placed',
       equipmentId,
-      data: { previousState, newPosition: { x, y } }
+      data: { previousState, newPosition: predefinedPosition }
     });
 
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
@@ -732,7 +732,7 @@ export default function VirtualLab({
                   <div className="grid grid-cols-1 gap-2">
                     <div className="bg-gray-50 rounded-lg p-3">
                       <h4 className="font-semibold text-sm text-gray-700 mb-2">Step 6: Add Water</h4>
-                      <p className="text-xs text-gray-600 mb-2">Click Water twice to shift equilibrium back to pink [Co(H₂O)₆]²⁺</p>
+                      <p className="text-xs text-gray-600 mb-2">Click Water twice to shift equilibrium back to pink [Co(H₂O)��]²⁺</p>
                       <div className="flex items-center space-x-2 text-xs">
                         <span>Water added: {waterClickCount}/2</span>
                         <div className="flex space-x-1">
