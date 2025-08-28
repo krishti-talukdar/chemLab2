@@ -133,12 +133,12 @@ export default function VirtualLab({
     // Start stirring cycle
     cycleStirrring();
 
-    // Stop stirring after color transition completes (2000ms)
+    // Stop stirring after color transition completes plus a small delay (2300ms)
     setTimeout(() => {
       clearInterval(stirInterval);
       setIsStirring(false);
       setStirAnimationStep(0);
-    }, ANIMATION.COLOR_TRANSITION_DURATION); // Match color transition duration
+    }, ANIMATION.COLOR_TRANSITION_DURATION + 300); // Color change completes, then stirring stops
   }, []);
 
   // Predefined positions for equipment layout
