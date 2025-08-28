@@ -67,6 +67,8 @@ export default function VirtualLab({
   const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
   const [stepHistory, setStepHistory] = useState<{step: number, state: any}[]>([]);
   const [showAddingSolutions, setShowAddingSolutions] = useState(false);
+  const [isStirring, setIsStirring] = useState<boolean>(false);
+  const [stirAnimationStep, setStirAnimationStep] = useState<number>(0);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
