@@ -118,27 +118,27 @@ export default function VirtualLab({
     setIsStirring(true);
     setStirAnimationStep(0);
 
-    // Animation sequence: right -> left -> right -> left -> center (5 steps)
+    // Animation sequence: right -> left -> right -> left -> center (continuous cycle)
     const stirringSteps = [0, 20, -20, 15, -15, 0]; // X offset values
     let stepIndex = 0;
+    let stirInterval: NodeJS.Timeout;
 
-    const stirInterval = setInterval(() => {
-      stepIndex++;
-      if (stepIndex < stirringSteps.length) {
+    const cycleStirrring = () => {
+      stirInterval = setInterval(() => {
+        stepIndex = (stepIndex + 1) % stirringSteps.length; // Loop through steps continuously
         setStirAnimationStep(stirringSteps[stepIndex]);
-      } else {
-        // Animation complete
-        setIsStirring(false);
-        setStirAnimationStep(0);
-        clearInterval(stirInterval);
-      }
-    }, 150); // 150ms per step for smooth animation
+      }, 120); // 120ms per step for continuous smooth animation
+    };
 
-    // Cleanup after animation completes
+    // Start stirring cycle
+    cycleStirrring();
+
+    // Stop stirring after color transition completes (2000ms)
     setTimeout(() => {
+      clearInterval(stirInterval);
       setIsStirring(false);
       setStirAnimationStep(0);
-    }, 900); // Total animation time: 6 steps * 150ms = 900ms
+    }, ANIMATION.COLOR_TRANSITION_DURATION); // Match color transition duration
   }, []);
 
   // Predefined positions for equipment layout
