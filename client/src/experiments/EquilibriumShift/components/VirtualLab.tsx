@@ -67,6 +67,8 @@ export default function VirtualLab({
   const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
   const [stepHistory, setStepHistory] = useState<{step: number, state: any}[]>([]);
   const [showAddingSolutions, setShowAddingSolutions] = useState(false);
+  const [isStirring, setIsStirring] = useState<boolean>(false);
+  const [stirAnimationStep, setStirAnimationStep] = useState<number>(0);
 
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
@@ -111,12 +113,55 @@ export default function VirtualLab({
     }, ANIMATION.COLOR_TRANSITION_DURATION / totalSteps);
   }, []);
 
+  // Handle stirring animation
+  const animateStirring = useCallback(() => {
+    setIsStirring(true);
+    setStirAnimationStep(0);
+
+    // Animation sequence: right -> left -> right -> left -> center (continuous cycle)
+    const stirringSteps = [0, 18, -18, 12, -12, 0]; // X offset values for smooth stirring
+    let stepIndex = 0;
+    let stirInterval: NodeJS.Timeout;
+    let stirSpeed = 100; // Initial stirring speed
+
+    const cycleStirrring = () => {
+      stirInterval = setInterval(() => {
+        stepIndex = (stepIndex + 1) % stirringSteps.length; // Loop through steps continuously
+        setStirAnimationStep(stirringSteps[stepIndex]);
+      }, stirSpeed);
+    };
+
+    // Start stirring cycle
+    cycleStirrring();
+
+    // When color transition is about to complete, start slowing down stirring
+    setTimeout(() => {
+      clearInterval(stirInterval);
+      stirSpeed = 200; // Slow down stirring
+      cycleStirrring();
+    }, ANIMATION.COLOR_TRANSITION_DURATION - 500); // Start slowing 500ms before color change completes
+
+    // Stop stirring after color transition completes plus visual delay
+    setTimeout(() => {
+      clearInterval(stirInterval);
+      // Gradually bring to center
+      setStirAnimationStep(6); // Small movement
+      setTimeout(() => {
+        setStirAnimationStep(3);
+        setTimeout(() => {
+          setStirAnimationStep(0); // Return to center
+          setIsStirring(false);
+        }, 150);
+      }, 150);
+    }, ANIMATION.COLOR_TRANSITION_DURATION + 200); // Color change completes, then stirring stops
+  }, []);
+
   // Predefined positions for equipment layout
   const getEquipmentPosition = (equipmentId: string) => {
     const positions = {
       'test-tube': { x: 200, y: 250 },          // Left side, center
-      'concentrated-hcl': { x: 500, y: 180 },  // Right side, top
-      'distilled-water': { x: 500, y: 320 }    // Right side, bottom
+      'concentrated-hcl': { x: 500, y: 160 },  // Right side, top bottle
+      'distilled-water': { x: 500, y: 360 }    // Right side, bottom bottle (larger gap)
     };
     return positions[equipmentId as keyof typeof positions] || { x: 300, y: 250 };
   };
@@ -173,7 +218,7 @@ export default function VirtualLab({
           contents: ['CoCl₂', 'H₂O'],
           volume: 60
         }));
-        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution (60% full)");
+        setShowToast("Test tube now contains pink [Co(H₂O)���]²⁺ solution (60% full)");
         setTimeout(() => setShowToast(""), 3000);
       }, 1500);
     }
@@ -184,6 +229,9 @@ export default function VirtualLab({
     const currentStepData = GUIDED_STEPS[currentStep - 1];
     
     if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
+      // Trigger stirring animation
+      animateStirring();
+
       // Two-step HCl addition: 1st click -> purple, 2nd click -> blue
       setActiveEquipment(equipmentId);
       setDropperAction({
@@ -210,7 +258,7 @@ export default function VirtualLab({
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
-            volume: Math.min(prev.volume + 10, 100)
+            volume: Math.min(prev.volume * 1.1, 100)
           }));
 
           const logEntry: ExperimentLog = {
@@ -218,7 +266,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (1st time)',
             reagent: 'Concentrated HCl',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from pink to purple - equilibrium shifting',
@@ -254,7 +302,7 @@ export default function VirtualLab({
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
-            volume: Math.min(prev.volume + 10, 100)
+            volume: Math.min(prev.volume * 1.1, 100)
           }));
 
           const logEntry: ExperimentLog = {
@@ -262,7 +310,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (2nd time)',
             reagent: 'Concentrated HCl',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.BLUE,
             observation: 'Solution changed from purple to blue - equilibrium fully shifted right',
@@ -288,6 +336,9 @@ export default function VirtualLab({
       }
 
     } else if (equipmentId === 'distilled-water' && currentStep === 6) {
+      // Trigger stirring animation
+      animateStirring();
+
       // Two-step water addition: 1st click -> purple, 2nd click -> pink
       setActiveEquipment(equipmentId);
       setDropperAction({
@@ -313,7 +364,7 @@ export default function VirtualLab({
           animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
           setTestTube(prev => ({
             ...prev,
-            volume: Math.min(prev.volume + 10, 100),
+            volume: Math.min(prev.volume * 1.1, 100),
           }));
 
           const logEntry: ExperimentLog = {
@@ -321,7 +372,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (1st time)',
             reagent: 'Distilled Water',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from blue to purple - equilibrium shifting back',
@@ -345,7 +396,7 @@ export default function VirtualLab({
           animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
           setTestTube(prev => ({
             ...prev,
-            volume: Math.min(prev.volume + 10, 100),
+            volume: Math.min(prev.volume * 1.1, 100),
           }));
 
           const logEntry: ExperimentLog = {
@@ -353,7 +404,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (2nd time)',
             reagent: 'Distilled Water',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PINK,
             observation: 'Solution changed from purple to pink - equilibrium fully shifted left',
@@ -371,7 +422,7 @@ export default function VirtualLab({
       setShowToast("Follow the current step instructions");
       setTimeout(() => setShowToast(""), 2000);
     }
-  }, [currentStep, testTube.colorHex, animateColorTransition]);
+  }, [currentStep, testTube.colorHex, animateColorTransition, animateStirring]);
 
   // Handle undo action
   const handleUndo = useCallback(() => {
@@ -447,8 +498,25 @@ export default function VirtualLab({
         }, 500);
       } else {
         setExperimentCompleted(true);
-        setShowToast("Experiment completed! Click 'View Results' for detailed analysis.");
-        setTimeout(() => setShowToast(""), 4000);
+        setShowToast("Experiment completed! Results will open in 15 seconds...");
+
+        // Show countdown notifications
+        setTimeout(() => {
+          setShowToast("Results opening in 10 seconds...");
+          setTimeout(() => setShowToast(""), 3000);
+        }, 5000);
+
+        setTimeout(() => {
+          setShowToast("Results opening in 5 seconds...");
+          setTimeout(() => setShowToast(""), 3000);
+        }, 10000);
+
+        // Automatically open results modal after 15 seconds
+        setTimeout(() => {
+          setShowToast("Opening Results & Analysis...");
+          setShowResultsModal(true);
+          setTimeout(() => setShowToast(""), 2000);
+        }, 15000);
       }
     }
   };
@@ -524,26 +592,10 @@ export default function VirtualLab({
               <p className="text-sm text-gray-600 mb-2">
                 {currentStepData.description}
               </p>
-              {currentStep === 2 ? (
-                <button
-                  onClick={() => {
-                    setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
-                    setTimeout(() => {
-                      handleStepComplete();
-                      setShowToast("");
-                    }, 1500);
-                  }}
-                  className="inline-flex items-center px-3 py-1 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-xs font-medium transition-colors duration-200 cursor-pointer"
-                >
-                  <ArrowRight className="w-3 h-3 mr-1" />
-                  {currentStepData.action}
-                </button>
-              ) : (
-                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                  <ArrowRight className="w-3 h-3 mr-1" />
-                  {currentStepData.action}
-                </div>
-              )}
+              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <ArrowRight className="w-3 h-3 mr-1" />
+                {currentStepData.action}
+              </div>
             </div>
           </div>
         </div>
@@ -584,7 +636,7 @@ export default function VirtualLab({
                   <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
                   <span className="mx-1">+</span>
                   <span className="font-bold">4Cl⁻</span>
-                  <span className="mx-2 text-lg">⇌</span>
+                  <span className="mx-2 text-lg">���</span>
                   <span style={{ color: COLORS.BLUE }} className="font-bold">[CoCl₄]²⁻</span>
                   <span className="mx-1">+</span>
                   <span className="font-bold">6H₂O</span>
@@ -649,25 +701,62 @@ export default function VirtualLab({
               {/* Positioned Equipment */}
               {equipmentOnBench.map((equipment) => {
                 const equipmentData = LAB_EQUIPMENT.find(eq => eq.id === equipment.id);
+                const isTestTube = equipment.id === 'test-tube';
+                const stirTransform = isTestTube && isStirring ? `translateX(${stirAnimationStep}px)` : 'none';
+
                 return equipmentData ? (
-                  <Equipment
+                  <div
                     key={equipment.id}
-                    id={equipment.id}
-                    name={equipmentData.name}
-                    icon={equipmentData.icon}
-                    position={equipment.position}
-                    onRemove={(id) => {
-                      setEquipmentOnBench(prev => prev.filter(eq => eq.id !== id));
-                      setShowToast(`${id.replace('-', ' ')} removed from workbench`);
-                      setTimeout(() => setShowToast(""), 2000);
+                    style={{
+                      transform: stirTransform,
+                      transition: isStirring ? 'transform 0.1s ease-in-out' : 'none',
                     }}
-                    onInteract={handleEquipmentInteract}
-                    isActive={activeEquipment === equipment.id}
-                    color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
-                    volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
-                  />
+                  >
+                    <Equipment
+                      id={equipment.id}
+                      name={equipmentData.name}
+                      icon={equipmentData.icon}
+                      position={equipment.position}
+                      onRemove={(id) => {
+                        setEquipmentOnBench(prev => prev.filter(eq => eq.id !== id));
+                        setShowToast(`${id.replace('-', ' ')} removed from workbench`);
+                        setTimeout(() => setShowToast(""), 2000);
+                      }}
+                      onInteract={handleEquipmentInteract}
+                      isActive={activeEquipment === equipment.id}
+                      color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
+                      volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
+                    />
+                  </div>
                 ) : null;
               })}
+
+              {/* Step 2 button - positioned below test tube */}
+              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 200,
+                    top: 420,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  className="z-10"
+                >
+                  <button
+                    onClick={() => {
+                      setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
+                      setTimeout(() => {
+                        handleStepComplete();
+                        setShowToast("");
+                      }, 1500);
+                    }}
+                    className="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer shadow-lg animate-pulse"
+                  >
+                    <ArrowRight className="w-4 h-4 mr-2" />
+                    Observe pink solution
+                  </button>
+                </div>
+              )}
             </WorkBench>
           </div>
 
@@ -811,10 +900,10 @@ export default function VirtualLab({
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                       <h4 className="font-semibold text-blue-800 mb-2">Chloride Complex [CoCl₄]²⁻</h4>
                       <ul className="text-sm text-blue-700 space-y-1">
-                        <li>• Blue color</li>
+                        <li>�� Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
-                        <li>• High Cl⁻ concentration</li>
+                        <li>�� High Cl⁻ concentration</li>
                       </ul>
                     </div>
                   </div>
