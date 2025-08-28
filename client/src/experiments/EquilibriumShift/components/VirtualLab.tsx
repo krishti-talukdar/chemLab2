@@ -70,6 +70,13 @@ export default function VirtualLab({
   const [isStirring, setIsStirring] = useState<boolean>(false);
   const [stirAnimationStep, setStirAnimationStep] = useState<number>(0);
 
+  // Stop the timer when the results & analysis modal appears
+  useEffect(() => {
+    if (showResultsModal) {
+      setIsRunning(false);
+    }
+  }, [showResultsModal, setIsRunning]);
+
   // Handle color transitions with animation
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newState: EquilibriumState) => {
     setColorTransition({
