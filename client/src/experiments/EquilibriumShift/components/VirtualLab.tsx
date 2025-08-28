@@ -122,23 +122,38 @@ export default function VirtualLab({
     const stirringSteps = [0, 18, -18, 12, -12, 0]; // X offset values for smooth stirring
     let stepIndex = 0;
     let stirInterval: NodeJS.Timeout;
+    let stirSpeed = 100; // Initial stirring speed
 
     const cycleStirrring = () => {
       stirInterval = setInterval(() => {
         stepIndex = (stepIndex + 1) % stirringSteps.length; // Loop through steps continuously
         setStirAnimationStep(stirringSteps[stepIndex]);
-      }, 100); // 100ms per step for natural stirring rhythm
+      }, stirSpeed);
     };
 
     // Start stirring cycle
     cycleStirrring();
 
-    // Stop stirring after color transition completes plus a small delay (2300ms)
+    // When color transition is about to complete, start slowing down stirring
     setTimeout(() => {
       clearInterval(stirInterval);
-      setIsStirring(false);
-      setStirAnimationStep(0);
-    }, ANIMATION.COLOR_TRANSITION_DURATION + 300); // Color change completes, then stirring stops
+      stirSpeed = 200; // Slow down stirring
+      cycleStirrring();
+    }, ANIMATION.COLOR_TRANSITION_DURATION - 500); // Start slowing 500ms before color change completes
+
+    // Stop stirring after color transition completes plus visual delay
+    setTimeout(() => {
+      clearInterval(stirInterval);
+      // Gradually bring to center
+      setStirAnimationStep(6); // Small movement
+      setTimeout(() => {
+        setStirAnimationStep(3);
+        setTimeout(() => {
+          setStirAnimationStep(0); // Return to center
+          setIsStirring(false);
+        }, 150);
+      }, 150);
+    }, ANIMATION.COLOR_TRANSITION_DURATION + 200); // Color change completes, then stirring stops
   }, []);
 
   // Predefined positions for equipment layout
