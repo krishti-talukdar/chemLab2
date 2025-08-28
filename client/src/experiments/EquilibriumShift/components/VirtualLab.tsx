@@ -214,6 +214,9 @@ export default function VirtualLab({
     const currentStepData = GUIDED_STEPS[currentStep - 1];
     
     if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
+      // Trigger stirring animation
+      animateStirring();
+
       // Two-step HCl addition: 1st click -> purple, 2nd click -> blue
       setActiveEquipment(equipmentId);
       setDropperAction({
