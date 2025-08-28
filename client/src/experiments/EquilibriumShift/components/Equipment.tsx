@@ -154,7 +154,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           ) : id === 'distilled-water' ? (
             <div className="flex flex-col items-center">
               <div
-                className="w-16 h-24 rounded-lg border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
+                className="w-20 h-20 border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
                 style={{ backgroundColor: '#e0f2fe' }}
               >
                 <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-blue-200 to-transparent opacity-60"></div>
@@ -166,7 +166,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           ) : id === 'concentrated-hcl' ? (
             <div className="flex flex-col items-center">
               <div
-                className="w-16 h-24 rounded-lg border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
+                className="w-20 h-20 border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
                 style={{ backgroundColor: '#fffacd' }}
               >
                 <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-yellow-200 to-transparent opacity-60"></div>
