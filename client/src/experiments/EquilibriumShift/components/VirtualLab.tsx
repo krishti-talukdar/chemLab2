@@ -321,6 +321,9 @@ export default function VirtualLab({
       }
 
     } else if (equipmentId === 'distilled-water' && currentStep === 6) {
+      // Trigger stirring animation
+      animateStirring();
+
       // Two-step water addition: 1st click -> purple, 2nd click -> pink
       setActiveEquipment(equipmentId);
       setDropperAction({
@@ -858,7 +861,7 @@ export default function VirtualLab({
                         <li>• Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
-                        <li>• High Cl⁻ concentration</li>
+                        <li>�� High Cl⁻ concentration</li>
                       </ul>
                     </div>
                   </div>
