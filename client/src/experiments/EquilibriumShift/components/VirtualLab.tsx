@@ -524,26 +524,10 @@ export default function VirtualLab({
               <p className="text-sm text-gray-600 mb-2">
                 {currentStepData.description}
               </p>
-              {currentStep === 2 ? (
-                <button
-                  onClick={() => {
-                    setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
-                    setTimeout(() => {
-                      handleStepComplete();
-                      setShowToast("");
-                    }, 1500);
-                  }}
-                  className="inline-flex items-center px-3 py-1 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-xs font-medium transition-colors duration-200 cursor-pointer"
-                >
-                  <ArrowRight className="w-3 h-3 mr-1" />
-                  {currentStepData.action}
-                </button>
-              ) : (
-                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                  <ArrowRight className="w-3 h-3 mr-1" />
-                  {currentStepData.action}
-                </div>
-              )}
+              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <ArrowRight className="w-3 h-3 mr-1" />
+                {currentStepData.action}
+              </div>
             </div>
           </div>
         </div>
@@ -584,7 +568,7 @@ export default function VirtualLab({
                   <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
                   <span className="mx-1">+</span>
                   <span className="font-bold">4Cl⁻</span>
-                  <span className="mx-2 text-lg">⇌</span>
+                  <span className="mx-2 text-lg">���</span>
                   <span style={{ color: COLORS.BLUE }} className="font-bold">[CoCl₄]²⁻</span>
                   <span className="mx-1">+</span>
                   <span className="font-bold">6H₂O</span>
@@ -668,6 +652,33 @@ export default function VirtualLab({
                   />
                 ) : null;
               })}
+
+              {/* Step 2 button - positioned below test tube */}
+              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 200,
+                    top: 420,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  className="z-10"
+                >
+                  <button
+                    onClick={() => {
+                      setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
+                      setTimeout(() => {
+                        handleStepComplete();
+                        setShowToast("");
+                      }, 1500);
+                    }}
+                    className="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer shadow-lg animate-pulse"
+                  >
+                    <ArrowRight className="w-4 h-4 mr-2" />
+                    Observe pink solution
+                  </button>
+                </div>
+              )}
             </WorkBench>
           </div>
 
