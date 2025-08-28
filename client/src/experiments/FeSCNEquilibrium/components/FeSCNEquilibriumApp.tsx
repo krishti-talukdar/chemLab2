@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, FlaskConical, BarChart3 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, FlaskConical, BarChart3, Droplets } from "lucide-react";
 import { Link } from "wouter";
 import VirtualLab from "./VirtualLab";
 import FeSCNEquilibriumData from "../data";
