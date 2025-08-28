@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, FlaskConical, BarChart3 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, FlaskConical, BarChart3, Droplets } from "lucide-react";
 import { Link } from "wouter";
 import VirtualLab from "./VirtualLab";
 import FeSCNEquilibriumData from "../data";
@@ -19,6 +19,7 @@ export default function FeSCNEquilibriumApp({
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
+  const [showSeriesSelection, setShowSeriesSelection] = useState(false);
   const [phase, setPhase] = useState<ExperimentPhase>({
     current: 'part-a',
     partACompleted: false,
@@ -55,8 +56,29 @@ export default function FeSCNEquilibriumApp({
   };
 
   const handleStartExperiment = () => {
+    setShowSeriesSelection(true);
+  };
+
+  const handleSeriesSelection = (selectedSeries: 'scn-first' | 'fe-first') => {
+    setShowSeriesSelection(false);
     setExperimentStarted(true);
     setIsRunning(true);
+
+    if (selectedSeries === 'fe-first') {
+      setPhase({
+        current: 'part-b',
+        partACompleted: false,
+        partBCompleted: false
+      });
+      setCurrentStep(4); // Start with Part B steps
+    } else {
+      setPhase({
+        current: 'part-a',
+        partACompleted: false,
+        partBCompleted: false
+      });
+      setCurrentStep(0); // Start with Part A steps
+    }
   };
 
   const handleReset = () => {
@@ -64,6 +86,7 @@ export default function FeSCNEquilibriumApp({
     setIsRunning(false);
     setTimer(0);
     setCurrentStep(0);
+    setShowSeriesSelection(false);
     setPhase({
       current: 'part-a',
       partACompleted: false,
@@ -208,7 +231,7 @@ export default function FeSCNEquilibriumApp({
         {/* Main Lab Area */}
         <div className="w-full relative">
           {/* Experiment Not Started Overlay */}
-          {!experimentStarted && (
+          {!experimentStarted && !showSeriesSelection && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
               <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-2xl">
                 <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -218,7 +241,7 @@ export default function FeSCNEquilibriumApp({
                   Ready to Study Fe³⁺ + SCN⁻ Equilibrium?
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Explore Le Chatelier's principle through the formation of blood-red [FeSCN]²⁺ complex. 
+                  Explore Le Chatelier's principle through the formation of blood-red [FeSCN]²⁺ complex.
                   This comprehensive experiment uses 12 test tubes to systematically study concentration effects.
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
@@ -236,6 +259,73 @@ export default function FeSCNEquilibriumApp({
                   <Play className="w-6 h-6" />
                   <span>Start Virtual Lab</span>
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Series Selection Overlay */}
+          {showSeriesSelection && (
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
+              <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-2xl">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <BarChart3 className="w-10 h-10 text-blue-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  Which series would you like to continue first?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Choose your experimental approach to study the Fe³⁺ + SCN⁻ ⇌ [FeSCN]²⁺ equilibrium.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  {/* Option 1: Increase SCN⁻ ions */}
+                  <button
+                    onClick={() => handleSeriesSelection('scn-first')}
+                    className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-xl hover:border-green-400 hover:shadow-lg transition-all duration-200 transform hover:scale-105 group"
+                  >
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-600 transition-colors">
+                        <Droplets className="w-8 h-8 text-white" />
+                      </div>
+                      <h4 className="text-lg font-bold text-green-800 mb-2">Option 1</h4>
+                      <h5 className="text-xl font-semibold text-gray-800 mb-3">Increase SCN⁻ ions</h5>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Start with Part A: Keep [Fe³⁺] constant while varying [SCN⁻] concentrations
+                      </p>
+                      <div className="bg-white/80 rounded-lg p-3">
+                        <p className="text-xs text-green-700 font-medium">Tubes T1-T6 first</p>
+                        <p className="text-xs text-gray-500">Fixed Fe³⁺ (5.00 mL) + Variable SCN⁻ (0-4 mL)</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Option 2: Increase Fe³⁺ ions */}
+                  <button
+                    onClick={() => handleSeriesSelection('fe-first')}
+                    className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 rounded-xl hover:border-orange-400 hover:shadow-lg transition-all duration-200 transform hover:scale-105 group"
+                  >
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-600 transition-colors">
+                        <FlaskConical className="w-8 h-8 text-white" />
+                      </div>
+                      <h4 className="text-lg font-bold text-orange-800 mb-2">Option 2</h4>
+                      <h5 className="text-xl font-semibold text-gray-800 mb-3">Increase Fe³⁺ ions</h5>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Start with Part B: Keep [SCN⁻] constant while varying [Fe³⁺] concentrations
+                      </p>
+                      <div className="bg-white/80 rounded-lg p-3">
+                        <p className="text-xs text-orange-700 font-medium">Tubes T7-T12 first</p>
+                        <p className="text-xs text-gray-500">Fixed SCN⁻ (1.00 mL) + Variable Fe³⁺ (0.5-5 mL)</p>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <p className="text-sm text-blue-700">
+                    <strong>Note:</strong> You can complete both series during the experiment. This choice only determines your starting point.
+                  </p>
+                </div>
               </div>
             </div>
           )}
