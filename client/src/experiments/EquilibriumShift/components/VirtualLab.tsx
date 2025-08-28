@@ -119,7 +119,7 @@ export default function VirtualLab({
     setStirAnimationStep(0);
 
     // Animation sequence: right -> left -> right -> left -> center (continuous cycle)
-    const stirringSteps = [0, 20, -20, 15, -15, 0]; // X offset values
+    const stirringSteps = [0, 18, -18, 12, -12, 0]; // X offset values for smooth stirring
     let stepIndex = 0;
     let stirInterval: NodeJS.Timeout;
 
@@ -127,7 +127,7 @@ export default function VirtualLab({
       stirInterval = setInterval(() => {
         stepIndex = (stepIndex + 1) % stirringSteps.length; // Loop through steps continuously
         setStirAnimationStep(stirringSteps[stepIndex]);
-      }, 120); // 120ms per step for continuous smooth animation
+      }, 100); // 100ms per step for natural stirring rhythm
     };
 
     // Start stirring cycle
