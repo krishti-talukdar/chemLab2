@@ -210,7 +210,7 @@ export default function VirtualLab({
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
-            volume: Math.min(prev.volume + 10, 100)
+            volume: Math.min(prev.volume * 1.1, 100)
           }));
 
           const logEntry: ExperimentLog = {
@@ -218,7 +218,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (1st time)',
             reagent: 'Concentrated HCl',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from pink to purple - equilibrium shifting',
@@ -254,7 +254,7 @@ export default function VirtualLab({
           setTestTube(prev => ({
             ...prev,
             contents: [...prev.contents, 'HCl'],
-            volume: Math.min(prev.volume + 10, 100)
+            volume: Math.min(prev.volume * 1.1, 100)
           }));
 
           const logEntry: ExperimentLog = {
@@ -262,7 +262,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added HCl (2nd time)',
             reagent: 'Concentrated HCl',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.BLUE,
             observation: 'Solution changed from purple to blue - equilibrium fully shifted right',
@@ -313,7 +313,7 @@ export default function VirtualLab({
           animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
           setTestTube(prev => ({
             ...prev,
-            volume: Math.min(prev.volume + 10, 100),
+            volume: Math.min(prev.volume * 1.1, 100),
           }));
 
           const logEntry: ExperimentLog = {
@@ -321,7 +321,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (1st time)',
             reagent: 'Distilled Water',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PURPLE,
             observation: 'Solution changing from blue to purple - equilibrium shifting back',
@@ -345,7 +345,7 @@ export default function VirtualLab({
           animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
           setTestTube(prev => ({
             ...prev,
-            volume: Math.min(prev.volume + 10, 100),
+            volume: Math.min(prev.volume * 1.1, 100),
           }));
 
           const logEntry: ExperimentLog = {
@@ -353,7 +353,7 @@ export default function VirtualLab({
             timestamp: Date.now(),
             action: 'Added Water (2nd time)',
             reagent: 'Distilled Water',
-            amount: 10, // 10% volume increase
+            amount: Math.round((testTube.volume * 0.1) * 10) / 10, // 10% volume increase
             colorBefore: testTube.colorHex,
             colorAfter: COLORS.PINK,
             observation: 'Solution changed from purple to pink - equilibrium fully shifted left',
