@@ -499,11 +499,23 @@ export default function VirtualLab({
       } else {
         setExperimentCompleted(true);
         setShowToast("Experiment completed! Results will open in 15 seconds...");
-        setTimeout(() => setShowToast(""), 5000);
+
+        // Show countdown notifications
+        setTimeout(() => {
+          setShowToast("Results opening in 10 seconds...");
+          setTimeout(() => setShowToast(""), 3000);
+        }, 5000);
+
+        setTimeout(() => {
+          setShowToast("Results opening in 5 seconds...");
+          setTimeout(() => setShowToast(""), 3000);
+        }, 10000);
 
         // Automatically open results modal after 15 seconds
         setTimeout(() => {
+          setShowToast("Opening Results & Analysis...");
           setShowResultsModal(true);
+          setTimeout(() => setShowToast(""), 2000);
         }, 15000);
       }
     }
