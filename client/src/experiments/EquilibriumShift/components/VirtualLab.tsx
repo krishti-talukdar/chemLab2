@@ -669,23 +669,33 @@ export default function VirtualLab({
               {/* Positioned Equipment */}
               {equipmentOnBench.map((equipment) => {
                 const equipmentData = LAB_EQUIPMENT.find(eq => eq.id === equipment.id);
+                const isTestTube = equipment.id === 'test-tube';
+                const stirTransform = isTestTube && isStirring ? `translateX(${stirAnimationStep}px)` : 'none';
+
                 return equipmentData ? (
-                  <Equipment
+                  <div
                     key={equipment.id}
-                    id={equipment.id}
-                    name={equipmentData.name}
-                    icon={equipmentData.icon}
-                    position={equipment.position}
-                    onRemove={(id) => {
-                      setEquipmentOnBench(prev => prev.filter(eq => eq.id !== id));
-                      setShowToast(`${id.replace('-', ' ')} removed from workbench`);
-                      setTimeout(() => setShowToast(""), 2000);
+                    style={{
+                      transform: stirTransform,
+                      transition: isStirring ? 'transform 0.15s ease-in-out' : 'none',
                     }}
-                    onInteract={handleEquipmentInteract}
-                    isActive={activeEquipment === equipment.id}
-                    color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
-                    volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
-                  />
+                  >
+                    <Equipment
+                      id={equipment.id}
+                      name={equipmentData.name}
+                      icon={equipmentData.icon}
+                      position={equipment.position}
+                      onRemove={(id) => {
+                        setEquipmentOnBench(prev => prev.filter(eq => eq.id !== id));
+                        setShowToast(`${id.replace('-', ' ')} removed from workbench`);
+                        setTimeout(() => setShowToast(""), 2000);
+                      }}
+                      onInteract={handleEquipmentInteract}
+                      isActive={activeEquipment === equipment.id}
+                      color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
+                      volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
+                    />
+                  </div>
                 ) : null;
               })}
 
