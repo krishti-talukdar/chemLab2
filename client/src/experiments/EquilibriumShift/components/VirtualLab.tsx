@@ -498,13 +498,13 @@ export default function VirtualLab({
         }, 500);
       } else {
         setExperimentCompleted(true);
-        setShowToast("Experiment completed! Opening results analysis...");
-        setTimeout(() => setShowToast(""), 3000);
+        setShowToast("Experiment completed! Results will open in 15 seconds...");
+        setTimeout(() => setShowToast(""), 5000);
 
-        // Automatically open results modal after a brief delay
+        // Automatically open results modal after 15 seconds
         setTimeout(() => {
           setShowResultsModal(true);
-        }, 1500);
+        }, 15000);
       }
     }
   };
