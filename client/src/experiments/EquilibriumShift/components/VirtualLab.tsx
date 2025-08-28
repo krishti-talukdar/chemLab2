@@ -407,7 +407,7 @@ export default function VirtualLab({
       setShowToast("Follow the current step instructions");
       setTimeout(() => setShowToast(""), 2000);
     }
-  }, [currentStep, testTube.colorHex, animateColorTransition]);
+  }, [currentStep, testTube.colorHex, animateColorTransition, animateStirring]);
 
   // Handle undo action
   const handleUndo = useCallback(() => {
