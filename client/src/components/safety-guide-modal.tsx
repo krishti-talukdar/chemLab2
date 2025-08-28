@@ -54,17 +54,13 @@ export default function SafetyGuideModal({ children }: SafetyGuideModalProps) {
                 <Droplets className="h-5 w-5 text-blue-600" />
                 Chemical Handling
               </h3>
-              <div className="space-y-3">
-                <div className="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
-                  <h4 className="font-medium text-yellow-800">Aspirin Synthesis Safety</h4>
-                  <ul className="text-sm text-yellow-700 mt-2 space-y-1">
-                    <li>• Salicylic acid: Handle with care, avoid skin contact</li>
-                    <li>• Acetic anhydride: Corrosive, keep away from water</li>
-                    <li>• Sulfuric acid: Strong acid, extremely corrosive</li>
-                    <li>• Always add chemicals in the specified order</li>
-                  </ul>
-                </div>
-              </div>
+              <ul className="space-y-2 text-sm">
+                <li>• Clearly label all reagents and verify concentrations before use</li>
+                <li>• Add acid to water when diluting, never the reverse</li>
+                <li>• Do not mix unknown chemicals or exceed specified volumes</li>
+                <li>• Treat corrosive and oxidizing reagents with extra care</li>
+                <li>• Clean simulated spills immediately and reset if unsafe conditions occur</li>
+              </ul>
             </section>
 
             {/* Temperature Control */}
