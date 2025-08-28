@@ -113,6 +113,34 @@ export default function VirtualLab({
     }, ANIMATION.COLOR_TRANSITION_DURATION / totalSteps);
   }, []);
 
+  // Handle stirring animation
+  const animateStirring = useCallback(() => {
+    setIsStirring(true);
+    setStirAnimationStep(0);
+
+    // Animation sequence: right -> left -> right -> left -> center (5 steps)
+    const stirringSteps = [0, 20, -20, 15, -15, 0]; // X offset values
+    let stepIndex = 0;
+
+    const stirInterval = setInterval(() => {
+      stepIndex++;
+      if (stepIndex < stirringSteps.length) {
+        setStirAnimationStep(stirringSteps[stepIndex]);
+      } else {
+        // Animation complete
+        setIsStirring(false);
+        setStirAnimationStep(0);
+        clearInterval(stirInterval);
+      }
+    }, 150); // 150ms per step for smooth animation
+
+    // Cleanup after animation completes
+    setTimeout(() => {
+      setIsStirring(false);
+      setStirAnimationStep(0);
+    }, 900); // Total animation time: 6 steps * 150ms = 900ms
+  }, []);
+
   // Predefined positions for equipment layout
   const getEquipmentPosition = (equipmentId: string) => {
     const positions = {
