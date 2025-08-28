@@ -498,8 +498,13 @@ export default function VirtualLab({
         }, 500);
       } else {
         setExperimentCompleted(true);
-        setShowToast("Experiment completed! Click 'View Results' for detailed analysis.");
-        setTimeout(() => setShowToast(""), 4000);
+        setShowToast("Experiment completed! Opening results analysis...");
+        setTimeout(() => setShowToast(""), 3000);
+
+        // Automatically open results modal after a brief delay
+        setTimeout(() => {
+          setShowResultsModal(true);
+        }, 1500);
       }
     }
   };
@@ -883,7 +888,7 @@ export default function VirtualLab({
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                       <h4 className="font-semibold text-blue-800 mb-2">Chloride Complex [CoCl₄]²⁻</h4>
                       <ul className="text-sm text-blue-700 space-y-1">
-                        <li>• Blue color</li>
+                        <li>�� Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
                         <li>�� High Cl⁻ concentration</li>
