@@ -203,7 +203,7 @@ export default function VirtualLab({
           contents: ['CoCl₂', 'H₂O'],
           volume: 60
         }));
-        setShowToast("Test tube now contains pink [Co(H₂O)₆]²⁺ solution (60% full)");
+        setShowToast("Test tube now contains pink [Co(H₂O)���]²⁺ solution (60% full)");
         setTimeout(() => setShowToast(""), 3000);
       }, 1500);
     }
@@ -677,7 +677,7 @@ export default function VirtualLab({
                     key={equipment.id}
                     style={{
                       transform: stirTransform,
-                      transition: isStirring ? 'transform 0.15s ease-in-out' : 'none',
+                      transition: isStirring ? 'transform 0.1s ease-in-out' : 'none',
                     }}
                   >
                     <Equipment
