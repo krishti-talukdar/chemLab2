@@ -63,6 +63,13 @@ export default function VirtualLab({
   const [equipmentPositions, setEquipmentPositions] = useState<LabEquipment[]>([]);
   const [draggingSolution, setDraggingSolution] = useState<{ id: string; volume: number } | null>(null);
 
+  // Stop timer once the analysis panel is visible
+  useEffect(() => {
+    if (showAnalysis) {
+      setIsRunning(false);
+    }
+  }, [showAnalysis, setIsRunning]);
+
   // Initialize test tubes when experiment starts
   useEffect(() => {
     if (experimentStarted && testTubes.length === 0) {
