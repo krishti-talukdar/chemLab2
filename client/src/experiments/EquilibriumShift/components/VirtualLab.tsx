@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, X, TrendingUp, Clock, Home } from "lucide-react";
 import { Link } from "wouter";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
@@ -660,18 +660,6 @@ export default function VirtualLab({
                 Pink hydrated ⇌ Blue chloride
               </div>
             </div>
-
-            {/* Undo Button - Only show when equipment is on workbench */}
-            {equipmentOnBench.length > 0 && lastAction && (
-              <Button
-                onClick={handleUndo}
-                variant="outline"
-                className="w-full bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center justify-center space-x-2"
-              >
-                <Undo className="w-4 h-4" />
-                <span>Undo Last Action</span>
-              </Button>
-            )}
 
             {/* Step Undo Button - Only show when there's step history */}
             {stepHistory.length > 0 && currentStep > 1 && (
