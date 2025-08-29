@@ -194,7 +194,7 @@ export default function VirtualLab({
     // Get predefined position for this equipment
     const predefinedPosition = getEquipmentPosition(equipmentId);
 
-    // Add equipment to workbench
+    // Add equipment to workbench (for visibility/interaction)
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
       return [...filtered, {
@@ -211,19 +211,44 @@ export default function VirtualLab({
       data: { previousState, newPosition: predefinedPosition }
     });
 
-    setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
-    setTimeout(() => setShowToast(""), 2000);
+    // If cobalt is dropped over the test tube area, add it to the tube and turn pink
+    if (equipmentId === 'cobalt-ii-solution') {
+      const tubePos = getEquipmentPosition('test-tube');
+      const withinTube = Math.abs(x - tubePos.x) < 100 && Math.abs(y - tubePos.y) < 180;
+      if (withinTube && !testTube.contents.includes('CoCl₂')) {
+        setShowToast('Cobalt solution added to test tube');
+        setShowAddingSolutions(true);
+        setTimeout(() => {
+          setShowAddingSolutions(false);
+          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+          setTestTube(prev => ({
+            ...prev,
+            color: 'Pink',
+            contents: ['CoCl₂', 'H₂O'],
+            volume: 60,
+          }));
+          setShowToast('Pink [Co(H₂O)₆]²⁺ complex formed (60% full)');
+          setTimeout(() => setShowToast(''), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+      } else {
+        setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
+        setTimeout(() => setShowToast(''), 2000);
+      }
+    } else {
+      setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
+      setTimeout(() => setShowToast(''), 2000);
+    }
 
     // Auto-complete step if it's just placing equipment (guided mode only)
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
-      if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
+      if (currentStepData.action.includes('Drag') && !completedSteps.includes(currentStep)) {
         setTimeout(() => {
           handleStepComplete();
         }, 1000);
       }
     }
-  }, [currentStep, completedSteps, mode.current]);
+  }, [currentStep, completedSteps, mode.current, testTube.contents, testTube.colorHex, animateColorTransition]);
 
   // Handle equipment interaction
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
