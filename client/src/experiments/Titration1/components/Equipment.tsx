@@ -1,0 +1,141 @@
+import React from "react";
+import { X } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+interface EquipmentProps {
+  id: string;
+  name: string;
+  icon: React.ReactElement;
+  position?: { x: number; y: number };
+  onRemove?: (id: string) => void;
+  onInteract?: (id: string) => void;
+  isActive?: boolean;
+  disabled?: boolean;
+  color?: string;
+  volume?: number;
+  reading?: number;
+}
+
+export const Equipment: React.FC<EquipmentProps> = ({
+  id,
+  name,
+  icon,
+  position,
+  onRemove,
+  onInteract,
+  isActive = false,
+  disabled = false,
+  color,
+  volume,
+  reading
+}) => {
+  const handleDragStart = (e: React.DragEvent) => {
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
+    e.dataTransfer.setData("equipment", id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleClick = () => {
+    if (!disabled && onInteract) {
+      onInteract(id);
+    }
+  };
+
+  const isPositioned = position !== undefined;
+  const baseClasses = `
+    flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer
+    ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'}
+    ${isActive ? 'border-blue-500 bg-blue-50 scale-105' : 'border-gray-200 bg-white'}
+    ${isPositioned ? 'absolute min-w-[80px]' : 'w-full'}
+  `;
+
+  const equipmentElement = (
+    <div
+      className={baseClasses}
+      style={position ? { 
+        left: position.x, 
+        top: position.y,
+        transform: isActive ? 'scale(1.05)' : 'scale(1)'
+      } : {}}
+      draggable={!disabled && !isPositioned}
+      onDragStart={handleDragStart}
+      onClick={handleClick}
+    >
+      {/* Remove button for positioned equipment */}
+      {isPositioned && onRemove && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(id);
+          }}
+          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center z-10"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      )}
+
+      {/* Equipment icon with custom styling for specific items */}
+      <div className="relative">
+        {React.cloneElement(icon, {
+          className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
+          size: isPositioned ? 48 : 36
+        })}
+        
+        {/* Special rendering for different equipment types */}
+        {id === 'conical-flask' && color && (
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: `linear-gradient(to bottom, transparent 40%, ${color} 60%)`,
+              clipPath: 'polygon(30% 60%, 70% 60%, 65% 90%, 35% 90%)'
+            }}
+          />
+        )}
+        
+        {id === 'burette' && (
+          <div className="absolute right-0 top-0 bg-white border rounded px-1">
+            <span className="text-xs font-mono">{reading?.toFixed(1) || '0.0'}</span>
+          </div>
+        )}
+        
+        {volume !== undefined && (
+          <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+            {Math.round(volume)}
+          </div>
+        )}
+      </div>
+
+      <span className={`text-center font-medium mt-2 ${isPositioned ? 'text-xs' : 'text-sm'}`}>
+        {name}
+      </span>
+      
+      {!isPositioned && !disabled && (
+        <span className="text-xs text-gray-500 mt-1">
+          Drag to workbench
+        </span>
+      )}
+    </div>
+  );
+
+  if (!isPositioned) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {equipmentElement}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{name}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return equipmentElement;
+};
+
+export default Equipment;
