@@ -744,8 +744,8 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Step 2 button - positioned below test tube (guided mode only) */}
-              {mode.current === 'guided' && currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+              {/* Step 2 button - positioned below test tube */}
+              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
                 <div
                   style={{
                     position: 'absolute',
