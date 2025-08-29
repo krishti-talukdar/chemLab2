@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, BookOpen } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import VirtualLab from "./VirtualLab";
 import EquilibriumShiftData from "../data";
 import { ExperimentMode } from "../types";
+import { useUpdateProgress } from "@/hooks/use-experiments";
 
 interface EquilibriumShiftAppProps {
   onBack?: () => void;
