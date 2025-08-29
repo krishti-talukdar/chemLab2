@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Play, Pause } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import OxalicAcidVirtualLab from "./VirtualLab";
 import OxalicAcidData from "../data";
 import type { ExperimentStep } from "../types";
+import { useUpdateProgress } from "@/hooks/use-experiments";
 
 interface OxalicAcidAppProps {
   onBack?: () => void;
@@ -19,6 +20,9 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
   const [experimentStarted, setExperimentStarted] = useState(false);
 
   const experiment = OxalicAcidData;
+  const [match, params] = useRoute("/experiment/:id");
+  const experimentId = Number(params?.id ?? 2);
+  const updateProgress = useUpdateProgress();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -68,6 +72,17 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
     setTimer(0);
     setIsRunning(false);
   };
+
+  useEffect(() => {
+    const total = experiment.stepDetails.length;
+    const done = experimentStarted ? Math.min(currentStep + 1, total) : 0;
+    updateProgress.mutate({
+      experimentId,
+      currentStep: done,
+      completed: done >= total,
+      progressPercentage: Math.round((done / total) * 100),
+    });
+  }, [experimentStarted, currentStep, experiment.stepDetails.length, experimentId]);
 
   const progress = ((currentStep + 1) / experiment.stepDetails.length) * 100;
 

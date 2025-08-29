@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, FlaskConical, BarChart3, Droplets } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import VirtualLab from "./VirtualLab";
 import FeSCNEquilibriumData from "../data";
 import { ExperimentPhase } from "../types";
+import { useUpdateProgress } from "@/hooks/use-experiments";
 
 interface FeSCNEquilibriumAppProps {
   onBack?: () => void;
@@ -28,6 +29,9 @@ export default function FeSCNEquilibriumApp({
   const [showAnalysis, setShowAnalysis] = useState(false);
 
   const experiment = FeSCNEquilibriumData;
+  const [match, params] = useRoute("/experiment/:id");
+  const experimentId = Number(params?.id ?? 3);
+  const updateProgress = useUpdateProgress();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -93,6 +97,12 @@ export default function FeSCNEquilibriumApp({
       partBCompleted: false
     });
     setShowAnalysis(false);
+    updateProgress.mutate({
+      experimentId,
+      currentStep: 0,
+      completed: false,
+      progressPercentage: 0,
+    });
   };
 
   const handlePhaseComplete = (completedPhase: 'part-a' | 'part-b') => {
@@ -136,6 +146,17 @@ export default function FeSCNEquilibriumApp({
   const progressPercentage = Math.round(
     ((currentStep + 1) / experiment.stepDetails.length) * 100,
   );
+
+  useEffect(() => {
+    const total = experiment.stepDetails.length;
+    const done = experimentStarted ? Math.min(currentStep + 1, total) : 0;
+    updateProgress.mutate({
+      experimentId,
+      currentStep: done,
+      completed: done >= total,
+      progressPercentage: Math.round((done / total) * 100),
+    });
+  }, [experimentStarted, currentStep, experiment.stepDetails.length, experimentId]);
 
   // Calculate phase progress
   const getPhaseProgress = () => {
