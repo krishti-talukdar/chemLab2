@@ -177,12 +177,14 @@ export default function VirtualLab({
 
   // Handle equipment drop on workbench
   const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
-    // Check if this equipment is required for current step
-    const currentStepData = GUIDED_STEPS[currentStep - 1];
-    if (!currentStepData.equipment.includes(equipmentId)) {
-      setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
-      setTimeout(() => setShowToast(""), 3000);
-      return;
+    // In guided mode, enforce step equipment requirements
+    if (mode.current === 'guided') {
+      const currentStepData = GUIDED_STEPS[currentStep - 1];
+      if (!currentStepData.equipment.includes(equipmentId)) {
+        setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
+        setTimeout(() => setShowToast(""), 3000);
+        return;
+      }
     }
 
     // Store the previous state for undo
@@ -211,11 +213,14 @@ export default function VirtualLab({
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
     setTimeout(() => setShowToast(""), 2000);
 
-    // Auto-complete step if it's just placing equipment
-    if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
-      setTimeout(() => {
-        handleStepComplete();
-      }, 1000);
+    // Auto-complete step if it's just placing equipment (guided mode only)
+    if (mode.current === 'guided') {
+      const currentStepData = GUIDED_STEPS[currentStep - 1];
+      if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
+        setTimeout(() => {
+          handleStepComplete();
+        }, 1000);
+      }
     }
 
     // Special handling for test tube - automatically add initial solution
@@ -231,13 +236,13 @@ export default function VirtualLab({
         setTimeout(() => setShowToast(""), 3000);
       }, 1500);
     }
-  }, [currentStep, completedSteps]);
+  }, [currentStep, completedSteps, mode.current]);
 
   // Handle equipment interaction
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
-    
-    if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
+
+    if (equipmentId === 'concentrated-hcl' && (mode.current !== 'guided' || currentStep === 4)) {
       // Trigger stirring animation
       animateStirring();
 
@@ -340,11 +345,13 @@ export default function VirtualLab({
 
           setActiveEquipment("");
           setTimeout(() => setShowToast(""), 3000);
-          handleStepComplete();
+          if (mode.current === 'guided') {
+            handleStepComplete();
+          }
         }, ANIMATION.DROPPER_DURATION);
       }
 
-    } else if (equipmentId === 'distilled-water' && currentStep === 6) {
+    } else if (equipmentId === 'distilled-water' && (mode.current !== 'guided' || currentStep === 6)) {
       // Trigger stirring animation
       animateStirring();
 
@@ -423,15 +430,17 @@ export default function VirtualLab({
 
           setActiveEquipment("");
           setTimeout(() => setShowToast(""), 3000);
-          handleStepComplete();
+          if (mode.current === 'guided') {
+            handleStepComplete();
+          }
         }, ANIMATION.DROPPER_DURATION);
       }
 
-    } else {
+    } else if (mode.current === 'guided') {
       setShowToast("Follow the current step instructions");
       setTimeout(() => setShowToast(""), 2000);
     }
-  }, [currentStep, testTube.colorHex, animateColorTransition, animateStirring]);
+  }, [currentStep, testTube.colorHex, animateColorTransition, animateStirring, mode.current]);
 
   // Handle undo action
   const handleUndo = useCallback(() => {
