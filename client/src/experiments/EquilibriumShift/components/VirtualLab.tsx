@@ -188,60 +188,98 @@ export default function VirtualLab({
       }
     }
 
-    // Store the previous state for undo
-    const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
+    // Special rule: cobalt solution should not appear on workbench
+    if (equipmentId === 'cobalt-ii-solution') {
+      const tubePos = getEquipmentPosition('test-tube');
+      const withinTube = Math.abs(x - tubePos.x) < 100 && Math.abs(y - tubePos.y) < 180;
 
-    // Get predefined position for this equipment
+      if (withinTube && !testTube.contents.includes('CoCl₂')) {
+        setShowAddingSolutions(true);
+        setTimeout(() => {
+          setShowAddingSolutions(false);
+          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+          setTestTube(prev => ({
+            ...prev,
+            color: 'Pink',
+            contents: ['CoCl₂', 'H₂O'],
+            volume: 60,
+          }));
+          setShowToast('Pink [Co(H₂O)₆]²⁺ complex formed (60% full)');
+          setTimeout(() => setShowToast(''), 3000);
+          // Auto-complete guided step when cobalt successfully added
+          if (mode.current === 'guided') {
+            const currentStepData = GUIDED_STEPS[currentStep - 1];
+            if (currentStepData.action.includes('Drag') && !completedSteps.includes(currentStep)) {
+              setTimeout(() => {
+                handleStepComplete();
+              }, 1000);
+            }
+          }
+        }, ANIMATION.DROPPER_DURATION);
+      } else {
+        setShowToast('Drop cobalt onto the test tube to add it');
+        setTimeout(() => setShowToast(''), 2500);
+      }
+      return; // Do not place cobalt bottle on the workbench
+    }
+
+    // For all other equipment, proceed with normal placement
+    const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
     const predefinedPosition = getEquipmentPosition(equipmentId);
 
-    // Add equipment to workbench
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
-      return [...filtered, {
-        id: equipmentId,
-        position: predefinedPosition,
-        isActive: false
-      }];
+      return [...filtered, { id: equipmentId, position: predefinedPosition, isActive: false }];
     });
 
-    // Track this action for undo
-    setLastAction({
-      type: 'equipment_placed',
-      equipmentId,
-      data: { previousState, newPosition: predefinedPosition }
-    });
+    setLastAction({ type: 'equipment_placed', equipmentId, data: { previousState, newPosition: predefinedPosition } });
 
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
-    setTimeout(() => setShowToast(""), 2000);
+    setTimeout(() => setShowToast(''), 2000);
 
-    // Auto-complete step if it's just placing equipment (guided mode only)
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
-      if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
-        setTimeout(() => {
-          handleStepComplete();
-        }, 1000);
+      if (currentStepData.action.includes('Drag') && !completedSteps.includes(currentStep)) {
+        setTimeout(() => { handleStepComplete(); }, 1000);
       }
     }
-
-    // Special handling for cobalt solution - add to test tube during step 2
-    if (equipmentId === 'cobalt-ii-solution' && currentStep === 2) {
-      setTimeout(() => {
-        setTestTube(prev => ({
-          ...prev,
-          colorHex: COLORS.PINK,
-          contents: ['CoCl₂', 'H₂O'],
-          volume: 60
-        }));
-        setShowToast("Added Cobalt(II) solution: pink [Co(H₂O)₆]²⁺ formed (60% full)");
-        setTimeout(() => setShowToast(""), 3000);
-      }, 800);
-    }
-  }, [currentStep, completedSteps, mode.current]);
+  }, [currentStep, completedSteps, mode.current, testTube.contents, testTube.colorHex, animateColorTransition, equipmentOnBench]);
 
   // Handle equipment interaction
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
+
+    if (equipmentId === 'cobalt-ii-solution') {
+      // Add cobalt solution to the test tube only when user interacts with the bottle
+      if (!testTube.contents.includes('CoCl₂')) {
+        setActiveEquipment(equipmentId);
+        setDropperAction({
+          id: Date.now().toString(),
+          reagentId: 'cobalt',
+          targetId: 'test-tube',
+          amount: 3,
+          timestamp: Date.now(),
+          isAnimating: true,
+        });
+
+        setShowAddingSolutions(true);
+        setTimeout(() => {
+          setDropperAction(null);
+          setShowAddingSolutions(false);
+          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+          setTestTube(prev => ({
+            ...prev,
+            color: 'Pink',
+            contents: ['CoCl₂', 'H₂O'],
+            volume: 60,
+          }));
+          setActiveEquipment("");
+          setShowToast("Cobalt solution added: pink [Co(H₂O)₆]²⁺ formed (60% full)");
+          setTimeout(() => setShowToast(""), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+      }
+      return;
+    }
 
     if (equipmentId === 'concentrated-hcl' && currentStep === 5) {
       // Trigger stirring animation
@@ -742,7 +780,7 @@ export default function VirtualLab({
               })}
 
               {/* Observe button - visible during step 3 when test tube + cobalt present (both modes) */}
-              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && equipmentOnBench.some(eq => eq.id === 'cobalt-ii-solution') && (
+              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && testTube.contents.includes('CoCl₂') && (
                 <div
                   style={{
                     position: 'absolute',

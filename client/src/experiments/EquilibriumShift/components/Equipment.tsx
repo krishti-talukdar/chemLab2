@@ -105,7 +105,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         onClick={handleClick}
       >
         {/* Remove button */}
-        {onRemove && (
+        {onRemove && id === 'test-tube' && (
           <Button
             onClick={(e) => {
               e.stopPropagation();
@@ -114,7 +114,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             size="sm"
             variant="outline"
             className={`absolute w-6 h-6 p-0 bg-red-500 text-white border-red-500 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity ${
-              id === 'test-tube' ? 'top-0 right-0' : '-top-2 -right-2'
+              id === 'test-tube' ? 'top-0 right-0' : ''
             }`}
           >
             <X className="w-3 h-3" />
@@ -147,9 +147,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 )}
               </div>
               <span className="text-sm font-medium mt-2 text-center block">{name}</span>
-              {volume > 0 && (
-                <span className="text-sm text-gray-600 text-center block">{Math.round(volume)}% full</span>
-              )}
             </div>
           ) : id === 'distilled-water' ? (
             <div className="flex flex-col items-center">
@@ -204,7 +201,7 @@ export const LAB_EQUIPMENT = [
   },
   {
     id: 'cobalt-ii-solution',
-    name: 'Cobalt(II) Solution',
+    name: 'Cobalt Solution',
     icon: <Beaker className="w-8 h-8" />,
     description: 'CoCl₂ in water (pink)'
   },
