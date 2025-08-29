@@ -66,6 +66,13 @@ export default function EquilibriumShiftApp({
     setCurrentStep(0);
     setCompletedSteps([]);
     setMode({ current: 'free' });
+
+    updateProgress.mutate({
+      experimentId,
+      currentStep: 0,
+      completed: false,
+      progressPercentage: 0,
+    });
   };
 
   const toggleMode = () => {
