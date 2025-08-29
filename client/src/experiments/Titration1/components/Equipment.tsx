@@ -2,6 +2,9 @@ import React from "react";
 import { X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+// Export LAB_EQUIPMENT for use in other components
+export { LAB_EQUIPMENT } from "../constants";
+
 interface EquipmentProps {
   id: string;
   name: string;
