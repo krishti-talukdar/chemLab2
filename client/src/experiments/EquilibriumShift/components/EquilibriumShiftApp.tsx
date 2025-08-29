@@ -96,6 +96,26 @@ export default function EquilibriumShiftApp({
     }
   };
 
+  const handleStepUndo = (stepId?: number) => {
+    // Determine which step to undo (1-indexed in child)
+    const stepToUndo = stepId || (mode.current === 'guided' && mode.currentGuidedStep !== undefined
+      ? mode.currentGuidedStep + 1
+      : currentStep + 1);
+
+    // Remove from completed steps if present
+    setCompletedSteps(prev => prev.filter(id => id !== stepToUndo));
+
+    // In guided mode, move one step back in UI state as well
+    if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
+      const newIndex = Math.max(0, mode.currentGuidedStep - 1);
+      setMode({ ...mode, currentGuidedStep: newIndex });
+      setCurrentStep(newIndex);
+    } else {
+      // Free mode: keep currentStep non-negative
+      setCurrentStep(prev => Math.max(0, prev - 1));
+    }
+  };
+
   const currentStepData = experiment.stepDetails[currentStep];
   const progressPercentage = Math.round(
     (completedSteps.length / experiment.stepDetails.length) * 100,
@@ -234,6 +254,7 @@ export default function EquilibriumShiftApp({
                 setIsRunning={setIsRunning}
                 mode={mode}
                 onStepComplete={handleStepComplete}
+                onStepUndo={handleStepUndo}
                 onReset={handleReset}
                 completedSteps={completedSteps}
               />
