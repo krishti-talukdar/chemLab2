@@ -71,7 +71,6 @@ export default function VirtualLab({
   const [showAddingSolutions, setShowAddingSolutions] = useState(false);
   const [isStirring, setIsStirring] = useState<boolean>(false);
   const [stirAnimationStep, setStirAnimationStep] = useState<number>(0);
-  const [freeObservedPink, setFreeObservedPink] = useState<boolean>(false);
 
   // Stop the timer when the results & analysis modal appears
   useEffect(() => {
@@ -243,7 +242,7 @@ export default function VirtualLab({
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
 
-    if (equipmentId === 'concentrated-hcl' && (mode.current !== 'guided' || currentStep === 4)) {
+    if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
       // Trigger stirring animation
       animateStirring();
 
@@ -346,13 +345,11 @@ export default function VirtualLab({
 
           setActiveEquipment("");
           setTimeout(() => setShowToast(""), 3000);
-          if (mode.current === 'guided') {
-            handleStepComplete();
-          }
+          handleStepComplete();
         }, ANIMATION.DROPPER_DURATION);
       }
 
-    } else if (equipmentId === 'distilled-water' && (mode.current !== 'guided' || currentStep === 6)) {
+    } else if (equipmentId === 'distilled-water' && currentStep === 6) {
       // Trigger stirring animation
       animateStirring();
 
@@ -431,17 +428,15 @@ export default function VirtualLab({
 
           setActiveEquipment("");
           setTimeout(() => setShowToast(""), 3000);
-          if (mode.current === 'guided') {
-            handleStepComplete();
-          }
+          handleStepComplete();
         }, ANIMATION.DROPPER_DURATION);
       }
 
-    } else if (mode.current === 'guided') {
+    } else {
       setShowToast("Follow the current step instructions");
       setTimeout(() => setShowToast(""), 2000);
     }
-  }, [currentStep, testTube.colorHex, animateColorTransition, animateStirring, mode.current]);
+  }, [currentStep, testTube.colorHex, animateColorTransition, animateStirring]);
 
   // Handle undo action
   const handleUndo = useCallback(() => {
@@ -563,7 +558,6 @@ export default function VirtualLab({
     setStepHistory([]);
     setShowAddingSolutions(false);
     setShowToast("");
-    setFreeObservedPink(false);
     onReset();
   };
 
@@ -746,11 +740,8 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Observe button - show when test tube is on bench. In guided mode, only during step 2; in free mode, hide after pressed */}
-              {equipmentOnBench.some(eq => eq.id === 'test-tube') && (
-                (mode.current === 'guided' && currentStep === 2) ||
-                (mode.current !== 'guided' && !freeObservedPink)
-              ) && (
+              {/* Observe button - visible during step 2 when test tube present (both modes) */}
+              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
                 <div
                   style={{
                     position: 'absolute',
@@ -764,11 +755,7 @@ export default function VirtualLab({
                     onClick={() => {
                       setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
                       setTimeout(() => {
-                        if (mode.current === 'guided') {
-                          handleStepComplete();
-                        } else {
-                          setFreeObservedPink(true);
-                        }
+                        handleStepComplete();
                         setShowToast("");
                       }, 1500);
                     }}
