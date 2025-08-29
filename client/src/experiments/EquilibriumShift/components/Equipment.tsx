@@ -204,7 +204,7 @@ export const LAB_EQUIPMENT = [
   },
   {
     id: 'cobalt-ii-solution',
-    name: 'Cobalt(II) Solution',
+    name: 'Cobalt Solution',
     icon: <Beaker className="w-8 h-8" />,
     description: 'CoCl₂ in water (pink)'
   },
