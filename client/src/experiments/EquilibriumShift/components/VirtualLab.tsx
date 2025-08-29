@@ -188,35 +188,12 @@ export default function VirtualLab({
       }
     }
 
-    // Store the previous state for undo
-    const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
-
-    // Get predefined position for this equipment
-    const predefinedPosition = getEquipmentPosition(equipmentId);
-
-    // Add equipment to workbench (for visibility/interaction)
-    setEquipmentOnBench(prev => {
-      const filtered = prev.filter(eq => eq.id !== equipmentId);
-      return [...filtered, {
-        id: equipmentId,
-        position: predefinedPosition,
-        isActive: false
-      }];
-    });
-
-    // Track this action for undo
-    setLastAction({
-      type: 'equipment_placed',
-      equipmentId,
-      data: { previousState, newPosition: predefinedPosition }
-    });
-
-    // If cobalt is dropped over the test tube area, add it to the tube and turn pink
+    // Special rule: cobalt solution should not appear on workbench
     if (equipmentId === 'cobalt-ii-solution') {
       const tubePos = getEquipmentPosition('test-tube');
       const withinTube = Math.abs(x - tubePos.x) < 100 && Math.abs(y - tubePos.y) < 180;
+
       if (withinTube && !testTube.contents.includes('CoCl₂')) {
-        setShowToast('Cobalt solution added to test tube');
         setShowAddingSolutions(true);
         setTimeout(() => {
           setShowAddingSolutions(false);
@@ -229,26 +206,44 @@ export default function VirtualLab({
           }));
           setShowToast('Pink [Co(H₂O)₆]²⁺ complex formed (60% full)');
           setTimeout(() => setShowToast(''), 3000);
+          // Auto-complete guided step when cobalt successfully added
+          if (mode.current === 'guided') {
+            const currentStepData = GUIDED_STEPS[currentStep - 1];
+            if (currentStepData.action.includes('Drag') && !completedSteps.includes(currentStep)) {
+              setTimeout(() => {
+                handleStepComplete();
+              }, 1000);
+            }
+          }
         }, ANIMATION.DROPPER_DURATION);
       } else {
-        setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
-        setTimeout(() => setShowToast(''), 2000);
+        setShowToast('Drop cobalt onto the test tube to add it');
+        setTimeout(() => setShowToast(''), 2500);
       }
-    } else {
-      setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
-      setTimeout(() => setShowToast(''), 2000);
+      return; // Do not place cobalt bottle on the workbench
     }
 
-    // Auto-complete step if it's just placing equipment (guided mode only)
+    // For all other equipment, proceed with normal placement
+    const previousState = equipmentOnBench.find(eq => eq.id === equipmentId);
+    const predefinedPosition = getEquipmentPosition(equipmentId);
+
+    setEquipmentOnBench(prev => {
+      const filtered = prev.filter(eq => eq.id !== equipmentId);
+      return [...filtered, { id: equipmentId, position: predefinedPosition, isActive: false }];
+    });
+
+    setLastAction({ type: 'equipment_placed', equipmentId, data: { previousState, newPosition: predefinedPosition } });
+
+    setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
+    setTimeout(() => setShowToast(''), 2000);
+
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
       if (currentStepData.action.includes('Drag') && !completedSteps.includes(currentStep)) {
-        setTimeout(() => {
-          handleStepComplete();
-        }, 1000);
+        setTimeout(() => { handleStepComplete(); }, 1000);
       }
     }
-  }, [currentStep, completedSteps, mode.current, testTube.contents, testTube.colorHex, animateColorTransition]);
+  }, [currentStep, completedSteps, mode.current, testTube.contents, testTube.colorHex, animateColorTransition, equipmentOnBench]);
 
   // Handle equipment interaction
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
