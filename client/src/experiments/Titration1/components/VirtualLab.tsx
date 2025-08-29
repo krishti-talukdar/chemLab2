@@ -1,0 +1,820 @@
+import React, { useState, useEffect, useCallback } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home } from "lucide-react";
+import { Link } from "wouter";
+import WorkBench from "./WorkBench";
+import Equipment, { LAB_EQUIPMENT } from "./Equipment";
+import { 
+  COLORS, 
+  INITIAL_FLASK, 
+  INITIAL_BURETTE,
+  GUIDED_STEPS,
+  ANIMATION,
+  ENDPOINT_COLORS,
+  EQUIPMENT_POSITIONS,
+  TITRATION_FORMULAS
+} from "../constants";
+import { 
+  ConicalFlask, 
+  Burette,
+  TitrationAction, 
+  TitrationState, 
+  ExperimentMode, 
+  ColorTransition,
+  TitrationLog,
+  TitrationData
+} from "../types";
+
+interface VirtualLabProps {
+  experimentStarted: boolean;
+  onStartExperiment: () => void;
+  isRunning: boolean;
+  setIsRunning: (running: boolean) => void;
+  mode: ExperimentMode;
+  onStepComplete: (stepId?: number) => void;
+  onStepUndo?: (stepId?: number) => void;
+  onReset: () => void;
+  completedSteps: number[];
+}
+
+export default function VirtualLab({
+  experimentStarted,
+  onStartExperiment,
+  isRunning,
+  setIsRunning,
+  mode,
+  onStepComplete,
+  onStepUndo,
+  onReset,
+  completedSteps,
+}: VirtualLabProps) {
+  // Lab state
+  const [conicalFlask, setConicalFlask] = useState<ConicalFlask>(INITIAL_FLASK);
+  const [burette, setBurette] = useState<Burette>(INITIAL_BURETTE);
+  const [titrationState, setTitrationState] = useState<TitrationState>({
+    currentPhase: 'preparation',
+    buretteReading: 0.0,
+    flaskColor: COLORS.COLORLESS,
+    explanation: 'Preparation phase - set up equipment',
+    titrationComplete: false
+  });
+  const [colorTransition, setColorTransition] = useState<ColorTransition | null>(null);
+  const [titrationAction, setTitrationAction] = useState<TitrationAction | null>(null);
+  const [titrationLog, setTitrationLog] = useState<TitrationLog[]>([]);
+  const [showToast, setShowToast] = useState<string>("");
+  
+  // Workbench state
+  const [currentStep, setCurrentStep] = useState(1);
+  const [equipmentOnBench, setEquipmentOnBench] = useState<Array<{
+    id: string;
+    position: { x: number; y: number };
+    isActive: boolean;
+  }>>([]);
+  const [activeEquipment, setActiveEquipment] = useState<string>("");
+  const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
+  const [experimentCompleted, setExperimentCompleted] = useState<boolean>(false);
+  const [lastAction, setLastAction] = useState<{type: string, equipmentId?: string, data?: any} | null>(null);
+  const [stepHistory, setStepHistory] = useState<{step: number, state: any}[]>([]);
+  const [showTitrating, setShowTitrating] = useState(false);
+  const [titrationData, setTitrationData] = useState<TitrationData[]>([]);
+  const [currentTrial, setCurrentTrial] = useState(1);
+
+  // Stop the timer when results modal appears
+  useEffect(() => {
+    if (showResultsModal) {
+      setIsRunning(false);
+    }
+  }, [showResultsModal, setIsRunning]);
+
+  // Handle color transitions for endpoint detection
+  const animateColorTransition = useCallback((fromColor: string, toColor: string, newPhase: TitrationState['currentPhase']) => {
+    setColorTransition({
+      from: fromColor,
+      to: toColor,
+      duration: ANIMATION.COLOR_TRANSITION_DURATION,
+      currentStep: 0,
+      totalSteps: 20,
+      isAnimating: true
+    });
+
+    // Animate color transition
+    let step = 0;
+    const totalSteps = 20;
+    const interval = setInterval(() => {
+      step++;
+      const progress = step / totalSteps;
+      
+      // Interpolate between colors
+      const r1 = parseInt(fromColor.slice(1, 3), 16);
+      const g1 = parseInt(fromColor.slice(3, 5), 16);
+      const b1 = parseInt(fromColor.slice(5, 7), 16);
+      const r2 = parseInt(toColor.slice(1, 3), 16);
+      const g2 = parseInt(toColor.slice(3, 5), 16);
+      const b2 = parseInt(toColor.slice(5, 7), 16);
+      
+      const r = Math.round(r1 + (r2 - r1) * progress);
+      const g = Math.round(g1 + (g2 - g1) * progress);
+      const b = Math.round(b1 + (b2 - b1) * progress);
+      
+      const currentColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      
+      setConicalFlask(prev => ({ ...prev, colorHex: currentColor }));
+      
+      if (step >= totalSteps) {
+        clearInterval(interval);
+        setConicalFlask(prev => ({ ...prev, colorHex: toColor }));
+        setTitrationState(prev => ({ 
+          ...prev, 
+          currentPhase: newPhase,
+          flaskColor: toColor
+        }));
+        setColorTransition(null);
+      }
+    }, ANIMATION.COLOR_TRANSITION_DURATION / totalSteps);
+  }, []);
+
+  // Get predefined positions for equipment
+  const getEquipmentPosition = (equipmentId: string) => {
+    return EQUIPMENT_POSITIONS[equipmentId as keyof typeof EQUIPMENT_POSITIONS] || { x: 300, y: 250 };
+  };
+
+  // Handle equipment drop on workbench
+  const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
+    // In guided mode, enforce step equipment requirements
+    if (mode.current === 'guided') {
+      const currentStepData = GUIDED_STEPS[currentStep - 1];
+      if (!currentStepData.equipment.includes(equipmentId)) {
+        setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
+        setTimeout(() => setShowToast(""), 3000);
+        return;
+      }
+    }
+
+    // Get predefined position for this equipment
+    const predefinedPosition = getEquipmentPosition(equipmentId);
+
+    // Add equipment to workbench
+    setEquipmentOnBench(prev => {
+      const filtered = prev.filter(eq => eq.id !== equipmentId);
+      return [...filtered, {
+        id: equipmentId,
+        position: predefinedPosition,
+        isActive: false
+      }];
+    });
+
+    setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
+    setTimeout(() => setShowToast(""), 2000);
+
+    // Auto-complete step if it's just placing equipment (guided mode only)
+    if (mode.current === 'guided') {
+      const currentStepData = GUIDED_STEPS[currentStep - 1];
+      if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
+        setTimeout(() => {
+          handleStepComplete();
+        }, 1000);
+      }
+    }
+  }, [currentStep, completedSteps, mode.current]);
+
+  // Handle equipment interaction
+  const handleEquipmentInteract = useCallback((equipmentId: string) => {
+    const currentStepData = GUIDED_STEPS[currentStep - 1];
+
+    if (equipmentId === 'pipette' && currentStep === 2) {
+      // Transfer oxalic acid to flask
+      setActiveEquipment(equipmentId);
+      setTitrationAction({
+        id: Date.now().toString(),
+        actionType: 'add_solution',
+        reagentId: 'oxalic-acid',
+        targetId: 'conical-flask',
+        amount: 25,
+        timestamp: Date.now(),
+        isAnimating: true
+      });
+
+      setShowToast("Transferring 25.0 mL of 0.1N oxalic acid...");
+
+      setTimeout(() => {
+        setTitrationAction(null);
+        setConicalFlask(prev => ({
+          ...prev,
+          volume: 25,
+          contents: ['H₂C₂O₄'],
+          colorHex: COLORS.OXALIC_ACID
+        }));
+
+        const logEntry: TitrationLog = {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          action: 'Added oxalic acid',
+          reagent: '0.1N H₂C₂O₄',
+          volume: 25.0,
+          buretteReading: burette.reading,
+          colorBefore: COLORS.COLORLESS,
+          colorAfter: COLORS.OXALIC_ACID,
+          observation: 'Transferred 25.0 mL of standard oxalic acid solution'
+        };
+        setTitrationLog(prev => [...prev, logEntry]);
+
+        setActiveEquipment("");
+        setShowToast("Oxalic acid added to flask!");
+        setTimeout(() => setShowToast(""), 2000);
+        handleStepComplete();
+      }, ANIMATION.DROPPER_DURATION);
+
+    } else if (equipmentId === 'phenolphthalein' && currentStep === 3) {
+      // Add indicator
+      setActiveEquipment(equipmentId);
+      setShowToast("Adding 2-3 drops of phenolphthalein indicator...");
+
+      setTimeout(() => {
+        setConicalFlask(prev => ({
+          ...prev,
+          hasIndicator: true
+        }));
+
+        const logEntry: TitrationLog = {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          action: 'Added indicator',
+          reagent: 'Phenolphthalein',
+          volume: 0.1,
+          buretteReading: burette.reading,
+          colorBefore: conicalFlask.colorHex,
+          colorAfter: conicalFlask.colorHex,
+          observation: 'Added phenolphthalein indicator - solution remains colorless'
+        };
+        setTitrationLog(prev => [...prev, logEntry]);
+
+        setActiveEquipment("");
+        setShowToast("Indicator added - ready for titration!");
+        setTimeout(() => setShowToast(""), 2000);
+        handleStepComplete();
+      }, 1000);
+
+    } else if (equipmentId === 'naoh-solution' && currentStep === 4) {
+      // Fill burette with NaOH
+      setActiveEquipment(equipmentId);
+      setShowToast("Filling burette with NaOH solution...");
+
+      setTimeout(() => {
+        setBurette(prev => ({
+          ...prev,
+          reading: 0.0,
+          isOpen: false
+        }));
+
+        setTitrationState(prev => ({
+          ...prev,
+          currentPhase: 'titration',
+          explanation: 'Burette filled and ready for titration'
+        }));
+
+        const logEntry: TitrationLog = {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          action: 'Filled burette',
+          reagent: 'NaOH solution',
+          volume: 50,
+          buretteReading: 0.0,
+          colorBefore: conicalFlask.colorHex,
+          colorAfter: conicalFlask.colorHex,
+          observation: 'Burette filled with NaOH solution and adjusted to zero'
+        };
+        setTitrationLog(prev => [...prev, logEntry]);
+
+        setActiveEquipment("");
+        setShowToast("Burette ready - begin titration!");
+        setTimeout(() => setShowToast(""), 2000);
+        handleStepComplete();
+      }, 2000);
+
+    } else if (equipmentId === 'burette' && currentStep === 5) {
+      // Begin titration
+      setActiveEquipment(equipmentId);
+      setShowTitrating(true);
+      
+      const newReading = burette.reading + 0.5; // Add 0.5 mL each click
+      setBurette(prev => ({ ...prev, reading: newReading }));
+
+      setShowToast(`Adding NaOH... Burette reading: ${newReading.toFixed(1)} mL`);
+
+      // Check if approaching endpoint (around 24-26 mL for 0.1N solutions)
+      if (newReading >= 23 && newReading < 24.5 && !conicalFlask.endpointReached) {
+        // Approaching endpoint - very light pink
+        animateColorTransition(conicalFlask.colorHex, ENDPOINT_COLORS.APPROACHING, 'endpoint');
+        setShowToast("Approaching endpoint - solution turning faint pink!");
+      } else if (newReading >= 24.5 && newReading < 25.5 && !conicalFlask.endpointReached) {
+        // Endpoint reached!
+        animateColorTransition(conicalFlask.colorHex, ENDPOINT_COLORS.ENDPOINT, 'endpoint');
+        setConicalFlask(prev => ({ ...prev, endpointReached: true }));
+        
+        const logEntry: TitrationLog = {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          action: 'Endpoint reached',
+          reagent: 'NaOH solution',
+          volume: newReading,
+          buretteReading: newReading,
+          colorBefore: ENDPOINT_COLORS.APPROACHING,
+          colorAfter: ENDPOINT_COLORS.ENDPOINT,
+          observation: `Endpoint reached at ${newReading.toFixed(1)} mL - permanent light pink color`,
+          isEndpoint: true
+        };
+        setTitrationLog(prev => [...prev, logEntry]);
+
+        setShowToast(`🎉 ENDPOINT REACHED! Final reading: ${newReading.toFixed(1)} mL`);
+        setTimeout(() => {
+          setShowToast("Click conical flask to confirm endpoint!");
+          setTimeout(() => setShowToast(""), 3000);
+        }, 3000);
+      } else if (newReading > 25.5) {
+        // Overshoot
+        animateColorTransition(conicalFlask.colorHex, ENDPOINT_COLORS.OVERSHOOT, 'completed');
+        setShowToast("⚠️ Overshot! Solution too pink - repeat titration for accuracy");
+      }
+
+      setTimeout(() => {
+        setShowTitrating(false);
+        setActiveEquipment("");
+      }, 1000);
+
+    } else if (equipmentId === 'conical-flask' && currentStep === 6 && conicalFlask.endpointReached) {
+      // Confirm endpoint
+      const finalReading = burette.reading;
+      const titreVolume = finalReading;
+
+      // Calculate results
+      const naohNormality = (0.1 * 25.0) / titreVolume;
+      const naohStrength = naohNormality * 40; // g/L
+
+      // Record titration data
+      const newTitrationData: TitrationData = {
+        trial: currentTrial,
+        initialReading: 0.0,
+        finalReading: finalReading,
+        volume: titreVolume,
+        isValid: titreVolume >= 20 && titreVolume <= 30 // Reasonable range
+      };
+      setTitrationData(prev => [...prev, newTitrationData]);
+
+      const logEntry: TitrationLog = {
+        id: Date.now().toString(),
+        timestamp: Date.now(),
+        action: 'Endpoint confirmed',
+        reagent: 'Final reading',
+        volume: titreVolume,
+        buretteReading: finalReading,
+        colorBefore: ENDPOINT_COLORS.ENDPOINT,
+        colorAfter: ENDPOINT_COLORS.ENDPOINT,
+        observation: `Titration complete. NaOH normality: ${naohNormality.toFixed(4)}N, Strength: ${naohStrength.toFixed(2)} g/L`
+      };
+      setTitrationLog(prev => [...prev, logEntry]);
+
+      setTitrationState(prev => ({
+        ...prev,
+        currentPhase: 'completed',
+        titrationComplete: true,
+        explanation: `Titration complete! NaOH strength: ${naohStrength.toFixed(2)} g/L`
+      }));
+
+      setShowToast("✅ Endpoint confirmed! Titration complete!");
+      setTimeout(() => setShowToast(""), 3000);
+      handleStepComplete();
+      
+      // Set experiment as completed
+      setExperimentCompleted(true);
+      
+      // Auto-show results after delay
+      setTimeout(() => {
+        setShowResultsModal(true);
+      }, 5000);
+
+    } else {
+      setShowToast("Follow the current step instructions");
+      setTimeout(() => setShowToast(""), 2000);
+    }
+  }, [currentStep, conicalFlask, burette, animateColorTransition, currentTrial]);
+
+  // Handle step completion
+  const handleStepComplete = () => {
+    if (!completedSteps.includes(currentStep)) {
+      // Save current state to history
+      const currentState = {
+        conicalFlask: { ...conicalFlask },
+        burette: { ...burette },
+        titrationState: { ...titrationState },
+        titrationLog: [...titrationLog],
+        equipmentOnBench: [...equipmentOnBench]
+      };
+      setStepHistory(prev => [...prev, { step: currentStep, state: currentState }]);
+
+      // Call parent's step completion handler
+      onStepComplete(currentStep);
+
+      if (currentStep < GUIDED_STEPS.length) {
+        setTimeout(() => {
+          setCurrentStep(currentStep + 1);
+          setShowToast(`Step ${currentStep} completed! Moving to step ${currentStep + 1}`);
+          setTimeout(() => setShowToast(""), 3000);
+        }, 500);
+      }
+    }
+  };
+
+  // Reset experiment
+  const handleResetExperiment = () => {
+    setConicalFlask(INITIAL_FLASK);
+    setBurette(INITIAL_BURETTE);
+    setTitrationState({
+      currentPhase: 'preparation',
+      buretteReading: 0.0,
+      flaskColor: COLORS.COLORLESS,
+      explanation: 'Preparation phase - set up equipment',
+      titrationComplete: false
+    });
+    setColorTransition(null);
+    setTitrationAction(null);
+    setTitrationLog([]);
+    setCurrentStep(1);
+    setEquipmentOnBench([]);
+    setActiveEquipment("");
+    setShowResultsModal(false);
+    setExperimentCompleted(false);
+    setLastAction(null);
+    setStepHistory([]);
+    setShowTitrating(false);
+    setShowToast("");
+    setTitrationData([]);
+    setCurrentTrial(1);
+    onReset();
+  };
+
+  const currentStepData = GUIDED_STEPS[currentStep - 1];
+
+  return (
+    <TooltipProvider>
+      <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
+        {/* Step Progress Bar (guided mode only) */}
+        {mode.current === 'guided' && (
+        <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Titration Progress</h3>
+            <span className="text-sm text-blue-600 font-medium">
+              Step {currentStep} of {GUIDED_STEPS.length}
+            </span>
+          </div>
+          
+          {/* Progress indicators */}
+          <div className="flex space-x-2 mb-4">
+            {GUIDED_STEPS.map((step, index) => (
+              <div
+                key={step.id}
+                className={`flex-1 h-2 rounded-full ${
+                  completedSteps.includes(step.id)
+                    ? 'bg-green-500'
+                    : currentStep === step.id
+                    ? 'bg-blue-500'
+                    : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Current step info */}
+          <div className="flex items-start space-x-3">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              completedSteps.includes(currentStep) 
+                ? 'bg-green-500 text-white' 
+                : 'bg-blue-500 text-white'
+            }`}>
+              {completedSteps.includes(currentStep) ? (
+                <CheckCircle className="w-4 h-4" />
+              ) : (
+                <span className="text-sm font-bold">{currentStep}</span>
+              )}
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-800 mb-1">
+                {currentStepData.title}
+              </h4>
+              <p className="text-sm text-gray-600 mb-2">
+                {currentStepData.description}
+              </p>
+              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <ArrowRight className="w-3 h-3 mr-1" />
+                {currentStepData.action}
+              </div>
+            </div>
+          </div>
+        </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+          {/* Equipment Section - Left */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Wrench className="w-5 h-5 mr-2 text-blue-600" />
+                Equipment
+              </h3>
+              
+              <div className="space-y-3">
+                {LAB_EQUIPMENT.map((equipment) => (
+                  <Equipment
+                    key={equipment.id}
+                    id={equipment.id}
+                    name={equipment.name}
+                    icon={equipment.icon}
+                    disabled={!experimentStarted}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-xs text-blue-700">
+                  <strong>Tip:</strong> Drag equipment to the workbench following the step-by-step instructions.
+                </p>
+              </div>
+            </div>
+
+            {/* Titration Equation */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Reaction</h4>
+              <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
+                <div className="mb-2">
+                  H₂C₂O₄ + 2NaOH → Na₂C₂O₄ + 2H₂O
+                </div>
+                <div className="text-gray-500">
+                  Oxalic acid + Sodium hydroxide
+                </div>
+              </div>
+            </div>
+
+            {/* Results Button - Only show when experiment is completed */}
+            {experimentCompleted && (
+              <Button
+                onClick={() => setShowResultsModal(true)}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
+              >
+                📊 View Results & Analysis
+              </Button>
+            )}
+
+            {/* Reset Button */}
+            <Button
+              onClick={handleResetExperiment}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+            >
+              Reset Experiment
+            </Button>
+          </div>
+
+          {/* Workbench - Center */}
+          <div className="lg:col-span-6">
+            <WorkBench
+              onDrop={handleEquipmentDrop}
+              isRunning={isRunning}
+              currentStep={currentStep}
+            >
+              {/* Positioned Equipment */}
+              {equipmentOnBench.map((equipment) => {
+                const equipmentData = LAB_EQUIPMENT.find(eq => eq.id === equipment.id);
+
+                return equipmentData ? (
+                  <Equipment
+                    key={equipment.id}
+                    id={equipment.id}
+                    name={equipmentData.name}
+                    icon={equipmentData.icon}
+                    position={equipment.position}
+                    onRemove={(id) => {
+                      setEquipmentOnBench(prev => prev.filter(eq => eq.id !== id));
+                      setShowToast(`${id.replace('-', ' ')} removed from workbench`);
+                      setTimeout(() => setShowToast(""), 2000);
+                    }}
+                    onInteract={handleEquipmentInteract}
+                    isActive={activeEquipment === equipment.id}
+                    color={equipment.id === 'conical-flask' ? conicalFlask.colorHex : undefined}
+                    volume={equipment.id === 'conical-flask' ? conicalFlask.volume : undefined}
+                    reading={equipment.id === 'burette' ? burette.reading : undefined}
+                  />
+                ) : null;
+              })}
+            </WorkBench>
+          </div>
+
+          {/* Analysis Panel - Right */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Info className="w-5 h-5 mr-2 text-green-600" />
+                Live Analysis
+              </h3>
+
+              {/* Current State */}
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Current Phase</h4>
+                <div className="flex items-center space-x-2 mb-2">
+                  <div 
+                    className="w-4 h-4 rounded-full border border-gray-300"
+                    style={{ backgroundColor: titrationState.flaskColor }}
+                  ></div>
+                  <span className="text-sm capitalize">{titrationState.currentPhase}</span>
+                </div>
+                <p className="text-xs text-gray-600">{titrationState.explanation}</p>
+              </div>
+
+              {/* Burette Reading */}
+              {burette.reading > 0 && (
+                <div className="mb-4">
+                  <h4 className="font-semibold text-sm text-gray-700 mb-2">Burette Reading</h4>
+                  <div className="text-2xl font-mono font-bold text-blue-600">
+                    {burette.reading.toFixed(1)} mL
+                  </div>
+                </div>
+              )}
+
+              {/* Steps Completed (guided mode only) */}
+              {mode.current === 'guided' && (
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
+                <div className="space-y-1">
+                  {GUIDED_STEPS.map((step) => (
+                    <div key={step.id} className={`flex items-center space-x-2 text-xs ${
+                      completedSteps.includes(step.id) ? 'text-green-600' : 'text-gray-400'
+                    }`}>
+                      <CheckCircle className="w-3 h-3" />
+                      <span>{step.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              )}
+
+              {/* Recent Actions */}
+              {titrationLog.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-700 mb-2">Recent Actions</h4>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {titrationLog.slice(-3).reverse().map((log) => (
+                      <div key={log.id} className={`text-xs p-2 rounded ${
+                        log.isEndpoint ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
+                      }`}>
+                        <div className="font-medium">{log.action}</div>
+                        <div className="text-gray-600">{log.observation}</div>
+                        {log.volume && (
+                          <div className="text-blue-600 font-mono">
+                            {log.volume.toFixed(1)} mL
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Titration Animation */}
+        {titrationAction && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            <div className="animate-bounce bg-white rounded-lg p-4 shadow-xl border-2 border-blue-300">
+              <Droplets className="w-8 h-8 text-blue-500 mx-auto" />
+              <p className="text-sm text-center mt-2">Adding solution...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Toast Notification */}
+        {showToast && (
+          <div className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">{showToast}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Results Analysis Modal */}
+        <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center">
+                <TrendingUp className="w-6 h-6 mr-2 text-blue-600" />
+                Titration Results & Analysis
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Complete analysis of your NaOH standardization titration
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 mt-4">
+              {/* Titration Summary */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <FlaskConical className="w-5 h-5 mr-2 text-blue-600" />
+                  Titration Summary
+                </h3>
+                {titrationData.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="text-2xl font-bold text-blue-600">{titrationData[0].volume.toFixed(1)} mL</div>
+                      <div className="text-sm text-gray-600">Titre Volume</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="text-2xl font-bold text-green-600">
+                        {((0.1 * 25.0) / titrationData[0].volume).toFixed(4)}N
+                      </div>
+                      <div className="text-sm text-gray-600">NaOH Normality</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="text-2xl font-bold text-purple-600">
+                        {(((0.1 * 25.0) / titrationData[0].volume) * 40).toFixed(2)} g/L
+                      </div>
+                      <div className="text-sm text-gray-600">NaOH Strength</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="text-2xl font-bold text-orange-600">{completedSteps.length}</div>
+                      <div className="text-sm text-gray-600">Steps Completed</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Calculation Details */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Calculator className="w-5 h-5 mr-2 text-purple-600" />
+                  Calculation Details
+                </h3>
+                <div className="space-y-4">
+                  {TITRATION_FORMULAS.map((formula, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-700 mb-2">{formula.name}</h4>
+                      <div className="bg-white rounded p-3 border font-mono text-sm mb-2">
+                        {formula.formula}
+                      </div>
+                      <p className="text-sm text-gray-600">{formula.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Timeline */}
+              <div className="bg-white rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-gray-600" />
+                  Titration Timeline
+                </h3>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {titrationLog.map((log, index) => (
+                    <div key={log.id} className={`flex items-start space-x-3 p-3 rounded-lg ${
+                      log.isEndpoint ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
+                    }`}>
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                        log.isEndpoint ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-800">{log.action}</div>
+                        <div className="text-sm text-gray-600">{log.observation}</div>
+                        {log.volume && (
+                          <div className="text-xs font-mono text-blue-600 mt-1">
+                            Volume: {log.volume.toFixed(1)} mL
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-between mt-6">
+              <Link href="/">
+                <Button className="bg-gray-500 hover:bg-gray-600 text-white flex items-center space-x-2">
+                  <Home className="w-4 h-4" />
+                  <span>Return to Experiments</span>
+                </Button>
+              </Link>
+              <Button
+                onClick={() => setShowResultsModal(false)}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                Close Analysis
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </TooltipProvider>
+  );
+}

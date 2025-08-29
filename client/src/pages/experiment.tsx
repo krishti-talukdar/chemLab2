@@ -5,6 +5,7 @@ import ChemicalEquilibriumApp from "@/experiments/ChemicalEquilibrium/components
 import OxalicAcidApp from "@/experiments/OxalicAcidStandardization/components/OxalicAcidApp";
 import EquilibriumShiftApp from "@/experiments/EquilibriumShift/components/EquilibriumShiftApp";
 import FeSCNEquilibriumApp from "@/experiments/FeSCNEquilibrium/components/FeSCNEquilibriumApp";
+import Titration1App from "@/experiments/Titration1/components/Titration1App";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
@@ -26,6 +27,8 @@ export default function Experiment() {
         return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
       case 5:
         return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
+      case 6:
+        return <Titration1App onBack={() => window.history.back()} />;
       default:
         return (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
