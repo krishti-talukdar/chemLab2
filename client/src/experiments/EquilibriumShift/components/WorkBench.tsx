@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { GUIDED_STEPS } from "../constants";
+
 interface WorkBenchProps {
   onDrop: (id: string, x: number, y: number) => void;
   children: React.ReactNode;
@@ -82,7 +84,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
           <span className="text-sm font-medium text-gray-700">
-            Step {currentStep} of 6
+            Step {currentStep} of {GUIDED_STEPS.length}
           </span>
         </div>
       </div>
