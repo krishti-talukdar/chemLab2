@@ -1,253 +1,273 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Beaker, Calculator, CheckCircle, ArrowLeft } from "lucide-react";
-import WorkspaceEquipment from './WorkspaceEquipment';
-import { TITRATION_STEPS, TITRATION_FORMULAS } from '../constants';
-import type { ExperimentState } from '../types';
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, BookOpen } from "lucide-react";
+import { Link, useRoute } from "wouter";
+import VirtualLab from "./VirtualLab";
+import { titration1Data } from "../data";
+import { ExperimentMode } from "../types";
+import { useUpdateProgress } from "@/hooks/use-experiments";
 
 interface Titration1AppProps {
   onBack?: () => void;
 }
 
-const Titration1App: React.FC<Titration1AppProps> = ({ onBack }) => {
-  const [experimentState, setExperimentState] = useState<ExperimentState>({
-    currentStep: 1,
-    isSetupComplete: false,
-    buretteReading: 0,
-    endpointReached: false,
-    titrationData: []
-  });
+export default function Titration1App({
+  onBack,
+}: Titration1AppProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [isRunning, setIsRunning] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [experimentStarted, setExperimentStarted] = useState(false);
+  const [mode, setMode] = useState<ExperimentMode>({ current: 'guided', currentGuidedStep: 0 });
 
-  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState('workspace');
+  const experiment = titration1Data;
+  const [match, params] = useRoute("/experiment/:id");
+  const experimentId = Number(params?.id ?? 6); // Titration 1 is experiment ID 6
+  const updateProgress = useUpdateProgress();
 
-  const handleEquipmentSelect = (equipmentId: string) => {
-    setSelectedEquipment(prev => 
-      prev.includes(equipmentId) 
-        ? prev.filter(id => id !== equipmentId)
-        : [...prev, equipmentId]
-    );
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isRunning && experimentStarted) {
+      interval = setInterval(() => {
+        setTimer((timer) => timer + 1);
+      }, 1000);
+    } else if (!isRunning && timer !== 0) {
+      if (interval) clearInterval(interval);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRunning, timer, experimentStarted]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleStepComplete = () => {
-    if (experimentState.currentStep < TITRATION_STEPS.length) {
-      setExperimentState(prev => ({
-        ...prev,
-        currentStep: prev.currentStep + 1
-      }));
+  const toggleTimer = () => {
+    if (experimentStarted) {
+      setIsRunning(!isRunning);
     }
   };
 
-  const progressPercentage = (experimentState.currentStep / TITRATION_STEPS.length) * 100;
+  const handleStartExperiment = () => {
+    setExperimentStarted(true);
+    setIsRunning(true);
+  };
+
+  const handleReset = () => {
+    setExperimentStarted(false);
+    setIsRunning(false);
+    setTimer(0);
+    setCurrentStep(0);
+    setCompletedSteps([]);
+    setMode({ current: 'guided', currentGuidedStep: 0 });
+
+    updateProgress.mutate({
+      experimentId,
+      currentStep: 0,
+      completed: false,
+      progressPercentage: 0,
+    });
+  };
+
+  const handleStepComplete = (stepId?: number) => {
+    if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
+      // Mark current step as completed
+      const stepToComplete = stepId || mode.currentGuidedStep + 1;
+      if (!completedSteps.includes(stepToComplete)) {
+        setCompletedSteps(prev => [...prev, stepToComplete]);
+      }
+
+      // Move to next step
+      if (mode.currentGuidedStep < 6 - 1) { // 6 total steps
+        setMode({
+          ...mode,
+          currentGuidedStep: mode.currentGuidedStep + 1
+        });
+        setCurrentStep(mode.currentGuidedStep + 1);
+      }
+    } else {
+      // Free mode - just mark step as completed
+      const stepToComplete = stepId || currentStep + 1;
+      if (!completedSteps.includes(stepToComplete)) {
+        setCompletedSteps(prev => [...prev, stepToComplete]);
+      }
+    }
+  };
+
+  const handleStepUndo = (stepId?: number) => {
+    // Determine which step to undo (1-indexed in child)
+    const stepToUndo = stepId || (mode.current === 'guided' && mode.currentGuidedStep !== undefined
+      ? mode.currentGuidedStep + 1
+      : currentStep + 1);
+
+    // Remove from completed steps if present
+    setCompletedSteps(prev => prev.filter(id => id !== stepToUndo));
+
+    // In guided mode, move one step back in UI state as well
+    if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
+      const newIndex = Math.max(0, mode.currentGuidedStep - 1);
+      setMode({ ...mode, currentGuidedStep: newIndex });
+      setCurrentStep(newIndex);
+    } else {
+      // Free mode: keep currentStep non-negative
+      setCurrentStep(prev => Math.max(0, prev - 1));
+    }
+  };
+
+  useEffect(() => {
+    const total = 6; // Total steps in titration
+    const done = completedSteps.length;
+    updateProgress.mutate({
+      experimentId,
+      currentStep: done,
+      completed: done >= total,
+      progressPercentage: Math.round((done / total) * 100),
+    });
+  }, [completedSteps, experimentId]);
+
+  const progressPercentage = Math.round(
+    (completedSteps.length / 6) * 100, // 6 total steps
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              {onBack && (
-                <Button variant="outline" size="sm" onClick={onBack}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Button>
-              )}
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Titration 1: NaOH Standardization
-                </h1>
-                <p className="text-lg text-muted-foreground mt-2">
-                  Determine the strength of NaOH solution using 0.1N oxalic acid standard
-                </p>
-              </div>
-            </div>
-            <Badge variant="secondary" className="text-sm">
-              Step {experimentState.currentStep} of {TITRATION_STEPS.length}
-            </Badge>
-          </div>
-          
-          {/* Progress Bar */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Progress</span>
-              <span>{Math.round(progressPercentage)}% Complete</span>
-            </div>
-            <Progress value={progressPercentage} className="h-2" />
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header with breadcrumb */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center mb-6">
+          {onBack ? (
+            <button
+              onClick={onBack}
+              className="text-blue-600 hover:text-blue-700 flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Experiments
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="text-blue-600 hover:text-blue-700 flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Experiments
+            </Link>
+          )}
         </div>
 
-        {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="workspace" className="flex items-center gap-2">
-              <Beaker className="w-4 h-4" />
-              Workspace
-            </TabsTrigger>
-            <TabsTrigger value="procedure" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              Procedure
-            </TabsTrigger>
-            <TabsTrigger value="calculations" className="flex items-center gap-2">
-              <Calculator className="w-4 h-4" />
-              Calculations
-            </TabsTrigger>
-            <TabsTrigger value="results" className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              Results
-            </TabsTrigger>
-          </TabsList>
+        {/* Experiment Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {experiment.title}
+          </h1>
+          <p className="text-gray-600 mb-4">{experiment.description}</p>
 
-          {/* Workspace Tab */}
-          <TabsContent value="workspace" className="space-y-6">
-            <WorkspaceEquipment 
-              onEquipmentSelect={handleEquipmentSelect}
-              selectedEquipment={selectedEquipment}
-            />
-          </TabsContent>
-
-          {/* Procedure Tab */}
-          <TabsContent value="procedure" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Experimental Procedure</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Follow these steps carefully for accurate titration results
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {TITRATION_STEPS.map((step, index) => (
-                    <div
-                      key={step.id}
-                      className={`flex items-start gap-4 p-4 rounded-lg border transition-all duration-200 ${
-                        experimentState.currentStep === step.id
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
-                          : experimentState.currentStep > step.id
-                          ? 'border-green-500 bg-green-50 dark:bg-green-950'
-                          : 'border-gray-200'
-                      }`}
-                    >
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                          experimentState.currentStep === step.id
-                            ? 'bg-blue-500 text-white'
-                            : experimentState.currentStep > step.id
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-200 text-gray-600'
-                        }`}
-                      >
-                        {experimentState.currentStep > step.id ? (
-                          <CheckCircle className="w-4 h-4" />
-                        ) : (
-                          step.id
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium mb-1">{step.title}</h4>
-                        <p className="text-sm text-muted-foreground">{step.description}</p>
-                        {experimentState.currentStep === step.id && (
-                          <Button 
-                            size="sm" 
-                            className="mt-3"
-                            onClick={handleStepComplete}
-                          >
-                            Mark as Complete
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Calculations Tab */}
-          <TabsContent value="calculations" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Key Formulas</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {TITRATION_FORMULAS.map((formula, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
-                        <h4 className="font-medium mb-2">{formula.name}</h4>
-                        <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded font-mono text-sm mb-2">
-                          {formula.formula}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {formula.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sample Calculation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                      <h4 className="font-medium mb-3">Given:</h4>
-                      <ul className="text-sm space-y-1">
-                        <li>• Volume of oxalic acid (V₁) = 25.0 mL</li>
-                        <li>• Normality of oxalic acid (N₁) = 0.1 N</li>
-                        <li>• Volume of NaOH used (V₂) = ? mL</li>
-                        <li>• Normality of NaOH (N₂) = ? N</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-                      <h4 className="font-medium mb-3">Calculation:</h4>
-                      <div className="text-sm space-y-2">
-                        <p>Using N₁V₁ = N₂V₂</p>
-                        <p>0.1 × 25.0 = N₂ × V₂</p>
-                        <p>N₂ = 2.5 / V₂</p>
-                        <p>Strength = N₂ × 40 g/L</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* Mode Toggle and Progress */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4">
+              <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                Guided Mode
+              </span>
+              <span className="text-sm text-gray-600">
+                Step {(mode.currentGuidedStep || 0) + 1} of 6
+              </span>
             </div>
-          </TabsContent>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">
+                Progress
+              </span>
+              <span className="text-sm text-blue-600 font-semibold">
+                {progressPercentage}%
+              </span>
+            </div>
+          </div>
 
-          {/* Results Tab */}
-          <TabsContent value="results" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Experimental Results</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Record your titration data and calculate the final results
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Beaker className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-600 mb-2">
-                    Complete the titration to view results
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your experimental data and calculations will appear here once you complete the procedure
-                  </p>
+          {/* Progress Bar */}
+          <Progress
+            value={progressPercentage}
+            className="h-2"
+          />
+        </div>
+
+        {/* Main Lab Area */}
+        <div className="w-full relative">
+          {/* Experiment Not Started Overlay */}
+          {!experimentStarted && (
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
+              <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Play className="w-8 h-8 text-blue-600" />
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Ready to Start Titration?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Begin your interactive titration experiment! Standardize NaOH solution using 
+                  0.1N oxalic acid and master precise volumetric analysis techniques.
+                </p>
+                <button
+                  onClick={handleStartExperiment}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-medium transition-all duration-200 mx-auto transform hover:scale-105"
+                >
+                  <Play className="w-5 h-5" />
+                  <span>Start Titration Lab</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <Card className="min-h-[85vh] shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50">
+              <CardTitle className="flex items-center justify-between">
+                <span className="text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {experiment.title} - Interactive Virtual Lab
+                </span>
+                <div className="flex items-center space-x-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleTimer}
+                    className="flex items-center bg-white/80"
+                  >
+                    {isRunning ? (
+                      <Pause className="h-4 w-4 mr-1" />
+                    ) : (
+                      <Play className="h-4 w-4 mr-1" />
+                    )}
+                    {formatTime(timer)}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleReset}
+                    className="flex items-center bg-white/80"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    Reset
+                  </Button>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <VirtualLab
+                experimentStarted={experimentStarted}
+                onStartExperiment={handleStartExperiment}
+                isRunning={isRunning}
+                setIsRunning={setIsRunning}
+                mode={mode}
+                onStepComplete={handleStepComplete}
+                onStepUndo={handleStepUndo}
+                onReset={handleReset}
+                completedSteps={completedSteps}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
-};
-
-export default Titration1App;
+}
