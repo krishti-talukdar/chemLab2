@@ -147,9 +147,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 )}
               </div>
               <span className="text-sm font-medium mt-2 text-center block">{name}</span>
-              {volume > 0 && (
-                <span className="text-sm text-gray-600 text-center block">{Math.round(volume)}% full</span>
-              )}
             </div>
           ) : id === 'distilled-water' ? (
             <div className="flex flex-col items-center">
