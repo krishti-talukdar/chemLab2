@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Play, Pause } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import ChemicalEquilibriumVirtualLab from "./VirtualLab";
 import ChemicalEquilibriumData from "../data";
 import type { ExperimentStep } from "../types";
+import { useUpdateProgress } from "@/hooks/use-experiments";
 
 interface ChemicalEquilibriumAppProps {
   onBack?: () => void;
@@ -21,6 +22,9 @@ export default function ChemicalEquilibriumApp({
   const [experimentStarted, setExperimentStarted] = useState(false);
 
   const experiment = ChemicalEquilibriumData;
+  const [match, params] = useRoute("/experiment/:id");
+  const experimentId = Number(params?.id ?? 4);
+  const updateProgress = useUpdateProgress();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -74,6 +78,17 @@ export default function ChemicalEquilibriumApp({
   const progressPercentage = Math.round(
     ((currentStep + 1) / experiment.stepDetails.length) * 100,
   );
+
+  useEffect(() => {
+    const total = experiment.stepDetails.length;
+    const done = experimentStarted ? Math.min(currentStep + 1, total) : 0;
+    updateProgress.mutate({
+      experimentId,
+      currentStep: done,
+      completed: done >= total,
+      progressPercentage: Math.round((done / total) * 100),
+    });
+  }, [experimentStarted, currentStep, experiment.stepDetails.length, experimentId]);
 
   return (
     <div className="min-h-screen bg-gray-50">
