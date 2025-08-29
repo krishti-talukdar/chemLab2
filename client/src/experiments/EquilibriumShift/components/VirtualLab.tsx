@@ -663,8 +663,8 @@ export default function VirtualLab({
               </div>
             </div>
 
-            {/* Step Undo Button - Only show when there's step history */}
-            {stepHistory.length > 0 && currentStep > 1 && (
+            {/* Step Undo Button - Only show when there's step history (guided mode only) */}
+            {mode.current === 'guided' && stepHistory.length > 0 && currentStep > 1 && (
               <Button
                 onClick={handleStepUndo}
                 variant="outline"
@@ -735,8 +735,8 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Step 2 button - positioned below test tube */}
-              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+              {/* Step 2 button - positioned below test tube (guided mode only) */}
+              {mode.current === 'guided' && currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
                 <div
                   style={{
                     position: 'absolute',
