@@ -28,7 +28,7 @@ export default function Experiment() {
       case 5:
         return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
       case 6:
-        return <Titration1App />;
+        return <Titration1App onBack={() => window.history.back()} />;
       default:
         return (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -4,12 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Beaker, Calculator, CheckCircle } from "lucide-react";
+import { BookOpen, Beaker, Calculator, CheckCircle, ArrowLeft } from "lucide-react";
 import WorkspaceEquipment from './WorkspaceEquipment';
 import { TITRATION_STEPS, TITRATION_FORMULAS } from '../constants';
 import type { ExperimentState } from '../types';
 
-const Titration1App: React.FC = () => {
+interface Titration1AppProps {
+  onBack?: () => void;
+}
+
+const Titration1App: React.FC<Titration1AppProps> = ({ onBack }) => {
   const [experimentState, setExperimentState] = useState<ExperimentState>({
     currentStep: 1,
     isSetupComplete: false,
@@ -46,13 +50,21 @@ const Titration1App: React.FC = () => {
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Titration 1: NaOH Standardization
-              </h1>
-              <p className="text-lg text-muted-foreground mt-2">
-                Determine the strength of NaOH solution using 0.1N oxalic acid standard
-              </p>
+            <div className="flex items-center gap-4">
+              {onBack && (
+                <Button variant="outline" size="sm" onClick={onBack}>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+              )}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Titration 1: NaOH Standardization
+                </h1>
+                <p className="text-lg text-muted-foreground mt-2">
+                  Determine the strength of NaOH solution using 0.1N oxalic acid standard
+                </p>
+              </div>
             </div>
             <Badge variant="secondary" className="text-sm">
               Step {experimentState.currentStep} of {TITRATION_STEPS.length}
