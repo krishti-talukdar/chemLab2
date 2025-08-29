@@ -168,9 +168,10 @@ export default function VirtualLab({
   // Predefined positions for equipment layout
   const getEquipmentPosition = (equipmentId: string) => {
     const positions = {
-      'test-tube': { x: 200, y: 250 },          // Left side, center
-      'concentrated-hcl': { x: 500, y: 160 },  // Right side, top bottle
-      'distilled-water': { x: 500, y: 360 }    // Right side, bottom bottle (larger gap)
+      'test-tube': { x: 200, y: 250 },           // Left side, center
+      'concentrated-hcl': { x: 500, y: 140 },    // Right side, top bottle
+      'cobalt-ii-solution': { x: 500, y: 250 },  // Right side, middle bottle
+      'distilled-water': { x: 500, y: 360 }      // Right side, bottom bottle
     };
     return positions[equipmentId as keyof typeof positions] || { x: 300, y: 250 };
   };
@@ -223,8 +224,8 @@ export default function VirtualLab({
       }
     }
 
-    // Special handling for test tube - automatically add initial solution
-    if (equipmentId === 'test-tube' && currentStep === 1) {
+    // Special handling for cobalt solution - add to test tube during step 2
+    if (equipmentId === 'cobalt-ii-solution' && currentStep === 2) {
       setTimeout(() => {
         setTestTube(prev => ({
           ...prev,
@@ -232,9 +233,9 @@ export default function VirtualLab({
           contents: ['CoCl₂', 'H₂O'],
           volume: 60
         }));
-        setShowToast("Test tube now contains pink [Co(H₂O)���]²⁺ solution (60% full)");
+        setShowToast("Added Cobalt(II) solution: pink [Co(H₂O)₆]²⁺ formed (60% full)");
         setTimeout(() => setShowToast(""), 3000);
-      }, 1500);
+      }, 800);
     }
   }, [currentStep, completedSteps, mode.current]);
 
@@ -242,7 +243,7 @@ export default function VirtualLab({
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
 
-    if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
+    if (equipmentId === 'concentrated-hcl' && currentStep === 5) {
       // Trigger stirring animation
       animateStirring();
 
@@ -349,7 +350,7 @@ export default function VirtualLab({
         }, ANIMATION.DROPPER_DURATION);
       }
 
-    } else if (equipmentId === 'distilled-water' && currentStep === 6) {
+    } else if (equipmentId === 'distilled-water' && currentStep === 7) {
       // Trigger stirring animation
       animateStirring();
 
@@ -740,8 +741,8 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Observe button - visible during step 2 when test tube present (both modes) */}
-              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+              {/* Observe button - visible during step 3 when test tube + cobalt present (both modes) */}
+              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
                 <div
                   style={{
                     position: 'absolute',
