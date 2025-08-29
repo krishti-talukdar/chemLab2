@@ -203,6 +203,12 @@ export const LAB_EQUIPMENT = [
     description: 'Glass test tube for reactions'
   },
   {
+    id: 'cobalt-ii-solution',
+    name: 'Cobalt(II) Solution',
+    icon: <Beaker className="w-8 h-8" />,
+    description: 'CoCl₂ in water (pink)'
+  },
+  {
     id: 'distilled-water',
     name: 'Distilled Water',
     icon: <Beaker className="w-8 h-8" />,
