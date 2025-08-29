@@ -21,7 +21,7 @@ export default function EquilibriumShiftApp({
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
-  const [mode, setMode] = useState<ExperimentMode>({ current: 'free' });
+  const [mode, setMode] = useState<ExperimentMode>({ current: 'guided', currentGuidedStep: 0 });
 
   const experiment = EquilibriumShiftData;
   const [match, params] = useRoute("/experiment/:id");
@@ -75,12 +75,7 @@ export default function EquilibriumShiftApp({
     });
   };
 
-  const toggleMode = () => {
-    const newMode: ExperimentMode = mode.current === 'free' 
-      ? { current: 'guided', currentGuidedStep: 0 }
-      : { current: 'free' };
-    setMode(newMode);
-  };
+  // Free mode removed: always guided
 
   const handleStepComplete = (stepId?: number) => {
     if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
@@ -177,20 +172,12 @@ export default function EquilibriumShiftApp({
           {/* Mode Toggle and Progress */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
-              <Button
-                onClick={toggleMode}
-                variant={mode.current === 'guided' ? 'default' : 'outline'}
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>{mode.current === 'guided' ? 'Guided Mode' : 'Free Mode'}</span>
-              </Button>
-              {mode.current === 'guided' && (
-                <span className="text-sm text-gray-600">
-                  Step {(mode.currentGuidedStep || 0) + 1} of {experiment.stepDetails.length}
-                </span>
-              )}
+              <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                Guided Mode
+              </span>
+              <span className="text-sm text-gray-600">
+                Step {(mode.currentGuidedStep || 0) + 1} of {experiment.stepDetails.length}
+              </span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">
