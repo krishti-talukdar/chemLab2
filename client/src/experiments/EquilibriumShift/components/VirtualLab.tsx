@@ -561,7 +561,8 @@ export default function VirtualLab({
   return (
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
-        {/* Step Progress Bar */}
+        {/* Step Progress Bar (guided mode only) */}
+        {mode.current === 'guided' && (
         <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Experiment Progress</h3>
@@ -613,6 +614,7 @@ export default function VirtualLab({
             </div>
           </div>
         </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
           {/* Equipment Section - Left */}
