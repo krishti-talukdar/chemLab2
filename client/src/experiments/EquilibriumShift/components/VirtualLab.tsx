@@ -71,6 +71,7 @@ export default function VirtualLab({
   const [showAddingSolutions, setShowAddingSolutions] = useState(false);
   const [isStirring, setIsStirring] = useState<boolean>(false);
   const [stirAnimationStep, setStirAnimationStep] = useState<number>(0);
+  const [freeObservedPink, setFreeObservedPink] = useState<boolean>(false);
 
   // Stop the timer when the results & analysis modal appears
   useEffect(() => {
@@ -562,6 +563,7 @@ export default function VirtualLab({
     setStepHistory([]);
     setShowAddingSolutions(false);
     setShowToast("");
+    setFreeObservedPink(false);
     onReset();
   };
 
@@ -744,8 +746,11 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Observe button - show when test tube is on bench. In guided mode, only during step 2 */}
-              {equipmentOnBench.some(eq => eq.id === 'test-tube') && ((mode.current !== 'guided') || currentStep === 2) && (
+              {/* Observe button - show when test tube is on bench. In guided mode, only during step 2; in free mode, hide after pressed */}
+              {equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+                (mode.current === 'guided' && currentStep === 2) ||
+                (mode.current !== 'guided' && !freeObservedPink)
+              ) && (
                 <div
                   style={{
                     position: 'absolute',
@@ -761,6 +766,8 @@ export default function VirtualLab({
                       setTimeout(() => {
                         if (mode.current === 'guided') {
                           handleStepComplete();
+                        } else {
+                          setFreeObservedPink(true);
                         }
                         setShowToast("");
                       }, 1500);
