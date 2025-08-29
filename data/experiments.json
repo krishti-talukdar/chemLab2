@@ -359,5 +359,85 @@
       }
     ],
     "safetyInfo": "Concentrated HCl is highly corrosive and produces toxic vapors. Cobalt compounds are suspected carcinogens and toxic if ingested. Always use in a fume hood or well-ventilated area. Wear safety goggles, gloves, and appropriate protective clothing."
+  },
+  {
+    "title": "Titration 1",
+    "description": "Determine the strength of a given solution of sodium hydroxide by titrating it against a standard solution of oxalic acid, having the strength 0.1N. Learn precise volumetric analysis techniques and endpoint detection.",
+    "category": "Quantitative Analysis",
+    "difficulty": "Beginner",
+    "duration": 45,
+    "steps": 8,
+    "rating": 4.5,
+    "imageUrl": "https://images.unsplash.com/photo-1554475901-4538ddfbccc2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400",
+    "equipment": [
+      "Burette (50 mL)",
+      "Pipette (25 mL)",
+      "Conical Flask (250 mL)",
+      "Burette Stand",
+      "White Tile",
+      "Funnel",
+      "Wash Bottle",
+      "Phenolphthalein Indicator"
+    ],
+    "stepDetails": [
+      {
+        "id": 1,
+        "title": "Prepare the Setup",
+        "description": "Set up the burette in the stand and rinse it with distilled water, then with the NaOH solution. Fill the burette with NaOH solution and adjust to zero mark.",
+        "duration": "8 minutes",
+        "temperature": "Room temperature",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "Prepare Oxalic Acid Solution",
+        "description": "Using a pipette, transfer exactly 25.0 mL of 0.1N oxalic acid solution into a clean conical flask. Place the flask on a white tile for better endpoint visibility.",
+        "duration": "5 minutes",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "title": "Add Indicator",
+        "description": "Add 2-3 drops of phenolphthalein indicator to the oxalic acid solution in the conical flask. The solution should remain colorless initially.",
+        "duration": "2 minutes",
+        "completed": false
+      },
+      {
+        "id": 4,
+        "title": "Initial Titration",
+        "description": "Begin titrating by adding NaOH solution dropwise while swirling the flask continuously. The reaction is: H₂C₂O₄ + 2NaOH → Na₂C₂O₄ + 2H₂O",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "title": "Observe Color Change",
+        "description": "Continue adding NaOH until a permanent light pink color appears that persists for 30 seconds. This indicates the endpoint. Record the burette reading.",
+        "duration": "6 minutes",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "title": "Repeat Titrations",
+        "description": "Perform at least 2 more concordant titrations to ensure accuracy. The volumes should agree within 0.1 mL for precise results.",
+        "duration": "12 minutes",
+        "completed": false
+      },
+      {
+        "id": 7,
+        "title": "Calculate Results",
+        "description": "Calculate the average titre volume and determine the normality of NaOH solution using the formula: N₁V₁ = N₂V₂, where N₁V₁ (oxalic acid) = N₂V₂ (NaOH).",
+        "duration": "8 minutes",
+        "completed": false
+      },
+      {
+        "id": 8,
+        "title": "Record and Analyze",
+        "description": "Record all observations, calculate the strength of NaOH solution in g/L, and analyze the accuracy of your results. Discuss sources of error.",
+        "duration": "6 minutes",
+        "completed": false
+      }
+    ],
+    "safetyInfo": "Sodium hydroxide is highly corrosive and can cause severe burns. Oxalic acid is toxic if ingested and can cause irritation. Always wear safety goggles and gloves. Handle all chemicals with care and wash hands thoroughly after the experiment. Work in a well-ventilated area."
   }
 ]
