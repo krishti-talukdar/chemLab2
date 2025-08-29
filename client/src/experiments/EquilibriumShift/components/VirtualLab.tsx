@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, X, TrendingUp, Clock, Home, Undo } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, X, TrendingUp, Clock, Home } from "lucide-react";
 import { Link } from "wouter";
 import { WorkBench } from "./WorkBench";
 import { Equipment, LAB_EQUIPMENT } from "./Equipment";
@@ -30,6 +30,7 @@ interface VirtualLabProps {
   setIsRunning: (running: boolean) => void;
   mode: ExperimentMode;
   onStepComplete: (stepId?: number) => void;
+  onStepUndo?: (stepId?: number) => void;
   onReset: () => void;
   completedSteps: number[];
 }
@@ -41,6 +42,7 @@ export default function VirtualLab({
   setIsRunning,
   mode,
   onStepComplete,
+  onStepUndo,
   onReset,
   completedSteps,
 }: VirtualLabProps) {
@@ -175,12 +177,14 @@ export default function VirtualLab({
 
   // Handle equipment drop on workbench
   const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
-    // Check if this equipment is required for current step
-    const currentStepData = GUIDED_STEPS[currentStep - 1];
-    if (!currentStepData.equipment.includes(equipmentId)) {
-      setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
-      setTimeout(() => setShowToast(""), 3000);
-      return;
+    // In guided mode, enforce step equipment requirements
+    if (mode.current === 'guided') {
+      const currentStepData = GUIDED_STEPS[currentStep - 1];
+      if (!currentStepData.equipment.includes(equipmentId)) {
+        setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
+        setTimeout(() => setShowToast(""), 3000);
+        return;
+      }
     }
 
     // Store the previous state for undo
@@ -209,11 +213,14 @@ export default function VirtualLab({
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
     setTimeout(() => setShowToast(""), 2000);
 
-    // Auto-complete step if it's just placing equipment
-    if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
-      setTimeout(() => {
-        handleStepComplete();
-      }, 1000);
+    // Auto-complete step if it's just placing equipment (guided mode only)
+    if (mode.current === 'guided') {
+      const currentStepData = GUIDED_STEPS[currentStep - 1];
+      if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
+        setTimeout(() => {
+          handleStepComplete();
+        }, 1000);
+      }
     }
 
     // Special handling for test tube - automatically add initial solution
@@ -229,12 +236,12 @@ export default function VirtualLab({
         setTimeout(() => setShowToast(""), 3000);
       }, 1500);
     }
-  }, [currentStep, completedSteps]);
+  }, [currentStep, completedSteps, mode.current]);
 
   // Handle equipment interaction
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
-    
+
     if (equipmentId === 'concentrated-hcl' && currentStep === 4) {
       // Trigger stirring animation
       animateStirring();
@@ -469,7 +476,12 @@ export default function VirtualLab({
       setHclClickCount(lastState.state.hclClickCount);
       setWaterClickCount(lastState.state.waterClickCount);
 
-      // Go back to previous step
+      // Notify parent so global progress and guided state update
+      if (onStepUndo) {
+        onStepUndo(lastState.step);
+      }
+
+      // Go back to previous step locally
       setCurrentStep(currentStep - 1);
 
       // Remove the last state from history
@@ -478,7 +490,7 @@ export default function VirtualLab({
       setShowToast(`Undid step ${currentStep}. Returned to step ${currentStep - 1}`);
       setTimeout(() => setShowToast(""), 3000);
     }
-  }, [stepHistory, currentStep]);
+  }, [stepHistory, currentStep, onStepUndo]);
 
   // Handle step completion
   const handleStepComplete = () => {
@@ -554,7 +566,8 @@ export default function VirtualLab({
   return (
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
-        {/* Step Progress Bar */}
+        {/* Step Progress Bar (guided mode only) */}
+        {mode.current === 'guided' && (
         <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Experiment Progress</h3>
@@ -606,6 +619,7 @@ export default function VirtualLab({
             </div>
           </div>
         </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
           {/* Equipment Section - Left */}
@@ -654,20 +668,8 @@ export default function VirtualLab({
               </div>
             </div>
 
-            {/* Undo Button - Only show when equipment is on workbench */}
-            {equipmentOnBench.length > 0 && lastAction && (
-              <Button
-                onClick={handleUndo}
-                variant="outline"
-                className="w-full bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center justify-center space-x-2"
-              >
-                <Undo className="w-4 h-4" />
-                <span>Undo Last Action</span>
-              </Button>
-            )}
-
-            {/* Step Undo Button - Only show when there's step history */}
-            {stepHistory.length > 0 && currentStep > 1 && (
+            {/* Step Undo Button - Only show when there's step history (guided mode only) */}
+            {mode.current === 'guided' && stepHistory.length > 0 && currentStep > 1 && (
               <Button
                 onClick={handleStepUndo}
                 variant="outline"
@@ -738,7 +740,7 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Step 2 button - positioned below test tube */}
+              {/* Observe button - visible during step 2 when test tube present (both modes) */}
               {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
                 <div
                   style={{
@@ -788,7 +790,8 @@ export default function VirtualLab({
                 <p className="text-xs text-gray-600">{equilibriumState.explanation}</p>
               </div>
 
-              {/* Steps Completed */}
+              {/* Steps Completed (guided mode only) */}
+              {mode.current === 'guided' && (
               <div className="mb-4">
                 <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
                 <div className="space-y-1">
@@ -802,6 +805,7 @@ export default function VirtualLab({
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Recent Actions */}
               {experimentLog.length > 0 && (

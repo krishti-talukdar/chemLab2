@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, BookOpen } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import VirtualLab from "./VirtualLab";
 import EquilibriumShiftData from "../data";
 import { ExperimentMode } from "../types";
+import { useUpdateProgress } from "@/hooks/use-experiments";
 
 interface EquilibriumShiftAppProps {
   onBack?: () => void;
@@ -20,9 +21,12 @@ export default function EquilibriumShiftApp({
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
-  const [mode, setMode] = useState<ExperimentMode>({ current: 'free' });
+  const [mode, setMode] = useState<ExperimentMode>({ current: 'guided', currentGuidedStep: 0 });
 
   const experiment = EquilibriumShiftData;
+  const [match, params] = useRoute("/experiment/:id");
+  const experimentId = Number(params?.id ?? 1);
+  const updateProgress = useUpdateProgress();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -62,14 +66,16 @@ export default function EquilibriumShiftApp({
     setCurrentStep(0);
     setCompletedSteps([]);
     setMode({ current: 'free' });
+
+    updateProgress.mutate({
+      experimentId,
+      currentStep: 0,
+      completed: false,
+      progressPercentage: 0,
+    });
   };
 
-  const toggleMode = () => {
-    const newMode: ExperimentMode = mode.current === 'free' 
-      ? { current: 'guided', currentGuidedStep: 0 }
-      : { current: 'free' };
-    setMode(newMode);
-  };
+  // Free mode removed: always guided
 
   const handleStepComplete = (stepId?: number) => {
     if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
@@ -95,6 +101,37 @@ export default function EquilibriumShiftApp({
       }
     }
   };
+
+  const handleStepUndo = (stepId?: number) => {
+    // Determine which step to undo (1-indexed in child)
+    const stepToUndo = stepId || (mode.current === 'guided' && mode.currentGuidedStep !== undefined
+      ? mode.currentGuidedStep + 1
+      : currentStep + 1);
+
+    // Remove from completed steps if present
+    setCompletedSteps(prev => prev.filter(id => id !== stepToUndo));
+
+    // In guided mode, move one step back in UI state as well
+    if (mode.current === 'guided' && mode.currentGuidedStep !== undefined) {
+      const newIndex = Math.max(0, mode.currentGuidedStep - 1);
+      setMode({ ...mode, currentGuidedStep: newIndex });
+      setCurrentStep(newIndex);
+    } else {
+      // Free mode: keep currentStep non-negative
+      setCurrentStep(prev => Math.max(0, prev - 1));
+    }
+  };
+
+  useEffect(() => {
+    const total = experiment.stepDetails.length;
+    const done = completedSteps.length;
+    updateProgress.mutate({
+      experimentId,
+      currentStep: done,
+      completed: done >= total,
+      progressPercentage: Math.round((done / total) * 100),
+    });
+  }, [completedSteps, experiment.stepDetails.length, experimentId]);
 
   const currentStepData = experiment.stepDetails[currentStep];
   const progressPercentage = Math.round(
@@ -135,20 +172,12 @@ export default function EquilibriumShiftApp({
           {/* Mode Toggle and Progress */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
-              <Button
-                onClick={toggleMode}
-                variant={mode.current === 'guided' ? 'default' : 'outline'}
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>{mode.current === 'guided' ? 'Guided Mode' : 'Free Mode'}</span>
-              </Button>
-              {mode.current === 'guided' && (
-                <span className="text-sm text-gray-600">
-                  Step {(mode.currentGuidedStep || 0) + 1} of {experiment.stepDetails.length}
-                </span>
-              )}
+              <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                Guided Mode
+              </span>
+              <span className="text-sm text-gray-600">
+                Step {(mode.currentGuidedStep || 0) + 1} of {experiment.stepDetails.length}
+              </span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">
@@ -234,6 +263,7 @@ export default function EquilibriumShiftApp({
                 setIsRunning={setIsRunning}
                 mode={mode}
                 onStepComplete={handleStepComplete}
+                onStepUndo={handleStepUndo}
                 onReset={handleReset}
                 completedSteps={completedSteps}
               />
