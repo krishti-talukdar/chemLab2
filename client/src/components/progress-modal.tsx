@@ -35,17 +35,17 @@ export default function ProgressModal({ children }: ProgressModalProps) {
     const progress = userProgress?.find(
       (p: any) => p.experimentId === experimentId,
     );
-    return progress ? progress.progress : 0;
+    return progress ? progress.currentStep ?? 0 : 0;
   };
 
   const getTotalProgress = () => {
     if (!experiments || !userProgress) return 0;
     const totalSteps = experiments.reduce(
-      (sum: number, exp: any) => sum + exp.steps.length,
+      (sum: number, exp: any) => sum + (exp.stepDetails?.length ?? exp.steps ?? 0),
       0,
     );
     const completedSteps = userProgress.reduce(
-      (sum: number, p: any) => sum + p.progress,
+      (sum: number, p: any) => sum + (p.currentStep ?? 0),
       0,
     );
     return totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
@@ -57,7 +57,8 @@ export default function ProgressModal({ children }: ProgressModalProps) {
       const experiment = experiments.find(
         (exp: any) => exp.id === p.experimentId,
       );
-      return experiment && p.progress >= experiment.steps;
+      const stepsCount = experiment ? (experiment.stepDetails?.length ?? experiment.steps ?? 0) : 0;
+      return p.completed || (p.currentStep ?? 0) >= stepsCount;
     }).length;
   };
 
@@ -114,10 +115,11 @@ export default function ProgressModal({ children }: ProgressModalProps) {
               <div className="space-y-4">
                 {experiments?.map((experiment: any) => {
                   const progress = getExperimentProgress(experiment.id);
-                  const progressPercentage = Math.round(
-                    (progress / experiment.steps.length) * 100,
-                  );
-                  const isCompleted = progress >= experiment.steps.length;
+                  const stepsCount = experiment.stepDetails?.length ?? experiment.steps ?? 0;
+                  const progressPercentage = stepsCount > 0 ? Math.round(
+                    (progress / stepsCount) * 100,
+                  ) : 0;
+                  const isCompleted = progress >= stepsCount;
 
                   return (
                     <div key={experiment.id} className="border rounded-lg p-4">
@@ -133,7 +135,7 @@ export default function ProgressModal({ children }: ProgressModalProps) {
                           <h4 className="font-medium">{experiment.title}</h4>
                         </div>
                         <span className="text-sm font-medium text-gray-600">
-                          {progress}/{experiment.steps.length} steps
+                          {progress}/{stepsCount} steps
                         </span>
                       </div>
                       <Progress
