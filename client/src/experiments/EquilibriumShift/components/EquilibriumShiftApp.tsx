@@ -24,6 +24,9 @@ export default function EquilibriumShiftApp({
   const [mode, setMode] = useState<ExperimentMode>({ current: 'free' });
 
   const experiment = EquilibriumShiftData;
+  const [match, params] = useRoute("/experiment/:id");
+  const experimentId = Number(params?.id ?? 1);
+  const updateProgress = useUpdateProgress();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
