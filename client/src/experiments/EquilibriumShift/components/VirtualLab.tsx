@@ -223,25 +223,43 @@ export default function VirtualLab({
         }, 1000);
       }
     }
-
-    // Special handling for cobalt solution - add to test tube during step 2
-    if (equipmentId === 'cobalt-ii-solution' && currentStep === 2) {
-      setTimeout(() => {
-        setTestTube(prev => ({
-          ...prev,
-          colorHex: COLORS.PINK,
-          contents: ['CoCl₂', 'H₂O'],
-          volume: 60
-        }));
-        setShowToast("Added Cobalt(II) solution: pink [Co(H₂O)₆]²⁺ formed (60% full)");
-        setTimeout(() => setShowToast(""), 3000);
-      }, 800);
-    }
   }, [currentStep, completedSteps, mode.current]);
 
   // Handle equipment interaction
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
+
+    if (equipmentId === 'cobalt-ii-solution') {
+      // Add cobalt solution to the test tube only when user interacts with the bottle
+      if (!testTube.contents.includes('CoCl₂')) {
+        setActiveEquipment(equipmentId);
+        setDropperAction({
+          id: Date.now().toString(),
+          reagentId: 'cobalt',
+          targetId: 'test-tube',
+          amount: 3,
+          timestamp: Date.now(),
+          isAnimating: true,
+        });
+
+        setShowAddingSolutions(true);
+        setTimeout(() => {
+          setDropperAction(null);
+          setShowAddingSolutions(false);
+          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
+          setTestTube(prev => ({
+            ...prev,
+            color: 'Pink',
+            contents: ['CoCl₂', 'H₂O'],
+            volume: 60,
+          }));
+          setActiveEquipment("");
+          setShowToast("Cobalt solution added: pink [Co(H₂O)₆]²⁺ formed (60% full)");
+          setTimeout(() => setShowToast(""), 3000);
+        }, ANIMATION.DROPPER_DURATION);
+      }
+      return;
+    }
 
     if (equipmentId === 'concentrated-hcl' && currentStep === 5) {
       // Trigger stirring animation
@@ -742,7 +760,7 @@ export default function VirtualLab({
               })}
 
               {/* Observe button - visible during step 3 when test tube + cobalt present (both modes) */}
-              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && equipmentOnBench.some(eq => eq.id === 'cobalt-ii-solution') && (
+              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && testTube.contents.includes('CoCl₂') && (
                 <div
                   style={{
                     position: 'absolute',
