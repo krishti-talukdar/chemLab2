@@ -30,6 +30,7 @@ interface VirtualLabProps {
   setIsRunning: (running: boolean) => void;
   mode: ExperimentMode;
   onStepComplete: (stepId?: number) => void;
+  onStepUndo?: (stepId?: number) => void;
   onReset: () => void;
   completedSteps: number[];
 }
@@ -41,6 +42,7 @@ export default function VirtualLab({
   setIsRunning,
   mode,
   onStepComplete,
+  onStepUndo,
   onReset,
   completedSteps,
 }: VirtualLabProps) {
@@ -469,7 +471,12 @@ export default function VirtualLab({
       setHclClickCount(lastState.state.hclClickCount);
       setWaterClickCount(lastState.state.waterClickCount);
 
-      // Go back to previous step
+      // Notify parent so global progress and guided state update
+      if (onStepUndo) {
+        onStepUndo(lastState.step);
+      }
+
+      // Go back to previous step locally
       setCurrentStep(currentStep - 1);
 
       // Remove the last state from history
@@ -478,7 +485,7 @@ export default function VirtualLab({
       setShowToast(`Undid step ${currentStep}. Returned to step ${currentStep - 1}`);
       setTimeout(() => setShowToast(""), 3000);
     }
-  }, [stepHistory, currentStep]);
+  }, [stepHistory, currentStep, onStepUndo]);
 
   // Handle step completion
   const handleStepComplete = () => {
