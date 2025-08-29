@@ -742,7 +742,7 @@ export default function VirtualLab({
               })}
 
               {/* Observe button - visible during step 3 when test tube + cobalt present (both modes) */}
-              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+              {currentStep === 3 && equipmentOnBench.some(eq => eq.id === 'test-tube') && equipmentOnBench.some(eq => eq.id === 'cobalt-ii-solution') && (
                 <div
                   style={{
                     position: 'absolute',
