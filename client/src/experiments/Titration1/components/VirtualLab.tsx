@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home } from "lucide-react";
 import { Link } from "wouter";
-import { WorkBench } from "./WorkBench";
-import { Equipment, LAB_EQUIPMENT } from "./Equipment";
+import WorkBench from "./WorkBench";
+import Equipment, { LAB_EQUIPMENT } from "./Equipment";
 import { 
   COLORS, 
   INITIAL_FLASK, 
