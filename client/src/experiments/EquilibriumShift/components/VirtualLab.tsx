@@ -785,7 +785,8 @@ export default function VirtualLab({
                 <p className="text-xs text-gray-600">{equilibriumState.explanation}</p>
               </div>
 
-              {/* Steps Completed */}
+              {/* Steps Completed (guided mode only) */}
+              {mode.current === 'guided' && (
               <div className="mb-4">
                 <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
                 <div className="space-y-1">
@@ -799,6 +800,7 @@ export default function VirtualLab({
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Recent Actions */}
               {experimentLog.length > 0 && (
