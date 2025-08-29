@@ -744,8 +744,8 @@ export default function VirtualLab({
                 ) : null;
               })}
 
-              {/* Step 2 button - positioned below test tube */}
-              {currentStep === 2 && equipmentOnBench.some(eq => eq.id === 'test-tube') && (
+              {/* Observe button - show when test tube is on bench. In guided mode, only during step 2 */}
+              {equipmentOnBench.some(eq => eq.id === 'test-tube') && ((mode.current !== 'guided') || currentStep === 2) && (
                 <div
                   style={{
                     position: 'absolute',
@@ -759,7 +759,9 @@ export default function VirtualLab({
                     onClick={() => {
                       setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
                       setTimeout(() => {
-                        handleStepComplete();
+                        if (mode.current === 'guided') {
+                          handleStepComplete();
+                        }
                         setShowToast("");
                       }, 1500);
                     }}
