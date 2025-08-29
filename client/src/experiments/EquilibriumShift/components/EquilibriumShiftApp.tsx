@@ -127,6 +127,17 @@ export default function EquilibriumShiftApp({
     }
   };
 
+  useEffect(() => {
+    const total = experiment.stepDetails.length;
+    const done = completedSteps.length;
+    updateProgress.mutate({
+      experimentId,
+      currentStep: done,
+      completed: done >= total,
+      progressPercentage: Math.round((done / total) * 100),
+    });
+  }, [completedSteps, experiment.stepDetails.length, experimentId]);
+
   const currentStepData = experiment.stepDetails[currentStep];
   const progressPercentage = Math.round(
     (completedSteps.length / experiment.stepDetails.length) * 100,
