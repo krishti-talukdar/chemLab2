@@ -32,11 +32,11 @@ export const REAGENT_BOTTLES: ReagentBottle[] = [
 // Initial test tube state
 export const INITIAL_TESTTUBE: TestTube = {
   id: 'main-tube',
-  volume: 60, // mL (60% full)
-  color: 'Pink',
-  colorHex: COLORS.PINK,
-  contents: ['CoCl₂', 'H₂O'],
-  temperature: 25 // °C
+  volume: 0,
+  color: 'Clear',
+  colorHex: COLORS.CLEAR,
+  contents: [],
+  temperature: 25
 };
 
 // Equilibrium states mapping
