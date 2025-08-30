@@ -53,10 +53,57 @@ export const Equipment: React.FC<EquipmentProps> = ({
   };
 
   const handleClick = () => {
-    if (!disabled && onInteract) {
+    if (!disabled && onInteract && !isDragging) {
       onInteract(id);
     }
   };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isPositioned || disabled || !onReposition) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+
+    setDragOffset({ x: offsetX, y: offsetY });
+    setIsDragging(true);
+  };
+
+  React.useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !onReposition) return;
+
+      // Get workbench bounds
+      const workbench = document.querySelector('[data-workbench="true"]');
+      if (!workbench) return;
+
+      const workbenchRect = workbench.getBoundingClientRect();
+      const newX = Math.max(0, Math.min(e.clientX - workbenchRect.left - dragOffset.x, workbenchRect.width - 160));
+      const newY = Math.max(0, Math.min(e.clientY - workbenchRect.top - dragOffset.y, workbenchRect.height - 320));
+
+      setCurrentPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      if (isDragging && onReposition) {
+        onReposition(id, currentPosition.x, currentPosition.y);
+      }
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset, currentPosition, id, onReposition]);
 
   const isPositioned = position !== undefined;
   const baseClasses = `
