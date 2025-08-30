@@ -241,8 +241,16 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                     <div className="relative w-6 h-80 bg-gray-100 border-2 border-gray-300 rounded-sm">
                       {/* Volume markings */}
                       {[0, 10, 20, 30, 40, 50].map((mark) => (
-                        <div key={mark} className="absolute right-6 text-xs font-mono text-gray-600" 
-                             style={{ top: `${mark * 1.5}px` }}>
+                        <div key={mark} className="absolute right-10 text-xs font-mono text-gray-600 font-semibold"
+                             style={{ top: `${mark * 6}px` }}>
+                          {50 - mark}
+                        </div>
+                      ))}
+
+                      {/* Minor graduations */}
+                      {[5, 15, 25, 35, 45].map((mark) => (
+                        <div key={`minor-${mark}`} className="absolute right-8 text-xs font-mono text-gray-400"
+                             style={{ top: `${mark * 6}px` }}>
                           {50 - mark}
                         </div>
                       ))}
