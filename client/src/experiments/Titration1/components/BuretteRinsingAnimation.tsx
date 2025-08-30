@@ -230,10 +230,11 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 </div>
               </div>
 
-              <div className="flex justify-center space-x-4">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 <Button
                   onClick={startAnimation}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 text-lg font-semibold"
+                  size="sm"
+                  className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-5 py-2 font-semibold"
                 >
                   <Play className="w-5 h-5 mr-2" />
                   Start Animation
@@ -241,7 +242,8 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 <Button
                   onClick={skipAnimation}
                   variant="outline"
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
+                  size="sm"
+                  className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2 font-semibold"
                 >
                   <FastForward className="w-5 h-5 mr-2" />
                   Skip Animation
