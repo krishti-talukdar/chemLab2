@@ -135,13 +135,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 {/* Colored liquid overlay when volume > 0 */}
                 {volume > 0 && (
                   <div
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-10 rounded-b-3xl transition-all duration-500"
+                    className="absolute left-1/2 transform -translate-x-1/2 transition-all duration-500"
                     style={{
-                      height: `${Math.max(25, (volume / 100) * 160)}px`,
+                      bottom: '28px',
+                      width: '28px',
+                      height: `${Math.max(25, (volume / 100) * 150)}px`,
                       backgroundColor: color,
-                      boxShadow: 'inset 0 0 15px rgba(0,0,0,0.2)',
+                      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)',
                       opacity: 0.85,
-                      clipPath: 'inset(0 0 0 0 round 0 0 20px 20px)'
+                      borderRadius: '0 0 14px 14px',
+                      border: '0.5px solid rgba(255,255,255,0.3)',
+                      background: `linear-gradient(180deg, ${color}F0 0%, ${color}FF 50%, ${color}E0 100%)`
                     }}
                   />
                 )}
