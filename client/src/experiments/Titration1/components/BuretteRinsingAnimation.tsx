@@ -194,7 +194,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl bg-white shadow-2xl max-h-[80vh]">
+      <Card className="w-full max-w-4xl bg-white shadow-2xl">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
           <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Burette Preparation Protocol
@@ -204,7 +204,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
           </p>
         </CardHeader>
         
-        <CardContent className="p-6 max-h-[72vh] overflow-y-auto">
+        <CardContent className="p-8">
           {!isAnimating && !showComplete && (
             <div className="text-center space-y-6">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
@@ -256,14 +256,14 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
               <div className="flex justify-center items-center">
                 <div className="relative">
                   {/* Burette Stand */}
-                  <div className="w-8 h-64 bg-gray-600 rounded-sm mx-auto relative">
+                  <div className="w-8 h-96 bg-gray-600 rounded-sm mx-auto relative">
                     {/* Clamp */}
                     <div className="absolute top-16 -left-2 w-12 h-6 bg-gray-700 rounded"></div>
                   </div>
                   
                   {/* Burette */}
                   <div className="absolute top-12 left-1/2 transform -translate-x-1/2">
-                    <div className="relative w-10 h-64 bg-gray-100 border-2 border-gray-300 rounded-sm">
+                    <div className="relative w-6 h-80 bg-gray-100 border-2 border-gray-300 rounded-sm">
                       {/* Volume markings */}
                       {[0, 10, 20, 30, 40, 50].map((mark) => (
                         <div key={mark} className="absolute right-10 text-xs font-mono text-gray-600 font-semibold"
@@ -315,7 +315,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       {/* Liquid flow from stopcock */}
                       {showStopcockFlow && (
                         <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-                          <div className="w-0.5 h-12 animate-pulse"
+                          <div className="w-0.5 h-16 animate-pulse"
                                style={{ backgroundColor: liquidColor, opacity: 0.8 }}>
                             {/* Flow droplets */}
                             <div className="w-1 h-1 rounded-full absolute -left-0.25 top-0 animate-ping" 
@@ -336,7 +336,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       <div className="w-8 h-6 bg-gray-300 rounded-t-full border-2 border-gray-400 relative">
                         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-gray-400"></div>
                         {/* Liquid flowing through funnel */}
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-6 animate-pulse"
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-8 animate-pulse"
                              style={{ backgroundColor: liquidColor, opacity: 0.6 }}></div>
                       </div>
                     </div>
@@ -344,7 +344,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   
                   {/* Beaker for waste (appears during draining) */}
                   {(currentStep === 1 || currentStep === 3) && (
-                    <div className="absolute top-64 left-1/2 transform -translate-x-1/2">
+                    <div className="absolute top-80 left-1/2 transform -translate-x-1/2">
                       <div className="w-12 h-8 bg-gray-200 border-2 border-gray-400 rounded-b-lg relative">
                         {/* Waste liquid collecting */}
                         {isDraining && (
