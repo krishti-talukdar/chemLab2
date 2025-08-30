@@ -256,7 +256,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
               <div className="flex justify-center items-center">
                 <div className="relative">
                   {/* Burette Stand */}
-                  <div className="w-8 h-96 bg-gray-600 rounded-sm mx-auto relative">
+                  <div className="w-8 h-64 bg-gray-600 rounded-sm mx-auto relative">
                     {/* Clamp */}
                     <div className="absolute top-16 -left-2 w-12 h-6 bg-gray-700 rounded"></div>
                   </div>
