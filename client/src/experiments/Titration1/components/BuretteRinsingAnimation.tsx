@@ -194,17 +194,17 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl bg-white shadow-2xl max-h-[80vh]">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
-          <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <Card className="w-full max-w-2xl bg-white shadow-2xl max-h-[85vh]">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b p-4">
+          <CardTitle className="text-lg font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Burette Preparation Protocol
           </CardTitle>
-          <p className="text-center text-gray-600 mt-2">
+          <p className="text-center text-gray-600 mt-1 text-sm">
             Watch the proper technique for accurate titration setup
           </p>
         </CardHeader>
-        
-        <CardContent className="p-6 max-h-[72vh] overflow-y-auto">
+
+        <CardContent className="p-4 max-h-[70vh] overflow-y-auto">
           {!isAnimating && !showComplete && (
             <div className="text-center space-y-6">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
