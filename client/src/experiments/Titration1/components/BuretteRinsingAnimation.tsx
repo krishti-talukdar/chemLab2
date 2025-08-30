@@ -263,7 +263,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   
                   {/* Burette */}
                   <div className="absolute top-12 left-1/2 transform -translate-x-1/2">
-                    <div className="relative w-6 h-80 bg-gray-100 border-2 border-gray-300 rounded-sm">
+                    <div className="relative w-10 h-64 bg-gray-100 border-2 border-gray-300 rounded-sm">
                       {/* Volume markings */}
                       {[0, 10, 20, 30, 40, 50].map((mark) => (
                         <div key={mark} className="absolute right-10 text-xs font-mono text-gray-600 font-semibold"
