@@ -203,8 +203,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   );
 };
 
-// Equipment definitions - using function to avoid HMR issues
-const createEquipmentList = () => [
+// Equipment definitions
+export const LAB_EQUIPMENT = [
   {
     id: 'test-tube',
     name: 'Test Tube',
@@ -230,5 +230,3 @@ const createEquipmentList = () => [
     description: 'Hydrochloric acid (12M)'
   }
 ];
-
-export const LAB_EQUIPMENT = createEquipmentList();
