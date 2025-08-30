@@ -256,14 +256,14 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
               <div className="flex justify-center items-center min-h-[200px]">
                 <div className="relative">
                   {/* Burette Stand */}
-                  <div className="w-8 h-64 bg-gray-600 rounded-sm mx-auto relative">
+                  <div className="w-6 h-48 bg-gray-600 rounded-sm mx-auto relative">
                     {/* Clamp */}
-                    <div className="absolute top-16 -left-2 w-12 h-6 bg-gray-700 rounded"></div>
+                    <div className="absolute top-12 -left-1 w-8 h-4 bg-gray-700 rounded"></div>
                   </div>
-                  
+
                   {/* Burette */}
-                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2">
-                    <div className="relative w-10 h-64 bg-gray-100 border-2 border-gray-300 rounded-sm">
+                  <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
+                    <div className="relative w-8 h-48 bg-gray-100 border-2 border-gray-300 rounded-sm">
                       {/* Volume markings */}
                       {[0, 10, 20, 30, 40, 50].map((mark) => (
                         <div key={mark} className="absolute right-10 text-xs font-mono text-gray-600 font-semibold"
