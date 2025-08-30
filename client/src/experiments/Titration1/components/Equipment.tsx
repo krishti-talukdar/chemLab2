@@ -207,7 +207,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
           ? (id === 'burette' ? 'text-xs font-semibold text-blue-700 mt-1' : 'text-xs mt-2')
           : 'text-sm mt-2'
       }`}>
-        {id === 'burette' && isPositioned ? 'Burette (50 mL NaOH)' : name}
+        {id === 'burette' && isPositioned ? (
+          <div className="text-center">
+            <div>Burette (50 mL NaOH)</div>
+            <div className="text-xs text-gray-500 font-normal">Click & drag to move</div>
+          </div>
+        ) : name}
       </span>
       
       {!isPositioned && !disabled && (
