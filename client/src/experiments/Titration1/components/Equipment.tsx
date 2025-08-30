@@ -144,6 +144,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </button>
       )}
 
+      {/* Drag indicator for burette */}
+      {isPositioned && id === 'burette' && !isDragging && (
+        <div className="absolute -top-1 -left-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+          <div className="w-2 h-2 bg-white rounded-full"></div>
+        </div>
+      )}
+
+      {/* Dragging overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 bg-blue-500/20 border-2 border-blue-500 border-dashed rounded-lg animate-pulse"></div>
+      )}
+
       {/* Equipment icon with custom styling for specific items */}
       <div className="relative">
         {id === 'burette' && isPositioned ? (
