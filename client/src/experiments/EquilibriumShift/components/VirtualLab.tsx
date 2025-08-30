@@ -203,7 +203,14 @@ export default function VirtualLab({
             color: 'Pink',
             contents: ['CoCl₂', 'H₂O'],
             volume: 60,
+            isCobaltAnimation: true
           }));
+
+          // Clear cobalt animation flag after animation duration
+          setTimeout(() => {
+            setTestTube(prev => ({ ...prev, isCobaltAnimation: false }));
+          }, ANIMATION.COLOR_TRANSITION_DURATION + 1000);
+
           setShowToast('Pink [Co(H₂O)₆]²⁺ complex formed (60% full)');
           setTimeout(() => setShowToast(''), 3000);
           // Auto-complete guided step when cobalt successfully added
