@@ -169,9 +169,9 @@ export default function VirtualLab({
   const getEquipmentPosition = (equipmentId: string) => {
     const positions = {
       'test-tube': { x: 200, y: 250 },           // Left side, center
-      'concentrated-hcl': { x: 500, y: 120 },    // Right side, top bottle
-      'cobalt-ii-solution': { x: 500, y: 240 },  // Right side, middle bottle (above distilled water)
-      'distilled-water': { x: 500, y: 360 }      // Right side, bottom bottle
+      'cobalt-ii-solution': { x: 500, y: 100 },  // Right side, top bottle
+      'concentrated-hcl': { x: 500, y: 220 },    // Right side, middle bottle
+      'distilled-water': { x: 500, y: 340 }      // Right side, bottom bottle
     };
     return positions[equipmentId as keyof typeof positions] || { x: 300, y: 250 };
   };
