@@ -2,7 +2,7 @@ import { ReagentBottle, TestTube, EquilibriumState } from "./types";
 
 // Color constants for the equilibrium system
 export const COLORS = {
-  PINK: '#ffb6c1',      // [Co(H₂O)₆]²⁺ - hydrated complex
+  PINK: '#e91e63',      // [Co(H₂O)₆]²⁺ - hydrated complex
   PURPLE: '#9370db',     // Transition state
   BLUE: '#4682b4',       // [CoCl₄]²⁻ - chloride complex
   CLEAR: '#f0f8ff',      // Water/neutral
