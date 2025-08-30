@@ -408,6 +408,11 @@ export default function VirtualLab({
     }
 
     if (equipmentId === 'concentrated-hcl') {
+      // Reset water clicks when switching to HCl
+      if (waterClickCount > 0) {
+        setWaterClickCount(0);
+      }
+
       // Progressive color changes: pink → purple → blue
       const newClickCount = hclClickCount + 1;
       setHclClickCount(newClickCount);
@@ -501,6 +506,11 @@ export default function VirtualLab({
     }
 
     if (equipmentId === 'distilled-water') {
+      // Reset HCl clicks when switching to water
+      if (hclClickCount > 0) {
+        setHclClickCount(0);
+      }
+
       // Progressive color changes: blue → purple → pink
       const newClickCount = waterClickCount + 1;
       setWaterClickCount(newClickCount);
