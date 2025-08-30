@@ -390,7 +390,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   </div>
 
                   {/* Next Step Button */}
-                  <div className="flex justify-center">
+                  <div className="flex justify-center space-x-3">
                     <Button
                       onClick={goToNextStep}
                       disabled={!stepAnimationComplete}
@@ -409,6 +409,13 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       ) : (
                         <>Please wait... <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div></>
                       )}
+                    </Button>
+                    <Button
+                      onClick={skipAnimation}
+                      variant="outline"
+                      className="px-6 py-2 font-semibold border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                      Skip Animation
                     </Button>
                   </div>
                 </div>
