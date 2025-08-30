@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, ArrowRight, FlaskConical, Play } from "lucide-react";
+import { CheckCircle, ArrowRight, FlaskConical, Play, FastForward } from "lucide-react";
 
 interface BuretteRinsingAnimationProps {
   onComplete: () => void;
@@ -55,7 +55,7 @@ const animationSteps: AnimationStep[] = [
   {
     id: 7,
     title: "Set Initial Reading",
-    description: "Adjusting to zero reading",
+    description: "Adjusting meniscus to zero mark (50mL capacity)",
     duration: 3000,
   }
 ];
@@ -90,6 +90,18 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
     setCurrentStep(0);
     setStepAnimationComplete(false);
     animateStepVisuals(0);
+  };
+
+  const skipAnimation = () => {
+    // Skip directly to completion state
+    setIsAnimating(false);
+    setShowComplete(true);
+    setCompletedSteps([0, 1, 2, 3, 4, 5, 6]); // Mark all steps as completed
+    setLiquidLevel(100); // Set final liquid level
+    setLiquidColor('#FFB6C1'); // Set final NaOH color
+    setIsDraining(false);
+    setShowBubbles(false);
+    setShowStopcockFlow(false);
   };
 
   const goToNextStep = () => {
@@ -130,7 +142,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
         break;
       case 4: // Fill with NaOH
         setLiquidColor('#FFB6C1'); // Pink NaOH solution
-        fillBurette(95, () => setStepAnimationComplete(true));
+        fillBurette(98, () => setStepAnimationComplete(true));
         break;
       case 5: // Remove air bubbles
         setShowBubbles(true);
@@ -142,7 +154,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
         }, 4000);
         break;
       case 6: // Set initial reading
-        setLiquidLevel(90); // Adjust to zero mark
+        setLiquidLevel(100); // Adjust to zero mark - liquid should be at the top (0 mL mark)
         setTimeout(() => setStepAnimationComplete(true), 2000);
         break;
     }
@@ -182,17 +194,17 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl bg-white shadow-2xl">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
-          <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <Card className="w-full max-w-2xl bg-white shadow-2xl max-h-[85vh]">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b p-4">
+          <CardTitle className="text-lg font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Burette Preparation Protocol
           </CardTitle>
-          <p className="text-center text-gray-600 mt-2">
+          <p className="text-center text-gray-600 mt-1 text-sm">
             Watch the proper technique for accurate titration setup
           </p>
         </CardHeader>
-        
-        <CardContent className="p-8">
+
+        <CardContent className="p-4 max-h-[70vh] overflow-y-auto">
           {!isAnimating && !showComplete && (
             <div className="text-center space-y-6">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
@@ -204,8 +216,11 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   Interactive Burette Preparation
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Watch realistic animations of proper burette cleaning, conditioning, 
+                  Watch realistic animations of proper burette cleaning, conditioning,
                   and filling procedures for accurate volumetric analysis.
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  ✨ <strong>Tip:</strong> You can skip the animation if you're already familiar with burette preparation.
                 </p>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                   <p className="text-sm text-yellow-800">
@@ -215,34 +230,60 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 </div>
               </div>
 
-              <Button
-                onClick={startAnimation}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 text-lg font-semibold"
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Start Animation
-              </Button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Button
+                  onClick={startAnimation}
+                  size="sm"
+                  className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-5 py-2 font-semibold"
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Start Animation
+                </Button>
+                <Button
+                  onClick={skipAnimation}
+                  variant="outline"
+                  size="sm"
+                  className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2 font-semibold"
+                >
+                  <FastForward className="w-5 h-5 mr-2" />
+                  Skip Animation
+                </Button>
+              </div>
             </div>
           )}
 
           {isAnimating && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Animation Visual */}
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center min-h-[200px]">
                 <div className="relative">
                   {/* Burette Stand */}
-                  <div className="w-8 h-96 bg-gray-600 rounded-sm mx-auto relative">
+                  <div className="w-6 h-48 bg-gray-600 rounded-sm mx-auto relative">
                     {/* Clamp */}
-                    <div className="absolute top-16 -left-2 w-12 h-6 bg-gray-700 rounded"></div>
+                    <div className="absolute top-12 -left-1 w-8 h-4 bg-gray-700 rounded"></div>
                   </div>
-                  
+
                   {/* Burette */}
-                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2">
-                    <div className="relative w-6 h-80 bg-gray-100 border-2 border-gray-300 rounded-sm">
+                  <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
+                    <div className="relative w-8 h-48 bg-gray-100 border-2 border-gray-300 rounded-sm">
                       {/* Volume markings */}
                       {[0, 10, 20, 30, 40, 50].map((mark) => (
-                        <div key={mark} className="absolute right-6 text-xs font-mono text-gray-600" 
-                             style={{ top: `${mark * 1.5}px` }}>
+                        <div
+                          key={mark}
+                          className="absolute right-full mr-2 -translate-y-1/2 text-xs font-mono text-gray-600 font-semibold"
+                          style={{ top: `${(mark / 50) * 100}%` }}
+                        >
+                          {50 - mark}
+                        </div>
+                      ))}
+
+                      {/* Minor graduations */}
+                      {[5, 15, 25, 35, 45].map((mark) => (
+                        <div
+                          key={`minor-${mark}`}
+                          className="absolute right-full mr-1 -translate-y-1/2 text-[10px] font-mono text-gray-400"
+                          style={{ top: `${(mark / 50) * 100}%` }}
+                        >
                           {50 - mark}
                         </div>
                       ))}
@@ -282,7 +323,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       {/* Liquid flow from stopcock */}
                       {showStopcockFlow && (
                         <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-                          <div className="w-0.5 h-16 animate-pulse" 
+                          <div className="w-0.5 h-12 animate-pulse"
                                style={{ backgroundColor: liquidColor, opacity: 0.8 }}>
                             {/* Flow droplets */}
                             <div className="w-1 h-1 rounded-full absolute -left-0.25 top-0 animate-ping" 
@@ -303,7 +344,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       <div className="w-8 h-6 bg-gray-300 rounded-t-full border-2 border-gray-400 relative">
                         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-gray-400"></div>
                         {/* Liquid flowing through funnel */}
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-8 animate-pulse" 
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-6 animate-pulse"
                              style={{ backgroundColor: liquidColor, opacity: 0.6 }}></div>
                       </div>
                     </div>
@@ -311,7 +352,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   
                   {/* Beaker for waste (appears during draining) */}
                   {(currentStep === 1 || currentStep === 3) && (
-                    <div className="absolute top-80 left-1/2 transform -translate-x-1/2">
+                    <div className="absolute top-48 left-1/2 transform -translate-x-1/2">
                       <div className="w-12 h-8 bg-gray-200 border-2 border-gray-400 rounded-b-lg relative">
                         {/* Waste liquid collecting */}
                         {isDraining && (
@@ -340,31 +381,32 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 </div>
 
                 {/* Current Step */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
-                  <h4 className="text-lg font-bold text-gray-800 mb-2">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-200">
+                  <h4 className="text-base font-bold text-gray-800 mb-2">
                     {currentStepData?.title}
                   </h4>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 mb-3 text-sm">
                     {currentStepData?.description}
                   </p>
 
                   {/* Step-specific instructions */}
-                  <div className="bg-white rounded-lg p-3 text-sm text-gray-700 mb-4">
+                  <div className="bg-white rounded-lg p-2 text-sm text-gray-700 mb-3">
                     {currentStep === 0 && "💧 Water fills the burette from top to bottom, washing away any residues."}
                     {currentStep === 1 && "🚿 Opening stopcock allows water to drain, carrying impurities away."}
                     {currentStep === 2 && "🧪 Small amount of NaOH solution conditions the glass surface."}
                     {currentStep === 3 && "♻️ Conditioning solution is discarded to prevent dilution."}
                     {currentStep === 4 && "📏 Burette fills completely with the titrant solution."}
                     {currentStep === 5 && "💨 Air bubbles rise and escape through the stopcock opening."}
-                    {currentStep === 6 && "🎯 Final adjustment brings meniscus to the zero graduation mark."}
+                    {currentStep === 6 && "🎯 Final adjustment brings meniscus to the zero mark - burette filled to 50mL capacity."}
                   </div>
 
                   {/* Next Step Button */}
-                  <div className="flex justify-center">
+                  <div className="flex flex-wrap items-center gap-3 sm:justify-center">
                     <Button
                       onClick={goToNextStep}
                       disabled={!stepAnimationComplete}
-                      className={`px-6 py-2 font-semibold transition-all ${
+                      size="sm"
+                      className={`w-full sm:w-auto px-5 py-2 font-semibold transition-all ${
                         stepAnimationComplete
                           ? 'bg-blue-500 hover:bg-blue-600 text-white'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -379,6 +421,15 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       ) : (
                         <>Please wait... <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div></>
                       )}
+                    </Button>
+                    <Button
+                      onClick={skipAnimation}
+                      variant="outline"
+                      size="sm"
+                      className="w-full sm:w-auto px-5 py-2 font-semibold border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                      <FastForward className="w-4 h-4 mr-2" />
+                      Skip Animation
                     </Button>
                   </div>
                 </div>
@@ -427,14 +478,14 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   Burette Preparation Complete!
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Perfect! Your burette is now properly prepared with NaOH solution. 
-                  The initial reading is set at 0.00 mL with ±0.01 mL precision.
+                  Perfect! Your burette is now properly prepared with NaOH solution.
+                  The meniscus is at 0.00 mL mark (50mL total capacity) with ±0.01 mL precision.
                 </p>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                   <div className="flex items-center justify-center space-x-2 text-green-800">
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-semibold">
-                      Initial Reading: 0.00 ± 0.01 mL | Ready for Titration
+                      Burette Reading: 0.00 mL (50mL Capacity) | Ready for Titration
                     </span>
                   </div>
                 </div>

@@ -68,6 +68,7 @@ export interface ColorTransition {
   currentStep: number;
   totalSteps: number;
   isAnimating: boolean;
+  targetPhase?: TitrationState['currentPhase'];
 }
 
 export interface TitrationLog {

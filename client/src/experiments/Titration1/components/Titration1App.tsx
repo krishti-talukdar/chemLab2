@@ -213,7 +213,7 @@ export default function Titration1App({
         <div className="w-full relative">
           {/* Experiment Not Started Overlay */}
           {!experimentStarted && !showBuretteAnimation && (
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="fixed inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-lg">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Play className="w-8 h-8 text-blue-600" />
