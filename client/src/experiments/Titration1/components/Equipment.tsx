@@ -129,10 +129,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
         )}
       </div>
 
-      <span className={`text-center font-medium mt-2 ${
+      <span className={`text-center font-medium ${
         isPositioned
-          ? (id === 'burette' ? 'text-xs font-semibold text-blue-700' : 'text-xs')
-          : 'text-sm'
+          ? (id === 'burette' ? 'text-xs font-semibold text-blue-700 mt-1' : 'text-xs mt-2')
+          : 'text-sm mt-2'
       }`}>
         {id === 'burette' && isPositioned ? 'Burette (50 mL NaOH)' : name}
       </span>
