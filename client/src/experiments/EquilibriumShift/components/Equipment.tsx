@@ -160,6 +160,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <span className="text-xs font-medium text-center">{name}</span>
               <span className="text-xs text-blue-600 font-semibold">H₂O</span>
             </div>
+          ) : id === 'cobalt-ii-solution' ? (
+            <div className="flex flex-col items-center">
+              <div
+                className="w-20 h-20 border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
+                style={{ backgroundColor: '#fce7f3' }}
+              >
+                <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-pink-200 to-transparent opacity-60"></div>
+                <Beaker className="w-7 h-7 absolute top-2 left-1/2 transform -translate-x-1/2 text-pink-600 opacity-50" />
+              </div>
+              <span className="text-xs font-medium text-center">{name}</span>
+              <span className="text-xs text-pink-600 font-semibold">CoCl₂</span>
+            </div>
           ) : id === 'concentrated-hcl' ? (
             <div className="flex flex-col items-center">
               <div
