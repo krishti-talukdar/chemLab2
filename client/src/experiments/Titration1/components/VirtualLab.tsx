@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward } from "lucide-react";
 import { Link } from "wouter";
 import WorkBench from "./WorkBench";
 import Equipment, { LAB_EQUIPMENT } from "./Equipment";
@@ -82,6 +82,75 @@ export default function VirtualLab({
   const [showTitrating, setShowTitrating] = useState(false);
   const [titrationData, setTitrationData] = useState<TitrationData[]>([]);
   const [currentTrial, setCurrentTrial] = useState(1);
+  const timeoutsRef = useRef<number[]>([]);
+  const colorIntervalRef = useRef<number | null>(null);
+
+  const setSafeTimeout = useCallback((fn: () => void, delay: number) => {
+    const id = window.setTimeout(() => {
+      timeoutsRef.current = timeoutsRef.current.filter(tid => tid !== id);
+      fn();
+    }, delay);
+    timeoutsRef.current.push(id);
+    return id;
+  }, []);
+
+  const clearPendingTimeouts = useCallback(() => {
+    timeoutsRef.current.forEach((id) => clearTimeout(id));
+    timeoutsRef.current = [];
+  }, []);
+
+  const isAnyAnimation = Boolean(colorTransition?.isAnimating || titrationAction?.isAnimating || showTitrating);
+
+  const handleSkipAnimation = useCallback(() => {
+    clearPendingTimeouts();
+
+    if (colorTransition?.isAnimating) {
+      if (colorIntervalRef.current) {
+        clearInterval(colorIntervalRef.current as number);
+        colorIntervalRef.current = null;
+      }
+      setConicalFlask(prev => ({ ...prev, colorHex: colorTransition.to }));
+      setTitrationState(prev => ({
+        ...prev,
+        currentPhase: colorTransition.targetPhase || prev.currentPhase,
+        flaskColor: colorTransition.to
+      }));
+      setColorTransition(null);
+    }
+
+    if (titrationAction?.isAnimating && titrationAction.actionType === 'add_solution' && titrationAction.reagentId === 'oxalic-acid') {
+      setTitrationAction(null);
+      setConicalFlask(prev => ({
+        ...prev,
+        volume: 25,
+        contents: ['H₂C₂O₄'],
+        colorHex: COLORS.OXALIC_ACID
+      }));
+
+      const logEntry = {
+        id: Date.now().toString(),
+        timestamp: Date.now(),
+        action: 'Added oxalic acid',
+        reagent: '0.1N H₂C₂O₄',
+        volume: 25.0,
+        buretteReading: burette.reading,
+        colorBefore: COLORS.COLORLESS,
+        colorAfter: COLORS.OXALIC_ACID,
+        observation: 'Transferred 25.0 mL of standard oxalic acid solution'
+      } as TitrationLog;
+      setTitrationLog(prev => [...prev, logEntry]);
+
+      setActiveEquipment("");
+      setShowToast("Oxalic acid added to flask!");
+      setSafeTimeout(() => setShowToast(""), 2000);
+      handleStepComplete();
+    }
+
+    if (showTitrating) {
+      setShowTitrating(false);
+      setActiveEquipment("");
+    }
+  }, [clearPendingTimeouts, colorTransition, titrationAction, showTitrating, burette.reading]);
 
   // Stop the timer when results modal appears
   useEffect(() => {
@@ -98,13 +167,15 @@ export default function VirtualLab({
       duration: ANIMATION.COLOR_TRANSITION_DURATION,
       currentStep: 0,
       totalSteps: 20,
-      isAnimating: true
+      isAnimating: true,
+      targetPhase: newPhase
     });
 
     // Animate color transition
     let step = 0;
     const totalSteps = 20;
-    const interval = setInterval(() => {
+    if (colorIntervalRef.current) { clearInterval(colorIntervalRef.current as number); colorIntervalRef.current = null; }
+    const interval = window.setInterval(() => {
       step++;
       const progress = step / totalSteps;
       
@@ -126,9 +197,13 @@ export default function VirtualLab({
       
       if (step >= totalSteps) {
         clearInterval(interval);
+        if (colorIntervalRef.current) {
+          clearInterval(colorIntervalRef.current as number);
+          colorIntervalRef.current = null;
+        }
         setConicalFlask(prev => ({ ...prev, colorHex: toColor }));
-        setTitrationState(prev => ({ 
-          ...prev, 
+        setTitrationState(prev => ({
+          ...prev,
           currentPhase: newPhase,
           flaskColor: toColor
         }));
@@ -211,7 +286,7 @@ export default function VirtualLab({
 
       setShowToast("Transferring 25.0 mL of 0.1N oxalic acid...");
 
-      setTimeout(() => {
+      setSafeTimeout(() => {
         setTitrationAction(null);
         setConicalFlask(prev => ({
           ...prev,
@@ -235,7 +310,7 @@ export default function VirtualLab({
 
         setActiveEquipment("");
         setShowToast("Oxalic acid added to flask!");
-        setTimeout(() => setShowToast(""), 2000);
+        setSafeTimeout(() => setShowToast(""), 2000);
         handleStepComplete();
       }, ANIMATION.DROPPER_DURATION);
 
@@ -244,7 +319,7 @@ export default function VirtualLab({
       setActiveEquipment(equipmentId);
       setShowToast("Adding 2-3 drops of phenolphthalein indicator...");
 
-      setTimeout(() => {
+      setSafeTimeout(() => {
         setConicalFlask(prev => ({
           ...prev,
           hasIndicator: true
@@ -265,7 +340,7 @@ export default function VirtualLab({
 
         setActiveEquipment("");
         setShowToast("Indicator added - ready for titration!");
-        setTimeout(() => setShowToast(""), 2000);
+        setSafeTimeout(() => setShowToast(""), 2000);
         handleStepComplete();
       }, 1000);
 
@@ -274,7 +349,7 @@ export default function VirtualLab({
       setActiveEquipment(equipmentId);
       setShowToast("Filling burette with NaOH solution...");
 
-      setTimeout(() => {
+      setSafeTimeout(() => {
         setBurette(prev => ({
           ...prev,
           reading: 0.0,
@@ -302,7 +377,7 @@ export default function VirtualLab({
 
         setActiveEquipment("");
         setShowToast("Burette ready - begin titration!");
-        setTimeout(() => setShowToast(""), 2000);
+        setSafeTimeout(() => setShowToast(""), 2000);
         handleStepComplete();
       }, 2000);
 
@@ -351,7 +426,7 @@ export default function VirtualLab({
         setShowToast("⚠️ Overshot! Solution too pink - repeat titration for accuracy");
       }
 
-      setTimeout(() => {
+      setSafeTimeout(() => {
         setShowTitrating(false);
         setActiveEquipment("");
       }, 1000);
@@ -712,6 +787,15 @@ export default function VirtualLab({
             </div>
           </div>
         </div>
+
+        {isAnyAnimation && (
+          <div className="fixed top-4 right-4 z-50">
+            <Button onClick={handleSkipAnimation} variant="outline" className="bg-white/90">
+              <FastForward className="w-4 h-4 mr-2" />
+              Skip animation
+            </Button>
+          </div>
+        )}
 
         {/* Titration Animation */}
         {titrationAction && (
