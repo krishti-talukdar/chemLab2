@@ -27,12 +27,22 @@ export const Equipment: React.FC<EquipmentProps> = ({
   position,
   onRemove,
   onInteract,
+  onReposition,
   isActive = false,
   disabled = false,
   color,
   volume,
   reading
 }) => {
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
+  const [currentPosition, setCurrentPosition] = React.useState(position || { x: 0, y: 0 });
+
+  React.useEffect(() => {
+    if (position) {
+      setCurrentPosition(position);
+    }
+  }, [position]);
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) {
       e.preventDefault();
