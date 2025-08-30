@@ -41,6 +41,9 @@ interface EquipmentProps {
   }>;
   currentStep?: number;
   disabled?: boolean;
+  isCobaltAnimation?: boolean;
+  color?: string;
+  volume?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
