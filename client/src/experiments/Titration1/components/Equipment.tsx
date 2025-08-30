@@ -12,6 +12,7 @@ interface EquipmentProps {
   position?: { x: number; y: number };
   onRemove?: (id: string) => void;
   onInteract?: (id: string) => void;
+  onReposition?: (id: string, x: number, y: number) => void;
   isActive?: boolean;
   disabled?: boolean;
   color?: string;
