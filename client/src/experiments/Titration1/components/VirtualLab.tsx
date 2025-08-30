@@ -142,6 +142,17 @@ export default function VirtualLab({
     return EQUIPMENT_POSITIONS[equipmentId as keyof typeof EQUIPMENT_POSITIONS] || { x: 300, y: 250 };
   };
 
+  // Handle equipment repositioning
+  const handleEquipmentReposition = useCallback((equipmentId: string, x: number, y: number) => {
+    setEquipmentOnBench(prev => prev.map(eq =>
+      eq.id === equipmentId
+        ? { ...eq, position: { x, y } }
+        : eq
+    ));
+    setShowToast(`${equipmentId.replace('-', ' ')} repositioned`);
+    setTimeout(() => setShowToast(""), 1500);
+  }, []);
+
   // Handle equipment drop on workbench
   const handleEquipmentDrop = useCallback((equipmentId: string, x: number, y: number) => {
     // In guided mode, enforce step equipment requirements
