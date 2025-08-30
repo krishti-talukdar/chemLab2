@@ -108,8 +108,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
         )}
         
         {id === 'burette' && (
-          <div className="absolute right-0 top-0 bg-white border rounded px-1">
-            <span className="text-xs font-mono">{reading?.toFixed(1) || '0.0'}</span>
+          <div className={`absolute bg-white border rounded px-1 ${
+            isPositioned
+              ? 'right-2 top-8 bg-white/90 backdrop-blur-sm shadow-md'
+              : 'right-0 top-0'
+          }`}>
+            <span className="text-xs font-mono font-semibold">{reading?.toFixed(1) || '0.0'} mL</span>
           </div>
         )}
         
