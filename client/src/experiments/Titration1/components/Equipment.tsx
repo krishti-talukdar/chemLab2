@@ -120,15 +120,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const equipmentElement = (
     <div
-      className={baseClasses}
-      style={position ? { 
-        left: position.x, 
-        top: position.y,
+      className={`${baseClasses} ${isDragging ? 'cursor-grabbing z-50' : (isPositioned ? 'cursor-grab' : '')}`}
+      style={isPositioned ? {
+        left: currentPosition.x,
+        top: currentPosition.y,
         transform: isActive ? 'scale(1.05)' : 'scale(1)'
       } : {}}
       draggable={!disabled && !isPositioned}
       onDragStart={handleDragStart}
       onClick={handleClick}
+      onMouseDown={handleMouseDown}
     >
       {/* Remove button for positioned equipment */}
       {isPositioned && onRemove && (
