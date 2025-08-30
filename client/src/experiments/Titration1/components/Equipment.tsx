@@ -52,7 +52,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
     flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer
     ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'}
     ${isActive ? 'border-blue-500 bg-blue-50 scale-105' : 'border-gray-200 bg-white'}
-    ${isPositioned ? 'absolute min-w-[80px]' : 'w-full'}
+    ${isPositioned ? (id === 'burette' ? 'absolute min-w-[120px]' : 'absolute min-w-[80px]') : 'w-full'}
   `;
 
   const equipmentElement = (
