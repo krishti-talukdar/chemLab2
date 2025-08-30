@@ -16,6 +16,7 @@ export interface TestTube {
   colorHex: string;
   contents: string[];
   temperature: number;
+  isCobaltAnimation?: boolean;
 }
 
 export interface DropperAction {
