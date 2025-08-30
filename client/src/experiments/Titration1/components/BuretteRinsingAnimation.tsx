@@ -55,7 +55,7 @@ const animationSteps: AnimationStep[] = [
   {
     id: 7,
     title: "Set Initial Reading",
-    description: "Adjusting to zero reading",
+    description: "Adjusting meniscus to zero mark (50mL capacity)",
     duration: 3000,
   }
 ];
