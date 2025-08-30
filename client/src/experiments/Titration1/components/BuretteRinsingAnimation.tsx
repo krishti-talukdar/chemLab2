@@ -194,7 +194,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl bg-white shadow-2xl">
+      <Card className="w-full max-w-3xl bg-white shadow-2xl max-h-[80vh]">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
           <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Burette Preparation Protocol
