@@ -435,14 +435,14 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   Burette Preparation Complete!
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Perfect! Your burette is now properly prepared with NaOH solution. 
-                  The initial reading is set at 0.00 mL with ±0.01 mL precision.
+                  Perfect! Your burette is now properly prepared with NaOH solution.
+                  The meniscus is at 0.00 mL mark (50mL total capacity) with ±0.01 mL precision.
                 </p>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                   <div className="flex items-center justify-center space-x-2 text-green-800">
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-semibold">
-                      Initial Reading: 0.00 ± 0.01 mL | Ready for Titration
+                      Burette Reading: 0.00 mL (50mL Capacity) | Ready for Titration
                     </span>
                   </div>
                 </div>
