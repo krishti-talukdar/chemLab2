@@ -92,6 +92,18 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
     animateStepVisuals(0);
   };
 
+  const skipAnimation = () => {
+    // Skip directly to completion state
+    setIsAnimating(false);
+    setShowComplete(true);
+    setCompletedSteps([0, 1, 2, 3, 4, 5, 6]); // Mark all steps as completed
+    setLiquidLevel(100); // Set final liquid level
+    setLiquidColor('#FFB6C1'); // Set final NaOH color
+    setIsDraining(false);
+    setShowBubbles(false);
+    setShowStopcockFlow(false);
+  };
+
   const goToNextStep = () => {
     const nextStepIndex = currentStep + 1;
 
