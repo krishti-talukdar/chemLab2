@@ -142,7 +142,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
         }, 4000);
         break;
       case 6: // Set initial reading
-        setLiquidLevel(90); // Adjust to zero mark
+        setLiquidLevel(100); // Adjust to zero mark - liquid should be at the top (0 mL mark)
         setTimeout(() => setStepAnimationComplete(true), 2000);
         break;
     }
