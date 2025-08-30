@@ -596,6 +596,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       return (
         <div className="relative group">
+          {/* Volume label above test tube */}
+          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-300 shadow-sm">
+            <span className="text-xs font-semibold text-gray-700">10 mL test tube</span>
+          </div>
+
           <img
             key={getTestTubeImage()} // Force re-render when image changes
             src={getTestTubeImage()}
