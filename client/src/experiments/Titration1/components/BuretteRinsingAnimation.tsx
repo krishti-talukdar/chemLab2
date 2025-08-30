@@ -336,7 +336,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       <div className="w-8 h-6 bg-gray-300 rounded-t-full border-2 border-gray-400 relative">
                         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-gray-400"></div>
                         {/* Liquid flowing through funnel */}
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-8 animate-pulse" 
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-6 animate-pulse"
                              style={{ backgroundColor: liquidColor, opacity: 0.6 }}></div>
                       </div>
                     </div>
