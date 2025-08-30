@@ -105,7 +105,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         onClick={handleClick}
       >
         {/* Remove button */}
-        {onRemove && id === 'test-tube' && (
+        {onRemove && (
           <Button
             onClick={(e) => {
               e.stopPropagation();
@@ -114,7 +114,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             size="sm"
             variant="outline"
             className={`absolute w-6 h-6 p-0 bg-red-500 text-white border-red-500 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity ${
-              id === 'test-tube' ? 'top-0 right-0' : ''
+              id === 'test-tube' ? 'top-0 right-0' : '-top-2 -right-2'
             }`}
           >
             <X className="w-3 h-3" />
@@ -159,6 +159,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
               </div>
               <span className="text-xs font-medium text-center">{name}</span>
               <span className="text-xs text-blue-600 font-semibold">H₂O</span>
+            </div>
+          ) : id === 'cobalt-ii-solution' ? (
+            <div className="flex flex-col items-center">
+              <div
+                className="w-20 h-20 border-2 border-gray-300 relative overflow-hidden mb-2 shadow-sm"
+                style={{ backgroundColor: '#fce7f3' }}
+              >
+                <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-pink-200 to-transparent opacity-60"></div>
+                <Beaker className="w-7 h-7 absolute top-2 left-1/2 transform -translate-x-1/2 text-pink-600 opacity-50" />
+              </div>
+              <span className="text-xs font-medium text-center">{name}</span>
+              <span className="text-xs text-pink-600 font-semibold">CoCl₂</span>
             </div>
           ) : id === 'concentrated-hcl' ? (
             <div className="flex flex-col items-center">

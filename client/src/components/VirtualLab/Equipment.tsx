@@ -41,6 +41,9 @@ interface EquipmentProps {
   }>;
   currentStep?: number;
   disabled?: boolean;
+  isCobaltAnimation?: boolean;
+  color?: string;
+  volume?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -56,6 +59,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
   allEquipmentPositions = [],
   currentStep = 1,
   disabled = false,
+  isCobaltAnimation = false,
+  color,
+  volume,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
@@ -596,6 +602,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       return (
         <div className="relative group">
+          {/* Volume label above test tube */}
+          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-300 shadow-sm">
+            <span className="text-xs font-semibold text-gray-700">10 mL test tube</span>
+          </div>
+
           <img
             key={getTestTubeImage()} // Force re-render when image changes
             src={getTestTubeImage()}
@@ -634,6 +645,44 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   : 1,
             }}
           />
+
+          {/* Pink cobalt animation effects */}
+          {isCobaltAnimation && (
+            <>
+              {/* Pink glow overlay */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div
+                  className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-12 rounded-b-3xl animate-pulse"
+                  style={{
+                    height: `${Math.max(30, (volume || 60) / 100 * 180)}px`,
+                    background: 'linear-gradient(180deg, rgba(255,182,193,0.6), rgba(255,182,193,0.2))',
+                    filter: 'blur(8px)',
+                    animation: 'pulse 1.5s ease-in-out infinite'
+                  }}
+                />
+              </div>
+
+              {/* Pink sparkle effects */}
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-1 h-1 bg-pink-400 rounded-full animate-ping"
+                    style={{
+                      left: `${45 + (i % 3) * 10}%`,
+                      bottom: `${50 + (i % 2) * 20}%`,
+                      animationDelay: `${i * 0.3}s`,
+                      animationDuration: '1.8s'
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Pink shimmer effect */}
+              <div className="absolute inset-0 bg-gradient-to-t from-pink-400/20 to-transparent rounded-full animate-pulse pointer-events-none"
+                   style={{ animationDuration: '2s' }} />
+            </>
+          )}
 
           {/* Heating effects when test tube is above hot water beaker */}
           {heating && (
