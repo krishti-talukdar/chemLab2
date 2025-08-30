@@ -20,43 +20,43 @@ const animationSteps: AnimationStep[] = [
     id: 1,
     title: "Rinse with Distilled Water",
     description: "Filling burette with distilled water to clean",
-    duration: 4000,
+    duration: 6000,
   },
   {
     id: 2,
     title: "Discard Water Rinse",
     description: "Draining water through the tip to remove impurities",
-    duration: 3000,
+    duration: 5000,
   },
   {
     id: 3,
-    title: "Rinse with NaOH Solution", 
+    title: "Rinse with NaOH Solution",
     description: "Conditioning burette with small amount of NaOH",
-    duration: 4000,
+    duration: 6000,
   },
   {
     id: 4,
     title: "Discard NaOH Rinse",
     description: "Removing conditioning solution",
-    duration: 3000,
+    duration: 5000,
   },
   {
     id: 5,
     title: "Fill with NaOH Solution",
     description: "Filling burette completely with titrant",
-    duration: 5000,
+    duration: 8000,
   },
   {
     id: 6,
     title: "Remove Air Bubbles",
     description: "Eliminating air bubbles from the tip",
-    duration: 3000,
+    duration: 5000,
   },
   {
     id: 7,
     title: "Set Initial Reading",
     description: "Adjusting to zero reading",
-    duration: 2000,
+    duration: 3000,
   }
 ];
 
@@ -70,6 +70,8 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
   const [isDraining, setIsDraining] = useState(false);
   const [showBubbles, setShowBubbles] = useState(false);
   const [showStopcockFlow, setShowStopcockFlow] = useState(false);
+  const [stepAnimationComplete, setStepAnimationComplete] = useState(false);
+  const [isStepAnimating, setIsStepAnimating] = useState(false);
 
   const startAnimation = () => {
     setIsAnimating(true);
@@ -81,44 +83,54 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
     setIsDraining(false);
     setShowBubbles(false);
     setShowStopcockFlow(false);
-    animateNextStep(0);
+    startFirstStep();
   };
 
-  const animateNextStep = (stepIndex: number) => {
-    if (stepIndex >= animationSteps.length) {
+  const startFirstStep = () => {
+    setCurrentStep(0);
+    setStepAnimationComplete(false);
+    animateStepVisuals(0);
+  };
+
+  const goToNextStep = () => {
+    const nextStepIndex = currentStep + 1;
+
+    // Mark current step as completed
+    setCompletedSteps(prev => [...prev, currentStep]);
+
+    if (nextStepIndex >= animationSteps.length) {
       setIsAnimating(false);
       setShowComplete(true);
       return;
     }
 
-    setCurrentStep(stepIndex);
-    animateStepVisuals(stepIndex);
-    
-    setTimeout(() => {
-      setCompletedSteps(prev => [...prev, stepIndex]);
-      animateNextStep(stepIndex + 1);
-    }, animationSteps[stepIndex].duration);
+    setCurrentStep(nextStepIndex);
+    setStepAnimationComplete(false);
+    animateStepVisuals(nextStepIndex);
   };
 
   const animateStepVisuals = (stepIndex: number) => {
+    setIsStepAnimating(true);
+    setStepAnimationComplete(false);
+
     switch(stepIndex) {
       case 0: // Rinse with water
         setLiquidColor('#87CEEB'); // Light blue water
-        fillBurette(90);
+        fillBurette(90, () => setStepAnimationComplete(true));
         break;
       case 1: // Discard water
-        drainBurette();
+        drainBurette(() => setStepAnimationComplete(true));
         break;
       case 2: // Rinse with NaOH
         setLiquidColor('#FFB6C1'); // Light pink NaOH
-        fillBurette(30);
+        fillBurette(30, () => setStepAnimationComplete(true));
         break;
       case 3: // Discard NaOH rinse
-        drainBurette();
+        drainBurette(() => setStepAnimationComplete(true));
         break;
       case 4: // Fill with NaOH
         setLiquidColor('#FFB6C1'); // Pink NaOH solution
-        fillBurette(95);
+        fillBurette(95, () => setStepAnimationComplete(true));
         break;
       case 5: // Remove air bubbles
         setShowBubbles(true);
@@ -126,42 +138,47 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
         setTimeout(() => {
           setShowBubbles(false);
           setShowStopcockFlow(false);
-        }, 2500);
+          setStepAnimationComplete(true);
+        }, 4000);
         break;
       case 6: // Set initial reading
         setLiquidLevel(90); // Adjust to zero mark
+        setTimeout(() => setStepAnimationComplete(true), 2000);
         break;
     }
+    setIsStepAnimating(false);
   };
 
-  const fillBurette = (targetLevel: number) => {
+  const fillBurette = (targetLevel: number, onComplete?: () => void) => {
     let currentLevel = 0;
     const fillInterval = setInterval(() => {
-      currentLevel += 2;
+      currentLevel += 1; // Slower filling
       setLiquidLevel(currentLevel);
       if (currentLevel >= targetLevel) {
         clearInterval(fillInterval);
+        if (onComplete) onComplete();
       }
-    }, 50);
+    }, 80); // Slower interval
   };
 
-  const drainBurette = () => {
+  const drainBurette = (onComplete?: () => void) => {
     setIsDraining(true);
     setShowStopcockFlow(true);
     let currentLevel = liquidLevel;
     const drainInterval = setInterval(() => {
-      currentLevel -= 3;
+      currentLevel -= 2; // Slower draining
       setLiquidLevel(Math.max(0, currentLevel));
       if (currentLevel <= 0) {
         clearInterval(drainInterval);
         setIsDraining(false);
         setShowStopcockFlow(false);
+        if (onComplete) onComplete();
       }
-    }, 60);
+    }, 100); // Slower interval
   };
 
   const currentStepData = animationSteps[currentStep];
-  const progress = ((completedSteps.length) / animationSteps.length) * 100;
+  const progress = ((completedSteps.length + (stepAnimationComplete ? 1 : 0)) / animationSteps.length) * 100;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -330,9 +347,9 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   <p className="text-gray-600 mb-4">
                     {currentStepData?.description}
                   </p>
-                  
+
                   {/* Step-specific instructions */}
-                  <div className="bg-white rounded-lg p-3 text-sm text-gray-700">
+                  <div className="bg-white rounded-lg p-3 text-sm text-gray-700 mb-4">
                     {currentStep === 0 && "💧 Water fills the burette from top to bottom, washing away any residues."}
                     {currentStep === 1 && "🚿 Opening stopcock allows water to drain, carrying impurities away."}
                     {currentStep === 2 && "🧪 Small amount of NaOH solution conditions the glass surface."}
@@ -340,6 +357,29 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                     {currentStep === 4 && "📏 Burette fills completely with the titrant solution."}
                     {currentStep === 5 && "💨 Air bubbles rise and escape through the stopcock opening."}
                     {currentStep === 6 && "🎯 Final adjustment brings meniscus to the zero graduation mark."}
+                  </div>
+
+                  {/* Next Step Button */}
+                  <div className="flex justify-center">
+                    <Button
+                      onClick={goToNextStep}
+                      disabled={!stepAnimationComplete}
+                      className={`px-6 py-2 font-semibold transition-all ${
+                        stepAnimationComplete
+                          ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      {stepAnimationComplete ? (
+                        currentStep === animationSteps.length - 1 ? (
+                          <>Complete Preparation</>
+                        ) : (
+                          <>Next Step <ArrowRight className="w-4 h-4 ml-1" /></>
+                        )
+                      ) : (
+                        <>Please wait... <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div></>
+                      )}
+                    </Button>
                   </div>
                 </div>
 
