@@ -216,8 +216,11 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   Interactive Burette Preparation
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Watch realistic animations of proper burette cleaning, conditioning, 
+                  Watch realistic animations of proper burette cleaning, conditioning,
                   and filling procedures for accurate volumetric analysis.
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  ✨ <strong>Tip:</strong> You can skip the animation if you're already familiar with burette preparation.
                 </p>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                   <p className="text-sm text-yellow-800">
