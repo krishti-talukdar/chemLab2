@@ -315,7 +315,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                       {/* Liquid flow from stopcock */}
                       {showStopcockFlow && (
                         <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-                          <div className="w-0.5 h-16 animate-pulse" 
+                          <div className="w-0.5 h-12 animate-pulse"
                                style={{ backgroundColor: liquidColor, opacity: 0.8 }}>
                             {/* Flow droplets */}
                             <div className="w-1 h-1 rounded-full absolute -left-0.25 top-0 animate-ping" 
