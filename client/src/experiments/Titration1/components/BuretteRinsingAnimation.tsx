@@ -240,7 +240,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   variant="outline"
                   className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
                 >
-                  <ArrowRight className="w-5 h-5 mr-2" />
+                  <FastForward className="w-5 h-5 mr-2" />
                   Skip Animation
                 </Button>
               </div>
