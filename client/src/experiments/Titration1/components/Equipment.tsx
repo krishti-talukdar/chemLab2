@@ -112,7 +112,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
     ${isActive ? 'scale-105' : ''}
     ${isPositioned ? (
       id === 'burette'
-        ? 'absolute min-w-[160px]'
+        ? 'absolute min-w-[200px]'
         : 'absolute min-w-[80px] p-3 rounded-lg border-2 border-gray-200 bg-white'
     ) : 'w-full p-3 rounded-lg border-2 border-gray-200 bg-white'}
     ${!isPositioned && isActive ? 'border-blue-500 bg-blue-50' : ''}
