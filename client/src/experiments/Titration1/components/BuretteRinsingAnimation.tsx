@@ -251,9 +251,9 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
           )}
 
           {isAnimating && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Animation Visual */}
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center min-h-[200px]">
                 <div className="relative">
                   {/* Burette Stand */}
                   <div className="w-8 h-64 bg-gray-600 rounded-sm mx-auto relative">
