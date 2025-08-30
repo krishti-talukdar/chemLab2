@@ -344,7 +344,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   
                   {/* Beaker for waste (appears during draining) */}
                   {(currentStep === 1 || currentStep === 3) && (
-                    <div className="absolute top-80 left-1/2 transform -translate-x-1/2">
+                    <div className="absolute top-64 left-1/2 transform -translate-x-1/2">
                       <div className="w-12 h-8 bg-gray-200 border-2 border-gray-400 rounded-b-lg relative">
                         {/* Waste liquid collecting */}
                         {isDraining && (
