@@ -373,16 +373,16 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 </div>
 
                 {/* Current Step */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
-                  <h4 className="text-lg font-bold text-gray-800 mb-2">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-200">
+                  <h4 className="text-base font-bold text-gray-800 mb-2">
                     {currentStepData?.title}
                   </h4>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 mb-3 text-sm">
                     {currentStepData?.description}
                   </p>
 
                   {/* Step-specific instructions */}
-                  <div className="bg-white rounded-lg p-3 text-sm text-gray-700 mb-4">
+                  <div className="bg-white rounded-lg p-2 text-sm text-gray-700 mb-3">
                     {currentStep === 0 && "💧 Water fills the burette from top to bottom, washing away any residues."}
                     {currentStep === 1 && "🚿 Opening stopcock allows water to drain, carrying impurities away."}
                     {currentStep === 2 && "🧪 Small amount of NaOH solution conditions the glass surface."}
