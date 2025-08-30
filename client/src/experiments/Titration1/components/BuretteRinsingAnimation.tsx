@@ -364,7 +364,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                     {currentStep === 3 && "♻️ Conditioning solution is discarded to prevent dilution."}
                     {currentStep === 4 && "📏 Burette fills completely with the titrant solution."}
                     {currentStep === 5 && "💨 Air bubbles rise and escape through the stopcock opening."}
-                    {currentStep === 6 && "🎯 Final adjustment brings meniscus to the zero graduation mark."}
+                    {currentStep === 6 && "🎯 Final adjustment brings meniscus to the zero mark - burette filled to 50mL capacity."}
                   </div>
 
                   {/* Next Step Button */}
