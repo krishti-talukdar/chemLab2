@@ -994,6 +994,71 @@ export default function VirtualLab({
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Volume Input Modal */}
+        <Dialog open={showVolumeModal} onOpenChange={setShowVolumeModal}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-gray-800 flex items-center">
+                <Droplets className="w-5 h-5 mr-2 text-blue-600" />
+                Enter Volume
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Enter the volume of {selectedBottle.replace('-', ' ')} to add to the test tube.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Volume (mL)
+                </label>
+                <input
+                  type="number"
+                  min="0.1"
+                  max="50"
+                  step="0.1"
+                  value={volumeInput}
+                  onChange={(e) => setVolumeInput(e.target.value)}
+                  placeholder="Enter volume in mL"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  autoFocus
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Recommended range: 0.1 - 50 mL
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowVolumeModal(false);
+                    setVolumeInput("");
+                    setSelectedBottle("");
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    const volume = parseFloat(volumeInput);
+                    if (isNaN(volume) || volume <= 0 || volume > 50) {
+                      setShowToast("Please enter a valid volume between 0.1 and 50 mL");
+                      setTimeout(() => setShowToast(""), 3000);
+                      return;
+                    }
+                    handleVolumeSubmit(volume);
+                  }}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  disabled={!volumeInput || isNaN(parseFloat(volumeInput))}
+                >
+                  Add Solution
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
