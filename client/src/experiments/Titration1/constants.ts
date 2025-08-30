@@ -294,9 +294,9 @@ export const DEFAULT_CONDITIONS = {
 
 // Equipment positions on workbench
 export const EQUIPMENT_POSITIONS = {
-  'burette': { x: 150, y: 100 },
-  'conical-flask': { x: 200, y: 300 },
-  'pipette': { x: 350, y: 200 },
+  'burette': { x: 120, y: 80 },
+  'conical-flask': { x: 250, y: 300 },
+  'pipette': { x: 380, y: 200 },
   'funnel': { x: 500, y: 150 },
   'wash-bottle': { x: 450, y: 350 },
   'oxalic-acid': { x: 80, y: 200 },
