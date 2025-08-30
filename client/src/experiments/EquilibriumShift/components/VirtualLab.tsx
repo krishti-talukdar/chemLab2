@@ -397,46 +397,15 @@ export default function VirtualLab({
     }
   }, [currentStep, completedSteps, mode.current, testTube.contents, testTube.colorHex, animateColorTransition, equipmentOnBench]);
 
-  // Handle equipment interaction
+  // Handle equipment interaction - show volume modal for bottles
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
-    const currentStepData = GUIDED_STEPS[currentStep - 1];
-
-    if (equipmentId === 'cobalt-ii-solution') {
-      // Add cobalt solution to the test tube only when user interacts with the bottle
-      if (!testTube.contents.includes('CoCl₂')) {
-        setActiveEquipment(equipmentId);
-        setDropperAction({
-          id: Date.now().toString(),
-          reagentId: 'cobalt',
-          targetId: 'test-tube',
-          amount: 3,
-          timestamp: Date.now(),
-          isAnimating: true,
-        });
-
-        setShowAddingSolutions(true);
-        setTimeout(() => {
-          setDropperAction(null);
-          setShowAddingSolutions(false);
-          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
-          setTestTube(prev => ({
-            ...prev,
-            color: 'Pink',
-            contents: ['CoCl₂', 'H₂O'],
-            volume: 60,
-            isCobaltAnimation: true
-          }));
-
-          // Clear cobalt animation flag after animation duration
-          setTimeout(() => {
-            setTestTube(prev => ({ ...prev, isCobaltAnimation: false }));
-          }, ANIMATION.COLOR_TRANSITION_DURATION + 1000);
-
-          setActiveEquipment("");
-          setShowToast("Cobalt solution added: pink [Co(H₂O)₆]²⁺ formed (60% full)");
-          setTimeout(() => setShowToast(""), 3000);
-        }, ANIMATION.DROPPER_DURATION);
-      }
+    if (equipmentId === 'cobalt-ii-solution' ||
+        equipmentId === 'concentrated-hcl' ||
+        equipmentId === 'distilled-water') {
+      // Show volume input modal for all bottles
+      setSelectedBottle(equipmentId);
+      setVolumeInput("");
+      setShowVolumeModal(true);
       return;
     }
 
