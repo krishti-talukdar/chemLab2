@@ -49,10 +49,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const isPositioned = position !== undefined;
   const baseClasses = `
-    flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer
+    flex flex-col items-center justify-center transition-all duration-200 cursor-pointer
     ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'}
-    ${isActive ? 'border-blue-500 bg-blue-50 scale-105' : 'border-gray-200 bg-white'}
-    ${isPositioned ? (id === 'burette' ? 'absolute min-w-[120px]' : 'absolute min-w-[80px]') : 'w-full'}
+    ${isActive ? 'scale-105' : ''}
+    ${isPositioned ? (
+      id === 'burette'
+        ? 'absolute min-w-[140px]'
+        : 'absolute min-w-[80px] p-3 rounded-lg border-2 border-gray-200 bg-white'
+    ) : 'w-full p-3 rounded-lg border-2 border-gray-200 bg-white'}
+    ${!isPositioned && isActive ? 'border-blue-500 bg-blue-50' : ''}
   `;
 
   const equipmentElement = (
