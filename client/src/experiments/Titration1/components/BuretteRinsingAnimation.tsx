@@ -227,13 +227,23 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 </div>
               </div>
 
-              <Button
-                onClick={startAnimation}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 text-lg font-semibold"
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Start Animation
-              </Button>
+              <div className="flex justify-center space-x-4">
+                <Button
+                  onClick={startAnimation}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 text-lg font-semibold"
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Start Animation
+                </Button>
+                <Button
+                  onClick={skipAnimation}
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
+                >
+                  <ArrowRight className="w-5 h-5 mr-2" />
+                  Skip Animation
+                </Button>
+              </div>
             </div>
           )}
 
