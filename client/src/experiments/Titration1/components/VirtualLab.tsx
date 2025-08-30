@@ -50,6 +50,7 @@ export default function VirtualLab({
   onStepUndo,
   onReset,
   completedSteps,
+  burettePreparationComplete,
 }: VirtualLabProps) {
   // Lab state
   const [conicalFlask, setConicalFlask] = useState<ConicalFlask>(INITIAL_FLASK);
