@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Droplets, CheckCircle, ArrowRight, FlaskConical, Beaker } from "lucide-react";
+import { CheckCircle, ArrowRight, FlaskConical, Play } from "lucide-react";
 
 interface BuretteRinsingAnimationProps {
   onComplete: () => void;
@@ -13,58 +13,50 @@ interface AnimationStep {
   title: string;
   description: string;
   duration: number;
-  illustration: string;
 }
 
 const animationSteps: AnimationStep[] = [
   {
     id: 1,
     title: "Rinse with Distilled Water",
-    description: "Rinse the burette thoroughly with distilled water to remove any impurities",
-    duration: 3000,
-    illustration: "💧"
+    description: "Filling burette with distilled water to clean",
+    duration: 4000,
   },
   {
     id: 2,
     title: "Discard Water Rinse",
-    description: "Discard the water rinse completely through the burette tip",
-    duration: 2000,
-    illustration: "🚰"
+    description: "Draining water through the tip to remove impurities",
+    duration: 3000,
   },
   {
     id: 3,
-    title: "Rinse with NaOH Solution",
-    description: "Rinse with a few mL of NaOH solution to condition the burette",
-    duration: 3000,
-    illustration: "🧪"
+    title: "Rinse with NaOH Solution", 
+    description: "Conditioning burette with small amount of NaOH",
+    duration: 4000,
   },
   {
     id: 4,
     title: "Discard NaOH Rinse",
-    description: "Discard the NaOH rinse to prevent dilution",
-    duration: 2000,
-    illustration: "🗑️"
+    description: "Removing conditioning solution",
+    duration: 3000,
   },
   {
     id: 5,
     title: "Fill with NaOH Solution",
-    description: "Fill the burette completely with NaOH solution using a funnel",
-    duration: 4000,
-    illustration: "⬆️"
+    description: "Filling burette completely with titrant",
+    duration: 5000,
   },
   {
     id: 6,
     title: "Remove Air Bubbles",
-    description: "Open the stopcock to remove air bubbles from the tip",
+    description: "Eliminating air bubbles from the tip",
     duration: 3000,
-    illustration: "💨"
   },
   {
     id: 7,
     title: "Set Initial Reading",
-    description: "Adjust to zero reading and record initial burette reading (±0.01 mL)",
-    duration: 2500,
-    illustration: "📊"
+    description: "Adjusting to zero reading",
+    duration: 2000,
   }
 ];
 
@@ -73,12 +65,22 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
   const [isAnimating, setIsAnimating] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [showComplete, setShowComplete] = useState(false);
+  const [liquidLevel, setLiquidLevel] = useState(0);
+  const [liquidColor, setLiquidColor] = useState('#87CEEB');
+  const [isDraining, setIsDraining] = useState(false);
+  const [showBubbles, setShowBubbles] = useState(false);
+  const [showStopcockFlow, setShowStopcockFlow] = useState(false);
 
   const startAnimation = () => {
     setIsAnimating(true);
     setCurrentStep(0);
     setCompletedSteps([]);
     setShowComplete(false);
+    setLiquidLevel(0);
+    setLiquidColor('#87CEEB');
+    setIsDraining(false);
+    setShowBubbles(false);
+    setShowStopcockFlow(false);
     animateNextStep(0);
   };
 
@@ -90,6 +92,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
     }
 
     setCurrentStep(stepIndex);
+    animateStepVisuals(stepIndex);
     
     setTimeout(() => {
       setCompletedSteps(prev => [...prev, stepIndex]);
@@ -97,18 +100,78 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
     }, animationSteps[stepIndex].duration);
   };
 
+  const animateStepVisuals = (stepIndex: number) => {
+    switch(stepIndex) {
+      case 0: // Rinse with water
+        setLiquidColor('#87CEEB'); // Light blue water
+        fillBurette(90);
+        break;
+      case 1: // Discard water
+        drainBurette();
+        break;
+      case 2: // Rinse with NaOH
+        setLiquidColor('#FFB6C1'); // Light pink NaOH
+        fillBurette(30);
+        break;
+      case 3: // Discard NaOH rinse
+        drainBurette();
+        break;
+      case 4: // Fill with NaOH
+        setLiquidColor('#FFB6C1'); // Pink NaOH solution
+        fillBurette(95);
+        break;
+      case 5: // Remove air bubbles
+        setShowBubbles(true);
+        setShowStopcockFlow(true);
+        setTimeout(() => {
+          setShowBubbles(false);
+          setShowStopcockFlow(false);
+        }, 2500);
+        break;
+      case 6: // Set initial reading
+        setLiquidLevel(90); // Adjust to zero mark
+        break;
+    }
+  };
+
+  const fillBurette = (targetLevel: number) => {
+    let currentLevel = 0;
+    const fillInterval = setInterval(() => {
+      currentLevel += 2;
+      setLiquidLevel(currentLevel);
+      if (currentLevel >= targetLevel) {
+        clearInterval(fillInterval);
+      }
+    }, 50);
+  };
+
+  const drainBurette = () => {
+    setIsDraining(true);
+    setShowStopcockFlow(true);
+    let currentLevel = liquidLevel;
+    const drainInterval = setInterval(() => {
+      currentLevel -= 3;
+      setLiquidLevel(Math.max(0, currentLevel));
+      if (currentLevel <= 0) {
+        clearInterval(drainInterval);
+        setIsDraining(false);
+        setShowStopcockFlow(false);
+      }
+    }, 60);
+  };
+
   const currentStepData = animationSteps[currentStep];
   const progress = ((completedSteps.length) / animationSteps.length) * 100;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl bg-white shadow-2xl">
+      <Card className="w-full max-w-4xl bg-white shadow-2xl">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
           <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Burette Preparation Protocol
           </CardTitle>
           <p className="text-center text-gray-600 mt-2">
-            Essential steps for accurate titration results
+            Watch the proper technique for accurate titration setup
           </p>
         </CardHeader>
         
@@ -121,16 +184,16 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
               
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Proper Burette Preparation
+                  Interactive Burette Preparation
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Before starting any titration, the burette must be properly cleaned, 
-                  conditioned, and filled to ensure accurate measurements.
+                  Watch realistic animations of proper burette cleaning, conditioning, 
+                  and filling procedures for accurate volumetric analysis.
                 </p>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                   <p className="text-sm text-yellow-800">
-                    <strong>Important:</strong> This preparation is crucial for obtaining 
-                    precise results (±0.01 mL accuracy). Follow each step carefully.
+                    <strong>Important:</strong> This visual demonstration shows each critical step 
+                    for achieving ±0.01 mL measurement precision.
                   </p>
                 </div>
               </div>
@@ -139,75 +202,175 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                 onClick={startAnimation}
                 className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 text-lg font-semibold"
               >
-                <ArrowRight className="w-5 h-5 mr-2" />
-                Begin Preparation
+                <Play className="w-5 h-5 mr-2" />
+                Start Animation
               </Button>
             </div>
           )}
 
           {isAnimating && (
-            <div className="space-y-6">
-              {/* Progress Bar */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-700">
-                    Step {currentStep + 1} of {animationSteps.length}
-                  </span>
-                  <span className="text-sm text-blue-600 font-semibold">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
-                <Progress value={progress} className="h-3" />
-              </div>
-
-              {/* Current Step Animation */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-3xl shadow-md animate-pulse">
-                    {currentStepData?.illustration}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Animation Visual */}
+              <div className="flex justify-center items-center">
+                <div className="relative">
+                  {/* Burette Stand */}
+                  <div className="w-8 h-96 bg-gray-600 rounded-sm mx-auto relative">
+                    {/* Clamp */}
+                    <div className="absolute top-16 -left-2 w-12 h-6 bg-gray-700 rounded"></div>
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-gray-800 mb-1">
-                      {currentStepData?.title}
-                    </h4>
-                    <p className="text-gray-600">
-                      {currentStepData?.description}
-                    </p>
+                  
+                  {/* Burette */}
+                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2">
+                    <div className="relative w-6 h-80 bg-gray-100 border-2 border-gray-300 rounded-sm">
+                      {/* Volume markings */}
+                      {[0, 10, 20, 30, 40, 50].map((mark) => (
+                        <div key={mark} className="absolute right-6 text-xs font-mono text-gray-600" 
+                             style={{ top: `${mark * 1.5}px` }}>
+                          {50 - mark}
+                        </div>
+                      ))}
+                      
+                      {/* Liquid inside burette */}
+                      <div 
+                        className="absolute bottom-0 left-0 right-0 transition-all duration-300 ease-in-out rounded-b-sm"
+                        style={{ 
+                          height: `${liquidLevel}%`, 
+                          backgroundColor: liquidColor,
+                          opacity: 0.8
+                        }}
+                      >
+                        {/* Liquid surface animation */}
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 animate-pulse"></div>
+                      </div>
+                      
+                      {/* Air bubbles */}
+                      {showBubbles && (
+                        <>
+                          <div className="absolute bottom-10 left-1 w-1 h-1 bg-white rounded-full animate-bounce" 
+                               style={{ animationDelay: '0s' }}></div>
+                          <div className="absolute bottom-16 right-1 w-1 h-1 bg-white rounded-full animate-bounce" 
+                               style={{ animationDelay: '0.2s' }}></div>
+                          <div className="absolute bottom-8 left-1/2 w-1 h-1 bg-white rounded-full animate-bounce" 
+                               style={{ animationDelay: '0.4s' }}></div>
+                        </>
+                      )}
+                    </div>
+                    
+                    {/* Stopcock */}
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                      <div className="w-4 h-4 bg-gray-400 rounded-full relative">
+                        <div className="w-2 h-2 bg-gray-600 rounded-full absolute top-1 left-1"></div>
+                      </div>
+                      
+                      {/* Liquid flow from stopcock */}
+                      {showStopcockFlow && (
+                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
+                          <div className="w-0.5 h-16 animate-pulse" 
+                               style={{ backgroundColor: liquidColor, opacity: 0.8 }}>
+                            {/* Flow droplets */}
+                            <div className="w-1 h-1 rounded-full absolute -left-0.25 top-0 animate-ping" 
+                                 style={{ backgroundColor: liquidColor }}></div>
+                            <div className="w-1 h-1 rounded-full absolute -left-0.25 top-4 animate-ping" 
+                                 style={{ backgroundColor: liquidColor, animationDelay: '0.2s' }}></div>
+                            <div className="w-1 h-1 rounded-full absolute -left-0.25 top-8 animate-ping" 
+                                 style={{ backgroundColor: liquidColor, animationDelay: '0.4s' }}></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <Droplets className="w-6 h-6 text-blue-500 animate-bounce" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Completed Steps Summary */}
-              <div className="space-y-2">
-                <h5 className="text-sm font-semibold text-gray-700">Completed Steps:</h5>
-                <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto">
-                  {animationSteps.map((step, index) => (
-                    <div
-                      key={step.id}
-                      className={`flex items-center space-x-3 p-2 rounded-lg text-sm ${
-                        completedSteps.includes(index)
-                          ? 'bg-green-50 text-green-800 border border-green-200'
-                          : index === currentStep
-                          ? 'bg-blue-50 text-blue-800 border border-blue-200'
-                          : 'bg-gray-50 text-gray-400'
-                      }`}
-                    >
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs">
-                        {completedSteps.includes(index) ? (
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                        ) : index === currentStep ? (
-                          <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                        ) : (
-                          <span className="text-gray-400">{index + 1}</span>
+                  
+                  {/* Funnel (appears during filling) */}
+                  {(currentStep === 0 || currentStep === 2 || currentStep === 4) && (
+                    <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
+                      <div className="w-8 h-6 bg-gray-300 rounded-t-full border-2 border-gray-400 relative">
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-gray-400"></div>
+                        {/* Liquid flowing through funnel */}
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0.5 h-8 animate-pulse" 
+                             style={{ backgroundColor: liquidColor, opacity: 0.6 }}></div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Beaker for waste (appears during draining) */}
+                  {(currentStep === 1 || currentStep === 3) && (
+                    <div className="absolute top-80 left-1/2 transform -translate-x-1/2">
+                      <div className="w-12 h-8 bg-gray-200 border-2 border-gray-400 rounded-b-lg relative">
+                        {/* Waste liquid collecting */}
+                        {isDraining && (
+                          <div className="absolute bottom-0 left-0 right-0 h-2 rounded-b-lg transition-all duration-1000" 
+                               style={{ backgroundColor: liquidColor, opacity: 0.6 }}></div>
                         )}
                       </div>
-                      <span className="flex-1">{step.title}</span>
-                      <span className="text-lg">{step.illustration}</span>
                     </div>
-                  ))}
+                  )}
+                </div>
+              </div>
+              
+              {/* Animation Info */}
+              <div className="space-y-6">
+                {/* Progress */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-700">
+                      Step {currentStep + 1} of {animationSteps.length}
+                    </span>
+                    <span className="text-sm text-blue-600 font-semibold">
+                      {Math.round(progress)}%
+                    </span>
+                  </div>
+                  <Progress value={progress} className="h-3" />
+                </div>
+
+                {/* Current Step */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+                  <h4 className="text-lg font-bold text-gray-800 mb-2">
+                    {currentStepData?.title}
+                  </h4>
+                  <p className="text-gray-600 mb-4">
+                    {currentStepData?.description}
+                  </p>
+                  
+                  {/* Step-specific instructions */}
+                  <div className="bg-white rounded-lg p-3 text-sm text-gray-700">
+                    {currentStep === 0 && "💧 Water fills the burette from top to bottom, washing away any residues."}
+                    {currentStep === 1 && "🚿 Opening stopcock allows water to drain, carrying impurities away."}
+                    {currentStep === 2 && "🧪 Small amount of NaOH solution conditions the glass surface."}
+                    {currentStep === 3 && "♻️ Conditioning solution is discarded to prevent dilution."}
+                    {currentStep === 4 && "📏 Burette fills completely with the titrant solution."}
+                    {currentStep === 5 && "💨 Air bubbles rise and escape through the stopcock opening."}
+                    {currentStep === 6 && "🎯 Final adjustment brings meniscus to the zero graduation mark."}
+                  </div>
+                </div>
+
+                {/* Completed Steps */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-semibold text-gray-700">Progress:</h5>
+                  <div className="space-y-1 max-h-32 overflow-y-auto">
+                    {animationSteps.map((step, index) => (
+                      <div
+                        key={step.id}
+                        className={`flex items-center space-x-3 p-2 rounded text-sm transition-all ${
+                          completedSteps.includes(index)
+                            ? 'bg-green-50 text-green-800 border border-green-200'
+                            : index === currentStep
+                            ? 'bg-blue-50 text-blue-800 border border-blue-200 shadow-sm'
+                            : 'bg-gray-50 text-gray-400'
+                        }`}
+                      >
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs">
+                          {completedSteps.includes(index) ? (
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          ) : index === currentStep ? (
+                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                          ) : (
+                            <span className="text-gray-400">{index + 1}</span>
+                          )}
+                        </div>
+                        <span className="flex-1">{step.title}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -224,14 +387,14 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   Burette Preparation Complete!
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Your burette is now properly prepared and ready for accurate titration. 
-                  The initial reading has been set to 0.00 mL.
+                  Perfect! Your burette is now properly prepared with NaOH solution. 
+                  The initial reading is set at 0.00 mL with ±0.01 mL precision.
                 </p>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                   <div className="flex items-center justify-center space-x-2 text-green-800">
-                    <Beaker className="w-5 h-5" />
+                    <CheckCircle className="w-5 h-5" />
                     <span className="font-semibold">
-                      Initial Reading: 0.00 ± 0.01 mL
+                      Initial Reading: 0.00 ± 0.01 mL | Ready for Titration
                     </span>
                   </div>
                 </div>
@@ -243,7 +406,8 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
                   variant="outline"
                   className="border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
-                  Watch Again
+                  <Play className="w-4 h-4 mr-2" />
+                  Replay Animation
                 </Button>
                 <Button
                   onClick={onComplete}
