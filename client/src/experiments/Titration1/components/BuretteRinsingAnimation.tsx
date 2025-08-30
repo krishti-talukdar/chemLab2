@@ -130,7 +130,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
         break;
       case 4: // Fill with NaOH
         setLiquidColor('#FFB6C1'); // Pink NaOH solution
-        fillBurette(95, () => setStepAnimationComplete(true));
+        fillBurette(98, () => setStepAnimationComplete(true));
         break;
       case 5: // Remove air bubbles
         setShowBubbles(true);
