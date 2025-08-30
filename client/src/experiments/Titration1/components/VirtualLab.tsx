@@ -611,6 +611,7 @@ export default function VirtualLab({
                       setShowToast(`${id.replace('-', ' ')} removed from workbench`);
                       setTimeout(() => setShowToast(""), 2000);
                     }}
+                    onReposition={handleEquipmentReposition}
                     onInteract={handleEquipmentInteract}
                     isActive={activeEquipment === equipment.id}
                     color={equipment.id === 'conical-flask' ? conicalFlask.colorHex : undefined}
