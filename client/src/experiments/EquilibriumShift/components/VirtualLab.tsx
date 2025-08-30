@@ -188,11 +188,12 @@ export default function VirtualLab({
       }
     }
 
-    // Special rule: cobalt solution should not appear on workbench
+    // Special handling for cobalt solution: allow direct addition to test tube OR placement on workbench
     if (equipmentId === 'cobalt-ii-solution') {
       const tubePos = getEquipmentPosition('test-tube');
       const withinTube = Math.abs(x - tubePos.x) < 100 && Math.abs(y - tubePos.y) < 180;
 
+      // If dropped directly onto test tube, add the solution
       if (withinTube && !testTube.contents.includes('CoCl₂')) {
         setShowAddingSolutions(true);
         setTimeout(() => {
@@ -223,11 +224,9 @@ export default function VirtualLab({
             }
           }
         }, ANIMATION.DROPPER_DURATION);
-      } else {
-        setShowToast('Drop cobalt onto the test tube to add it');
-        setTimeout(() => setShowToast(''), 2500);
+        return; // Don't place on workbench if added to test tube
       }
-      return; // Do not place cobalt bottle on the workbench
+      // If not dropped on test tube, proceed to place on workbench like other equipment
     }
 
     // For all other equipment, proceed with normal placement
