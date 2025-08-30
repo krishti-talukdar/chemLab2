@@ -37,6 +37,7 @@ interface VirtualLabProps {
   onStepUndo?: (stepId?: number) => void;
   onReset: () => void;
   completedSteps: number[];
+  burettePreparationComplete: boolean;
 }
 
 export default function VirtualLab({
