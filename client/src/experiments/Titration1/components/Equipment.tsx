@@ -82,10 +82,19 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       {/* Equipment icon with custom styling for specific items */}
       <div className="relative">
-        {React.cloneElement(icon, {
-          className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
-          size: isPositioned ? 48 : 36
-        })}
+        {id === 'burette' && isPositioned ? (
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
+            alt="Burette with NaOH solution"
+            className={`h-32 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-110' : ''}`}
+            style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.1))' }}
+          />
+        ) : (
+          React.cloneElement(icon, {
+            className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
+            size: isPositioned ? 48 : 36
+          })
+        )}
         
         {/* Special rendering for different equipment types */}
         {id === 'conical-flask' && color && (
