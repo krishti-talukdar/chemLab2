@@ -59,6 +59,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
   allEquipmentPositions = [],
   currentStep = 1,
   disabled = false,
+  isCobaltAnimation = false,
+  color,
+  volume,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
