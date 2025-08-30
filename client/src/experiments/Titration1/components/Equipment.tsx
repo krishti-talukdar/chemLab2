@@ -81,8 +81,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
       if (!workbench) return;
 
       const workbenchRect = workbench.getBoundingClientRect();
-      const newX = Math.max(0, Math.min(e.clientX - workbenchRect.left - dragOffset.x, workbenchRect.width - 160));
-      const newY = Math.max(0, Math.min(e.clientY - workbenchRect.top - dragOffset.y, workbenchRect.height - 320));
+      const equipmentWidth = id === 'burette' ? 200 : 80;
+      const equipmentHeight = id === 'burette' ? 360 : 80;
+      const newX = Math.max(0, Math.min(e.clientX - workbenchRect.left - dragOffset.x, workbenchRect.width - equipmentWidth));
+      const newY = Math.max(0, Math.min(e.clientY - workbenchRect.top - dragOffset.y, workbenchRect.height - equipmentHeight));
 
       setCurrentPosition({ x: newX, y: newY });
     };
