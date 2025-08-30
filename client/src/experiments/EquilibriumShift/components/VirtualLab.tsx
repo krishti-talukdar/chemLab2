@@ -279,7 +279,14 @@ export default function VirtualLab({
             color: 'Pink',
             contents: ['CoCl₂', 'H₂O'],
             volume: 60,
+            isCobaltAnimation: true
           }));
+
+          // Clear cobalt animation flag after animation duration
+          setTimeout(() => {
+            setTestTube(prev => ({ ...prev, isCobaltAnimation: false }));
+          }, ANIMATION.COLOR_TRANSITION_DURATION + 1000);
+
           setActiveEquipment("");
           setShowToast("Cobalt solution added: pink [Co(H₂O)₆]²⁺ formed (60% full)");
           setTimeout(() => setShowToast(""), 3000);
@@ -960,7 +967,7 @@ export default function VirtualLab({
                         <li>�� Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
-                        <li>�� High Cl⁻ concentration</li>
+                        <li>�� High Cl��� concentration</li>
                       </ul>
                     </div>
                   </div>
