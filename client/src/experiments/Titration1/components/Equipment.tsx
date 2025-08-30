@@ -124,8 +124,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
         )}
       </div>
 
-      <span className={`text-center font-medium mt-2 ${isPositioned ? 'text-xs' : 'text-sm'}`}>
-        {name}
+      <span className={`text-center font-medium mt-2 ${
+        isPositioned
+          ? (id === 'burette' ? 'text-xs font-semibold text-blue-700' : 'text-xs')
+          : 'text-sm'
+      }`}>
+        {id === 'burette' && isPositioned ? 'Burette (50 mL NaOH)' : name}
       </span>
       
       {!isPositioned && !disabled && (
