@@ -204,7 +204,7 @@ export default function BuretteRinsingAnimation({ onComplete }: BuretteRinsingAn
           </p>
         </CardHeader>
         
-        <CardContent className="p-8">
+        <CardContent className="p-6 max-h-[72vh] overflow-y-auto">
           {!isAnimating && !showComplete && (
             <div className="text-center space-y-6">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
