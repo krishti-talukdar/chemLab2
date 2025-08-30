@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Play, Pause, RotateCcw, BookOpen } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import VirtualLab from "./VirtualLab";
+import BuretteRinsingAnimation from "./BuretteRinsingAnimation";
 import { titration1Data } from "../data";
 import { ExperimentMode } from "../types";
 import { useUpdateProgress } from "@/hooks/use-experiments";
@@ -21,6 +22,8 @@ export default function Titration1App({
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
+  const [showBuretteAnimation, setShowBuretteAnimation] = useState(false);
+  const [burettePreparationComplete, setBurettePreparationComplete] = useState(false);
   const [mode, setMode] = useState<ExperimentMode>({ current: 'guided', currentGuidedStep: 0 });
 
   const experiment = titration1Data;
@@ -54,6 +57,17 @@ export default function Titration1App({
     }
   };
 
+  const handleShowBuretteAnimation = () => {
+    setShowBuretteAnimation(true);
+  };
+
+  const handleBurettePreparationComplete = () => {
+    setShowBuretteAnimation(false);
+    setBurettePreparationComplete(true);
+    setExperimentStarted(true);
+    setIsRunning(true);
+  };
+
   const handleStartExperiment = () => {
     setExperimentStarted(true);
     setIsRunning(true);
@@ -61,6 +75,8 @@ export default function Titration1App({
 
   const handleReset = () => {
     setExperimentStarted(false);
+    setShowBuretteAnimation(false);
+    setBurettePreparationComplete(false);
     setIsRunning(false);
     setTimer(0);
     setCurrentStep(0);
@@ -196,7 +212,7 @@ export default function Titration1App({
         {/* Main Lab Area */}
         <div className="w-full relative">
           {/* Experiment Not Started Overlay */}
-          {!experimentStarted && (
+          {!experimentStarted && !showBuretteAnimation && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
               <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-lg">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -206,11 +222,11 @@ export default function Titration1App({
                   Ready to Start Titration?
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Begin your interactive titration experiment! Standardize NaOH solution using 
-                  0.1N oxalic acid and master precise volumetric analysis techniques.
+                  Begin your interactive titration experiment! First, learn the proper burette
+                  preparation technique, then standardize NaOH solution using 0.1N oxalic acid.
                 </p>
                 <button
-                  onClick={handleStartExperiment}
+                  onClick={handleShowBuretteAnimation}
                   className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-medium transition-all duration-200 mx-auto transform hover:scale-105"
                 >
                   <Play className="w-5 h-5" />
@@ -218,6 +234,13 @@ export default function Titration1App({
                 </button>
               </div>
             </div>
+          )}
+
+          {/* Burette Rinsing Animation */}
+          {showBuretteAnimation && (
+            <BuretteRinsingAnimation
+              onComplete={handleBurettePreparationComplete}
+            />
           )}
 
           <Card className="min-h-[85vh] shadow-xl">
@@ -263,6 +286,7 @@ export default function Titration1App({
                 onStepUndo={handleStepUndo}
                 onReset={handleReset}
                 completedSteps={completedSteps}
+                burettePreparationComplete={burettePreparationComplete}
               />
             </CardContent>
           </Card>
