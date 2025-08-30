@@ -37,6 +37,7 @@ interface VirtualLabProps {
   onStepUndo?: (stepId?: number) => void;
   onReset: () => void;
   completedSteps: number[];
+  burettePreparationComplete: boolean;
 }
 
 export default function VirtualLab({
@@ -49,6 +50,7 @@ export default function VirtualLab({
   onStepUndo,
   onReset,
   completedSteps,
+  burettePreparationComplete,
 }: VirtualLabProps) {
   // Lab state
   const [conicalFlask, setConicalFlask] = useState<ConicalFlask>(INITIAL_FLASK);
@@ -617,11 +619,28 @@ export default function VirtualLab({
                 Live Analysis
               </h3>
 
+              {/* Burette Preparation Status */}
+              {burettePreparationComplete && (
+                <div className="mb-4">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span className="text-sm font-semibold text-green-800">
+                        Burette Prepared
+                      </span>
+                    </div>
+                    <p className="text-xs text-green-600 mt-1">
+                      Initial reading: 0.00 ± 0.01 mL
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Current State */}
               <div className="mb-4">
                 <h4 className="font-semibold text-sm text-gray-700 mb-2">Current Phase</h4>
                 <div className="flex items-center space-x-2 mb-2">
-                  <div 
+                  <div
                     className="w-4 h-4 rounded-full border border-gray-300"
                     style={{ backgroundColor: titrationState.flaskColor }}
                   ></div>

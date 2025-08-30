@@ -891,7 +891,7 @@ export default function VirtualLab({
                         <li>�� Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
-                        <li>�� High Cl⁻ concentration</li>
+                        <li>���� High Cl⁻ concentration</li>
                       </ul>
                     </div>
                   </div>
@@ -1016,7 +1016,9 @@ export default function VirtualLab({
                 <input
                   type="number"
                   min="0.1"
-                  max="50"
+                  max={selectedBottle === 'cobalt-ii-solution' ? '5.0' :
+                       selectedBottle === 'concentrated-hcl' ? '2.0' :
+                       selectedBottle === 'distilled-water' ? '3.0' : '50'}
                   step="0.1"
                   value={volumeInput}
                   onChange={(e) => setVolumeInput(e.target.value)}
@@ -1025,7 +1027,9 @@ export default function VirtualLab({
                   autoFocus
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Recommended range: 0.1 - 50 mL
+                  Recommended range: 0.1 - {selectedBottle === 'cobalt-ii-solution' ? '5.0' :
+                                              selectedBottle === 'concentrated-hcl' ? '2.0' :
+                                              selectedBottle === 'distilled-water' ? '3.0' : '50'} mL
                 </p>
               </div>
 
@@ -1043,8 +1047,12 @@ export default function VirtualLab({
                 <Button
                   onClick={() => {
                     const volume = parseFloat(volumeInput);
-                    if (isNaN(volume) || volume <= 0 || volume > 50) {
-                      setShowToast("Please enter a valid volume between 0.1 and 50 mL");
+                    const maxVolume = selectedBottle === 'cobalt-ii-solution' ? 5.0 :
+                                     selectedBottle === 'concentrated-hcl' ? 2.0 :
+                                     selectedBottle === 'distilled-water' ? 3.0 : 50;
+
+                    if (isNaN(volume) || volume <= 0 || volume > maxVolume) {
+                      setShowToast(`Please enter a valid volume between 0.1 and ${maxVolume} mL`);
                       setTimeout(() => setShowToast(""), 3000);
                       return;
                     }
