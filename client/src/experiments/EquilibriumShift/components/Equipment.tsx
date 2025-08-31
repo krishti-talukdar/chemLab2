@@ -135,19 +135,27 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 {/* Colored liquid overlay when volume > 0 */}
                 {volume > 0 && (
                   <div
-                    className="absolute left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                    className="absolute left-1/2 -translate-x-1/2 transition-all"
                     style={{
                       bottom: '28px',
                       width: '28px',
-                      height: `${Math.max(25, (volume / 100) * 150)}px`,
-                      backgroundColor: color,
-                      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)',
-                      opacity: 0.85,
-                      borderRadius: '0 0 14px 14px',
-                      border: '0.5px solid rgba(255,255,255,0.3)',
-                      background: `linear-gradient(180deg, ${color}F0 0%, ${color}FF 50%, ${color}E0 100%)`
+                      height: '150px',
+                      overflow: 'hidden',
+                      borderRadius: '0 0 14px 14px'
                     }}
-                  />
+                  >
+                    <div
+                      className="absolute left-0 right-0 bottom-0 transition-all duration-500"
+                      style={{
+                        height: `${Math.max(25, (volume / 100) * 150)}px`,
+                        backgroundColor: color,
+                        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)',
+                        opacity: 0.85,
+                        border: '0.5px solid rgba(255,255,255,0.3)',
+                        background: `linear-gradient(180deg, ${color}F0 0%, ${color}FF 50%, ${color}E0 100%)`
+                      }}
+                    />
+                  </div>
                 )}
               </div>
               <span className="text-sm font-medium mt-2 text-center block">{name}</span>
