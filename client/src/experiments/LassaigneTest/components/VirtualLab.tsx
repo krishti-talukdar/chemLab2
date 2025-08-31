@@ -130,7 +130,7 @@ export default function VirtualLab({
             <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Explore Lassaigne's Test?</h3>
             <p className="text-gray-600 mb-6">Start your interactive journey with qualitative analysis. Prepare Lassaigne's extract and detect nitrogen, sulphur, and halides using classic spot tests.</p>
             <button onClick={onStartExperiment} className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white rounded-lg font-medium transition-all duration-200 mx-auto transform hover:scale-105">
-              <ShieldAlert className="w-5 h-5" />
+              <Play className="w-5 h-5" />
               <span>Start Virtual Lab</span>
             </button>
           </div>
