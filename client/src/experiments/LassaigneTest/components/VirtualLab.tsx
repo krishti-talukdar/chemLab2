@@ -75,16 +75,15 @@ export default function VirtualLab({
   };
 
   const handleSkipPreparation = () => {
-    // Skip only the animation/tutorial; still assume extract prepared
     setHasExtract(true);
     onStepComplete(1);
     setShowPreparation(false);
     setPrepStarted(false);
   };
 
+  const [, navigate] = useLocation();
   const handleStartLabClick = () => {
-    onStartExperiment();
-    setShowPreparation(true);
+    navigate("/experiment/7/preparation");
   };
 
   const currentGuidedStep = mode.currentGuidedStep ?? 0;
