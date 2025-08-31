@@ -25,6 +25,14 @@ export default function LassaigneApp({ onBack }: LassaigneAppProps) {
   const updateProgress = useUpdateProgress();
 
   useEffect(() => {
+    const prepared = localStorage.getItem("lassaigne:hasExtract") === "true";
+    if (prepared) {
+      setExperimentStarted(true);
+      setCompletedSteps((prev) => (prev.includes(1) ? prev : [...prev, 1]));
+    }
+  }, []);
+
+  useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isRunning && experimentStarted) {
       interval = setInterval(() => setTimer(t => t + 1), 1000);
