@@ -38,6 +38,7 @@ export default function VirtualLab({
   const actions = useMemo(() => ([
     {
       id: 1,
+      stepId: 1,
       title: "Prepare Lassaigne's Extract",
       icon: <FlaskConical className="w-5 h-5" />,
       description: "Heat organic compound with sodium, then quench and filter to obtain clear extract.",
@@ -50,6 +51,7 @@ export default function VirtualLab({
     },
     {
       id: 2,
+      stepId: 4,
       title: "Nitrogen Test (Prussian Blue)",
       icon: <Beaker className="w-5 h-5" />,
       description: "Add FeSO₄, boil, cool, acidify with HCl, then add FeCl₃.",
@@ -62,6 +64,7 @@ export default function VirtualLab({
     },
     {
       id: 3,
+      stepId: 6,
       title: "Sulphur Test (Lead Acetate)",
       icon: <TestTube className="w-5 h-5" />,
       description: "Acidify with acetic acid and add lead acetate.",
@@ -74,6 +77,7 @@ export default function VirtualLab({
     },
     {
       id: 4,
+      stepId: 7,
       title: "Sulphur Test (Nitroprusside)",
       icon: <Droplets className="w-5 h-5" />,
       description: "Make alkaline and add sodium nitroprusside.",
@@ -86,6 +90,7 @@ export default function VirtualLab({
     },
     {
       id: 5,
+      stepId: 7,
       title: "Remove Interference (for Halide Test)",
       icon: <Eraser className="w-5 h-5" />,
       description: "Boil a fresh portion with dilute HNO₃ to destroy CN⁻/S²⁻.",
@@ -98,6 +103,7 @@ export default function VirtualLab({
     },
     {
       id: 6,
+      stepId: 8,
       title: "Halogen Test (AgNO₃)",
       icon: <Sparkles className="w-5 h-5" />,
       description: "After HNO₃ treatment, add AgNO₃ to observe halide precipitate.",
