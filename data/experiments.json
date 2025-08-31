@@ -446,5 +446,46 @@
       }
     ],
     "safetyInfo": "Sodium hydroxide is highly corrosive and can cause severe burns. Oxalic acid is toxic if ingested and can cause irritation. Always wear safety goggles and gloves. Handle all chemicals with care and wash hands thoroughly after the experiment. Work in a well-ventilated area."
+  },
+  {
+    "title": "Detection of Nitrogen, Sulphur, Chlorine, Bromine, and Iodine (Lassaigne's Test)",
+    "description": "Perform Lassaigne's test to detect heteroatoms in organic compounds by preparing sodium fusion extract and carrying out confirmatory tests for nitrogen, sulphur, and halogens.",
+    "category": "Qualitative Analysis",
+    "difficulty": "Intermediate",
+    "duration": 50,
+    "steps": 9,
+    "rating": 4.7,
+    "imageUrl": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&h=400",
+    "equipment": [
+      "Sodium Metal",
+      "Ignition Tube",
+      "Tongs",
+      "Beaker",
+      "Filter Paper",
+      "Test Tubes",
+      "Dropper Pipettes",
+      "Water Bath",
+      "FeSO₄ Solution",
+      "FeCl₃ Solution",
+      "Dilute HCl",
+      "Lead Acetate Solution",
+      "Sodium Nitroprusside",
+      "Dilute Acetic Acid",
+      "Dilute HNO₃",
+      "AgNO₃ Solution",
+      "Ammonia Solution"
+    ],
+    "stepDetails": [
+      { "id": 1, "title": "Safety and Setup", "description": "Wear goggles and gloves. Cut a small piece of dry sodium under kerosene. Set up ignition tube, tongs, and water beaker for quenching.", "duration": "4 minutes", "safety": "Sodium reacts violently with water; handle under kerosene and use tongs.", "completed": false },
+      { "id": 2, "title": "Heat Organic Compound with Sodium", "description": "Add a small piece of sodium to the ignition tube. Add the organic compound. Heat strongly until the tube becomes red hot.", "duration": "6 minutes", "completed": false },
+      { "id": 3, "title": "Quench and Prepare Extract", "description": "Plunge the hot tube into a beaker of distilled water wrapped in cloth. Boil and crush, then filter to obtain clear sodium fusion extract (Lassaigne's extract).", "duration": "6 minutes", "completed": false },
+      { "id": 4, "title": "Test for Nitrogen (Prussian Blue)", "description": "To 2 mL extract add freshly prepared FeSO₄, boil, cool, acidify with dilute HCl, then add a few drops of FeCl₃. Formation of Prussian blue confirms nitrogen.", "duration": "8 minutes", "completed": false },
+      { "id": 5, "title": "Alternate Nitrogen Confirmation", "description": "Cyanide test: To the extract add FeSO₄ and FeCl₃, then acidify with H₂SO₄/HCl; deep blue color indicates [Fe₄[Fe(CN)₆]₃] formation.", "duration": "4 minutes", "completed": false },
+      { "id": 6, "title": "Test for Sulphur (Lead Acetate)", "description": "Acidify a portion of extract with acetic acid and add lead acetate solution. Black precipitate of PbS confirms sulphur.", "duration": "6 minutes", "completed": false },
+      { "id": 7, "title": "Alternate Sulphur Test (Nitroprusside)", "description": "Add sodium nitroprusside to alkaline extract; purple/violet color indicates sulphide ions.", "duration": "4 minutes", "completed": false },
+      { "id": 8, "title": "Remove Interference and Test for Halogens", "description": "Boil a fresh portion of extract with dilute HNO₃ to decompose CN⁻/S²⁻. Cool and add AgNO₃: white (Cl⁻), cream (Br⁻), or yellow (I⁻) precipitate.", "duration": "6 minutes", "completed": false },
+      { "id": 9, "title": "Confirm Halogen by Ammonia Solubility", "description": "Treat the silver halide precipitate with NH₃: AgCl dissolves in dilute NH₃; AgBr dissolves in concentrated NH₃; AgI is insoluble.", "duration": "6 minutes", "completed": false }
+    ],
+    "safetyInfo": "Perform sodium fusion with great care. Dry sodium under kerosene; never touch with wet hands. Use safety shield when heating. Handle acids, AgNO₃, and ammonia with gloves and goggles. Dispose of silver waste properly."
   }
 ]
