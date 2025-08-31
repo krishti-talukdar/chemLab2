@@ -218,9 +218,8 @@ export default function VirtualLab({
                   </div>
                   <div className="flex items-center justify-center gap-3">
                     <Button onClick={startPreparation} className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white">
-                      <Play className="mr-2 h-4 w-4" /> Start Animation
+                      <Play className="mr-2 h-4 w-4" /> Start Preparation
                     </Button>
-                    <Button variant="outline" onClick={handleSkipPreparation}>Skip Animation</Button>
                   </div>
                 </>
               ) : (
@@ -239,7 +238,6 @@ export default function VirtualLab({
                     ) : (
                       <Button onClick={finishPreparation} className="bg-emerald-600 hover:bg-emerald-700 text-white">Finish & Use Extract</Button>
                     )}
-                    <Button variant="ghost" onClick={handleSkipPreparation}>Skip Animation</Button>
                   </div>
                 </>
               )}
