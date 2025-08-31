@@ -6,12 +6,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Experiment from "@/pages/experiment";
 import NotFound from "@/pages/not-found";
+import LassaignePreparationPage from "@/pages/lassaigne-preparation";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/experiment/7/preparation" component={require("@/pages/lassaigne-preparation").default} />
+      <Route path="/experiment/7/preparation" component={LassaignePreparationPage} />
       <Route path="/experiment/:id" component={Experiment} />
       <Route component={NotFound} />
     </Switch>
