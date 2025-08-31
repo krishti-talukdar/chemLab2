@@ -582,6 +582,7 @@ export default function VirtualLab({
     setStepHistory([]);
     setShowAddingSolutions(false);
     setShowToast("");
+    setObservePulse(true);
     onReset();
   };
 
