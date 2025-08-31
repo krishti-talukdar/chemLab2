@@ -65,7 +65,8 @@ export default function EquilibriumShiftApp({
     setTimer(0);
     setCurrentStep(0);
     setCompletedSteps([]);
-    setMode({ current: 'free' });
+    // Keep in guided mode so the Experiment Progress is visible after reset
+    setMode({ current: 'guided', currentGuidedStep: 0 });
 
     updateProgress.mutate({
       experimentId,
