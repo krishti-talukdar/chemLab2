@@ -196,6 +196,58 @@ export default function VirtualLab({
         </div>
       )}
 
+      {/* Preparation protocol overlay */}
+      {experimentStarted && showPreparation && !hasExtract && (
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-20 flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-50 to-emerald-50 px-6 py-4">
+              <h3 className="text-lg font-semibold text-blue-700">Lassaigne's Extract Preparation Protocol</h3>
+              <p className="text-sm text-gray-600">Watch the proper technique for safe sodium fusion and extract preparation.</p>
+            </div>
+            <div className="px-6 py-6 text-center">
+              {!prepStarted ? (
+                <>
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FlaskConical className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900 mb-2">Interactive Extract Preparation</h4>
+                  <p className="text-gray-700 mb-4">Follow a short guided sequence to prepare a clear sodium fusion extract used in all subsequent tests.</p>
+                  <p className="text-gray-600 text-sm mb-6">Tip: You can skip the animation if you're already familiar with the procedure.</p>
+                  <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-md p-3 text-sm max-w-xl mx-auto mb-6">
+                    Important: Sodium reacts violently with water. Handle under kerosene with forceps and use a safety shield when heating.
+                  </div>
+                  <div className="flex items-center justify-center gap-3">
+                    <Button onClick={startPreparation} className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white">
+                      <Play className="mr-2 h-4 w-4" /> Start Animation
+                    </Button>
+                    <Button variant="outline" onClick={handleSkipPreparation}>Skip Animation</Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mb-4 text-left">
+                    <div className="text-sm text-gray-600">Step {prepStep + 1} of {preparationSteps.length}</div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div className="h-2 rounded-full bg-blue-600" style={{ width: `${((prepStep + 1) / preparationSteps.length) * 100}%` }} />
+                    </div>
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">{preparationSteps[prepStep].title}</h4>
+                  <p className="text-gray-700 mb-6">{preparationSteps[prepStep].detail}</p>
+                  <div className="flex items-center justify-center gap-3">
+                    {prepStep < preparationSteps.length - 1 ? (
+                      <Button onClick={() => setPrepStep((s) => s + 1)} className="bg-blue-600 hover:bg-blue-700 text-white">Next</Button>
+                    ) : (
+                      <Button onClick={finishPreparation} className="bg-emerald-600 hover:bg-emerald-700 text-white">Finish & Use Extract</Button>
+                    )}
+                    <Button variant="ghost" onClick={handleSkipPreparation}>Skip Animation</Button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
         {actions.map((action) => (
           <Card key={action.id} className={`transition-all ${currentGuidedStep + 1 === action.id ? 'ring-2 ring-blue-400' : ''}`}>
