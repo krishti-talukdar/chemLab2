@@ -74,6 +74,7 @@ export default function VirtualLab({
   const [showVolumeModal, setShowVolumeModal] = useState(false);
   const [selectedBottle, setSelectedBottle] = useState<string>("");
   const [volumeInput, setVolumeInput] = useState<string>("");
+  const [observePulse, setObservePulse] = useState<boolean>(true);
 
   // Stop the timer when the results & analysis modal appears
   useEffect(() => {
