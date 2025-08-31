@@ -437,197 +437,20 @@ export default function VirtualLab({
     }
 
     if (equipmentId === 'concentrated-hcl') {
-      // Reset water clicks when switching to HCl
-      if (waterClickCount > 0) {
-        setWaterClickCount(0);
-      }
-
-      // Progressive color changes: pink → purple → blue
-      const newClickCount = hclClickCount + 1;
-      setHclClickCount(newClickCount);
-
-      animateStirring();
-      setActiveEquipment(equipmentId);
-
-      setDropperAction({
-        id: Date.now().toString(),
-        reagentId: 'hcl',
-        targetId: 'test-tube',
-        amount: 1.0,
-        timestamp: Date.now(),
-        isAnimating: true
-      });
-
-      const isFirstClick = newClickCount === 1;
-      const isSecondClick = newClickCount === 2;
-
-      if (isFirstClick) {
-        setShowToast('Adding HCl... Pink → Purple transition!');
-        setShowAddingSolutions(true);
-
-        setTimeout(() => {
-          setDropperAction(null);
-          setShowAddingSolutions(false);
-          animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
-
-          setTestTube(prev => ({
-            ...prev,
-            contents: [...prev.contents, 'HCl'],
-            volume: Math.min(prev.volume + 10, 100)
-          }));
-
-          const logEntry: ExperimentLog = {
-            id: Date.now().toString(),
-            timestamp: Date.now(),
-            action: 'Added HCl (1st time)',
-            reagent: 'Concentrated HCl',
-            amount: 1.0,
-            colorBefore: testTube.colorHex,
-            colorAfter: COLORS.PURPLE,
-            observation: 'Solution changing to purple - equilibrium shifting right',
-            equilibriumShift: 'right'
-          };
-          setExperimentLog(prev => [...prev, logEntry]);
-
-          setActiveEquipment("");
-          setShowToast('HCl added! Solution turned purple - equilibrium shifting');
-          setTimeout(() => setShowToast(""), 3000);
-        }, ANIMATION.DROPPER_DURATION);
-
-      } else if (isSecondClick) {
-        setShowToast('Adding more HCl... Purple → Blue transition!');
-        setShowAddingSolutions(true);
-
-        setTimeout(() => {
-          setDropperAction(null);
-          setShowAddingSolutions(false);
-          animateColorTransition(testTube.colorHex, COLORS.BLUE, EQUILIBRIUM_STATES.chloride);
-
-          setTestTube(prev => ({
-            ...prev,
-            volume: Math.min(prev.volume + 10, 100)
-          }));
-
-          const logEntry: ExperimentLog = {
-            id: Date.now().toString(),
-            timestamp: Date.now(),
-            action: 'Added HCl (2nd time)',
-            reagent: 'Concentrated HCl',
-            amount: 1.0,
-            colorBefore: testTube.colorHex,
-            colorAfter: COLORS.BLUE,
-            observation: 'Solution changed to blue - equilibrium fully shifted right',
-            equilibriumShift: 'right'
-          };
-          setExperimentLog(prev => [...prev, logEntry]);
-
-          setActiveEquipment("");
-          setShowToast('HCl added! Solution turned blue - [CoCl₄]²⁻ complex formed');
-          setTimeout(() => setShowToast(""), 3000);
-        }, ANIMATION.DROPPER_DURATION);
-
-      } else {
-        setShowToast('Equilibrium already at maximum blue! Add water to reverse.');
-        setTimeout(() => setShowToast(""), 3000);
-        setHclClickCount(2); // Cap at 2 clicks
-      }
+      // Open volume modal for HCl; behavior handled in handleVolumeSubmit using click counts
+      if (waterClickCount > 0) setWaterClickCount(0);
+      setSelectedBottle(equipmentId);
+      setVolumeInput("");
+      setShowVolumeModal(true);
       return;
     }
 
     if (equipmentId === 'distilled-water') {
-      // Reset HCl clicks when switching to water
-      if (hclClickCount > 0) {
-        setHclClickCount(0);
-      }
-
-      // Progressive color changes: blue → purple → pink
-      const newClickCount = waterClickCount + 1;
-      setWaterClickCount(newClickCount);
-
-      animateStirring();
-      setActiveEquipment(equipmentId);
-
-      setDropperAction({
-        id: Date.now().toString(),
-        reagentId: 'water',
-        targetId: 'test-tube',
-        amount: 2.0,
-        timestamp: Date.now(),
-        isAnimating: true
-      });
-
-      const isFirstClick = newClickCount === 1;
-      const isSecondClick = newClickCount === 2;
-
-      if (isFirstClick) {
-        setShowToast('Adding water... Blue → Purple transition!');
-        setShowAddingSolutions(true);
-
-        setTimeout(() => {
-          setDropperAction(null);
-          setShowAddingSolutions(false);
-          animateColorTransition(testTube.colorHex, COLORS.PURPLE, EQUILIBRIUM_STATES.transition);
-
-          setTestTube(prev => ({
-            ...prev,
-            volume: Math.min(prev.volume + 15, 100)
-          }));
-
-          const logEntry: ExperimentLog = {
-            id: Date.now().toString(),
-            timestamp: Date.now(),
-            action: 'Added Water (1st time)',
-            reagent: 'Distilled Water',
-            amount: 2.0,
-            colorBefore: testTube.colorHex,
-            colorAfter: COLORS.PURPLE,
-            observation: 'Solution changing to purple - equilibrium shifting left',
-            equilibriumShift: 'left'
-          };
-          setExperimentLog(prev => [...prev, logEntry]);
-
-          setActiveEquipment("");
-          setShowToast('Water added! Solution turned purple - equilibrium shifting back');
-          setTimeout(() => setShowToast(""), 3000);
-        }, ANIMATION.DROPPER_DURATION);
-
-      } else if (isSecondClick) {
-        setShowToast('Adding more water... Purple → Pink transition!');
-        setShowAddingSolutions(true);
-
-        setTimeout(() => {
-          setDropperAction(null);
-          setShowAddingSolutions(false);
-          animateColorTransition(testTube.colorHex, COLORS.PINK, EQUILIBRIUM_STATES.hydrated);
-
-          setTestTube(prev => ({
-            ...prev,
-            volume: Math.min(prev.volume + 15, 100)
-          }));
-
-          const logEntry: ExperimentLog = {
-            id: Date.now().toString(),
-            timestamp: Date.now(),
-            action: 'Added Water (2nd time)',
-            reagent: 'Distilled Water',
-            amount: 2.0,
-            colorBefore: testTube.colorHex,
-            colorAfter: COLORS.PINK,
-            observation: 'Solution changed to pink - equilibrium fully shifted left',
-            equilibriumShift: 'left'
-          };
-          setExperimentLog(prev => [...prev, logEntry]);
-
-          setActiveEquipment("");
-          setShowToast('Water added! Solution turned pink - [Co(H₂O)₆]²⁺ complex restored');
-          setTimeout(() => setShowToast(""), 3000);
-        }, ANIMATION.DROPPER_DURATION);
-
-      } else {
-        setShowToast('Equilibrium already at maximum pink! Add HCl to shift forward.');
-        setTimeout(() => setShowToast(""), 3000);
-        setWaterClickCount(2); // Cap at 2 clicks
-      }
+      // Open volume modal for water; behavior handled in handleVolumeSubmit using click counts
+      if (hclClickCount > 0) setHclClickCount(0);
+      setSelectedBottle(equipmentId);
+      setVolumeInput("");
+      setShowVolumeModal(true);
       return;
     }
 
