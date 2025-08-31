@@ -56,6 +56,7 @@ export default function LassaigneApp({ onBack }: LassaigneAppProps) {
     setCompletedSteps([]);
     setMode({ current: 'guided', currentGuidedStep: 0 });
     setResetKey(k => k + 1);
+    localStorage.removeItem("lassaigne:hasExtract");
     updateProgress.mutate({ experimentId, currentStep: 0, completed: false, progressPercentage: 0 });
   };
 
