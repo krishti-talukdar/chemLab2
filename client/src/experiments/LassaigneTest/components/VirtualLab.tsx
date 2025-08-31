@@ -157,6 +157,11 @@ export default function VirtualLab({
                 <Button size="sm" onClick={action.run} disabled={!action.canRun || !experimentStarted}>
                   Run
                 </Button>
+                {action.id !== 1 && (
+                  <Button size="sm" variant="secondary" onClick={() => onStepComplete(action.stepId)} disabled={!experimentStarted}>
+                    Skip
+                  </Button>
+                )}
                 {action.observation && (
                   <div className="flex items-center text-green-700 bg-green-50 px-3 py-1 rounded-md text-sm">
                     <CheckCircle className="w-4 h-4 mr-1" /> {action.observation}
