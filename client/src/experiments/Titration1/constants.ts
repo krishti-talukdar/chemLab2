@@ -1,5 +1,5 @@
 import React from "react";
-import { Beaker, FlaskConical, Pipette, Filter, TestTube } from "lucide-react";
+import { Beaker, FlaskConical, Pipette, Filter, TestTube, Droplets } from "lucide-react";
 import type { ReagentBottle, ConicalFlask, Burette, GuidedStep, LabEquipment } from "./types";
 
 // Colors for titration states
@@ -196,10 +196,16 @@ export const LAB_EQUIPMENT: Array<{
     type: "reagent"
   },
   {
-    id: "naoh-solution", 
+    id: "naoh-solution",
     name: "NaOH Solution",
     icon: React.createElement(Beaker, { size: 36, className: "text-purple-600" }),
     type: "reagent"
+  },
+  {
+    id: "phenolphthalein",
+    name: "Phenolphthalein Indicator",
+    icon: React.createElement(Droplets, { size: 36, className: "text-pink-600" }),
+    type: "indicator"
   }
 ];
 
@@ -300,5 +306,6 @@ export const EQUIPMENT_POSITIONS = {
   'funnel': { x: 500, y: 150 },
   'wash-bottle': { x: 450, y: 350 },
   'oxalic-acid': { x: 80, y: 200 },
-  'naoh-solution': { x: 80, y: 300 }
+  'naoh-solution': { x: 80, y: 300 },
+  'phenolphthalein': { x: 80, y: 380 }
 };
