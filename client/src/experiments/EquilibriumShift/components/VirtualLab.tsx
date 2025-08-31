@@ -331,6 +331,13 @@ export default function VirtualLab({
         setShowToast(`${volume} mL water added successfully!`);
         setTimeout(() => setShowToast(""), 3000);
 
+        // If second water addition completes reversal to pink at guided step 7, complete step and schedule results
+        if (!isFirst && mode.current === 'guided' && currentStep === 7) {
+          setTimeout(() => {
+            handleStepComplete();
+          }, 600);
+        }
+
         if (newClickCount > 2) {
           setWaterClickCount(2);
           setShowToast('Equilibrium already at maximum pink! Add HCl to shift forward.');
@@ -538,25 +545,20 @@ export default function VirtualLab({
         }, 500);
       } else {
         setExperimentCompleted(true);
-        setShowToast("Experiment completed! Results will open in 15 seconds...");
+        setShowToast("Experiment completed! Results will open in 10 seconds...");
 
         // Show countdown notifications
         setTimeout(() => {
-          setShowToast("Results opening in 10 seconds...");
+          setShowToast("Results opening in 5 seconds...");
           setTimeout(() => setShowToast(""), 3000);
         }, 5000);
 
-        setTimeout(() => {
-          setShowToast("Results opening in 5 seconds...");
-          setTimeout(() => setShowToast(""), 3000);
-        }, 10000);
-
-        // Automatically open results modal after 15 seconds
+        // Automatically open results modal after 10 seconds
         setTimeout(() => {
           setShowToast("Opening Results & Analysis...");
           setShowResultsModal(true);
           setTimeout(() => setShowToast(""), 2000);
-        }, 15000);
+        }, 10000);
       }
     }
   };
