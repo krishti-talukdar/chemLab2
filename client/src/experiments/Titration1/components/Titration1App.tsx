@@ -18,6 +18,7 @@ export default function Titration1App({
   onBack,
 }: Titration1AppProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [resetKey, setResetKey] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -82,6 +83,7 @@ export default function Titration1App({
     setCurrentStep(0);
     setCompletedSteps([]);
     setMode({ current: 'guided', currentGuidedStep: 0 });
+    setResetKey((k) => k + 1);
 
     updateProgress.mutate({
       experimentId,
@@ -277,6 +279,7 @@ export default function Titration1App({
             </CardHeader>
             <CardContent className="p-0">
               <VirtualLab
+                key={resetKey}
                 experimentStarted={experimentStarted}
                 onStartExperiment={handleStartExperiment}
                 isRunning={isRunning}

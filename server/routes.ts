@@ -5,6 +5,11 @@ import { insertUserProgressSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health/ping endpoint for Vite HMR clients behind certain proxies
+  app.get("/__vite_ping", (_req, res) => {
+    res.status(200).end("pong");
+  });
+
   // Get all experiments
   app.get("/api/experiments", async (req, res) => {
     try {

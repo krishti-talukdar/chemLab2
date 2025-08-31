@@ -27,6 +27,7 @@ export default function FeSCNEquilibriumApp({
     partBCompleted: false
   });
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const experiment = FeSCNEquilibriumData;
   const [match, params] = useRoute("/experiment/:id");
@@ -97,6 +98,7 @@ export default function FeSCNEquilibriumApp({
       partBCompleted: false
     });
     setShowAnalysis(false);
+    setResetKey((k) => k + 1);
     updateProgress.mutate({
       experimentId,
       currentStep: 0,
@@ -417,7 +419,7 @@ export default function FeSCNEquilibriumApp({
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <VirtualLab
+              <VirtualLab key={resetKey}
                 experimentStarted={experimentStarted}
                 onStartExperiment={handleStartExperiment}
                 isRunning={isRunning}
