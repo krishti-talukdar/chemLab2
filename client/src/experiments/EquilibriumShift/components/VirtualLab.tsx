@@ -778,13 +778,14 @@ export default function VirtualLab({
                 >
                   <button
                     onClick={() => {
+                      setObservePulse(false);
                       setShowToast("Pink [Co(H₂O)₆]²⁺ complex observed! Moving to next step...");
                       setTimeout(() => {
                         handleStepComplete();
                         setShowToast("");
                       }, 1500);
                     }}
-                    className="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer shadow-lg animate-pulse"
+                    className={`inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer shadow-lg ${observePulse ? 'animate-pulse' : ''}`}
                   >
                     <ArrowRight className="w-4 h-4 mr-2" />
                     Observe pink solution
