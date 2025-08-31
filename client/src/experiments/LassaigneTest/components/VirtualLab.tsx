@@ -155,7 +155,7 @@ export default function VirtualLab({
 
               <div className="flex items-center gap-3">
                 <Button size="sm" onClick={action.run} disabled={!action.canRun || !experimentStarted}>
-                  Run
+                  start experiment
                 </Button>
                 {action.id !== 1 && (
                   <Button size="sm" variant="secondary" onClick={() => onStepComplete(action.stepId)} disabled={!experimentStarted}>
