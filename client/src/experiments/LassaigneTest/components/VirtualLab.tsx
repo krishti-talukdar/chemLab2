@@ -33,6 +33,59 @@ export default function VirtualLab({
   const [halide, setHalide] = useState<null | "Cl" | "Br" | "I">(null);
   const [interferenceRemoved, setInterferenceRemoved] = useState(false);
 
+  // Preparation protocol overlay state
+  const [showPreparation, setShowPreparation] = useState(false);
+  const [prepStarted, setPrepStarted] = useState(false);
+  const [prepStep, setPrepStep] = useState(0);
+
+  const preparationSteps = [
+    {
+      title: "Handle Sodium Safely",
+      detail:
+        "Cut a dry piece of sodium under kerosene using forceps. Never touch with wet hands.",
+    },
+    {
+      title: "Heat with Organic Compound",
+      detail:
+        "Place sodium and the organic compound in an ignition tube and heat strongly until red hot.",
+    },
+    {
+      title: "Quench and Boil",
+      detail:
+        "Quench the hot tube in water, boil the mixture and crush the contents to dissolve sodium salts.",
+    },
+    {
+      title: "Filter the Extract",
+      detail:
+        "Filter the hot solution to obtain a clear aqueous Lassaigne's extract for analysis.",
+    },
+  ];
+
+  const startPreparation = () => {
+    setPrepStarted(true);
+    setPrepStep(0);
+  };
+
+  const finishPreparation = () => {
+    setHasExtract(true);
+    onStepComplete(1);
+    setShowPreparation(false);
+    setPrepStarted(false);
+  };
+
+  const handleSkipPreparation = () => {
+    // Skip only the animation/tutorial; still assume extract prepared
+    setHasExtract(true);
+    onStepComplete(1);
+    setShowPreparation(false);
+    setPrepStarted(false);
+  };
+
+  const handleStartLabClick = () => {
+    onStartExperiment();
+    setShowPreparation(true);
+  };
+
   const currentGuidedStep = mode.currentGuidedStep ?? 0;
 
   const actions = useMemo(() => ([
