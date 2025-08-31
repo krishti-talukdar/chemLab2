@@ -22,6 +22,7 @@ export default function EquilibriumShiftApp({
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
   const [mode, setMode] = useState<ExperimentMode>({ current: 'guided', currentGuidedStep: 0 });
+  const [resetKey, setResetKey] = useState(0);
 
   const experiment = EquilibriumShiftData;
   const [match, params] = useRoute("/experiment/:id");
@@ -67,6 +68,7 @@ export default function EquilibriumShiftApp({
     setCompletedSteps([]);
     // Keep in guided mode so the Experiment Progress is visible after reset
     setMode({ current: 'guided', currentGuidedStep: 0 });
+    setResetKey((k) => k + 1);
 
     updateProgress.mutate({
       experimentId,
@@ -258,6 +260,7 @@ export default function EquilibriumShiftApp({
             </CardHeader>
             <CardContent className="p-0">
               <VirtualLab
+                key={resetKey}
                 experimentStarted={experimentStarted}
                 onStartExperiment={handleStartExperiment}
                 isRunning={isRunning}
