@@ -19,6 +19,7 @@ interface SafetyGuideModalProps {
 export default function SafetyGuideModal({ children }: SafetyGuideModalProps) {
   const [match, params] = useRoute("/experiment/:id");
   const isEquilibriumShift = match && params?.id === "1";
+  const isTitration1 = match && params?.id === "6";
 
   return (
     <Dialog>
@@ -30,12 +31,16 @@ export default function SafetyGuideModal({ children }: SafetyGuideModalProps) {
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-6 w-6 text-red-600" />
             {isEquilibriumShift
-              ? "Equilibrium Shift: [Co(H₂O)₆]²⁺ ⇌ [CoCl₄]²⁻ — Safety Guidelines"
+              ? "Equilibrium Shift: [Co(H₂O)₆]²⁺ ⇌ [CoCl₄]²�� — Safety Guidelines"
+              : isTitration1
+              ? "Titration 1: NaOH vs Oxalic Acid — Safety Guide"
               : "Virtual Chemistry Lab Safety Guide"}
           </DialogTitle>
           <DialogDescription>
             {isEquilibriumShift
               ? "Safety guidance specific to cobalt(II) chloride / hydrochloric acid equilibrium shift demonstration."
+              : isTitration1
+              ? "Safety guidance specific to NaOH vs Oxalic acid titration."
               : "Essential safety guidelines for conducting virtual chemistry experiments"}
           </DialogDescription>
         </DialogHeader>
@@ -151,6 +156,76 @@ export default function SafetyGuideModal({ children }: SafetyGuideModalProps) {
                     <li>• Quench/neutralize acids only as permitted; otherwise, collect as waste.</li>
                     <li>• Transfer cobalt residues and rinses to heavy‑metal waste.</li>
                     <li>• Decontaminate bench; remove PPE; wash hands thoroughly.</li>
+                  </ul>
+                </section>
+              </>
+            ) : isTitration1 ? (
+              <>
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Personal Protective Equipment (PPE)</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Wear lab coat, closed shoes, splash‑proof goggles, and nitrile gloves.</li>
+                    <li>• Tie back long hair; avoid loose clothing.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Chemical Hazards</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Sodium hydroxide (NaOH): Corrosive; causes severe skin/eye burns.</li>
+                    <li>• Oxalic acid (0.1N): Irritant; harmful if swallowed; avoid skin/eye contact.</li>
+                    <li>• Keep all reagents clearly labeled.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Good Lab Practices</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• No mouth pipetting—use a pipette bulb/filler.</li>
+                    <li>• Rinse spills immediately; keep work area dry and uncluttered.</li>
+                    <li>• Clamp burette securely; check for leaks and air bubbles before starting.</li>
+                    <li>• Never return unused chemicals to stock bottles.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Spill Response</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Acid spill (oxalic): Cover with sodium bicarbonate, scoop into waste; wipe and rinse.</li>
+                    <li>• Base spill (NaOH): Neutralize with dilute weak acid (e.g., vinegar), then wipe and rinse.</li>
+                    <li>• For skin contact: Remove contaminated clothing, flush with water 15 minutes.</li>
+                    <li>• For eye exposure: Rinse at eyewash for 15 minutes and seek medical help.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Waste & Cleanup</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Collect titration waste in a labeled “Neutralized Acid/Base Waste” container.</li>
+                    <li>• Neutralize to ~pH 6–8 before drain disposal only if your institution allows; otherwise hand to lab staff.</li>
+                    <li>• Rinse glassware with water before returning.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Emergency Preparedness</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Know locations of eyewash, safety shower, spill kit, and first‑aid kit.</li>
+                    <li>• Report all accidents and exposures immediately.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Electrical/Equipment</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• If using a magnetic stirrer, keep cords dry and hands/gloves free of chemicals.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">Hygiene</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Do not eat or drink in the lab. Wash hands thoroughly after completing the experiment.</li>
                   </ul>
                 </section>
               </>
