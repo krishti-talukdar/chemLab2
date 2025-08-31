@@ -214,8 +214,11 @@ export default function VirtualLab({
         }, ANIMATION.DROPPER_DURATION);
       }
     } else if (equipmentId === 'concentrated-hcl') {
-      // Add HCl with specified volume
+      // Add HCl with specified volume; enforce 1st=purple, 2nd=blue regardless of volume
       animateStirring();
+
+      const newClickCount = hclClickCount + 1;
+      setHclClickCount(newClickCount);
 
       setActiveEquipment(equipmentId);
       setDropperAction({
@@ -234,8 +237,10 @@ export default function VirtualLab({
         setDropperAction(null);
         setShowAddingSolutions(false);
 
-        const newColor = volume > 3 ? COLORS.BLUE : COLORS.PURPLE;
-        const newState = volume > 3 ? EQUILIBRIUM_STATES.chloride : EQUILIBRIUM_STATES.transition;
+        const isFirst = newClickCount === 1;
+        const isSecond = newClickCount === 2;
+        const newColor = isFirst ? COLORS.PURPLE : COLORS.BLUE;
+        const newState = isFirst ? EQUILIBRIUM_STATES.transition : EQUILIBRIUM_STATES.chloride;
 
         animateColorTransition(testTube.colorHex, newColor, newState);
         setTestTube(prev => ({
@@ -247,12 +252,12 @@ export default function VirtualLab({
         const logEntry: ExperimentLog = {
           id: Date.now().toString(),
           timestamp: Date.now(),
-          action: `Added HCl (${volume} mL)`,
+          action: `Added HCl (${isFirst ? '1st' : isSecond ? '2nd' : newClickCount + 'th'} time, ${volume} mL)`,
           reagent: 'Concentrated HCl',
           amount: volume,
           colorBefore: testTube.colorHex,
           colorAfter: newColor,
-          observation: `Solution changing to ${volume > 3 ? 'blue' : 'purple'} - equilibrium shifting right`,
+          observation: `Solution ${isFirst ? 'changing to purple' : 'changed to blue'} - equilibrium shifting right`,
           equilibriumShift: 'right'
         };
         setExperimentLog(prev => [...prev, logEntry]);
@@ -260,10 +265,27 @@ export default function VirtualLab({
         setActiveEquipment("");
         setShowToast(`${volume} mL HCl added successfully!`);
         setTimeout(() => setShowToast(""), 3000);
+
+        // After the second HCl addition in guided mode at step 5, auto-complete the step
+        if (isSecond && mode.current === 'guided' && currentStep === 5) {
+          setTimeout(() => {
+            handleStepComplete();
+          }, 600);
+        }
+
+        // Cap further additions at blue state notification
+        if (newClickCount > 2) {
+          setHclClickCount(2);
+          setShowToast('Equilibrium already at maximum blue! Add water to reverse.');
+          setTimeout(() => setShowToast(""), 3000);
+        }
       }, ANIMATION.DROPPER_DURATION);
     } else if (equipmentId === 'distilled-water') {
-      // Add water with specified volume
+      // Add water with specified volume; mirror progressive behavior
       animateStirring();
+
+      const newClickCount = waterClickCount + 1;
+      setWaterClickCount(newClickCount);
 
       setActiveEquipment(equipmentId);
       setDropperAction({
@@ -282,8 +304,9 @@ export default function VirtualLab({
         setDropperAction(null);
         setShowAddingSolutions(false);
 
-        const newColor = volume > 5 ? COLORS.PINK : COLORS.PURPLE;
-        const newState = volume > 5 ? EQUILIBRIUM_STATES.hydrated : EQUILIBRIUM_STATES.transition;
+        const isFirst = newClickCount === 1;
+        const newColor = isFirst ? COLORS.PURPLE : COLORS.PINK;
+        const newState = isFirst ? EQUILIBRIUM_STATES.transition : EQUILIBRIUM_STATES.hydrated;
 
         animateColorTransition(testTube.colorHex, newColor, newState);
         setTestTube(prev => ({
@@ -294,12 +317,12 @@ export default function VirtualLab({
         const logEntry: ExperimentLog = {
           id: Date.now().toString(),
           timestamp: Date.now(),
-          action: `Added Water (${volume} mL)`,
+          action: `Added Water (${isFirst ? '1st' : '2nd'} time, ${volume} mL)`,
           reagent: 'Distilled Water',
           amount: volume,
           colorBefore: testTube.colorHex,
           colorAfter: newColor,
-          observation: `Solution changing to ${volume > 5 ? 'pink' : 'purple'} - equilibrium shifting left`,
+          observation: `Solution ${isFirst ? 'changing to purple' : 'changed to pink'} - equilibrium shifting left`,
           equilibriumShift: 'left'
         };
         setExperimentLog(prev => [...prev, logEntry]);
@@ -307,9 +330,15 @@ export default function VirtualLab({
         setActiveEquipment("");
         setShowToast(`${volume} mL water added successfully!`);
         setTimeout(() => setShowToast(""), 3000);
+
+        if (newClickCount > 2) {
+          setWaterClickCount(2);
+          setShowToast('Equilibrium already at maximum pink! Add HCl to shift forward.');
+          setTimeout(() => setShowToast(""), 3000);
+        }
       }, ANIMATION.DROPPER_DURATION);
     }
-  }, [selectedBottle, testTube, animateColorTransition, animateStirring]);
+  }, [selectedBottle, testTube, animateColorTransition, animateStirring, hclClickCount, waterClickCount, mode.current, currentStep]);
 
   // Predefined positions for equipment layout
   const getEquipmentPosition = (equipmentId: string) => {
