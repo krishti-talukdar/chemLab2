@@ -88,6 +88,13 @@ export default function VirtualLab({
 
   const currentGuidedStep = mode.currentGuidedStep ?? 0;
 
+  React.useEffect(() => {
+    const prepared = localStorage.getItem("lassaigne:hasExtract") === "true";
+    if (prepared) {
+      setHasExtract(true);
+    }
+  }, []);
+
   const actions = useMemo(() => ([
     {
       id: 1,
