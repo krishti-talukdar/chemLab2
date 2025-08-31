@@ -338,7 +338,7 @@ export default function VirtualLab({
         }
       }, ANIMATION.DROPPER_DURATION);
     }
-  }, [selectedBottle, testTube, animateColorTransition, animateStirring, hclClickCount, waterClickCount, mode.current, currentStep, handleStepComplete]);
+  }, [selectedBottle, testTube, animateColorTransition, animateStirring, hclClickCount, waterClickCount, mode.current, currentStep]);
 
   // Predefined positions for equipment layout
   const getEquipmentPosition = (equipmentId: string) => {
