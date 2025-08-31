@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Beaker, FlaskConical, Droplets, TestTube, ShieldAlert, Sparkles, Eraser, Play } from "lucide-react";
 import type { ExperimentMode } from "../types";
+import { useLocation } from "wouter";
 
 interface VirtualLabProps {
   experimentStarted: boolean;
