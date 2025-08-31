@@ -19,19 +19,19 @@ export default function Experiment() {
   const getExperimentComponent = () => {
     switch (experimentId) {
       case 1:
-        return <EquilibriumShiftApp onBack={() => window.history.back()} />;
+        return <EquilibriumShiftApp onBack={() => (window.location.href = "/")} />;
       case 2:
-        return <OxalicAcidApp onBack={() => window.history.back()} />;
+        return <OxalicAcidApp onBack={() => (window.location.href = "/")} />;
       case 3:
-        return <FeSCNEquilibriumApp onBack={() => window.history.back()} />;
+        return <FeSCNEquilibriumApp onBack={() => (window.location.href = "/")} />;
       case 4:
-        return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
+        return <ChemicalEquilibriumApp onBack={() => (window.location.href = "/")} />;
       case 5:
-        return <ChemicalEquilibriumApp onBack={() => window.history.back()} />;
+        return <ChemicalEquilibriumApp onBack={() => (window.location.href = "/")} />;
       case 6:
-        return <Titration1App onBack={() => window.history.back()} />;
+        return <Titration1App onBack={() => (window.location.href = "/")} />;
       case 7:
-        return <LassaigneApp onBack={() => window.history.back()} />;
+        return <LassaigneApp onBack={() => (window.location.href = "/")} />;
       default:
         return (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
