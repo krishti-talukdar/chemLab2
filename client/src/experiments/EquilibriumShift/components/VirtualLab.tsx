@@ -199,7 +199,7 @@ export default function VirtualLab({
             ...prev,
             color: 'Pink',
             contents: ['CoCl₂', 'H₂O'],
-            volume: Math.min(prev.volume + volume, 100),
+            volume: Math.min(prev.volume + volume, 15),
             isCobaltAnimation: true
           }));
 
@@ -912,7 +912,7 @@ export default function VirtualLab({
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-700 mb-2">Equilibrium Equation</h4>
                     <div className="text-center text-lg font-mono bg-white rounded p-3 border">
-                      <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]��⁺</span>
+                      <span style={{ color: COLORS.PINK }} className="font-bold">[Co(H₂O)₆]²⁺</span>
                       <span className="mx-3">+</span>
                       <span className="font-bold">4Cl⁻</span>
                       <span className="mx-4 text-xl">⇌</span>
