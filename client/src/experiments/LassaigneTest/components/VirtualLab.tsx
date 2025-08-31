@@ -103,7 +103,6 @@ export default function VirtualLab({
       description: "After HNO₃ treatment, add AgNO₃ to observe halide precipitate.",
       canRun: hasExtract && interferenceRemoved && halide == null,
       run: () => {
-        // Randomly pick a halide to simulate different outcomes
         const halides: Array<"Cl" | "Br" | "I"> = ["Cl", "Br", "I"];
         const picked = halides[Math.floor(Math.random() * halides.length)];
         setHalide(picked);
@@ -121,41 +120,47 @@ export default function VirtualLab({
   ]), [hasExtract, nitrogenPositive, sulphurPositive, interferenceRemoved, halide, onStepComplete]);
 
   return (
-    <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="relative min-h-[70vh] p-6">
       {!experimentStarted && (
-        <div className="col-span-1 lg:col-span-2">
-          <Card className="border-blue-100">
-            <CardContent className="p-6 text-center">
-              <ShieldAlert className="w-10 h-10 text-blue-600 mx-auto mb-2" />
-              <p className="text-gray-700 mb-4">Start the virtual lab to prepare the extract and run detection tests.</p>
-              <Button onClick={onStartExperiment} className="bg-blue-600 hover:bg-blue-700 text-white">Start Lab</Button>
-            </CardContent>
-          </Card>
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 flex items-center justify-center">
+          <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-gray-200 max-w-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ShieldAlert className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Explore Lassaigne's Test?</h3>
+            <p className="text-gray-600 mb-6">Start your interactive journey with qualitative analysis. Prepare Lassaigne's extract and detect nitrogen, sulphur, and halides using classic spot tests.</p>
+            <button onClick={onStartExperiment} className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white rounded-lg font-medium transition-all duration-200 mx-auto transform hover:scale-105">
+              <ShieldAlert className="w-5 h-5" />
+              <span>Start Virtual Lab</span>
+            </button>
+          </div>
         </div>
       )}
 
-      {actions.map((action) => (
-        <Card key={action.id} className={`transition-all ${currentGuidedStep + 1 === action.id ? 'ring-2 ring-blue-400' : ''}`}>
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">{action.icon}</div>
-              <h4 className="font-semibold text-gray-900">{action.title}</h4>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">{action.description}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
+        {actions.map((action) => (
+          <Card key={action.id} className={`transition-all ${currentGuidedStep + 1 === action.id ? 'ring-2 ring-blue-400' : ''}`}>
+            <CardContent className="p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">{action.icon}</div>
+                <h4 className="font-semibold text-gray-900">{action.title}</h4>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">{action.description}</p>
 
-            <div className="flex items-center gap-3">
-              <Button size="sm" onClick={action.run} disabled={!action.canRun || !experimentStarted}>
-                Run
-              </Button>
-              {action.observation && (
-                <div className="flex items-center text-green-700 bg-green-50 px-3 py-1 rounded-md text-sm">
-                  <CheckCircle className="w-4 h-4 mr-1" /> {action.observation}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              <div className="flex items-center gap-3">
+                <Button size="sm" onClick={action.run} disabled={!action.canRun || !experimentStarted}>
+                  Run
+                </Button>
+                {action.observation && (
+                  <div className="flex items-center text-green-700 bg-green-50 px-3 py-1 rounded-md text-sm">
+                    <CheckCircle className="w-4 h-4 mr-1" /> {action.observation}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
