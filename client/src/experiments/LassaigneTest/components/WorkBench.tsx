@@ -23,7 +23,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const eqId = e.dataTransfer.getData("text/equipment");
+    const eqId = e.dataTransfer.getData("equipment");
     if (!eqId) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
