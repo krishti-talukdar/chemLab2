@@ -63,6 +63,14 @@ export default function VirtualLab({
     },
   ];
 
+  const equipmentItems = [
+    { id: "ignition-tube", label: "Ignition Tube", icon: <TestTube className="w-8 h-8 text-blue-600 mb-2" /> },
+    { id: "sodium-piece", label: "Sodium Piece (under kerosene)", icon: <Beaker className="w-8 h-8 text-emerald-600 mb-2" /> },
+    { id: "organic-compound", label: "Organic Compound", icon: <FlaskConical className="w-8 h-8 text-purple-600 mb-2" /> },
+    { id: "water-bath", label: "Water Bath", icon: <Droplets className="w-8 h-8 text-blue-500 mb-2" /> },
+    { id: "filter-funnel", label: "Filter Paper & Funnel", icon: <Filter className="w-8 h-8 text-amber-600 mb-2" /> },
+  ];
+
   const startPreparation = () => {
     // Open workbench-style preparation flow
     setPrepStarted(true);
@@ -166,7 +174,7 @@ export default function VirtualLab({
       stepId: 8,
       title: "Halogen Test (AgNO₃)",
       icon: <Sparkles className="w-5 h-5" />,
-      description: "After HNO₃ treatment, add AgNO��� to observe halide precipitate.",
+      description: "After HNO₃ treatment, add AgNO����� to observe halide precipitate.",
       canRun: hasExtract && interferenceRemoved && halide == null,
       run: () => {
         const halides: Array<"Cl" | "Br" | "I"> = ["Cl", "Br", "I"];
