@@ -253,35 +253,99 @@ export default function VirtualLab({
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
-        {actions.map((action) => (
-          <Card key={action.id} className={`transition-all ${currentGuidedStep + 1 === action.id ? 'ring-2 ring-blue-400' : ''}`}>
-            <CardContent className="p-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">{action.icon}</div>
-                <h4 className="font-semibold text-gray-900">{action.title}</h4>
+      {showPrepWorkbench && !hasExtract ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-0">
+          {/* Equipment - Left */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Wrench className="w-5 h-5 mr-2 text-blue-600" />
+                Equipment
+              </h3>
+              <ul className="text-sm text-gray-700 space-y-2">
+                <li>Ignition Tube</li>
+                <li>Sodium Piece (under kerosene)</li>
+                <li>Organic Compound</li>
+                <li>Water Bath</li>
+                <li>Filter Paper & Funnel</li>
+              </ul>
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+                Drag-and-drop not required here; follow the guided steps on the workbench.
               </div>
-              <p className="text-sm text-gray-600 mb-4">{action.description}</p>
+            </div>
+          </div>
 
-              <div className="flex items-center gap-3">
-                <Button size="sm" onClick={action.run} disabled={!action.canRun || !experimentStarted}>
-                  start experiment
-                </Button>
-                {action.id !== 1 && (
-                  <Button size="sm" variant="secondary" onClick={() => onStepComplete(action.stepId)} disabled={!experimentStarted}>
-                    Skip
-                  </Button>
-                )}
-                {action.observation && (
-                  <div className="flex items-center text-green-700 bg-green-50 px-3 py-1 rounded-md text-sm">
-                    <CheckCircle className="w-4 h-4 mr-1" /> {action.observation}
-                  </div>
-                )}
+          {/* Workbench - Center */}
+          <div className="lg:col-span-6">
+            <WorkBench
+              step={prepStep}
+              totalSteps={preparationSteps.length}
+              title={preparationSteps[prepStep].title}
+              detail={preparationSteps[prepStep].detail}
+              onNext={() => setPrepStep((s) => Math.min(s + 1, preparationSteps.length - 1))}
+              onFinish={finishPreparation}
+            />
+          </div>
+
+          {/* Analysis - Right */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Info className="w-5 h-5 mr-2 text-green-600" />
+                Live Analysis
+              </h3>
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Current State</h4>
+                <p className="text-xs text-gray-600">Preparing Lassaigne's extract (Step {prepStep + 1} of {preparationSteps.length}).</p>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
+                <div className="space-y-1">
+                  {preparationSteps.map((s, idx) => (
+                    <div key={idx} className={`flex items-center space-x-2 text-xs ${idx <= prepStep ? 'text-green-600' : 'text-gray-400'}`}>
+                      <CheckCircle className="w-3 h-3" />
+                      <span>{s.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-800">
+                Safety: Handle sodium under kerosene; use a shield when heating.
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
+          {actions.filter(a => hasExtract ? a.id !== 1 : true).map((action) => (
+            <Card key={action.id} className={`transition-all ${currentGuidedStep + 1 === action.id ? 'ring-2 ring-blue-400' : ''}`}>
+              <CardContent className="p-5">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">{action.icon}</div>
+                  <h4 className="font-semibold text-gray-900">{action.title}</h4>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">{action.description}</p>
+
+                <div className="flex items-center gap-3">
+                  <Button size="sm" onClick={action.run} disabled={!action.canRun || !experimentStarted}>
+                    start experiment
+                  </Button>
+                  {action.id !== 1 && (
+                    <Button size="sm" variant="secondary" onClick={() => onStepComplete(action.stepId)} disabled={!experimentStarted}>
+                      Skip
+                    </Button>
+                  )}
+                  {action.observation && (
+                    <div className="flex items-center text-green-700 bg-green-50 px-3 py-1 rounded-md text-sm">
+                      <CheckCircle className="w-4 h-4 mr-1" /> {action.observation}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
