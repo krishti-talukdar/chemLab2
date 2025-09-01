@@ -1,5 +1,10 @@
 import React from "react";
 
+interface EquipmentItem {
+  id: string;
+  label: string;
+}
+
 interface PrepWorkbenchProps {
   step: number;
   totalSteps: number;
@@ -7,11 +12,38 @@ interface PrepWorkbenchProps {
   detail: string;
   onNext: () => void;
   onFinish: () => void;
+  equipmentItems: EquipmentItem[];
 }
 
-export default function WorkBench({ step, totalSteps }: PrepWorkbenchProps) {
+import { useRef, useState } from "react";
+import { TestTube, Beaker, FlaskConical, Droplets, Filter } from "lucide-react";
+
+export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
+
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const eqId = e.dataTransfer.getData("equipment");
+    if (!eqId) return;
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = Math.max(16, Math.min(e.clientX - rect.left - 24, rect.width - 48));
+    const y = Math.max(16, Math.min(e.clientY - rect.top - 24, rect.height - 48));
+    setPlaced(prev => [...prev, { id: eqId, x, y }]);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const findItem = (id: string) => equipmentItems.find(i => i.id === id);
+
   return (
     <div
+      ref={containerRef}
+      onDrop={onDrop}
+      onDragOver={handleDragOver}
       className="relative w-full h-full min-h-[500px] bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg overflow-hidden transition-all duration-300 border-2 border-dashed border-gray-300"
       style={{
         backgroundImage: `
@@ -22,7 +54,7 @@ export default function WorkBench({ step, totalSteps }: PrepWorkbenchProps) {
       }}
     >
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
           backgroundImage: `
             linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
@@ -56,6 +88,61 @@ export default function WorkBench({ step, totalSteps }: PrepWorkbenchProps) {
           backgroundSize: "50px 50px",
         }}
       />
+
+      {placed.map((p, idx) => {
+        const item = findItem(p.id);
+        if (!item) return null;
+        const Icon =
+          p.id === "ignition-tube"
+            ? TestTube
+            : p.id === "sodium-piece"
+            ? Beaker
+            : p.id === "organic-compound"
+            ? FlaskConical
+            : p.id === "water-bath"
+            ? Droplets
+            : Filter;
+        const colorClass =
+          p.id === "ignition-tube"
+            ? "text-blue-600"
+            : p.id === "sodium-piece"
+            ? "text-emerald-600"
+            : p.id === "organic-compound"
+            ? "text-purple-600"
+            : p.id === "water-bath"
+            ? "text-blue-500"
+            : "text-amber-600";
+        return (
+          <div
+            key={`${p.id}-${idx}`}
+            className="absolute select-none"
+            style={{ left: p.x, top: p.y }}
+          >
+            <div className="flex flex-col items-center">
+              <div className={`${p.id === "ignition-tube" ? "w-48 h-56" : "w-16 h-16"} rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
+                {p.id === "ignition-tube" ? (
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F4e40c21fded741afb4c81260fb6ebe5f?format=webp&width=800"
+                    alt="Fusion Tube"
+                    className="max-w-[144px] max-h-[168px] object-contain"
+                  />
+                ) : (
+                  <Icon className="w-6 h-6" />
+                )}
+              </div>
+              <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
+                {item.label}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="text-sm text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-3 py-1 shadow-sm">
+          Drag equipment here
+        </div>
+      </div>
     </div>
   );
 }
