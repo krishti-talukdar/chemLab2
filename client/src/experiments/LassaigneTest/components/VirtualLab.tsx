@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Beaker, FlaskConical, Droplets, TestTube, ShieldAlert, Sparkles, Eraser, Play } from "lucide-react";
+import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info } from "lucide-react";
 import type { ExperimentMode } from "../types";
+import WorkBench from "./WorkBench";
 
 interface VirtualLabProps {
   experimentStarted: boolean;
