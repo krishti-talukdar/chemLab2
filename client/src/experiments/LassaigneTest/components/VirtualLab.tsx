@@ -254,84 +254,108 @@ export default function VirtualLab({
       )}
 
       {showPrepWorkbench && !hasExtract ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-0">
-          {/* Equipment - Left */}
-          <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <Wrench className="w-5 h-5 mr-2 text-blue-600" />
-                Equipment
-              </h3>
-
-              <div className="space-y-3">
-                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
-                  <TestTube className="w-8 h-8 text-blue-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-700 text-center">Ignition Tube</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
-                  <Beaker className="w-8 h-8 text-emerald-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-700 text-center">Sodium Piece (under kerosene)</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
-                  <FlaskConical className="w-8 h-8 text-purple-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-700 text-center">Organic Compound</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
-                  <Droplets className="w-8 h-8 text-blue-500 mb-2" />
-                  <span className="text-sm font-medium text-gray-700 text-center">Water Bath</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
-                  <Filter className="w-8 h-8 text-amber-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-700 text-center">Filter Paper & Funnel</span>
-                </div>
+        <>
+          <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-gray-800">Preparation Progress</h3>
+              <span className="text-sm text-blue-600 font-medium">Step {prepStep + 1} of {preparationSteps.length}</span>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">{prepStep + 1}</div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-800 mb-1">{preparationSteps[prepStep].title}</h4>
+                <p className="text-sm text-gray-600 mb-2">{preparationSteps[prepStep].detail}</p>
+                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Follow the step on the workbench</div>
               </div>
-
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
-                Drag-and-drop not required here; follow the guided steps on the workbench.
+              <div className="flex items-center gap-2">
+                {prepStep < preparationSteps.length - 1 ? (
+                  <Button onClick={() => setPrepStep((s) => s + 1)} className="bg-blue-600 hover:bg-blue-700 text-white">Next</Button>
+                ) : (
+                  <Button onClick={finishPreparation} className="bg-emerald-600 hover:bg-emerald-700 text-white">Finish</Button>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Workbench - Center */}
-          <div className="lg:col-span-6">
-            <WorkBench
-              step={prepStep}
-              totalSteps={preparationSteps.length}
-              title={preparationSteps[prepStep].title}
-              detail={preparationSteps[prepStep].detail}
-              onNext={() => setPrepStep((s) => Math.min(s + 1, preparationSteps.length - 1))}
-              onFinish={finishPreparation}
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-0">
+            {/* Equipment - Left */}
+            <div className="lg:col-span-3 space-y-4">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Wrench className="w-5 h-5 mr-2 text-blue-600" />
+                  Equipment
+                </h3>
 
-          {/* Analysis - Right */}
-          <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <Info className="w-5 h-5 mr-2 text-green-600" />
-                Live Analysis
-              </h3>
-              <div className="mb-4">
-                <h4 className="font-semibold text-sm text-gray-700 mb-2">Current State</h4>
-                <p className="text-xs text-gray-600">Preparing Lassaigne's extract (Step {prepStep + 1} of {preparationSteps.length}).</p>
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
-                <div className="space-y-1">
-                  {preparationSteps.map((s, idx) => (
-                    <div key={idx} className={`flex items-center space-x-2 text-xs ${idx <= prepStep ? 'text-green-600' : 'text-gray-400'}`}>
-                      <CheckCircle className="w-3 h-3" />
-                      <span>{s.title}</span>
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                    <TestTube className="w-8 h-8 text-blue-600 mb-2" />
+                    <span className="text-sm font-medium text-gray-700 text-center">Ignition Tube</span>
+                  </div>
+                  <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                    <Beaker className="w-8 h-8 text-emerald-600 mb-2" />
+                    <span className="text-sm font-medium text-gray-700 text-center">Sodium Piece (under kerosene)</span>
+                  </div>
+                  <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                    <FlaskConical className="w-8 h-8 text-purple-600 mb-2" />
+                    <span className="text-sm font-medium text-gray-700 text-center">Organic Compound</span>
+                  </div>
+                  <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                    <Droplets className="w-8 h-8 text-blue-500 mb-2" />
+                    <span className="text-sm font-medium text-gray-700 text-center">Water Bath</span>
+                  </div>
+                  <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                    <Filter className="w-8 h-8 text-amber-600 mb-2" />
+                    <span className="text-sm font-medium text-gray-700 text-center">Filter Paper & Funnel</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+                  Drag-and-drop not required here; follow the guided steps on the workbench.
                 </div>
               </div>
-              <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-800">
-                Safety: Handle sodium under kerosene; use a shield when heating.
+            </div>
+
+            {/* Workbench - Center */}
+            <div className="lg:col-span-6">
+              <WorkBench
+                step={prepStep}
+                totalSteps={preparationSteps.length}
+                title={preparationSteps[prepStep].title}
+                detail={preparationSteps[prepStep].detail}
+                onNext={() => setPrepStep((s) => Math.min(s + 1, preparationSteps.length - 1))}
+                onFinish={finishPreparation}
+              />
+            </div>
+
+            {/* Analysis - Right */}
+            <div className="lg:col-span-3 space-y-4">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <Info className="w-5 h-5 mr-2 text-green-600" />
+                  Live Analysis
+                </h3>
+                <div className="mb-4">
+                  <h4 className="font-semibold text-sm text-gray-700 mb-2">Current State</h4>
+                  <p className="text-xs text-gray-600">Preparing Lassaigne's extract (Step {prepStep + 1} of {preparationSteps.length}).</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
+                  <div className="space-y-1">
+                    {preparationSteps.map((s, idx) => (
+                      <div key={idx} className={`flex items-center space-x-2 text-xs ${idx <= prepStep ? 'text-green-600' : 'text-gray-400'}`}>
+                        <CheckCircle className="w-3 h-3" />
+                        <span>{s.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-800">
+                  Safety: Handle sodium under kerosene; use a shield when heating.
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
           {actions.filter(a => hasExtract ? a.id !== 1 : true).map((action) => (
