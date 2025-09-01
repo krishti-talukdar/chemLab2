@@ -38,6 +38,7 @@ export default function VirtualLab({
   const [showPreparation, setShowPreparation] = useState(false);
   const [prepStarted, setPrepStarted] = useState(false);
   const [prepStep, setPrepStep] = useState(0);
+  const [showPrepWorkbench, setShowPrepWorkbench] = useState(false);
 
   const preparationSteps = [
     {
