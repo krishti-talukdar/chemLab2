@@ -15,9 +15,11 @@ interface PrepWorkbenchProps {
   equipmentItems: EquipmentItem[];
 }
 
+import { useRef, useState } from "react";
+
 export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
-  const [placed, setPlaced] = React.useState<Array<{ id: string; x: number; y: number }>>([]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
