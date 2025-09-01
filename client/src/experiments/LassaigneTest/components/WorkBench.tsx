@@ -9,8 +9,7 @@ interface PrepWorkbenchProps {
   onFinish: () => void;
 }
 
-export default function WorkBench({ step, totalSteps, title, detail, onNext, onFinish }: PrepWorkbenchProps) {
-  const isLast = step + 1 >= totalSteps;
+export default function WorkBench({ step, totalSteps }: PrepWorkbenchProps) {
   return (
     <div
       className="relative w-full h-full min-h-[500px] bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg overflow-hidden transition-all duration-300 border-2 border-dashed border-gray-300"
@@ -45,20 +44,6 @@ export default function WorkBench({ step, totalSteps, title, detail, onNext, onF
 
       <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-md border border-gray-200">
         <span className="text-sm font-medium text-gray-700">Laboratory Workbench</span>
-      </div>
-
-      <div className="absolute inset-0 p-8 flex items-center justify-center">
-        <div className="bg-white/90 rounded-xl shadow-xl border border-gray-200 p-8 max-w-2xl w-full">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-700 mb-6">{detail}</p>
-          <div className="flex items-center justify-end gap-3">
-            {!isLast ? (
-              <button onClick={onNext} className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">Next</button>
-            ) : (
-              <button onClick={onFinish} className="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium">Finish & Use Extract</button>
-            )}
-          </div>
-        </div>
       </div>
 
       <div
