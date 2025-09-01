@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info } from "lucide-react";
+import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info, TestTube } from "lucide-react";
 import type { ExperimentMode } from "../types";
 import WorkBench from "./WorkBench";
 
@@ -166,7 +166,7 @@ export default function VirtualLab({
       stepId: 8,
       title: "Halogen Test (AgNO₃)",
       icon: <Sparkles className="w-5 h-5" />,
-      description: "After HNO₃ treatment, add AgNO₃ to observe halide precipitate.",
+      description: "After HNO₃ treatment, add AgNO��� to observe halide precipitate.",
       canRun: hasExtract && interferenceRemoved && halide == null,
       run: () => {
         const halides: Array<"Cl" | "Br" | "I"> = ["Cl", "Br", "I"];
