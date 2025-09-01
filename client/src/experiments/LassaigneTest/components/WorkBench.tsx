@@ -16,6 +16,7 @@ interface PrepWorkbenchProps {
 }
 
 import { useRef, useState } from "react";
+import { TestTube, Beaker, FlaskConical, Droplets, Filter } from "lucide-react";
 
 export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -91,6 +92,26 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
       {placed.map((p, idx) => {
         const item = findItem(p.id);
         if (!item) return null;
+        const Icon =
+          p.id === "ignition-tube"
+            ? TestTube
+            : p.id === "sodium-piece"
+            ? Beaker
+            : p.id === "organic-compound"
+            ? FlaskConical
+            : p.id === "water-bath"
+            ? Droplets
+            : Filter;
+        const colorClass =
+          p.id === "ignition-tube"
+            ? "text-blue-600"
+            : p.id === "sodium-piece"
+            ? "text-emerald-600"
+            : p.id === "organic-compound"
+            ? "text-purple-600"
+            : p.id === "water-bath"
+            ? "text-blue-500"
+            : "text-amber-600";
         return (
           <div
             key={`${p.id}-${idx}`}
@@ -98,9 +119,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
             style={{ left: p.x, top: p.y }}
           >
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center text-blue-600">
-                {/* Icon rendered via label initial to avoid JSX transfer; label visible below */}
-                <span className="font-semibold">{item.label.charAt(0)}</span>
+              <div className={`w-12 h-12 rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
+                <Icon className="w-6 h-6" />
               </div>
               <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
                 {item.label}
