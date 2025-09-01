@@ -138,11 +138,13 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
         );
       })}
 
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="text-sm text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-3 py-1 shadow-sm">
-          Drag equipment here
+      {placed.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-sm text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-3 py-1 shadow-sm">
+            Drag equipment here
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
