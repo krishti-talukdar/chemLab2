@@ -64,14 +64,18 @@ export default function VirtualLab({
   ];
 
   const startPreparation = () => {
+    // Open workbench-style preparation flow
     setPrepStarted(true);
     setPrepStep(0);
+    setShowPreparation(false);
+    setShowPrepWorkbench(true);
   };
 
   const finishPreparation = () => {
     setHasExtract(true);
     onStepComplete(1);
     setShowPreparation(false);
+    setShowPrepWorkbench(false);
     setPrepStarted(false);
   };
 
@@ -80,6 +84,7 @@ export default function VirtualLab({
     setHasExtract(true);
     onStepComplete(1);
     setShowPreparation(false);
+    setShowPrepWorkbench(false);
     setPrepStarted(false);
   };
 
