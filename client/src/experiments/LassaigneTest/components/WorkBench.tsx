@@ -89,54 +89,66 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
         }}
       />
 
-      {placed.map((p, idx) => {
-        const item = findItem(p.id);
-        if (!item) return null;
-        const Icon =
-          p.id === "ignition-tube"
-            ? TestTube
-            : p.id === "sodium-piece"
-            ? Beaker
-            : p.id === "organic-compound"
-            ? FlaskConical
-            : p.id === "water-bath"
-            ? Droplets
-            : Filter;
-        const colorClass =
-          p.id === "ignition-tube"
-            ? "text-blue-600"
-            : p.id === "sodium-piece"
-            ? "text-emerald-600"
-            : p.id === "organic-compound"
-            ? "text-purple-600"
-            : p.id === "water-bath"
-            ? "text-blue-500"
-            : "text-amber-600";
-        return (
-          <div
-            key={`${p.id}-${idx}`}
-            className="absolute select-none"
-            style={{ left: p.x, top: p.y }}
-          >
-            <div className="flex flex-col items-center">
-              <div className={`${p.id === "ignition-tube" ? "w-48 h-56" : "w-16 h-16"} rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
-                {p.id === "ignition-tube" ? (
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
-                    alt="Fusion Tube"
-                    className="max-w-[144px] max-h-[168px] object-contain"
-                  />
-                ) : (
-                  <Icon className="w-6 h-6" />
-                )}
+      {(() => {
+        const hasIgnitionTube = placed.some(p => p.id === "ignition-tube");
+        const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
+        return placed.map((p, idx) => {
+          const item = findItem(p.id);
+          if (!item) return null;
+          if (p.id === "sodium-piece" && hasIgnitionTube) return null;
+          const Icon =
+            p.id === "ignition-tube"
+              ? TestTube
+              : p.id === "sodium-piece"
+              ? Beaker
+              : p.id === "organic-compound"
+              ? FlaskConical
+              : p.id === "water-bath"
+              ? Droplets
+              : Filter;
+          const colorClass =
+            p.id === "ignition-tube"
+              ? "text-blue-600"
+              : p.id === "sodium-piece"
+              ? "text-emerald-600"
+              : p.id === "organic-compound"
+              ? "text-purple-600"
+              : p.id === "water-bath"
+              ? "text-blue-500"
+              : "text-amber-600";
+          return (
+            <div
+              key={`${p.id}-${idx}`}
+              className="absolute select-none"
+              style={{ left: p.x, top: p.y }}
+            >
+              <div className="flex flex-col items-center">
+                <div className={`${p.id === "ignition-tube" ? "w-48 h-56" : "w-16 h-16"} relative rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
+                  {p.id === "ignition-tube" ? (
+                    <>
+                      <img
+                        src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
+                        alt="Fusion Tube"
+                        className="max-w-[144px] max-h-[168px] object-contain"
+                      />
+                      {hasSodiumPiece && (
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none">
+                          <div className="w-10 h-6 rounded-[3px] bg-gradient-to-b from-gray-200 to-gray-500 border border-gray-400 shadow-sm" />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Icon className="w-6 h-6" />
+                  )}
+                </div>
+                <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
+                  {item.label}
+                </span>
               </div>
-              <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
-                {item.label}
-              </span>
             </div>
-          </div>
-        );
-      })}
+          );
+        });
+      })()}
 
       {placed.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
