@@ -262,13 +262,30 @@ export default function VirtualLab({
                 <Wrench className="w-5 h-5 mr-2 text-blue-600" />
                 Equipment
               </h3>
-              <ul className="text-sm text-gray-700 space-y-2">
-                <li>Ignition Tube</li>
-                <li>Sodium Piece (under kerosene)</li>
-                <li>Organic Compound</li>
-                <li>Water Bath</li>
-                <li>Filter Paper & Funnel</li>
-              </ul>
+
+              <div className="space-y-3">
+                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                  <TestTube className="w-8 h-8 text-blue-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700 text-center">Ignition Tube</span>
+                </div>
+                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                  <Beaker className="w-8 h-8 text-emerald-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700 text-center">Sodium Piece (under kerosene)</span>
+                </div>
+                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                  <FlaskConical className="w-8 h-8 text-purple-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700 text-center">Organic Compound</span>
+                </div>
+                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                  <Droplets className="w-8 h-8 text-blue-500 mb-2" />
+                  <span className="text-sm font-medium text-gray-700 text-center">Water Bath</span>
+                </div>
+                <div className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all">
+                  <Filter className="w-8 h-8 text-amber-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-700 text-center">Filter Paper & Funnel</span>
+                </div>
+              </div>
+
               <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
                 Drag-and-drop not required here; follow the guided steps on the workbench.
               </div>
