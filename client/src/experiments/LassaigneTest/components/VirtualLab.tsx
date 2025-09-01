@@ -326,6 +326,7 @@ export default function VirtualLab({
                 detail={preparationSteps[prepStep].detail}
                 onNext={() => setPrepStep((s) => Math.min(s + 1, preparationSteps.length - 1))}
                 onFinish={finishPreparation}
+                equipmentItems={equipmentItems.map(({ id, label }) => ({ id, label }))}
               />
             </div>
 
