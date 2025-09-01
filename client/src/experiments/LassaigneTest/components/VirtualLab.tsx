@@ -64,7 +64,7 @@ export default function VirtualLab({
   ];
 
   const equipmentItems = [
-    { id: "ignition-tube", label: "Ignition Tube", icon: <TestTube className="w-8 h-8 text-blue-600 mb-2" /> },
+    { id: "ignition-tube", label: "Fusion Tube", icon: <TestTube className="w-8 h-8 text-blue-600 mb-2" /> },
     { id: "sodium-piece", label: "Sodium Piece (under kerosene)", icon: <Beaker className="w-8 h-8 text-emerald-600 mb-2" /> },
     { id: "organic-compound", label: "Organic Compound", icon: <FlaskConical className="w-8 h-8 text-purple-600 mb-2" /> },
     { id: "water-bath", label: "Water Bath", icon: <Droplets className="w-8 h-8 text-blue-500 mb-2" /> },
