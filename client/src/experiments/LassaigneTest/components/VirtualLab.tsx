@@ -301,7 +301,7 @@ export default function VirtualLab({
                       className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-300 bg-white hover:border-blue-400 hover:shadow-lg transition-all cursor-grab active:cursor-grabbing"
                       draggable
                       onDragStart={(e) => {
-                        e.dataTransfer.setData("text/equipment", item.id);
+                        e.dataTransfer.setData("equipment", item.id);
                         e.dataTransfer.effectAllowed = "copy";
                       }}
                     >
