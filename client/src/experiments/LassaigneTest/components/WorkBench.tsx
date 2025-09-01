@@ -122,7 +122,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               <div className={`${p.id === "ignition-tube" ? "w-48 h-56" : "w-16 h-16"} rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
                 {p.id === "ignition-tube" ? (
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F4e40c21fded741afb4c81260fb6ebe5f?format=webp&width=800"
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
                     alt="Fusion Tube"
                     className="max-w-[144px] max-h-[168px] object-contain"
                   />
