@@ -74,6 +74,18 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
     setIsRunning(false);
   };
 
+  const handleUndoStep = () => {
+    if (currentStep > 0) setCurrentStep((s) => s - 1);
+  };
+
+  const handleResetExperiment = () => {
+    setCurrentStep(0);
+    setIsRunning(false);
+    setTimer(0);
+    setExperimentStarted(false);
+    setResetKey((k) => k + 1);
+  };
+
   useEffect(() => {
     const total = experiment.stepDetails.length;
     const done = experimentStarted ? Math.min(currentStep + 1, total) : 0;
