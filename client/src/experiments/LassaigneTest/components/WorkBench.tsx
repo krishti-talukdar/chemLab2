@@ -147,6 +147,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         </div>
                       )}
                     </>
+                  ) : p.id === "bunsen-burner" ? (
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F4e4713d4ae514e8aa9cccef24ae95726?format=webp&width=800"
+                      alt="Bunsen Burner"
+                      className="max-w-[96px] max-h-[160px] object-contain"
+                    />
                   ) : (
                     <Icon className="w-6 h-6" />
                   )}
