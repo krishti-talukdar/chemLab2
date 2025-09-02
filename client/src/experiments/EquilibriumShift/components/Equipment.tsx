@@ -31,6 +31,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
   isActive = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [finalVolumeUsed, setFinalVolumeUsed] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      const v = e?.detail?.volumeUsed;
+      if (typeof v === 'number' && !isNaN(v)) setFinalVolumeUsed(v);
+    };
+    window.addEventListener('finalVolumeUsedUpdated', handler as EventListener);
+    return () => window.removeEventListener('finalVolumeUsedUpdated', handler as EventListener);
+  }, []);
 
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) return;
@@ -126,9 +136,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {id === 'test-tube' ? (
             <div className="relative">
               <div className="relative w-32 h-72">
-                {/* Current volume badge */}
+                {/* Current volume badge (shows Final Volume Used if available) */}
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-full border border-gray-300 shadow-sm text-[10px] font-semibold text-gray-700">
-                  {`${Math.max(0, volume || 0).toFixed(1)} mL`}
+                  {`${(finalVolumeUsed ?? volume ?? 0).toFixed(1)} mL`}
                 </div>
                 {/* Test tube image */}
                 <img
