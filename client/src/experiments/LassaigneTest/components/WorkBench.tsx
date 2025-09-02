@@ -132,7 +132,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         className="max-w-[144px] max-h-[168px] object-contain"
                       />
                       {hasSodiumPiece && (
-                        <div className="absolute bottom-12 left-[53%] -translate-x-1/2 pointer-events-none">
+                        <div className="absolute bottom-10 left-[53%] -translate-x-1/2 pointer-events-none">
                           <div
                             className="w-3 h-3 rounded-full border border-gray-400 shadow-md"
                             style={{
