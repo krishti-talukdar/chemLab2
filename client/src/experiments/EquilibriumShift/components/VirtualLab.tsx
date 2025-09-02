@@ -760,6 +760,7 @@ export default function VirtualLab({
                       isActive={activeEquipment === equipment.id}
                       color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
                       volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
+                      displayVolume={equipment.id === 'test-tube' ? testTube.volume : undefined}
                       isCobaltAnimation={equipment.id === 'test-tube' ? testTube.isCobaltAnimation || false : false}
                     />
                   </div>
