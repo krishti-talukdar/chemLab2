@@ -34,6 +34,9 @@ interface WorkBenchProps {
   results: Result[];
   chemicals: ChemicalType[];
   equipment: EquipmentType[];
+  onUndoStep: () => void;
+  onResetExperiment: () => void;
+  currentStepIndex: number;
 }
 
 export const WorkBench: React.FC<WorkBenchProps> = ({
@@ -55,6 +58,9 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   results,
   chemicals,
   equipment,
+  onUndoStep,
+  onResetExperiment,
+  currentStepIndex,
 }) => {
   const [selectedChemical, setSelectedChemical] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -322,6 +328,16 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
             </div>
           </div>
 
+          {/* Chemical Equation */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Chemical Equation</h3>
+            <div className="text-xs font-mono bg-gray-50 rounded-lg p-3 border text-center leading-relaxed">
+              <div>H₂C₂O₄·2H₂O (s) → H₂C₂O₄ (aq) + 2H₂O</div>
+              <div className="mt-1">H₂C₂O₄ (aq) ⇌ 2H⁺ + C₂O₄²⁻</div>
+            </div>
+            <div className="text-center text-xs text-gray-500 mt-2">Dissolution and acid dissociation</div>
+          </div>
+
           {/* Current Step Action */}
           {canProceed && (
             <div className="mb-4">
@@ -335,6 +351,25 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
               </Button>
             </div>
           )}
+
+          {/* Undo and Reset Controls */}
+          <div className="space-y-2">
+            <Button
+              onClick={onUndoStep}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+              disabled={stepNumber <= 1}
+            >
+              Undo Step {currentStepIndex}
+            </Button>
+            <Button
+              onClick={onResetExperiment}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+            >
+              Reset Experiment
+            </Button>
+          </div>
         </div>
 
         {/* Workbench Area */}
