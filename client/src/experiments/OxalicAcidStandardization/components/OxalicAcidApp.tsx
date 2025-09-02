@@ -18,6 +18,7 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const experiment = OxalicAcidData;
   const [match, params] = useRoute("/experiment/:id");
