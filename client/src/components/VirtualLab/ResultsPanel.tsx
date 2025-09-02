@@ -68,6 +68,14 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({ results, onClear }) 
       };
 
       setTitrationTrials(prev => [...prev, trial]);
+
+      // Broadcast latest final volume used so other UI can reflect it
+      try {
+        window.dispatchEvent(
+          new CustomEvent('finalVolumeUsedUpdated', { detail: { volumeUsed } })
+        );
+      } catch {}
+
       setNewTrial({
         initialReading: '',
         finalReading: '',
