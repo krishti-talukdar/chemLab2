@@ -149,17 +149,19 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         </div>
                       )}
                       {hasOrganicCompound && (
-                        <div className="absolute inset-0 pointer-events-none flex items-end justify-center">
-                          <div
-                            style={{
-                              width: 24,
-                              height: "20%",
-                              background: "linear-gradient(to top, #f59e0b, #fde68a)",
-                              borderTopLeftRadius: 10,
-                              borderTopRightRadius: 10,
-                              opacity: 0.95,
-                            }}
-                          />
+                        <div className="absolute bottom-12 left-[53%] -translate-x-1/2 pointer-events-none">
+                          <div className="relative w-[22px] h-[110px] overflow-hidden">
+                            <div
+                              className="absolute bottom-0 left-0 right-0"
+                              style={{
+                                height: "22%",
+                                background: "linear-gradient(to top, #f59e0b, #fde68a)",
+                                borderTopLeftRadius: 8,
+                                borderTopRightRadius: 8,
+                                opacity: 0.95,
+                              }}
+                            />
+                          </div>
                         </div>
                       )}
                     </>
