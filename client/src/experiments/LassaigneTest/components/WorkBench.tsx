@@ -16,7 +16,7 @@ interface PrepWorkbenchProps {
 }
 
 import { useRef, useState } from "react";
-import { TestTube, Beaker, FlaskConical, Droplets, Filter } from "lucide-react";
+import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
 
 export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
