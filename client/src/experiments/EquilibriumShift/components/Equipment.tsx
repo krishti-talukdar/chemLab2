@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { X, TestTube, Beaker, Droplets } from "lucide-react";
@@ -31,6 +31,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
   isActive = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [finalVolumeUsed, setFinalVolumeUsed] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      const v = e?.detail?.volumeUsed;
+      if (typeof v === 'number' && !isNaN(v)) setFinalVolumeUsed(v);
+    };
+    window.addEventListener('finalVolumeUsedUpdated', handler as EventListener);
+    return () => window.removeEventListener('finalVolumeUsedUpdated', handler as EventListener);
+  }, []);
 
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) return;
@@ -126,6 +136,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {id === 'test-tube' ? (
             <div className="relative">
               <div className="relative w-32 h-72">
+                {/* Current volume badge (shows Final Volume Used if available) */}
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-full border border-gray-300 shadow-sm text-[10px] font-semibold text-gray-700">
+                  {`${(finalVolumeUsed ?? volume ?? 0).toFixed(1)} mL`}
+                </div>
                 {/* Test tube image */}
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F3f3b9fb2343b4e74a0b66661affefadb?format=webp&width=800"
@@ -219,9 +233,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
 export const LAB_EQUIPMENT = [
   {
     id: 'test-tube',
-    name: 'Test Tube',
+    name: '20 mL Test Tube',
     icon: <TestTube className="w-8 h-8" />,
-    description: 'Glass test tube for reactions'
+    description: 'Glass test tube for reactions (20 mL capacity)'
   },
   {
     id: 'cobalt-ii-solution',

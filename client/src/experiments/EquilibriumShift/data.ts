@@ -9,9 +9,9 @@ const EquilibriumShiftData = {
   rating: 4.9,
   imageUrl: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400",
   equipment: [
-    "Test Tube",
+    "20 mL Test Tube",
     "Reagent Bottles",
-    "Graduated Droppers", 
+    "Graduated Droppers",
     "Stirring Rod",
     "Thermometer",
     "Color Chart"

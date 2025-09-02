@@ -132,9 +132,9 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         className="max-w-[144px] max-h-[168px] object-contain"
                       />
                       {hasSodiumPiece && (
-                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none">
+                        <div className="absolute bottom-10 left-[53%] -translate-x-1/2 pointer-events-none">
                           <div
-                            className="w-6 h-6 rounded-full border border-gray-400 shadow-md"
+                            className="w-3 h-3 rounded-full border border-gray-400 shadow-md"
                             style={{
                               background:
                                 "radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(229,231,235,0.9) 40%, #9ca3af 70%, #6b7280 100%)",

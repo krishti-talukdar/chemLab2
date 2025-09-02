@@ -78,6 +78,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   // Heating states for test tube
   const [showHeatingMessage, setShowHeatingMessage] = useState(false);
+  const [finalVolumeUsed, setFinalVolumeUsed] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      const v = e?.detail?.volumeUsed;
+      if (typeof v === 'number' && !isNaN(v)) setFinalVolumeUsed(v);
+    };
+    window.addEventListener('finalVolumeUsedUpdated', handler as EventListener);
+    return () => window.removeEventListener('finalVolumeUsedUpdated', handler as EventListener);
+  }, []);
   const [useHeatedImage, setUseHeatedImage] = useState(false);
   const [heatingStartTime, setHeatingStartTime] = useState<number | null>(null);
   const [showEndothermicMessage, setShowEndothermicMessage] = useState(false);
@@ -604,7 +614,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         <div className="relative group">
           {/* Volume label above test tube */}
           <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-300 shadow-sm">
-            <span className="text-xs font-semibold text-gray-700">10 mL test tube</span>
+            <span className="text-xs font-semibold text-gray-700">20 mL test tube</span>
           </div>
 
           <img
@@ -645,6 +655,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   : 1,
             }}
           />
+
+          {/* Current volume badge (shows Final Volume Used if available) */}
+          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-full border border-gray-300 shadow-sm text-[10px] font-semibold text-gray-700">
+            {`${(finalVolumeUsed ?? Math.max(0, chemicals.reduce((sum, c) => sum + (c.amount || 0), 0))).toFixed(1)} mL`}
+          </div>
 
           {/* Pink cobalt animation effects */}
           {isCobaltAnimation && (
