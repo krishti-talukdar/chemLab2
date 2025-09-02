@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info, TestTube, Filter } from "lucide-react";
+import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info, TestTube, Filter, Flame, ArrowLeft, RotateCcw } from "lucide-react";
 import type { ExperimentMode } from "../types";
 import WorkBench from "./WorkBench";
 
@@ -66,6 +66,7 @@ export default function VirtualLab({
   const equipmentItems = [
     { id: "ignition-tube", label: "Fusion Tube", icon: <TestTube className="w-8 h-8 text-blue-600 mb-2" /> },
     { id: "sodium-piece", label: "Sodium Piece (under kerosene)", icon: <Beaker className="w-8 h-8 text-emerald-600 mb-2" /> },
+    { id: "bunsen-burner", label: "Bunsen Burner", icon: <Flame className="w-8 h-8 text-orange-500 mb-2" /> },
     { id: "organic-compound", label: "Organic Compound", icon: <FlaskConical className="w-8 h-8 text-purple-600 mb-2" /> },
     { id: "water-bath", label: "Water Bath", icon: <Droplets className="w-8 h-8 text-blue-500 mb-2" /> },
     { id: "filter-funnel", label: "Filter Paper & Funnel", icon: <Filter className="w-8 h-8 text-amber-600 mb-2" /> },
@@ -315,6 +316,34 @@ export default function VirtualLab({
                   Drag equipment into the workbench center area.
                 </div>
               </div>
+
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Equations</h4>
+                <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
+                  <div>Na + C + N → NaCN</div>
+                  <div>2Na + S → Na₂S</div>
+                  <div>Na + X → NaX (X = Cl, Br, I)</div>
+                </div>
+                <div className="text-center text-xs text-gray-500 mt-2">Sodium fusion converts elements to ionic salts</div>
+              </div>
+
+              <div className="space-y-2">
+                <Button
+                  onClick={() => onStepUndo()}
+                  variant="outline"
+                  className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                  disabled={mode.currentGuidedStep <= 0}
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" /> Undo Step {mode.currentGuidedStep + 1}
+                </Button>
+                <Button
+                  onClick={onReset}
+                  variant="outline"
+                  className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" /> Reset Experiment
+                </Button>
+              </div>
             </div>
 
             {/* Workbench - Center */}
@@ -388,6 +417,24 @@ export default function VirtualLab({
               </CardContent>
             </Card>
           ))}
+
+          <div className="lg:col-span-2 space-y-2">
+            <Button
+              onClick={() => onStepUndo()}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+              disabled={mode.currentGuidedStep <= 0}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> Undo Step {mode.currentGuidedStep + 1}
+            </Button>
+            <Button
+              onClick={onReset}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" /> Reset Experiment
+            </Button>
+          </div>
         </div>
       )}
     </div>

@@ -38,6 +38,9 @@ interface OxalicAcidVirtualLabProps {
   isRunning: boolean;
   setIsRunning: (running: boolean) => void;
   onResetTimer: () => void;
+  onUndoStep: () => void;
+  onResetExperiment: () => void;
+  currentStepIndex: number;
 }
 
 function OxalicAcidVirtualLab({
@@ -53,6 +56,9 @@ function OxalicAcidVirtualLab({
   isRunning,
   setIsRunning,
   onResetTimer,
+  onUndoStep,
+  onResetExperiment,
+  currentStepIndex,
 }: OxalicAcidVirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
@@ -371,6 +377,9 @@ function OxalicAcidVirtualLab({
           results={results}
           chemicals={OXALIC_ACID_CHEMICALS}
           equipment={OXALIC_ACID_EQUIPMENT}
+          onUndoStep={onUndoStep}
+          onResetExperiment={onResetExperiment}
+          currentStepIndex={currentStepIndex}
         />
       </div>
     </TooltipProvider>

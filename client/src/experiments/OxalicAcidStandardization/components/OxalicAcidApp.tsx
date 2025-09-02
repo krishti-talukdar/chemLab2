@@ -18,6 +18,7 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [experimentStarted, setExperimentStarted] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const experiment = OxalicAcidData;
   const [match, params] = useRoute("/experiment/:id");
@@ -71,6 +72,18 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
   const handleResetTimer = () => {
     setTimer(0);
     setIsRunning(false);
+  };
+
+  const handleUndoStep = () => {
+    if (currentStep > 0) setCurrentStep((s) => s - 1);
+  };
+
+  const handleResetExperiment = () => {
+    setCurrentStep(0);
+    setIsRunning(false);
+    setTimer(0);
+    setExperimentStarted(false);
+    setResetKey((k) => k + 1);
   };
 
   useEffect(() => {
@@ -188,6 +201,7 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
           {/* Virtual Lab */}
           <div className="lg:col-span-3">
             <OxalicAcidVirtualLab
+              key={resetKey}
               step={experiment.stepDetails[currentStep]}
               onStepComplete={handleStepComplete}
               isActive={true}
@@ -200,6 +214,9 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
               isRunning={isRunning}
               setIsRunning={setIsRunning}
               onResetTimer={handleResetTimer}
+              onUndoStep={handleUndoStep}
+              onResetExperiment={handleResetExperiment}
+              currentStepIndex={currentStep + 1}
             />
           </div>
         </div>

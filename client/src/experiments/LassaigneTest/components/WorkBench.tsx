@@ -16,7 +16,7 @@ interface PrepWorkbenchProps {
 }
 
 import { useRef, useState } from "react";
-import { TestTube, Beaker, FlaskConical, Droplets, Filter } from "lucide-react";
+import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
 
 export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -92,15 +92,19 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
       {(() => {
         const hasIgnitionTube = placed.some(p => p.id === "ignition-tube");
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
+        const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         return placed.map((p, idx) => {
           const item = findItem(p.id);
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
+          if (p.id === "organic-compound" && hasIgnitionTube) return null;
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
               : p.id === "sodium-piece"
               ? Beaker
+              : p.id === "bunsen-burner"
+              ? Flame
               : p.id === "organic-compound"
               ? FlaskConical
               : p.id === "water-bath"
@@ -111,6 +115,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               ? "text-blue-600"
               : p.id === "sodium-piece"
               ? "text-emerald-600"
+              : p.id === "bunsen-burner"
+              ? "text-orange-500"
               : p.id === "organic-compound"
               ? "text-purple-600"
               : p.id === "water-bath"
@@ -140,6 +146,22 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                                 "radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(229,231,235,0.9) 40%, #9ca3af 70%, #6b7280 100%)",
                             }}
                           />
+                        </div>
+                      )}
+                      {hasOrganicCompound && (
+                        <div className="absolute bottom-12 left-[53%] -translate-x-1/2 pointer-events-none">
+                          <div className="relative w-[22px] h-[110px] overflow-hidden">
+                            <div
+                              className="absolute bottom-0 left-0 right-0"
+                              style={{
+                                height: "22%",
+                                background: "linear-gradient(to top, #f59e0b, #fde68a)",
+                                borderTopLeftRadius: 8,
+                                borderTopRightRadius: 8,
+                                opacity: 0.95,
+                              }}
+                            />
+                          </div>
                         </div>
                       )}
                     </>
