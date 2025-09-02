@@ -417,6 +417,24 @@ export default function VirtualLab({
               </CardContent>
             </Card>
           ))}
+
+          <div className="lg:col-span-2 space-y-2">
+            <Button
+              onClick={() => onStepUndo()}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+              disabled={mode.currentGuidedStep <= 0}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> Undo Step {mode.currentGuidedStep + 1}
+            </Button>
+            <Button
+              onClick={onReset}
+              variant="outline"
+              className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" /> Reset Experiment
+            </Button>
+          </div>
         </div>
       )}
     </div>
