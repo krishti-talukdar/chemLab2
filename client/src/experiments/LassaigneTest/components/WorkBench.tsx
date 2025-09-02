@@ -113,6 +113,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               ? "text-blue-600"
               : p.id === "sodium-piece"
               ? "text-emerald-600"
+              : p.id === "bunsen-burner"
+              ? "text-orange-500"
               : p.id === "organic-compound"
               ? "text-purple-600"
               : p.id === "water-bath"
