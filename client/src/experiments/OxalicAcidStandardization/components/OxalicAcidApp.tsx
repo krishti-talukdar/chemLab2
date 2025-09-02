@@ -201,6 +201,7 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
           {/* Virtual Lab */}
           <div className="lg:col-span-3">
             <OxalicAcidVirtualLab
+              key={resetKey}
               step={experiment.stepDetails[currentStep]}
               onStepComplete={handleStepComplete}
               isActive={true}
@@ -213,6 +214,9 @@ export default function OxalicAcidApp({ onBack }: OxalicAcidAppProps) {
               isRunning={isRunning}
               setIsRunning={setIsRunning}
               onResetTimer={handleResetTimer}
+              onUndoStep={handleUndoStep}
+              onResetExperiment={handleResetExperiment}
+              currentStepIndex={currentStep + 1}
             />
           </div>
         </div>
