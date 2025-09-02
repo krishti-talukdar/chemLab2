@@ -101,6 +101,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               ? TestTube
               : p.id === "sodium-piece"
               ? Beaker
+              : p.id === "bunsen-burner"
+              ? Flame
               : p.id === "organic-compound"
               ? FlaskConical
               : p.id === "water-bath"
