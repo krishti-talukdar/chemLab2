@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info, TestTube, Filter, Flame } from "lucide-react";
+import { CheckCircle, Beaker, FlaskConical, Droplets, Sparkles, Eraser, Play, Wrench, Info, TestTube, Filter, Flame, ArrowLeft, RotateCcw } from "lucide-react";
 import type { ExperimentMode } from "../types";
 import WorkBench from "./WorkBench";
 
