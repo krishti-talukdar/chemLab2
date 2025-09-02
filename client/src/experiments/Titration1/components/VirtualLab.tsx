@@ -233,7 +233,11 @@ export default function VirtualLab({
     // In guided mode, enforce step equipment requirements
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
-      if (!currentStepData.equipment.includes(equipmentId)) {
+      const allowedSoFar = new Set(
+        GUIDED_STEPS.slice(0, currentStep).flatMap((s) => s.equipment)
+      );
+      // Allow placing any equipment required up to the current step
+      if (!allowedSoFar.has(equipmentId)) {
         setShowToast(`${equipmentId.replace('-', ' ')} is not needed for step ${currentStep}. Follow the current step instructions.`);
         setTimeout(() => setShowToast(""), 3000);
         return;
@@ -259,7 +263,8 @@ export default function VirtualLab({
     // Auto-complete step if it's just placing equipment (guided mode only)
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
-      if (currentStepData.action.includes("Drag") && !completedSteps.includes(currentStep)) {
+      const isCurrentStepPlacement = currentStepData.action.includes("Drag") && currentStepData.equipment.includes(equipmentId);
+      if (isCurrentStepPlacement && !completedSteps.includes(currentStep)) {
         setTimeout(() => {
           handleStepComplete();
         }, 1000);
