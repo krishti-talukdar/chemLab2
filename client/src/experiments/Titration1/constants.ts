@@ -214,9 +214,9 @@ export const GUIDED_STEPS: GuidedStep[] = [
   {
     id: 1,
     title: "Setup Workspace",
-    description: "Drag the burette, conical flask, and pipette onto the workbench to begin the experiment.",
-    action: "Drag equipment to workbench",
-    equipment: ["burette", "conical-flask", "pipette"],
+    description: "drag the burette, pipette and the conical flask to the workbench",
+    action: "Drag the burette, pipette and the conical flask to the workbench",
+    equipment: ["burette", "pipette", "conical-flask"],
     completed: false
   },
   {
