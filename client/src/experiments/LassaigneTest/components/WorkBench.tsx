@@ -92,10 +92,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
       {(() => {
         const hasIgnitionTube = placed.some(p => p.id === "ignition-tube");
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
+        const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         return placed.map((p, idx) => {
           const item = findItem(p.id);
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
+          if (p.id === "organic-compound" && hasIgnitionTube) return null;
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
@@ -142,6 +144,22 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                             style={{
                               background:
                                 "radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(229,231,235,0.9) 40%, #9ca3af 70%, #6b7280 100%)",
+                            }}
+                          />
+                        </div>
+                      )}
+                      {hasOrganicCompound && (
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none">
+                          <div
+                            className="w-16 h-6 shadow-sm"
+                            style={{
+                              background:
+                                "linear-gradient(to top, #f59e0b 10%, #fde68a 90%)",
+                              clipPath:
+                                "polygon(0% 100%, 8% 70%, 20% 55%, 35% 45%, 50% 40%, 65% 45%, 80% 55%, 92% 70%, 100% 100%)",
+                              border: "1px solid rgba(0,0,0,0.08)",
+                              borderRadius: "2px",
+                              opacity: 0.95,
                             }}
                           />
                         </div>
