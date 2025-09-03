@@ -835,6 +835,37 @@ export default function VirtualLab({
           </div>
         )}
 
+        {/* Pipette volume modal for step 1 */}
+        <Dialog open={showPipetteVolumeModal} onOpenChange={setShowPipetteVolumeModal}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-semibold">Enter Oxalic Acid Volume</DialogTitle>
+              <DialogDescription>enter the amount of oxalic acid(10ml-25ml)</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <Input
+                type="number"
+                min={10}
+                max={25}
+                step={0.1}
+                value={pipetteVolumeInput}
+                onChange={(e) => setPipetteVolumeInput(e.target.value)}
+              />
+              <p className="text-xs text-blue-600">Recommendation: add 10ml of oxalic acid</p>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setShowPipetteVolumeModal(false)}>Cancel</Button>
+                <Button onClick={() => {
+                  const v = Math.max(10, Math.min(25, parseFloat(pipetteVolumeInput) || 10));
+                  setPlannedOxalicVolume(v);
+                  setShowPipetteVolumeModal(false);
+                  setShowToast(`Planned volume set to ${v.toFixed(1)} mL. Proceed to Step 2 and click pipette to add.`);
+                  setSafeTimeout(() => setShowToast(""), 3000);
+                }}>Confirm</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Toast Notification */}
         {showToast && (
           <div className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce">
