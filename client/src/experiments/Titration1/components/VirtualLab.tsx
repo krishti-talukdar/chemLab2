@@ -126,9 +126,10 @@ export default function VirtualLab({
 
     if (titrationAction?.isAnimating && titrationAction.actionType === 'add_solution' && titrationAction.reagentId === 'oxalic-acid') {
       setTitrationAction(null);
+      const vol = Math.max(10, Math.min(25, plannedOxalicVolume ?? 25));
       setConicalFlask(prev => ({
         ...prev,
-        volume: 25,
+        volume: vol,
         contents: ['H₂C₂O₄'],
         colorHex: COLORS.OXALIC_ACID
       }));
@@ -138,11 +139,11 @@ export default function VirtualLab({
         timestamp: Date.now(),
         action: 'Added oxalic acid',
         reagent: '0.1N H₂C₂O₄',
-        volume: 25.0,
+        volume: vol,
         buretteReading: burette.reading,
         colorBefore: COLORS.COLORLESS,
         colorAfter: COLORS.OXALIC_ACID,
-        observation: 'Transferred 25.0 mL of standard oxalic acid solution'
+        observation: `Transferred ${vol.toFixed(1)} mL of standard oxalic acid solution`
       } as TitrationLog;
       setTitrationLog(prev => [...prev, logEntry]);
 
