@@ -182,9 +182,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: `linear-gradient(to bottom, transparent 60%, ${color} 75%, ${color} 90%, transparent 100%)`,
-                  clipPath: 'polygon(35% 75%, 65% 75%, 60% 90%, 40% 90%)',
-                  opacity: 0.8
+                  background: `linear-gradient(to bottom, transparent 50%, ${color} 70%, ${color} 85%, ${color} 95%)`,
+                  clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)',
+                  opacity: 0.7
                 }}
               />
             )}
