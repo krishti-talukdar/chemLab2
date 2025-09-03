@@ -718,7 +718,7 @@ export default function VirtualLab({
                     onInteract={handleEquipmentInteract}
                     isActive={activeEquipment === equipment.id}
                     color={equipment.id === 'conical-flask' ? conicalFlask.colorHex : undefined}
-                    volume={equipment.id === 'conical-flask' ? conicalFlask.volume : undefined}
+                    volume={equipment.id === 'conical-flask' ? conicalFlask.volume : equipment.id === 'pipette' ? (plannedOxalicVolume ?? undefined) : undefined}
                     reading={equipment.id === 'burette' ? burette.reading : undefined}
                   />
                 ) : null;
