@@ -99,7 +99,6 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
           if (p.id === "organic-compound" && hasIgnitionTube) return null;
-          if (p.id === "bunsen-burner" && hasIgnitionTube) return null;
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
@@ -131,7 +130,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               style={{ left: p.x, top: p.y }}
             >
               <div className="flex flex-col items-center">
-                <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : "w-16 h-16"} relative rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
+                <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : p.id === "bunsen-burner" ? "w-24 h-24" : "w-16 h-16"} relative rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
                   {p.id === "ignition-tube" ? (
                     <>
                       <img
@@ -167,6 +166,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         </div>
                       )}
                     </>
+                  ) : p.id === "bunsen-burner" ? (
+                    <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fc4be507c9a054f00b694808aa900a9e5?format=webp&width=800" alt="Bunsen Burner" className="max-w-full max-h-full object-contain" />
                   ) : (
                     <Icon className="w-6 h-6" />
                   )}
