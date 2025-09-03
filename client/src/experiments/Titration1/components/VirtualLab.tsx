@@ -293,20 +293,25 @@ export default function VirtualLab({
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
 
-    if (equipmentId === 'pipette' && currentStep === 2) {
-      // Transfer oxalic acid to flask
+    if (equipmentId === 'pipette' && (currentStep === 1 || currentStep === 2)) {
+      if (currentStep === 1) {
+        setShowPipetteVolumeModal(true);
+        return;
+      }
+      // Transfer oxalic acid to flask using planned volume
+      const vol = Math.max(10, Math.min(25, plannedOxalicVolume ?? 25));
       setActiveEquipment(equipmentId);
       setTitrationAction({
         id: Date.now().toString(),
         actionType: 'add_solution',
         reagentId: 'oxalic-acid',
         targetId: 'conical-flask',
-        amount: 25,
+        amount: vol,
         timestamp: Date.now(),
         isAnimating: true
       });
 
-      setShowToast("Transferring 25.0 mL of 0.1N oxalic acid...");
+      setShowToast(`Transferring ${vol.toFixed(1)} mL of 0.1N oxalic acid...`);
 
       setSafeTimeout(() => {
         setTitrationAction(null);
