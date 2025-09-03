@@ -170,7 +170,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         <img
                           src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fb8d67a4a48d04f2c845aaddc4b071ade?format=webp&width=800"
                           alt="Bunsen Burner"
-                          className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-48 h-auto pointer-events-none"
+                          className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-48 h-auto pointer-events-none"
                           style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.15))' }}
                         />
                       )}
