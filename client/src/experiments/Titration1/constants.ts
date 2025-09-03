@@ -15,10 +15,10 @@ export const COLORS = {
 // Initial flask state
 export const INITIAL_FLASK: ConicalFlask = {
   id: "conical-flask",
-  volume: 25,
+  volume: 0,
   color: "colorless",
   colorHex: COLORS.COLORLESS,
-  contents: ["H₂C₂O₄"],
+  contents: [],
   hasIndicator: false,
   endpointReached: false
 };

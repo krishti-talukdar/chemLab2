@@ -126,9 +126,10 @@ export default function VirtualLab({
 
     if (titrationAction?.isAnimating && titrationAction.actionType === 'add_solution' && titrationAction.reagentId === 'oxalic-acid') {
       setTitrationAction(null);
+      const vol = Math.max(10, Math.min(25, plannedOxalicVolume ?? 25));
       setConicalFlask(prev => ({
         ...prev,
-        volume: 25,
+        volume: vol,
         contents: ['H₂C₂O₄'],
         colorHex: COLORS.OXALIC_ACID
       }));
@@ -138,11 +139,11 @@ export default function VirtualLab({
         timestamp: Date.now(),
         action: 'Added oxalic acid',
         reagent: '0.1N H₂C₂O₄',
-        volume: 25.0,
+        volume: vol,
         buretteReading: burette.reading,
         colorBefore: COLORS.COLORLESS,
         colorAfter: COLORS.OXALIC_ACID,
-        observation: 'Transferred 25.0 mL of standard oxalic acid solution'
+        observation: `Transferred ${vol.toFixed(1)} mL of standard oxalic acid solution`
       } as TitrationLog;
       setTitrationLog(prev => [...prev, logEntry]);
 
@@ -271,8 +272,8 @@ export default function VirtualLab({
 
     // Step 1: show hint and volume modal when pipette is placed
     if (equipmentId === 'pipette' && currentStep === 1) {
-      setShowToast('click on the pipette');
-      setSafeTimeout(() => setShowToast(''), 2000);
+      setShowToast('Click on the pipette to fill the oxalic acid into the conical flask');
+      setSafeTimeout(() => setShowToast(''), 4000);
       setSafeTimeout(() => setShowPipetteVolumeModal(true), 800);
     }
 
@@ -285,6 +286,14 @@ export default function VirtualLab({
         setTimeout(() => {
           handleStepComplete();
         }, 600);
+      }
+
+      // Show guidance for step 2 when pipette and flask are on bench (only if volume is set)
+      if (currentStep === 2 && afterIds.includes('pipette') && afterIds.includes('conical-flask') && plannedOxalicVolume) {
+        setTimeout(() => {
+          setShowToast('Click on the pipette to fill the oxalic acid into the conical flask');
+          setSafeTimeout(() => setShowToast(''), 4000);
+        }, 1000);
       }
     }
   }, [currentStep, completedSteps, mode.current]);
@@ -858,8 +867,8 @@ export default function VirtualLab({
                   const v = Math.max(10, Math.min(25, parseFloat(pipetteVolumeInput) || 10));
                   setPlannedOxalicVolume(v);
                   setShowPipetteVolumeModal(false);
-                  setShowToast(`Planned volume set to ${v.toFixed(1)} mL. Proceed to Step 2 and click pipette to add.`);
-                  setSafeTimeout(() => setShowToast(""), 3000);
+                  setShowToast(`Volume set to ${v.toFixed(1)} mL. Click on the pipette to fill the conical flask.`);
+                  setSafeTimeout(() => setShowToast(""), 4000);
                 }}>Confirm</Button>
               </div>
             </div>

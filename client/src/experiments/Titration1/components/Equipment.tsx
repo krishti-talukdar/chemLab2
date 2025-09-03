@@ -170,17 +170,36 @@ export const Equipment: React.FC<EquipmentProps> = ({
             style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
           />
         ) : id === 'conical-flask' && isPositioned ? (
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
-            alt="Conical Flask"
-            className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
-            style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
-          />
+          <div className="relative">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
+              alt="Conical Flask"
+              className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+              style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
+            />
+            {/* Oxalic acid solution overlay */}
+            {color && color !== '#F8F9FA' && (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: `linear-gradient(to bottom, transparent 50%, ${color} 70%, ${color} 85%, ${color} 95%)`,
+                  clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)',
+                  opacity: 0.7
+                }}
+              />
+            )}
+          </div>
         ) : (
-          React.cloneElement(icon, {
-            className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
-            size: isPositioned ? 48 : 36
-          })
+          <div className={`${id === 'pipette' && isActive ? 'relative' : ''}`}>
+            {React.cloneElement(icon, {
+              className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
+              size: isPositioned ? 48 : 36
+            })}
+            {/* White glow effect for active pipette */}
+            {id === 'pipette' && isActive && (
+              <div className="absolute inset-0 bg-white opacity-30 rounded-full animate-pulse pointer-events-none" />
+            )}
+          </div>
         )}
         
         {/* Special rendering for different equipment types */}
