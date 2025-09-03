@@ -287,8 +287,8 @@ export default function VirtualLab({
         }, 600);
       }
 
-      // Show guidance for step 2 when pipette and flask are on bench
-      if (currentStep === 2 && afterIds.includes('pipette') && afterIds.includes('conical-flask')) {
+      // Show guidance for step 2 when pipette and flask are on bench (only if volume is set)
+      if (currentStep === 2 && afterIds.includes('pipette') && afterIds.includes('conical-flask') && plannedOxalicVolume) {
         setTimeout(() => {
           setShowToast('Click on the pipette to fill the oxalic acid into the conical flask');
           setSafeTimeout(() => setShowToast(''), 4000);
@@ -866,8 +866,8 @@ export default function VirtualLab({
                   const v = Math.max(10, Math.min(25, parseFloat(pipetteVolumeInput) || 10));
                   setPlannedOxalicVolume(v);
                   setShowPipetteVolumeModal(false);
-                  setShowToast(`Planned volume set to ${v.toFixed(1)} mL. Proceed to Step 2 and click pipette to add.`);
-                  setSafeTimeout(() => setShowToast(""), 3000);
+                  setShowToast(`Volume set to ${v.toFixed(1)} mL. Click on the pipette to fill the conical flask.`);
+                  setSafeTimeout(() => setShowToast(""), 4000);
                 }}>Confirm</Button>
               </div>
             </div>
