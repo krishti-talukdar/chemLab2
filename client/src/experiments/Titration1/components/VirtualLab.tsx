@@ -269,6 +269,13 @@ export default function VirtualLab({
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
     setTimeout(() => setShowToast(""), 2000);
 
+    // Step 1: show hint and volume modal when pipette is placed
+    if (equipmentId === 'pipette' && currentStep === 1) {
+      setShowToast('click on the pipette');
+      setSafeTimeout(() => setShowToast(''), 2000);
+      setSafeTimeout(() => setShowPipetteVolumeModal(true), 800);
+    }
+
     // Auto-complete step only when all required items for this placement step are present
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
