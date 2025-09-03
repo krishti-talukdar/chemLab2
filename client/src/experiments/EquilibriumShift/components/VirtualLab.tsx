@@ -75,6 +75,16 @@ export default function VirtualLab({
   const [selectedBottle, setSelectedBottle] = useState<string>("");
   const [volumeInput, setVolumeInput] = useState<string>("");
   const [observePulse, setObservePulse] = useState<boolean>(true);
+  const [finalVolumeUsed, setFinalVolumeUsed] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      const v = e?.detail?.volumeUsed;
+      if (typeof v === 'number' && !isNaN(v)) setFinalVolumeUsed(v);
+    };
+    window.addEventListener('finalVolumeUsedUpdated', handler as EventListener);
+    return () => window.removeEventListener('finalVolumeUsedUpdated', handler as EventListener);
+  }, []);
 
   // Stop the timer when the results & analysis modal appears
   useEffect(() => {
@@ -760,6 +770,7 @@ export default function VirtualLab({
                       isActive={activeEquipment === equipment.id}
                       color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
                       volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
+                      displayVolume={equipment.id === 'test-tube' ? (finalVolumeUsed ?? testTube.volume) : undefined}
                       isCobaltAnimation={equipment.id === 'test-tube' ? testTube.isCobaltAnimation || false : false}
                     />
                   </div>
@@ -902,7 +913,7 @@ export default function VirtualLab({
                     <div className="text-sm text-gray-600">Actions Performed</div>
                   </div>
                   <div className="bg-white rounded-lg p-4 shadow-sm">
-                    <div className="text-2xl font-bold text-purple-600">{Math.round(testTube.volume)}mL</div>
+                    <div className="text-2xl font-bold text-purple-600">{(finalVolumeUsed ?? testTube.volume).toFixed(1)} mL</div>
                     <div className="text-sm text-gray-600">Final Volume</div>
                   </div>
                 </div>
@@ -941,7 +952,7 @@ export default function VirtualLab({
                         <li>�� Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
-                        <li>���� High Cl⁻ concentration</li>
+                        <li>����� High Cl⁻ concentration</li>
                       </ul>
                     </div>
                   </div>
@@ -1019,7 +1030,7 @@ export default function VirtualLab({
                   <div>
                     <h4 className="font-semibold text-gray-700 mb-2">Contents Analysis</h4>
                     <div className="space-y-1">
-                      <div className="text-sm">Volume: <span className="font-medium">{Math.round(testTube.volume)} mL</span></div>
+                      <div className="text-sm">Volume: <span className="font-medium">{(finalVolumeUsed ?? testTube.volume).toFixed(1)} mL</span></div>
                       <div className="text-sm">Components: <span className="font-medium">{testTube.contents.join(', ')}</span></div>
                       <div className="text-sm">Color: <span className="font-medium">{testTube.color}</span></div>
                     </div>

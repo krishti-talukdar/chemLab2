@@ -13,6 +13,7 @@ interface EquipmentProps {
   disabled?: boolean;
   color?: string;
   volume?: number;
+  displayVolume?: number; // explicit volume to show in badge
   onInteract?: (id: string) => void;
   isActive?: boolean;
 }
@@ -27,20 +28,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
   disabled = false,
   color = "#e5e7eb",
   volume = 0,
+  displayVolume,
   onInteract,
   isActive = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [finalVolumeUsed, setFinalVolumeUsed] = useState<number | null>(null);
-
-  useEffect(() => {
-    const handler = (e: any) => {
-      const v = e?.detail?.volumeUsed;
-      if (typeof v === 'number' && !isNaN(v)) setFinalVolumeUsed(v);
-    };
-    window.addEventListener('finalVolumeUsedUpdated', handler as EventListener);
-    return () => window.removeEventListener('finalVolumeUsedUpdated', handler as EventListener);
-  }, []);
 
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) return;
@@ -138,7 +130,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <div className="relative w-32 h-72">
                 {/* Current volume badge (shows Final Volume Used if available) */}
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-full border border-gray-300 shadow-sm text-[10px] font-semibold text-gray-700">
-                  {`${(finalVolumeUsed ?? volume ?? 0).toFixed(1)} mL`}
+                  {`${(displayVolume ?? volume ?? 0).toFixed(1)} mL`}
                 </div>
                 {/* Test tube image */}
                 <img

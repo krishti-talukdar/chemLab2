@@ -115,14 +115,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
     ${isPositioned ? (
       id === 'burette'
         ? 'absolute min-w-[240px]'
-        : 'absolute min-w-[80px] p-3 rounded-lg border-2 border-gray-200 bg-white'
+        : (id === 'conical-flask'
+            ? 'absolute min-w-[80px] p-0 border-0 bg-transparent rounded-none shadow-none'
+            : 'absolute min-w-[80px] p-3 rounded-lg border-2 border-gray-200 bg-white')
     ) : 'w-full p-3 rounded-lg border-2 border-gray-200 bg-white'}
     ${!isPositioned && isActive ? 'border-blue-500 bg-blue-50' : ''}
   `;
 
   const equipmentElement = (
     <div
-      className={`${baseClasses} ${isDragging ? 'cursor-grabbing z-50' : (isPositioned ? 'cursor-grab' : '')}`}
+      className={`${baseClasses} ${isDragging ? 'cursor-grabbing z-50' : (isPositioned ? 'cursor-grab' : '')} ${id === 'conical-flask' && isPositioned ? 'bg-transparent border-0 shadow-none p-0' : ''}`}
       style={isPositioned ? {
         left: currentPosition.x,
         top: currentPosition.y,
@@ -167,6 +169,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
             className={`h-96 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
             style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
           />
+        ) : id === 'conical-flask' && isPositioned ? (
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
+            alt="Conical Flask"
+            className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+            style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
+          />
         ) : (
           React.cloneElement(icon, {
             className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
@@ -175,7 +184,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         )}
         
         {/* Special rendering for different equipment types */}
-        {id === 'conical-flask' && color && (
+        {id === 'conical-flask' && color && !isPositioned && (
           <div
             className="absolute inset-0 rounded-full"
             style={{
@@ -184,7 +193,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             }}
           />
         )}
-        
+
         {id === 'burette' && (
           <div className={`absolute bg-white border rounded px-1 ${
             isPositioned

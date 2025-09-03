@@ -155,7 +155,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                               className="absolute bottom-0 left-0 right-0"
                               style={{
                                 height: "22%",
-                                background: "linear-gradient(to top, #f59e0b, #fde68a)",
+                                background: "linear-gradient(to top, #fde68a, #f59e0b)",
                                 borderTopLeftRadius: 8,
                                 borderTopRightRadius: 8,
                                 opacity: 0.95,
