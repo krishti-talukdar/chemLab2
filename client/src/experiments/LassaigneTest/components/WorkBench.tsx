@@ -166,28 +166,6 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                           </div>
                         </div>
                       )}
-                      {hasBunsenBurner && (
-                        <div
-                          className="absolute -bottom-48 left-1/2 -translate-x-1/2 pointer-events-none"
-                          style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.15))' }}
-                        >
-                          <img
-                            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fb8d67a4a48d04f2c845aaddc4b071ade?format=webp&width=800"
-                            alt="Bunsen Burner"
-                            className="w-[768px] h-auto"
-                          />
-                          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-36 h-48 z-30">
-                            <div
-                              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[72px] h-[120px] rounded-full blur-[1px]"
-                              style={{ background: "radial-gradient(ellipse at bottom, rgba(59,130,246,0.9) 0%, rgba(37,99,235,0.7) 55%, rgba(37,99,235,0) 70%)", animation: "flameFlicker 0.35s infinite ease-in-out" }}
-                            />
-                            <div
-                              className="absolute bottom-1 left-1/2 -translate-x-1/2 w-[36px] h-[72px] rounded-full"
-                              style={{ background: "radial-gradient(ellipse at bottom, rgba(191,219,254,0.95) 0%, rgba(147,197,253,0.6) 60%, rgba(147,197,253,0) 80%)", animation: "flameFlicker 0.3s infinite ease-in-out reverse" }}
-                            />
-                          </div>
-                        </div>
-                      )}
                     </>
                   ) : (
                     <Icon className="w-6 h-6" />
