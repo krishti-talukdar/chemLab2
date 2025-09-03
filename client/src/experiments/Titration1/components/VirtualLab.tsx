@@ -271,8 +271,8 @@ export default function VirtualLab({
 
     // Step 1: show hint and volume modal when pipette is placed
     if (equipmentId === 'pipette' && currentStep === 1) {
-      setShowToast('click on the pipette');
-      setSafeTimeout(() => setShowToast(''), 2000);
+      setShowToast('Click on the pipette to fill the oxalic acid into the conical flask');
+      setSafeTimeout(() => setShowToast(''), 4000);
       setSafeTimeout(() => setShowPipetteVolumeModal(true), 800);
     }
 
