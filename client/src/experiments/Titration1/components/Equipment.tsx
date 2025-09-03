@@ -178,7 +178,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
               style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
             />
             {/* Oxalic acid solution overlay */}
-            {color && (
+            {color && color !== '#F8F9FA' && (
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
