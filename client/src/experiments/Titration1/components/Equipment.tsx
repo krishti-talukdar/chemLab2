@@ -170,12 +170,25 @@ export const Equipment: React.FC<EquipmentProps> = ({
             style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
           />
         ) : id === 'conical-flask' && isPositioned ? (
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
-            alt="Conical Flask"
-            className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
-            style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
-          />
+          <div className="relative">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
+              alt="Conical Flask"
+              className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+              style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
+            />
+            {/* Oxalic acid solution overlay */}
+            {color && (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: `linear-gradient(to bottom, transparent 60%, ${color} 75%, ${color} 90%, transparent 100%)`,
+                  clipPath: 'polygon(35% 75%, 65% 75%, 60% 90%, 40% 90%)',
+                  opacity: 0.8
+                }}
+              />
+            )}
+          </div>
         ) : (
           React.cloneElement(icon, {
             className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
