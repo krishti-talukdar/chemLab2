@@ -174,19 +174,19 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                           <img
                             src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fb8d67a4a48d04f2c845aaddc4b071ade?format=webp&width=800"
                             alt="Bunsen Burner"
-                            className="w-64 h-auto"
+                            className="w-80 h-auto"
                           />
-                          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-16 z-30">
+                          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-14 h-20 z-30">
                             <div
-                              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-10 rounded-full blur-[1px]"
+                              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-14 rounded-full blur-[1px]"
                               style={{ background: "radial-gradient(ellipse at bottom, rgba(59,130,246,0.9) 0%, rgba(37,99,235,0.7) 55%, rgba(37,99,235,0) 70%)", animation: "flameFlicker 0.35s infinite ease-in-out" }}
                             />
                             <div
-                              className="absolute bottom-1 left-1/2 -translate-x-1/2 w-3 h-6 rounded-full"
+                              className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-8 rounded-full"
                               style={{ background: "radial-gradient(ellipse at bottom, rgba(191,219,254,0.95) 0%, rgba(147,197,253,0.6) 60%, rgba(147,197,253,0) 80%)", animation: "flameFlicker 0.3s infinite ease-in-out reverse" }}
                             />
                             <div
-                              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-8 rounded-full blur-md opacity-80"
+                              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-20 h-10 rounded-full blur-md opacity-80"
                               style={{ background: "radial-gradient(circle, rgba(59,130,246,0.6), rgba(59,130,246,0))" }}
                             />
                           </div>
