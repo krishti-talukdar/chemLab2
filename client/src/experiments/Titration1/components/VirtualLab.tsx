@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward } from "lucide-react";
 import { Link } from "wouter";
 import WorkBench from "./WorkBench";
@@ -644,7 +645,7 @@ export default function VirtualLab({
               <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Reaction</h4>
               <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
                 <div className="mb-2">
-                  H₂C₂O₄ + 2NaOH → Na₂C₂O₄ + 2H₂O
+                  H₂C₂O₄ + 2NaOH → Na₂C₂O�� + 2H₂O
                 </div>
                 <div className="text-gray-500">
                   Oxalic acid + Sodium hydroxide
