@@ -86,6 +86,11 @@ export default function VirtualLab({
   const timeoutsRef = useRef<number[]>([]);
   const colorIntervalRef = useRef<number | null>(null);
 
+  // Step 1 pipette planning state
+  const [showPipetteVolumeModal, setShowPipetteVolumeModal] = useState(false);
+  const [pipetteVolumeInput, setPipetteVolumeInput] = useState<string>("10");
+  const [plannedOxalicVolume, setPlannedOxalicVolume] = useState<number | null>(10);
+
   const setSafeTimeout = useCallback((fn: () => void, delay: number) => {
     const id = window.setTimeout(() => {
       timeoutsRef.current = timeoutsRef.current.filter(tid => tid !== id);
@@ -645,7 +650,7 @@ export default function VirtualLab({
               <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Reaction</h4>
               <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
                 <div className="mb-2">
-                  H₂C₂O₄ + 2NaOH → Na₂C₂O�� + 2H₂O
+                  H₂C₂O₄ + 2NaOH → Na₂C₂O₄ + 2H₂O
                 </div>
                 <div className="text-gray-500">
                   Oxalic acid + Sodium hydroxide
