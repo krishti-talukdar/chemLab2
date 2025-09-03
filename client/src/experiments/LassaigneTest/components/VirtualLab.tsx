@@ -42,24 +42,28 @@ export default function VirtualLab({
 
   const preparationSteps = [
     {
-      title: "Handle Sodium Safely",
-      detail:
-        "Cut a dry piece of sodium under kerosene using forceps. Never touch with wet hands.",
+      title: "Drag Fusion Tube to Workbench",
+      detail: "Drag the fusion tube to the work bench.",
     },
     {
-      title: "Heat with Organic Compound",
-      detail:
-        "Place sodium and the organic compound in an ignition tube and heat strongly until red hot.",
+      title: "Handle Sodium Safely",
+      detail: "Cut a dry piece of sodium under kerosene using forceps. Never touch with wet hands.",
+    },
+    {
+      title: "Add Organic Compound",
+      detail: "Add organic compound to the fusion tube.",
+    },
+    {
+      title: "Heat to Red Hot",
+      detail: "Place sodium and the organic compound in an ignition tube and heat strongly until red hot.",
     },
     {
       title: "Quench and Boil",
-      detail:
-        "Quench the hot tube in water, boil the mixture and crush the contents to dissolve sodium salts.",
+      detail: "Quench the hot tube in water, boil the mixture and crush the contents to dissolve sodium salts.",
     },
     {
       title: "Filter the Extract",
-      detail:
-        "Filter the hot solution to obtain a clear aqueous Lassaigne's extract for analysis.",
+      detail: "Filter the hot solution to obtain a clear aqueous Lassaigne's extract for analysis.",
     },
   ];
 
