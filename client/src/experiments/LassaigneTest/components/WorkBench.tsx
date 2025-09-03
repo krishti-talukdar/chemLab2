@@ -93,11 +93,13 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
         const hasIgnitionTube = placed.some(p => p.id === "ignition-tube");
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
+        const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
         return placed.map((p, idx) => {
           const item = findItem(p.id);
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
           if (p.id === "organic-compound" && hasIgnitionTube) return null;
+          if (p.id === "bunsen-burner" && hasIgnitionTube) return null;
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
@@ -163,6 +165,14 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                             />
                           </div>
                         </div>
+                      )}
+                      {hasBunsenBurner && (
+                        <img
+                          src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fb8d67a4a48d04f2c845aaddc4b071ade?format=webp&width=800"
+                          alt="Bunsen Burner"
+                          className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-48 h-auto pointer-events-none"
+                          style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.15))' }}
+                        />
                       )}
                     </>
                   ) : (

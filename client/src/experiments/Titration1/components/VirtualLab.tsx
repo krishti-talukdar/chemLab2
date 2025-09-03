@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward } from "lucide-react";
 import { Link } from "wouter";
 import WorkBench from "./WorkBench";
@@ -84,6 +85,11 @@ export default function VirtualLab({
   const [currentTrial, setCurrentTrial] = useState(1);
   const timeoutsRef = useRef<number[]>([]);
   const colorIntervalRef = useRef<number | null>(null);
+
+  // Step 1 pipette planning state
+  const [showPipetteVolumeModal, setShowPipetteVolumeModal] = useState(false);
+  const [pipetteVolumeInput, setPipetteVolumeInput] = useState<string>("10");
+  const [plannedOxalicVolume, setPlannedOxalicVolume] = useState<number | null>(10);
 
   const setSafeTimeout = useCallback((fn: () => void, delay: number) => {
     const id = window.setTimeout(() => {
@@ -263,6 +269,13 @@ export default function VirtualLab({
     setShowToast(`${equipmentId.replace('-', ' ')} placed on workbench`);
     setTimeout(() => setShowToast(""), 2000);
 
+    // Step 1: show hint and volume modal when pipette is placed
+    if (equipmentId === 'pipette' && currentStep === 1) {
+      setShowToast('click on the pipette');
+      setSafeTimeout(() => setShowToast(''), 2000);
+      setSafeTimeout(() => setShowPipetteVolumeModal(true), 800);
+    }
+
     // Auto-complete step only when all required items for this placement step are present
     if (mode.current === 'guided') {
       const currentStepData = GUIDED_STEPS[currentStep - 1];
@@ -280,26 +293,32 @@ export default function VirtualLab({
   const handleEquipmentInteract = useCallback((equipmentId: string) => {
     const currentStepData = GUIDED_STEPS[currentStep - 1];
 
-    if (equipmentId === 'pipette' && currentStep === 2) {
-      // Transfer oxalic acid to flask
+    if (equipmentId === 'pipette' && (currentStep === 1 || currentStep === 2)) {
+      if (currentStep === 1) {
+        setShowPipetteVolumeModal(true);
+        return;
+      }
+      // Transfer oxalic acid to flask using planned volume
+      const vol = Math.max(10, Math.min(25, plannedOxalicVolume ?? 25));
       setActiveEquipment(equipmentId);
       setTitrationAction({
         id: Date.now().toString(),
         actionType: 'add_solution',
         reagentId: 'oxalic-acid',
         targetId: 'conical-flask',
-        amount: 25,
+        amount: vol,
         timestamp: Date.now(),
         isAnimating: true
       });
 
-      setShowToast("Transferring 25.0 mL of 0.1N oxalic acid...");
+      setShowToast(`Transferring ${vol.toFixed(1)} mL of 0.1N oxalic acid...`);
 
       setSafeTimeout(() => {
         setTitrationAction(null);
+        const vol = Math.max(10, Math.min(25, plannedOxalicVolume ?? 25));
         setConicalFlask(prev => ({
           ...prev,
-          volume: 25,
+          volume: vol,
           contents: ['H₂C₂O₄'],
           colorHex: COLORS.OXALIC_ACID
         }));
@@ -309,11 +328,11 @@ export default function VirtualLab({
           timestamp: Date.now(),
           action: 'Added oxalic acid',
           reagent: '0.1N H₂C₂O₄',
-          volume: 25.0,
+          volume: vol,
           buretteReading: burette.reading,
           colorBefore: COLORS.COLORLESS,
           colorAfter: COLORS.OXALIC_ACID,
-          observation: 'Transferred 25.0 mL of standard oxalic acid solution'
+          observation: `Transferred ${vol.toFixed(1)} mL of standard oxalic acid solution`
         };
         setTitrationLog(prev => [...prev, logEntry]);
 
@@ -699,7 +718,7 @@ export default function VirtualLab({
                     onInteract={handleEquipmentInteract}
                     isActive={activeEquipment === equipment.id}
                     color={equipment.id === 'conical-flask' ? conicalFlask.colorHex : undefined}
-                    volume={equipment.id === 'conical-flask' ? conicalFlask.volume : undefined}
+                    volume={equipment.id === 'conical-flask' ? conicalFlask.volume : equipment.id === 'pipette' ? (plannedOxalicVolume ?? undefined) : undefined}
                     reading={equipment.id === 'burette' ? burette.reading : undefined}
                   />
                 ) : null;
@@ -815,6 +834,37 @@ export default function VirtualLab({
             </div>
           </div>
         )}
+
+        {/* Pipette volume modal for step 1 */}
+        <Dialog open={showPipetteVolumeModal} onOpenChange={setShowPipetteVolumeModal}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-semibold">Enter Oxalic Acid Volume</DialogTitle>
+              <DialogDescription>enter the amount of oxalic acid(10ml-25ml)</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <Input
+                type="number"
+                min={10}
+                max={25}
+                step={0.1}
+                value={pipetteVolumeInput}
+                onChange={(e) => setPipetteVolumeInput(e.target.value)}
+              />
+              <p className="text-xs text-blue-600">Recommendation: add 10ml of oxalic acid</p>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setShowPipetteVolumeModal(false)}>Cancel</Button>
+                <Button onClick={() => {
+                  const v = Math.max(10, Math.min(25, parseFloat(pipetteVolumeInput) || 10));
+                  setPlannedOxalicVolume(v);
+                  setShowPipetteVolumeModal(false);
+                  setShowToast(`Planned volume set to ${v.toFixed(1)} mL. Proceed to Step 2 and click pipette to add.`);
+                  setSafeTimeout(() => setShowToast(""), 3000);
+                }}>Confirm</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Toast Notification */}
         {showToast && (
