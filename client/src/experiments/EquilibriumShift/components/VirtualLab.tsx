@@ -770,6 +770,7 @@ export default function VirtualLab({
                       isActive={activeEquipment === equipment.id}
                       color={equipment.id === 'test-tube' ? testTube.colorHex : undefined}
                       volume={equipment.id === 'test-tube' ? Math.min(100, (testTube.volume / 15) * 100) : undefined}
+                      displayVolume={equipment.id === 'test-tube' ? (finalVolumeUsed ?? testTube.volume) : undefined}
                       isCobaltAnimation={equipment.id === 'test-tube' ? testTube.isCobaltAnimation || false : false}
                     />
                   </div>
@@ -951,7 +952,7 @@ export default function VirtualLab({
                         <li>�� Blue color</li>
                         <li>• Tetrahedral geometry</li>
                         <li>• Favored by excess Cl⁻</li>
-                        <li>���� High Cl⁻ concentration</li>
+                        <li>����� High Cl⁻ concentration</li>
                       </ul>
                     </div>
                   </div>
