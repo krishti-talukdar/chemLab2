@@ -286,6 +286,14 @@ export default function VirtualLab({
           handleStepComplete();
         }, 600);
       }
+
+      // Show guidance for step 2 when pipette and flask are on bench
+      if (currentStep === 2 && afterIds.includes('pipette') && afterIds.includes('conical-flask')) {
+        setTimeout(() => {
+          setShowToast('Click on the pipette to fill the oxalic acid into the conical flask');
+          setSafeTimeout(() => setShowToast(''), 4000);
+        }, 1000);
+      }
     }
   }, [currentStep, completedSteps, mode.current]);
 
