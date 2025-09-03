@@ -115,7 +115,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
     ${isPositioned ? (
       id === 'burette'
         ? 'absolute min-w-[240px]'
-        : 'absolute min-w-[80px] p-3 rounded-lg border-2 border-gray-200 bg-white'
+        : (id === 'conical-flask'
+            ? 'absolute min-w-[80px] p-0 border-0 bg-transparent rounded-none shadow-none'
+            : 'absolute min-w-[80px] p-3 rounded-lg border-2 border-gray-200 bg-white')
     ) : 'w-full p-3 rounded-lg border-2 border-gray-200 bg-white'}
     ${!isPositioned && isActive ? 'border-blue-500 bg-blue-50' : ''}
   `;
