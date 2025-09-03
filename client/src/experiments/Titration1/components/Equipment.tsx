@@ -190,10 +190,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
             )}
           </div>
         ) : (
-          React.cloneElement(icon, {
-            className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
-            size: isPositioned ? 48 : 36
-          })
+          <div className={`${id === 'pipette' && isActive ? 'relative' : ''}`}>
+            {React.cloneElement(icon, {
+              className: `${icon.props.className} transition-transform duration-200 ${isActive ? 'scale-110' : ''}`,
+              size: isPositioned ? 48 : 36
+            })}
+            {/* White glow effect for active pipette */}
+            {id === 'pipette' && isActive && (
+              <div className="absolute inset-0 bg-white opacity-30 rounded-full animate-pulse pointer-events-none" />
+            )}
+          </div>
         )}
         
         {/* Special rendering for different equipment types */}
