@@ -22,10 +22,6 @@ export default function HeroSection() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg">
             Discover Chemistry Through Virtual Experiments
           </h2>
-          <p className="text-xl mb-8 text-blue-50 max-w-3xl mx-auto drop-shadow-md">
-            Experience hands-on chemistry learning with our interactive virtual laboratory. 
-            Conduct real experiments safely and track your progress step by step.
-          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={scrollToExperiments}
