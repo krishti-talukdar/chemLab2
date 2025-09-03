@@ -185,10 +185,6 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                               className="absolute bottom-1 left-1/2 -translate-x-1/2 w-[36px] h-[72px] rounded-full"
                               style={{ background: "radial-gradient(ellipse at bottom, rgba(191,219,254,0.95) 0%, rgba(147,197,253,0.6) 60%, rgba(147,197,253,0) 80%)", animation: "flameFlicker 0.3s infinite ease-in-out reverse" }}
                             />
-                            <div
-                              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-[192px] h-[96px] rounded-full blur-md opacity-80"
-                              style={{ background: "radial-gradient(circle, rgba(59,130,246,0.6), rgba(59,130,246,0))" }}
-                            />
                           </div>
                         </div>
                       )}
