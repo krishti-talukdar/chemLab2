@@ -122,7 +122,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const equipmentElement = (
     <div
-      className={`${baseClasses} ${isDragging ? 'cursor-grabbing z-50' : (isPositioned ? 'cursor-grab' : '')}`}
+      className={`${baseClasses} ${isDragging ? 'cursor-grabbing z-50' : (isPositioned ? 'cursor-grab' : '')} ${id === 'conical-flask' && isPositioned ? 'bg-transparent border-0 shadow-none p-0' : ''}`}
       style={isPositioned ? {
         left: currentPosition.x,
         top: currentPosition.y,
@@ -182,7 +182,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         )}
         
         {/* Special rendering for different equipment types */}
-        {id === 'conical-flask' && color && (
+        {id === 'conical-flask' && color && !isPositioned && (
           <div
             className="absolute inset-0 rounded-full"
             style={{
@@ -191,7 +191,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             }}
           />
         )}
-        
+
         {id === 'burette' && (
           <div className={`absolute bg-white border rounded px-1 ${
             isPositioned
