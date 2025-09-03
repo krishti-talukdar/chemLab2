@@ -131,13 +131,13 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               style={{ left: p.x, top: p.y }}
             >
               <div className="flex flex-col items-center">
-                <div className={`${p.id === "ignition-tube" ? "w-48 h-56" : "w-16 h-16"} relative rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
+                <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : "w-16 h-16"} relative rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
                   {p.id === "ignition-tube" ? (
                     <>
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
                         alt="Fusion Tube"
-                        className="max-w-[144px] max-h-[168px] object-contain"
+                        className="max-w-[176px] max-h-[208px] object-contain"
                       />
                       {hasSodiumPiece && (
                         <div className="absolute bottom-10 left-[53%] -translate-x-1/2 pointer-events-none">
@@ -170,7 +170,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
                         <img
                           src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fb8d67a4a48d04f2c845aaddc4b071ade?format=webp&width=800"
                           alt="Bunsen Burner"
-                          className="absolute -bottom-48 left-1/2 -translate-x-1/2 w-48 h-auto pointer-events-none"
+                          className="absolute -bottom-48 left-1/2 -translate-x-1/2 w-64 h-auto pointer-events-none"
                           style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.15))' }}
                         />
                       )}
