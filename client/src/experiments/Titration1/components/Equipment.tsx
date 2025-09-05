@@ -18,6 +18,7 @@ interface EquipmentProps {
   color?: string;
   volume?: number;
   reading?: number;
+  mixing?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -32,7 +33,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   disabled = false,
   color,
   volume,
-  reading
+  reading,
+  mixing
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
@@ -187,6 +189,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   opacity: 0.7
                 }}
               />
+            )}
+            {/* Mixing animation overlay */}
+            {mixing && (
+              <div
+                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+              >
+                <div className="w-10 h-10 rounded-full border-4 border-white/60 border-t-transparent animate-spin"></div>
+              </div>
             )}
           </div>
         ) : (
