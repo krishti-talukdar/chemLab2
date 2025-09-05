@@ -30,7 +30,20 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
     if (!rect) return;
     const x = Math.max(16, Math.min(e.clientX - rect.left - 24, rect.width - 48));
     const y = Math.max(16, Math.min(e.clientY - rect.top - 24, rect.height - 48));
-    setPlaced(prev => [...prev, { id: eqId, x, y }]);
+    setPlaced(prev => {
+      const next = [...prev, { id: eqId, x, y }];
+      const tube = next.find(p => p.id === 'ignition-tube');
+      const burner = next.find(p => p.id === 'bunsen-burner');
+      if (tube && burner) {
+        const targetY = Math.max(tube.y, burner.y); // align along the lower baseline
+        return next.map(p =>
+          p.id === 'ignition-tube' || p.id === 'bunsen-burner'
+            ? { ...p, y: targetY }
+            : p
+        );
+      }
+      return next;
+    });
 
     // Auto-progress steps based on expected sequence
     const sequence = [
