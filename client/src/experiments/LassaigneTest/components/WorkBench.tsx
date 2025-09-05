@@ -35,10 +35,16 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       const tube = next.find(p => p.id === 'ignition-tube');
       const burner = next.find(p => p.id === 'bunsen-burner');
       if (tube && burner) {
-        const targetY = Math.max(tube.y, burner.y); // align along the lower baseline
+        // Center fusion tube horizontally over the burner and place it just above the burner
+        const tubeWidth = 224; // w-56
+        const tubeHeight = 256; // h-64
+        const burnerWidth = 480; // w-[480px]
+        const alignX = burner.x + (burnerWidth - tubeWidth) / 2;
+        const alignY = burner.y - tubeHeight + 40; // small gap above burner
+
         return next.map(p =>
-          p.id === 'ignition-tube' || p.id === 'bunsen-burner'
-            ? { ...p, y: targetY }
+          p.id === 'ignition-tube'
+            ? { ...p, x: alignX, y: Math.max(16, alignY) }
             : p
         );
       }
