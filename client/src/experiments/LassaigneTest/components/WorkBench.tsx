@@ -17,10 +17,12 @@ interface PrepWorkbenchProps {
 
 import { useRef, useState } from "react";
 import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
+  const [isHeating, setIsHeating] = useState(false);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -228,7 +230,19 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasIgnitionTube && hasBunsenBurner && tube && burner) {
+        if (hasBunsenBurner && burner && !isHeating) {
+          const burnerCenterX = burner.x + 480 / 2;
+          const burnerMouthY = burner.y + 80;
+          visuals.push(
+            <div key="start-heat" className="absolute z-20" style={{ left: burnerCenterX - 90, top: Math.min(burnerMouthY + 24, (containerRef.current?.getBoundingClientRect().height || 0) - 60) }}>
+              <Button onClick={() => setIsHeating(true)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
+                START heating
+              </Button>
+            </div>
+          );
+        }
+
+        if (hasIgnitionTube && hasBunsenBurner && tube && burner && isHeating) {
           const burnerCenterX = burner.x + 480 / 2;
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
