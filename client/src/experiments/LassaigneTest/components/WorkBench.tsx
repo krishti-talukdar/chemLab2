@@ -212,9 +212,11 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                     <Icon className="w-6 h-6" />
                   )}
                 </div>
-                <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
-                  {item.label}
-                </span>
+                {!(p.id === "ignition-tube" || p.id === "bunsen-burner") && (
+                  <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
+                    {item.label}
+                  </span>
+                )}
               </div>
             </div>
           );
