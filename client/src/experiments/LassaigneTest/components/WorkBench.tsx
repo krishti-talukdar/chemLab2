@@ -18,7 +18,7 @@ interface PrepWorkbenchProps {
 import { useRef, useState } from "react";
 import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
 
-export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
+export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
 
@@ -31,6 +31,21 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
     const x = Math.max(16, Math.min(e.clientX - rect.left - 24, rect.width - 48));
     const y = Math.max(16, Math.min(e.clientY - rect.top - 24, rect.height - 48));
     setPlaced(prev => [...prev, { id: eqId, x, y }]);
+
+    // Auto-progress steps based on expected sequence
+    const sequence = [
+      "ignition-tube",       // Step 1
+      "sodium-piece",        // Step 2
+      "organic-compound",    // Step 3
+      "bunsen-burner",       // Step 4
+      "water-bath",          // Step 5
+      "filter-funnel"        // Step 6
+    ];
+    const expected = sequence[step];
+    if (expected && eqId === expected) {
+      if (step < totalSteps - 1) onNext();
+      else onFinish();
+    }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
