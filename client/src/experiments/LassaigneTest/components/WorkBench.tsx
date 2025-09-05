@@ -35,25 +35,22 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       const tube = next.find(p => p.id === 'ignition-tube');
       const burner = next.find(p => p.id === 'bunsen-burner');
       if (tube && burner) {
-        // Center both items in the middle of workbench with equal space on left and right
+        // Keep tube fixed at user-dropped position; align burner below it
         const tubeWidth = 224; // w-56
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
-        const workbenchWidth = rect.width;
 
-        // Position burner in center of workbench
-        const burnerCenterX = (workbenchWidth - burnerWidth) / 2;
-        const burnerY = Math.max(200, rect.height - 300); // position in lower middle area
+        // Compute burner X so it's centered under the tube, clamped to workbench
+        const desiredBurnerX = tube.x - (burnerWidth - tubeWidth) / 2;
+        const clampedBurnerX = Math.max(0, Math.min(desiredBurnerX, rect.width - burnerWidth));
 
-        // Center tube above burner
-        const tubeCenterX = burnerCenterX + (burnerWidth - tubeWidth) / 2;
-        const tubeY = Math.max(16, burnerY - tubeHeight + 40); // small gap above burner
+        // Place burner below the tube but not too low
+        const desiredBurnerY = tube.y + tubeHeight - 40; // small overlap gap
+        const clampedBurnerY = Math.min(Math.max(200, desiredBurnerY), rect.height - 300);
 
         return next.map(p =>
           p.id === 'bunsen-burner'
-            ? { ...p, x: burnerCenterX, y: burnerY }
-            : p.id === 'ignition-tube'
-            ? { ...p, x: tubeCenterX, y: tubeY }
+            ? { ...p, x: clampedBurnerX, y: clampedBurnerY }
             : p
         );
       }
