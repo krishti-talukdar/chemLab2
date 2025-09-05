@@ -360,11 +360,13 @@ export default function VirtualLab({
       }, ANIMATION.DROPPER_DURATION);
 
     } else if (equipmentId === 'phenolphthalein' && currentStep === 3) {
-      // Add indicator
+      // Add indicator after click with mixing animation and messages
       setActiveEquipment(equipmentId);
-      setShowToast("Adding 2-3 drops of phenolphthalein indicator...");
+      setShowToast("two to three drops of indicator added in the conical flask");
+      setIsMixing(true);
 
       setSafeTimeout(() => {
+        setIsMixing(false);
         setConicalFlask(prev => ({
           ...prev,
           hasIndicator: true
@@ -379,7 +381,7 @@ export default function VirtualLab({
           buretteReading: burette.reading,
           colorBefore: conicalFlask.colorHex,
           colorAfter: conicalFlask.colorHex,
-          observation: 'Added phenolphthalein indicator - solution remains colorless'
+          observation: 'Two to three drops of phenolphthalein added and mixed'
         };
         setTitrationLog(prev => [...prev, logEntry]);
 
@@ -387,7 +389,7 @@ export default function VirtualLab({
         setShowToast("Indicator added - ready for titration!");
         setSafeTimeout(() => setShowToast(""), 2000);
         handleStepComplete();
-      }, 1000);
+      }, ANIMATION.MIXING_DURATION);
 
     } else if (equipmentId === 'naoh-solution' && currentStep === 4) {
       // Fill burette with NaOH
