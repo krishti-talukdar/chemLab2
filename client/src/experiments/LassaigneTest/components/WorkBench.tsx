@@ -37,23 +37,16 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       const tube = next.find(p => p.id === 'ignition-tube');
       const burner = next.find(p => p.id === 'bunsen-burner');
       if (tube && burner) {
-        // Keep tube fixed at user-dropped position; align burner below it
+        // Center the fusion tube directly above the burner
         const tubeWidth = 224; // w-56
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
 
-        // Compute burner X so it's centered under the tube, clamped to workbench
-        const desiredBurnerX = tube.x - (burnerWidth - tubeWidth) / 2;
-        const clampedBurnerX = Math.max(0, Math.min(desiredBurnerX, rect.width - burnerWidth));
-
-        // Place burner slightly lower so flame sits just below tube
-        const desiredBurnerY = tube.y + tubeHeight + 30;
-        const clampedBurnerY = Math.min(Math.max(200, desiredBurnerY), rect.height - 300);
+        const tubeX = Math.max(16, Math.min(burner.x + (burnerWidth - tubeWidth) / 2, rect.width - tubeWidth - 16));
+        const tubeY = Math.max(16, burner.y - tubeHeight + 50); // small gap above burner
 
         return next.map(p =>
-          p.id === 'bunsen-burner'
-            ? { ...p, x: clampedBurnerX, y: clampedBurnerY }
-            : p
+          p.id === 'ignition-tube' ? { ...p, x: tubeX, y: tubeY } : p
         );
       }
       return next;
