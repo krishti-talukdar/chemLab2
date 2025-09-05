@@ -35,16 +35,25 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       const tube = next.find(p => p.id === 'ignition-tube');
       const burner = next.find(p => p.id === 'bunsen-burner');
       if (tube && burner) {
-        // Center fusion tube horizontally over the burner and place it just above the burner
+        // Center both items in the middle of workbench with equal space on left and right
         const tubeWidth = 224; // w-56
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
-        const alignX = burner.x + (burnerWidth - tubeWidth) / 2;
-        const alignY = burner.y - tubeHeight + 40; // small gap above burner
+        const workbenchWidth = rect.width;
+
+        // Position burner in center of workbench
+        const burnerCenterX = (workbenchWidth - burnerWidth) / 2;
+        const burnerY = Math.max(200, rect.height - 300); // position in lower middle area
+
+        // Center tube above burner
+        const tubeCenterX = burnerCenterX + (burnerWidth - tubeWidth) / 2;
+        const tubeY = Math.max(16, burnerY - tubeHeight + 40); // small gap above burner
 
         return next.map(p =>
-          p.id === 'ignition-tube'
-            ? { ...p, x: alignX, y: Math.max(16, alignY) }
+          p.id === 'bunsen-burner'
+            ? { ...p, x: burnerCenterX, y: burnerY }
+            : p.id === 'ignition-tube'
+            ? { ...p, x: tubeCenterX, y: tubeY }
             : p
         );
       }
