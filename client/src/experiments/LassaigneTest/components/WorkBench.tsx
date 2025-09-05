@@ -229,10 +229,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
 
         const visuals: JSX.Element[] = [];
         if (hasIgnitionTube && hasBunsenBurner && tube && burner) {
-          const centerX = tube.x + tubeWidth / 2;
+          const burnerCenterX = burner.x + 480 / 2;
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
-          const flameX = centerX - 16;
+          const flameX = burnerCenterX - 14;
           const flameY = Math.min(burnerMouthY - 60, tubeBottomY + 10);
           visuals.push(
             <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
