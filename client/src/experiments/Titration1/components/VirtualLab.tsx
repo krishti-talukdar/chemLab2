@@ -283,7 +283,14 @@ export default function VirtualLab({
       const currentStepData = GUIDED_STEPS[currentStep - 1];
       const isPlacementStep = currentStepData.action.includes("Drag");
       const allPresent = currentStepData.equipment.every(id => afterIds.includes(id));
-      if (isPlacementStep && allPresent && !completedSteps.includes(currentStep)) {
+
+      // Step 3 special flow: after placing indicator, prompt user to click it
+      if (currentStep === 3 && equipmentId === 'phenolphthalein') {
+        setTimeout(() => {
+          setShowToast('click on the indicator icon');
+          setSafeTimeout(() => setShowToast(''), 3000);
+        }, 600);
+      } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep)) {
         setTimeout(() => {
           handleStepComplete();
         }, 600);
