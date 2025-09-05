@@ -186,7 +186,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       )}
 
       {/* Equipment positions and children */}
-      <div className="absolute inset-0">{children}</div>
+      <div className="absolute inset-0 transform -translate-y-8">{children}</div>
 
       {/* Measurement grid (subtle) */}
       <div

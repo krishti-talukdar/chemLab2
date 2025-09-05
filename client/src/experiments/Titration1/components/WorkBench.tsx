@@ -136,7 +136,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       )}
 
       {/* Workbench content */}
-      <div className="absolute inset-0 p-8">
+      <div className="absolute inset-0 p-8 transform -translate-y-8">
         {children}
       </div>
 

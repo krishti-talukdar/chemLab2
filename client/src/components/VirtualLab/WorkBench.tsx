@@ -374,7 +374,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
 
 
             {/* Equipment placement area with more generous spacing */}
-            <div className="absolute inset-0 p-12">{children}</div>
+            <div className="absolute inset-0 p-12 transform -translate-y-8">{children}</div>
           </div>
         </div>
       </div>
