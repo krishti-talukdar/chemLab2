@@ -333,7 +333,15 @@ export default function VirtualLab({
 
               <div className="space-y-2">
                 <Button
-                  onClick={() => onStepUndo()}
+                  onClick={() => {
+                    // Revert latest local change in reverse dependency order
+                    if (halide) setHalide(null);
+                    else if (interferenceRemoved) setInterferenceRemoved(false);
+                    else if (sulphurPositive) setSulphurPositive(null);
+                    else if (nitrogenPositive) setNitrogenPositive(false);
+                    else if (hasExtract) setHasExtract(false);
+                    onStepUndo();
+                  }}
                   variant="outline"
                   className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
                   disabled={mode.currentGuidedStep <= 0}
