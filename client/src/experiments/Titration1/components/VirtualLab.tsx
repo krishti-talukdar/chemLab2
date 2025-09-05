@@ -287,8 +287,8 @@ export default function VirtualLab({
       // Step 3 special flow: after placing indicator, prompt user to click it
       if (currentStep === 3 && equipmentId === 'phenolphthalein') {
         setTimeout(() => {
-          setShowToast('click on the indicator icon');
-          setSafeTimeout(() => setShowToast(''), 3000);
+          setShowToast('Click on the phenolpthalein icon to add 2-3 drops into the conical flask');
+          setSafeTimeout(() => setShowToast(''), 4000);
         }, 600);
       } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep)) {
         setTimeout(() => {
@@ -362,8 +362,8 @@ export default function VirtualLab({
     } else if (equipmentId === 'phenolphthalein' && currentStep === 3) {
       // Add indicator after click with mixing animation and messages
       setActiveEquipment(equipmentId);
-      setShowToast("two to three drops of indicator added in the conical flask");
       setIsMixing(true);
+      setShowToast('Phenolpthalein added to the flask');
 
       setSafeTimeout(() => {
         setIsMixing(false);
@@ -381,12 +381,12 @@ export default function VirtualLab({
           buretteReading: burette.reading,
           colorBefore: conicalFlask.colorHex,
           colorAfter: conicalFlask.colorHex,
-          observation: 'Two to three drops of phenolphthalein added and mixed'
+          observation: 'Phenolphthalein added and mixed in the flask'
         };
         setTitrationLog(prev => [...prev, logEntry]);
 
         setActiveEquipment("");
-        setShowToast("Indicator added - ready for titration!");
+        setShowToast('Phenolpthalein added to the flask');
         setSafeTimeout(() => setShowToast(""), 2000);
         handleStepComplete();
       }, ANIMATION.MIXING_DURATION);
