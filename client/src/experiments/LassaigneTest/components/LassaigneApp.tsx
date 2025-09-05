@@ -60,7 +60,7 @@ export default function LassaigneApp({ onBack }: LassaigneAppProps) {
   };
 
   const handleStepUndo = (stepId?: number) => {
-    const target = stepId ?? (mode.currentGuidedStep + 1);
+    const target = stepId ?? (completedSteps.length > 0 ? completedSteps[completedSteps.length - 1] : mode.currentGuidedStep);
     setCompletedSteps(prev => prev.filter(id => id !== target));
     setMode(m => ({ ...m, currentGuidedStep: Math.max(0, m.currentGuidedStep - 1) }));
   };

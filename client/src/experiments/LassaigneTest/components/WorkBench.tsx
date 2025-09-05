@@ -18,7 +18,7 @@ interface PrepWorkbenchProps {
 import { useRef, useState } from "react";
 import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
 
-export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWorkbenchProps) {
+export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
 
@@ -30,7 +30,50 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
     if (!rect) return;
     const x = Math.max(16, Math.min(e.clientX - rect.left - 24, rect.width - 48));
     const y = Math.max(16, Math.min(e.clientY - rect.top - 24, rect.height - 48));
-    setPlaced(prev => [...prev, { id: eqId, x, y }]);
+    setPlaced(prev => {
+      const next = [...prev, { id: eqId, x, y }];
+      const tube = next.find(p => p.id === 'ignition-tube');
+      const burner = next.find(p => p.id === 'bunsen-burner');
+      if (tube && burner) {
+        // Center both items in the middle of workbench with equal space on left and right
+        const tubeWidth = 224; // w-56
+        const tubeHeight = 256; // h-64
+        const burnerWidth = 480; // w-[480px]
+        const workbenchWidth = rect.width;
+
+        // Position burner in center of workbench
+        const burnerCenterX = (workbenchWidth - burnerWidth) / 2;
+        const burnerY = Math.max(200, rect.height - 300); // position in lower middle area
+
+        // Center tube above burner
+        const tubeCenterX = burnerCenterX + (burnerWidth - tubeWidth) / 2;
+        const tubeY = Math.max(16, burnerY - tubeHeight + 40); // small gap above burner
+
+        return next.map(p =>
+          p.id === 'bunsen-burner'
+            ? { ...p, x: burnerCenterX, y: burnerY }
+            : p.id === 'ignition-tube'
+            ? { ...p, x: tubeCenterX, y: tubeY }
+            : p
+        );
+      }
+      return next;
+    });
+
+    // Auto-progress steps based on expected sequence
+    const sequence = [
+      "ignition-tube",       // Step 1
+      "sodium-piece",        // Step 2
+      "organic-compound",    // Step 3
+      "bunsen-burner",       // Step 4
+      "water-bath",          // Step 5
+      "filter-funnel"        // Step 6
+    ];
+    const expected = sequence[step];
+    if (expected && eqId === expected) {
+      if (step < totalSteps - 1) onNext();
+      else onFinish();
+    }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -130,7 +173,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems }: PrepWork
               style={{ left: p.x, top: p.y }}
             >
               <div className="flex flex-col items-center">
-                <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : p.id === "bunsen-burner" ? "w-24 h-24" : "w-16 h-16"} relative rounded-lg bg-white border-2 border-blue-200 shadow-sm flex items-center justify-center ${colorClass}`}>
+                <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : p.id === "bunsen-burner" ? "w-[480px] h-[480px]" : "w-16 h-16"} relative rounded-lg ${p.id === "ignition-tube" || p.id === "bunsen-burner" ? "bg-transparent border-0 shadow-none" : "bg-white border-2 border-blue-200 shadow-sm"} flex items-center justify-center ${colorClass}`}>
                   {p.id === "ignition-tube" ? (
                     <>
                       <img

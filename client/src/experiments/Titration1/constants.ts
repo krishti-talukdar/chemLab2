@@ -230,8 +230,8 @@ export const GUIDED_STEPS: GuidedStep[] = [
   {
     id: 3,
     title: "Add Indicator",
-    description: "Add 2-3 drops of phenolphthalein indicator to the oxalic acid solution.",
-    action: "Click phenolphthalein to add indicator",
+    description: "Drag the phenolphthalein to the workbench, then click the indicator to add 2–3 drops.",
+    action: "Drag phenolphthalein to the workbench",
     equipment: ["phenolphthalein"],
     completed: false
   },
