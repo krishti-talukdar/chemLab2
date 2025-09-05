@@ -44,8 +44,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const desiredBurnerX = tube.x - (burnerWidth - tubeWidth) / 2;
         const clampedBurnerX = Math.max(0, Math.min(desiredBurnerX, rect.width - burnerWidth));
 
-        // Place burner below the tube but not too low
-        const desiredBurnerY = tube.y + tubeHeight - 40; // small overlap gap
+        // Place burner slightly lower so flame sits just below tube
+        const desiredBurnerY = tube.y + tubeHeight + 30;
         const clampedBurnerY = Math.min(Math.max(200, desiredBurnerY), rect.height - 300);
 
         return next.map(p =>
