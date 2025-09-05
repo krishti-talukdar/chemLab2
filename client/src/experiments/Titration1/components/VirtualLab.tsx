@@ -67,6 +67,7 @@ export default function VirtualLab({
   const [titrationAction, setTitrationAction] = useState<TitrationAction | null>(null);
   const [titrationLog, setTitrationLog] = useState<TitrationLog[]>([]);
   const [showToast, setShowToast] = useState<string>("");
+  const [isMixing, setIsMixing] = useState(false);
   
   // Workbench state
   const [currentStep, setCurrentStep] = useState(1);
