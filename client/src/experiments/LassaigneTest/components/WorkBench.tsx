@@ -134,7 +134,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
-        return placed.map((p, idx) => {
+        const tube = placed.find(p => p.id === 'ignition-tube');
+        const burner = placed.find(p => p.id === 'bunsen-burner');
+        const tubeWidth = 224;
+        const tubeHeight = 256;
+
+        const items = placed.map((p, idx) => {
           const item = findItem(p.id);
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
@@ -221,6 +226,32 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             </div>
           );
         });
+
+        const visuals: JSX.Element[] = [];
+        if (hasIgnitionTube && hasBunsenBurner && tube && burner) {
+          const centerX = tube.x + tubeWidth / 2;
+          const tubeBottomY = tube.y + tubeHeight - 40;
+          const burnerMouthY = burner.y + 80;
+          const flameX = centerX - 16;
+          const flameY = Math.min(burnerMouthY - 60, tubeBottomY + 10);
+          visuals.push(
+            <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
+              <div className="relative w-8 h-24">
+                <div style={{ animation: 'flameFlicker 0.8s ease-in-out infinite' }} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-16 rounded-full bg-gradient-to-t from-orange-500 via-yellow-400 to-transparent blur-sm opacity-90" />
+                <div style={{ animation: 'flameFlicker 1s ease-in-out infinite' }} className="absolute bottom-2 left-1/2 -translate-x-1/2 w-6 h-12 rounded-full bg-gradient-to-t from-red-500 via-orange-400 to-transparent blur-[2px] opacity-80" />
+                <div style={{ animation: 'rise 1.2s linear infinite' }} className="absolute bottom-14 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-200 rounded-full opacity-70" />
+                <div style={{ animation: 'heatWave 1s ease-in-out infinite' }} className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent opacity-40" />
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <>
+            {items}
+            {visuals}
+          </>
+        );
       })()}
 
       {placed.length === 0 && (
@@ -235,6 +266,15 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   0% { transform: translateY(0) scaleY(1); opacity: .9; }
   50% { transform: translateY(-2px) scaleY(1.1); opacity: 1; }
   100% { transform: translateY(0) scaleY(.95); opacity: .85; }
+}
+@keyframes heatWave {
+  0% { transform: translateY(0) scaleY(1); filter: blur(1px); }
+  50% { transform: translateY(-2px) scaleY(1.05); filter: blur(1.5px); }
+  100% { transform: translateY(0) scaleY(1); filter: blur(1px); }
+}
+@keyframes rise {
+  0% { transform: translate(-50%, 0); opacity: .8; }
+  100% { transform: translate(-50%, -18px); opacity: 0; }
 }
 `}</style>
     </div>
