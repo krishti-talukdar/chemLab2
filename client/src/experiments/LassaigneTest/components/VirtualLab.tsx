@@ -346,7 +346,7 @@ export default function VirtualLab({
                   className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
                   disabled={mode.currentGuidedStep <= 0}
                 >
-                  <ArrowLeft className="w-4 h-4 mr-2" /> Undo Step {mode.currentGuidedStep + 1}
+                  <ArrowLeft className="w-4 h-4 mr-2" /> UNDO
                 </Button>
                 <Button
                   onClick={onReset}
@@ -444,7 +444,7 @@ export default function VirtualLab({
               className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
               disabled={mode.currentGuidedStep <= 0}
             >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Undo Step {mode.currentGuidedStep + 1}
+              <ArrowLeft className="w-4 h-4 mr-2" /> UNDO
             </Button>
             <Button
               onClick={onReset}

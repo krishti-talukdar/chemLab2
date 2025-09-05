@@ -17,10 +17,12 @@ interface PrepWorkbenchProps {
 
 import { useRef, useState } from "react";
 import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
+  const [isHeating, setIsHeating] = useState(false);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -35,26 +37,16 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       const tube = next.find(p => p.id === 'ignition-tube');
       const burner = next.find(p => p.id === 'bunsen-burner');
       if (tube && burner) {
-        // Center both items in the middle of workbench with equal space on left and right
+        // Center the fusion tube directly above the burner
         const tubeWidth = 224; // w-56
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
-        const workbenchWidth = rect.width;
 
-        // Position burner in center of workbench
-        const burnerCenterX = (workbenchWidth - burnerWidth) / 2;
-        const burnerY = Math.max(200, rect.height - 300); // position in lower middle area
-
-        // Center tube above burner
-        const tubeCenterX = burnerCenterX + (burnerWidth - tubeWidth) / 2;
-        const tubeY = Math.max(16, burnerY - tubeHeight + 40); // small gap above burner
+        const tubeX = Math.max(16, Math.min(burner.x + (burnerWidth - tubeWidth) / 2, rect.width - tubeWidth - 16));
+        const tubeY = Math.max(16, burner.y - tubeHeight + 50); // small gap above burner
 
         return next.map(p =>
-          p.id === 'bunsen-burner'
-            ? { ...p, x: burnerCenterX, y: burnerY }
-            : p.id === 'ignition-tube'
-            ? { ...p, x: tubeCenterX, y: tubeY }
-            : p
+          p.id === 'ignition-tube' ? { ...p, x: tubeX, y: tubeY } : p
         );
       }
       return next;
@@ -137,7 +129,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
-        return placed.map((p, idx) => {
+        const tube = placed.find(p => p.id === 'ignition-tube');
+        const burner = placed.find(p => p.id === 'bunsen-burner');
+        const tubeWidth = 224;
+        const tubeHeight = 256;
+
+        const items = placed.map((p, idx) => {
           const item = findItem(p.id);
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
@@ -215,13 +212,53 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                     <Icon className="w-6 h-6" />
                   )}
                 </div>
-                <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
-                  {item.label}
-                </span>
+                {!(p.id === "ignition-tube" || p.id === "bunsen-burner") && (
+                  <span className="mt-1 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-md border border-gray-200">
+                    {item.label}
+                  </span>
+                )}
               </div>
             </div>
           );
         });
+
+        const visuals: JSX.Element[] = [];
+        if (hasBunsenBurner && burner && !isHeating) {
+          const burnerCenterX = burner.x + 480 / 2;
+          const burnerMouthY = burner.y + 80;
+          visuals.push(
+            <div key="start-heat" className="absolute z-20" style={{ left: burnerCenterX - 90, top: Math.min(burnerMouthY + 24, (containerRef.current?.getBoundingClientRect().height || 0) - 60) }}>
+              <Button onClick={() => setIsHeating(true)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
+                START heating
+              </Button>
+            </div>
+          );
+        }
+
+        if (hasIgnitionTube && hasBunsenBurner && tube && burner && isHeating) {
+          const burnerCenterX = burner.x + 480 / 2;
+          const tubeBottomY = tube.y + tubeHeight - 40;
+          const burnerMouthY = burner.y + 80;
+          const flameX = burnerCenterX - 14;
+          const flameY = Math.min(burnerMouthY - 60, tubeBottomY + 10);
+          visuals.push(
+            <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
+              <div className="relative w-8 h-24">
+                <div style={{ animation: 'flameFlicker 0.8s ease-in-out infinite' }} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-16 rounded-full bg-gradient-to-t from-orange-500 via-yellow-400 to-transparent blur-sm opacity-90" />
+                <div style={{ animation: 'flameFlicker 1s ease-in-out infinite' }} className="absolute bottom-2 left-1/2 -translate-x-1/2 w-6 h-12 rounded-full bg-gradient-to-t from-red-500 via-orange-400 to-transparent blur-[2px] opacity-80" />
+                <div style={{ animation: 'rise 1.2s linear infinite' }} className="absolute bottom-14 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-200 rounded-full opacity-70" />
+                <div style={{ animation: 'heatWave 1s ease-in-out infinite' }} className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent opacity-40" />
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <>
+            {items}
+            {visuals}
+          </>
+        );
       })()}
 
       {placed.length === 0 && (
@@ -236,6 +273,15 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   0% { transform: translateY(0) scaleY(1); opacity: .9; }
   50% { transform: translateY(-2px) scaleY(1.1); opacity: 1; }
   100% { transform: translateY(0) scaleY(.95); opacity: .85; }
+}
+@keyframes heatWave {
+  0% { transform: translateY(0) scaleY(1); filter: blur(1px); }
+  50% { transform: translateY(-2px) scaleY(1.05); filter: blur(1.5px); }
+  100% { transform: translateY(0) scaleY(1); filter: blur(1px); }
+}
+@keyframes rise {
+  0% { transform: translate(-50%, 0); opacity: .8; }
+  100% { transform: translate(-50%, -18px); opacity: 0; }
 }
 `}</style>
     </div>
