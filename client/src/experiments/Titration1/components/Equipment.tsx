@@ -180,7 +180,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
             alt="Burette with NaOH solution"
-            className={`h-96 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+            className={`${currentStep >= 4 ? 'h-[500px]' : 'h-96'} w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
             style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
           />
         ) : id === 'conical-flask' && isPositioned ? (
