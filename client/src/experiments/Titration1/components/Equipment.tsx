@@ -215,13 +215,19 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   className="absolute inset-0 flex items-end justify-center pb-8"
                   style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
                 >
-                  <div className="w-8 h-8 rounded-full border-2 border-purple-400/60 border-r-transparent animate-spin animation-delay-150"></div>
+                  <div
+                    className="w-8 h-8 rounded-full border-2 border-purple-400/60 border-r-transparent animate-spin"
+                    style={{ animationDelay: '0.15s' }}
+                  ></div>
                 </div>
                 <div
                   className="absolute inset-0 flex items-end justify-center pb-12"
                   style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
                 >
-                  <div className="w-6 h-6 rounded-full border-2 border-pink-400/60 border-l-transparent animate-spin animation-delay-300"></div>
+                  <div
+                    className="w-6 h-6 rounded-full border-2 border-pink-400/60 border-l-transparent animate-spin"
+                    style={{ animationDelay: '0.3s' }}
+                  ></div>
                 </div>
               </div>
             )}
