@@ -246,8 +246,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const burnerCenterX = burner.x + 480 / 2;
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
-          const flameX = burnerCenterX - 24; // shift slightly left to sit above the burner hole
-          const flameY = Math.min(burnerMouthY - 60, tubeBottomY + 10);
+          const flameX = burnerCenterX - 24; // align with burner hole
+          const desiredY = tubeBottomY - 8; // sit just below the fusion tube
+          const minY = burnerMouthY - 60; // keep above burner mouth
+          const flameY = Math.max(minY, desiredY);
           visuals.push(
             <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
               <div className="relative w-8 h-24">
