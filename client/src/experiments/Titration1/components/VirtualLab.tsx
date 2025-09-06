@@ -276,14 +276,14 @@ export default function VirtualLab({
       }));
       setShowToast("Perfect! Light pink endpoint reached.");
     } else {
-      // Dark pink color
+      // Very dark pink color
       setConicalFlask(prev => ({
         ...prev,
-        colorHex: COLORS.PINK,
+        colorHex: COLORS.DARK_PINK,
         hasIndicator: true,
         endpointReached: true
       }));
-      setShowToast("Overtitrated! Solution turned dark pink.");
+      setShowToast("Overtitrated! Solution turned very dark pink.");
     }
 
     setSafeTimeout(() => setShowToast(""), 3000);
