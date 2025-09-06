@@ -279,6 +279,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
           if (p.id === "organic-compound" && hasIgnitionTube) return null;
+          if (p.id === "water-bath") return null; // remove water bath symbol from workbench
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
