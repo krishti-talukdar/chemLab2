@@ -337,7 +337,10 @@ export default function VirtualLab({
               <div className="space-y-2">
                 <Button
                   onClick={() => {
-                    // Revert latest local change in reverse dependency order
+                    if (!hasExtract && prepUndoRef.current) {
+                      prepUndoRef.current();
+                      return;
+                    }
                     if (halide) setHalide(null);
                     else if (interferenceRemoved) setInterferenceRemoved(false);
                     else if (sulphurPositive) setSulphurPositive(null);
@@ -347,7 +350,6 @@ export default function VirtualLab({
                   }}
                   variant="outline"
                   className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
-                  disabled={mode.currentGuidedStep <= 0}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" /> UNDO
                 </Button>
@@ -371,6 +373,7 @@ export default function VirtualLab({
                 onNext={() => setPrepStep((s) => Math.min(s + 1, preparationSteps.length - 1))}
                 onFinish={finishPreparation}
                 equipmentItems={equipmentItems.map(({ id, label }) => ({ id, label }))}
+                registerUndo={(fn) => { prepUndoRef.current = fn; }}
               />
             </div>
 
@@ -436,6 +439,10 @@ export default function VirtualLab({
           <div className="lg:col-span-2 space-y-2">
             <Button
               onClick={() => {
+                if (!hasExtract && prepUndoRef.current) {
+                  prepUndoRef.current();
+                  return;
+                }
                 if (halide) setHalide(null);
                 else if (interferenceRemoved) setInterferenceRemoved(false);
                 else if (sulphurPositive) setSulphurPositive(null);
@@ -445,7 +452,6 @@ export default function VirtualLab({
               }}
               variant="outline"
               className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
-              disabled={mode.currentGuidedStep <= 0}
             >
               <ArrowLeft className="w-4 h-4 mr-2" /> UNDO
             </Button>
