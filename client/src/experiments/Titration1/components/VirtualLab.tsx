@@ -284,13 +284,14 @@ export default function VirtualLab({
       const isPlacementStep = currentStepData.action.includes("Drag");
       const allPresent = currentStepData.equipment.every(id => afterIds.includes(id));
 
-      // Step 3 special flow: after placing indicator, prompt user to click it
+      // Step 3 special flow: after placing indicator, prompt user to click it (do not auto-complete)
       if (currentStep === 3 && equipmentId === 'phenolphthalein') {
         setTimeout(() => {
           setShowToast('click on the indicator icon');
           setSafeTimeout(() => setShowToast(''), 4000);
         }, 600);
-      } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep)) {
+      } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep) && currentStep !== 3) {
+        // Auto-complete step for all placement steps except step 3 (phenolphthalein)
         setTimeout(() => {
           handleStepComplete();
         }, 600);
