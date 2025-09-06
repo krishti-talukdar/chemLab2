@@ -13,6 +13,7 @@ interface PrepWorkbenchProps {
   onNext: () => void;
   onFinish: () => void;
   equipmentItems: EquipmentItem[];
+  registerUndo?: (fn: () => void) => void;
 }
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -52,9 +53,10 @@ function interpolateHex(from: string, to: string, t: number) {
   return rgbToHex(r, g, bl);
 }
 
-export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
+export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish, registerUndo }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
+  const [history, setHistory] = useState<Array<{ placed: Array<{ id: string; x: number; y: number }> }>>([]);
   const [isHeating, setIsHeating] = useState(false);
   const heatTimerRef = useRef<number | null>(null);
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
@@ -110,6 +112,19 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
     const top = interpolateHex("#fde68a", "#fca5a5", heatProgress);
     return { bottom, top };
   }, [heatProgress, isHeating, isPostHeated]);
+
+  useEffect(() => {
+    if (registerUndo) {
+      registerUndo(() => {
+        setPlaced((prev) => {
+          if (history.length === 0) return prev;
+          const last = history[history.length - 1];
+          setHistory((h) => h.slice(0, -1));
+          return last.placed;
+        });
+      });
+    }
+  }, [registerUndo, history]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -173,6 +188,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
     };
 
     setPlaced((prev) => {
+      setHistory((h) => [...h, { placed: prev }]);
       const withoutSame = prev.filter((p) => p.id !== eqId);
       const snapped = getSnapPosition(eqId, rect, withoutSame);
       const next = [...withoutSame, { id: eqId, ...snapped }];
