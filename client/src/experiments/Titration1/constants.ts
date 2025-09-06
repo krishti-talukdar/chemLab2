@@ -239,7 +239,7 @@ export const GUIDED_STEPS: GuidedStep[] = [
     id: 4,
     title: "Fill Burette",
     description: "Fill the burette with NaOH solution and adjust to zero reading.",
-    action: "Click NaOH to fill burette",
+    action: "burette already filled with NaOH, Start the titration!",
     equipment: ["naoh-solution"],
     completed: false
   },
