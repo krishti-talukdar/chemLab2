@@ -56,6 +56,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
   const [isHeating, setIsHeating] = useState(false);
+  const heatTimerRef = useRef<number | null>(null);
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
 
   // Smoothly animate heating/cooling progress
