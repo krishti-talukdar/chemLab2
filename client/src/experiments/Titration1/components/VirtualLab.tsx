@@ -328,7 +328,7 @@ export default function VirtualLab({
         isAnimating: true
       });
 
-      setShowToast(`Transferring ${vol.toFixed(1)} mL of 0.1N oxalic acid...`);
+      setShowToast(`Adding ${vol.toFixed(1)} mL of 0.1N oxalic acid...`);
 
       setSafeTimeout(() => {
         setTitrationAction(null);
