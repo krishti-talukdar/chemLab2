@@ -757,6 +757,7 @@ export default function VirtualLab({
                     volume={equipment.id === 'conical-flask' ? conicalFlask.volume : equipment.id === 'pipette' ? (plannedOxalicVolume ?? undefined) : undefined}
                     reading={equipment.id === 'burette' ? burette.reading : undefined}
                     mixing={equipment.id === 'conical-flask' ? isMixing : undefined}
+                    currentStep={currentStep}
                   />
                 ) : null;
               })}
