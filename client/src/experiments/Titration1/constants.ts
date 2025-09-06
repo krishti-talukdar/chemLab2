@@ -36,9 +36,9 @@ export const INITIAL_BURETTE: Burette = {
 // Animation timing constants
 export const ANIMATION = {
   COLOR_TRANSITION_DURATION: 2000,
-  DROPPER_DURATION: 1500,
+  DROPPER_DURATION: 300,
   BURETTE_FLOW_DURATION: 1000,
-  MIXING_DURATION: 800
+  MIXING_DURATION: 2500
 };
 
 // Chemical reagents for Titration 1 experiment

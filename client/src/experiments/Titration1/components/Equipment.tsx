@@ -39,12 +39,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
   const [currentPosition, setCurrentPosition] = React.useState(position || { x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = React.useState(false);
 
   React.useEffect(() => {
     if (position) {
       setCurrentPosition(position);
     }
   }, [position]);
+
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) {
       e.preventDefault();
@@ -54,8 +56,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
     e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleClick = () => {
-    if (!disabled && onInteract && !isDragging) {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Only handle click if we haven't moved during mouse down
+    if (!disabled && onInteract && !hasMoved) {
       onInteract(id);
     }
   };
@@ -63,32 +67,42 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isPositioned || disabled || !onReposition) return;
 
-    e.preventDefault();
-    e.stopPropagation();
-
+    setHasMoved(false);
+    
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
-
+    
     setDragOffset({ x: offsetX, y: offsetY });
-    setIsDragging(true);
-  };
 
-  React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !onReposition) return;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const distance = Math.sqrt(
+        Math.pow(moveEvent.clientX - startX, 2) + 
+        Math.pow(moveEvent.clientY - startY, 2)
+      );
+      
+      // Start dragging if moved more than 5 pixels
+      if (distance > 5 && !isDragging) {
+        setIsDragging(true);
+        setHasMoved(true);
+      }
+      
+      if (isDragging) {
+        // Get workbench bounds
+        const workbench = document.querySelector('[data-workbench="true"]');
+        if (!workbench) return;
 
-      // Get workbench bounds
-      const workbench = document.querySelector('[data-workbench="true"]');
-      if (!workbench) return;
+        const workbenchRect = workbench.getBoundingClientRect();
+        const equipmentWidth = id === 'burette' ? 240 : 80;
+        const equipmentHeight = id === 'burette' ? 420 : 80;
+        const newX = Math.max(0, Math.min(moveEvent.clientX - workbenchRect.left - offsetX, workbenchRect.width - equipmentWidth));
+        const newY = Math.max(0, Math.min(moveEvent.clientY - workbenchRect.top - offsetY, workbenchRect.height - equipmentHeight));
 
-      const workbenchRect = workbench.getBoundingClientRect();
-      const equipmentWidth = id === 'burette' ? 240 : 80;
-      const equipmentHeight = id === 'burette' ? 420 : 80;
-      const newX = Math.max(0, Math.min(e.clientX - workbenchRect.left - dragOffset.x, workbenchRect.width - equipmentWidth));
-      const newY = Math.max(0, Math.min(e.clientY - workbenchRect.top - dragOffset.y, workbenchRect.height - equipmentHeight));
-
-      setCurrentPosition({ x: newX, y: newY });
+        setCurrentPosition({ x: newX, y: newY });
+      }
     };
 
     const handleMouseUp = () => {
@@ -96,18 +110,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
         onReposition(id, currentPosition.x, currentPosition.y);
       }
       setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
+      
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset, currentPosition, id, onReposition]);
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   const isPositioned = position !== undefined;
   const baseClasses = `
@@ -173,30 +183,49 @@ export const Equipment: React.FC<EquipmentProps> = ({
           />
         ) : id === 'conical-flask' && isPositioned ? (
           <div className="relative">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
-              alt="Conical Flask"
-              className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
-              style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
-            />
-            {/* Oxalic acid solution overlay */}
-            {color && color !== '#F8F9FA' && (
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: `linear-gradient(to bottom, transparent 50%, ${color} 70%, ${color} 85%, ${color} 95%)`,
-                  clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)',
-                  opacity: 0.7
-                }}
+            <div className={mixing ? 'animate-shake' : ''}>
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
+                alt="Conical Flask"
+                className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+                style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
               />
-            )}
-            {/* Mixing animation overlay */}
+              {/* Oxalic acid solution overlay */}
+              {color && color !== '#F8F9FA' && (
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: `linear-gradient(to bottom, transparent 50%, ${color} 70%, ${color} 85%, ${color} 95%)`,
+                    clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)',
+                    opacity: 0.7
+                  }}
+                />
+              )}
+            </div>
+            {/* Mixing animation - stirring motion indicators */}
             {mixing && (
-              <div
-                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
-              >
-                <div className="w-10 h-10 rounded-full border-4 border-white/60 border-t-transparent animate-spin"></div>
+              <div className="absolute inset-0 pointer-events-none">
+                {/* Horizontal stirring motion */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+                >
+                  <div className="w-12 h-1 bg-blue-400/50 rounded-full animate-pulse"></div>
+                </div>
+                {/* Vertical stirring motion */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center pt-4"
+                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+                >
+                  <div className="w-1 h-8 bg-purple-400/40 rounded-full animate-pulse" style={{ animationDelay: '0.15s' }}></div>
+                </div>
+                {/* Additional stirring effects */}
+                <div
+                  className="absolute inset-0 flex items-end justify-center pb-6"
+                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+                >
+                  <div className="w-8 h-1 bg-pink-400/30 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+                </div>
               </div>
             )}
           </div>

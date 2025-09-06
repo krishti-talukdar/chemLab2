@@ -252,19 +252,19 @@ export default function VirtualLab({
       }
     }
 
-    // Get predefined position for this equipment
-    const predefinedPosition = getEquipmentPosition(equipmentId);
-
-    // Add equipment to workbench and compute resulting set
+    // Add equipment to workbench at drop position and compute resulting set
     let afterIds: string[] = [];
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
-      const next = [...filtered, {
-        id: equipmentId,
-        position: predefinedPosition,
-        isActive: false
-      }];
-      afterIds = next.map(eq => eq.id);
+      const next = [
+        ...filtered,
+        {
+          id: equipmentId,
+          position: equipmentId === 'phenolphthalein' ? { x, y } : getEquipmentPosition(equipmentId),
+          isActive: false,
+        },
+      ];
+      afterIds = next.map((eq) => eq.id);
       return next;
     });
 
@@ -284,13 +284,14 @@ export default function VirtualLab({
       const isPlacementStep = currentStepData.action.includes("Drag");
       const allPresent = currentStepData.equipment.every(id => afterIds.includes(id));
 
-      // Step 3 special flow: after placing indicator, prompt user to click it
+      // Step 3 special flow: after placing indicator, prompt user to click it (do not auto-complete)
       if (currentStep === 3 && equipmentId === 'phenolphthalein') {
         setTimeout(() => {
-          setShowToast('Click on the phenolpthalein icon to add 2-3 drops into the conical flask');
+          setShowToast('click on the indicator icon');
           setSafeTimeout(() => setShowToast(''), 4000);
         }, 600);
-      } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep)) {
+      } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep) && currentStep !== 3) {
+        // Auto-complete step for all placement steps except step 3 (phenolphthalein)
         setTimeout(() => {
           handleStepComplete();
         }, 600);
@@ -328,7 +329,7 @@ export default function VirtualLab({
         isAnimating: true
       });
 
-      setShowToast(`Transferring ${vol.toFixed(1)} mL of 0.1N oxalic acid...`);
+      setShowToast(`Adding ${vol.toFixed(1)} mL of 0.1N oxalic acid...`);
 
       setSafeTimeout(() => {
         setTitrationAction(null);
@@ -344,7 +345,7 @@ export default function VirtualLab({
           id: Date.now().toString(),
           timestamp: Date.now(),
           action: 'Added oxalic acid',
-          reagent: '0.1N H₂C₂O₄',
+          reagent: '0.1N H��C₂O₄',
           volume: vol,
           buretteReading: burette.reading,
           colorBefore: COLORS.COLORLESS,
@@ -363,7 +364,9 @@ export default function VirtualLab({
       // Add indicator after click with mixing animation and messages
       setActiveEquipment(equipmentId);
       setIsMixing(true);
-      setShowToast('Phenolpthalein added to the flask');
+
+      // Show immediate mixing popup message
+      setShowToast('indicator mixed in the flask!');
 
       setSafeTimeout(() => {
         setIsMixing(false);
@@ -386,8 +389,8 @@ export default function VirtualLab({
         setTitrationLog(prev => [...prev, logEntry]);
 
         setActiveEquipment("");
-        setShowToast('Phenolpthalein added to the flask');
-        setSafeTimeout(() => setShowToast(""), 2000);
+        setShowToast('2-3 drops of phanolpthalein added');
+        setSafeTimeout(() => setShowToast(""), 3000);
         handleStepComplete();
       }, ANIMATION.MIXING_DURATION);
 
