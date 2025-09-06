@@ -176,11 +176,11 @@ export default function VirtualLab({
 
         // Reposition burette and conical flask for better alignment in step 4
         const repositioned = filtered.map(eq => {
-          if (eq.id === 'burette') {
-            return { ...eq, position: { x: 100, y: 20 } };
+          if (eq.id === 'burette' && STEP_4_POSITIONS.burette) {
+            return { ...eq, position: STEP_4_POSITIONS.burette };
           }
-          if (eq.id === 'conical-flask') {
-            return { ...eq, position: { x: 200, y: 320 } };
+          if (eq.id === 'conical-flask' && STEP_4_POSITIONS['conical-flask']) {
+            return { ...eq, position: STEP_4_POSITIONS['conical-flask'] };
           }
           return eq;
         });
