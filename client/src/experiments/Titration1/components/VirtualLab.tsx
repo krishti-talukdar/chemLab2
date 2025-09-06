@@ -941,13 +941,30 @@ export default function VirtualLab({
 
         {/* Start Titration Prompt (shown at beginning of step 4) */}
         <Dialog open={showStartTitrationModal} onOpenChange={setShowStartTitrationModal}>
-          <DialogContent className="max-w-sm">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-semibold">Let's start the titration now!</DialogTitle>
-              <DialogDescription>are you excited?</DialogDescription>
-            </DialogHeader>
-            <div className="mt-4 flex justify-end">
-              <Button onClick={() => setShowStartTitrationModal(false)} className="bg-blue-500 text-white">yes I am!</Button>
+          <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <Droplets className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white text-2xl font-extrabold">Let's start the titration now!</h3>
+                  <p className="text-blue-100 mt-1">Are you excited?</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-white">
+              <p className="text-sm text-gray-700">The burette has been aligned and is ready with NaOH. When you're ready, start adding NaOH to the conical flask to begin the titration.</p>
+
+              <div className="mt-6 flex justify-end">
+                <Button
+                  onClick={() => setShowStartTitrationModal(false)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2 rounded-md shadow-md"
+                >
+                  Yes, I am!
+                </Button>
+              </div>
             </div>
           </DialogContent>
         </Dialog>
