@@ -345,7 +345,7 @@ export default function VirtualLab({
           id: Date.now().toString(),
           timestamp: Date.now(),
           action: 'Added oxalic acid',
-          reagent: '0.1N H₂C₂O₄',
+          reagent: '0.1N H��C₂O₄',
           volume: vol,
           buretteReading: burette.reading,
           colorBefore: COLORS.COLORLESS,
@@ -386,7 +386,7 @@ export default function VirtualLab({
         setTitrationLog(prev => [...prev, logEntry]);
 
         setActiveEquipment("");
-        setShowToast('2-3 drops of phenolpthalein added into the conical flask');
+        setShowToast('2-3 drops of phanolpthalein added');
         setSafeTimeout(() => setShowToast(""), 3000);
         handleStepComplete();
       }, ANIMATION.MIXING_DURATION);
