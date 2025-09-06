@@ -15,14 +15,68 @@ interface PrepWorkbenchProps {
   equipmentItems: EquipmentItem[];
 }
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Utility to interpolate between two hex colors
+function hexToRgb(hex: string) {
+  const clean = hex.replace("#", "");
+  const bigint = parseInt(clean, 16);
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255,
+  };
+}
+function rgbToHex(r: number, g: number, b: number) {
+  return (
+    "#" +
+    [r, g, b]
+      .map((x) => {
+        const h = x.toString(16);
+        return h.length === 1 ? "0" + h : h;
+      })
+      .join("")
+  );
+}
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+function interpolateHex(from: string, to: string, t: number) {
+  const a = hexToRgb(from);
+  const b = hexToRgb(to);
+  const r = Math.round(lerp(a.r, b.r, t));
+  const g = Math.round(lerp(a.g, b.g, t));
+  const bl = Math.round(lerp(a.b, b.b, t));
+  return rgbToHex(r, g, bl);
+}
 
 export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
   const [isHeating, setIsHeating] = useState(false);
+  const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
+
+  // Smoothly animate heating/cooling progress
+  useEffect(() => {
+    const tick = () =>
+      setHeatProgress((p) => {
+        const delta = isHeating ? 0.03 : -0.03;
+        const next = Math.max(0, Math.min(1, p + delta));
+        return next;
+      });
+    const id = setInterval(tick, 100);
+    return () => clearInterval(id);
+  }, [isHeating]);
+
+  // Derived colors for the organic compound when heating
+  const heatedColors = useMemo(() => {
+    // From warm yellow/orange to red-hot
+    const bottom = interpolateHex("#f59e0b", "#ef4444", heatProgress);
+    const top = interpolateHex("#fde68a", "#fca5a5", heatProgress);
+    return { bottom, top };
+  }, [heatProgress]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
