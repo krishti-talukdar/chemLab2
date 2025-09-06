@@ -172,11 +172,24 @@ export default function VirtualLab({
     if (currentStep === 4) {
       setEquipmentOnBench(prev => {
         const filtered = prev.filter(eq => eq.id !== 'phenolphthalein' && eq.id !== 'pipette');
+
+        // Reposition burette and conical flask for better alignment in step 4
+        const repositioned = filtered.map(eq => {
+          if (eq.id === 'burette') {
+            return { ...eq, position: { x: 100, y: 20 } };
+          }
+          if (eq.id === 'conical-flask') {
+            return { ...eq, position: { x: 200, y: 320 } };
+          }
+          return eq;
+        });
+
         if (filtered.length !== prev.length) {
           setShowToast("Pipette and phenolphthalein automatically removed from workbench");
           setSafeTimeout(() => setShowToast(""), 3000);
         }
-        return filtered;
+
+        return repositioned;
       });
     }
   }, [currentStep, setSafeTimeout]);
