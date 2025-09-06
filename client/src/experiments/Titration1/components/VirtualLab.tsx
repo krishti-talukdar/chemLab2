@@ -939,6 +939,19 @@ export default function VirtualLab({
           </div>
         )}
 
+        {/* Start Titration Prompt (shown at beginning of step 4) */}
+        <Dialog open={showStartTitrationModal} onOpenChange={setShowStartTitrationModal}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-semibold">Let's start the titration now!</DialogTitle>
+              <DialogDescription>are you excited?</DialogDescription>
+            </DialogHeader>
+            <div className="mt-4 flex justify-end">
+              <Button onClick={() => setShowStartTitrationModal(false)} className="bg-blue-500 text-white">yes I am!</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Results Analysis Modal */}
         <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
