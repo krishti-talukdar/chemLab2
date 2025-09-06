@@ -3,7 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward } from "lucide-react";
+import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
 import WorkBench from "./WorkBench";
 import Equipment, { LAB_EQUIPMENT } from "./Equipment";
