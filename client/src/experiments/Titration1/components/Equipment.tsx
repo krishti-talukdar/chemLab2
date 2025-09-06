@@ -179,12 +179,19 @@ export const Equipment: React.FC<EquipmentProps> = ({
       {/* Equipment icon with custom styling for specific items */}
       <div className="relative">
         {id === 'burette' && isPositioned ? (
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
-            alt="Burette with NaOH solution"
-            className={`${currentStep >= 4 ? 'h-[500px]' : 'h-96'} w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
-            style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
-          />
+          <div className="relative">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
+              alt="Burette with NaOH solution"
+              className={`${currentStep >= 4 ? 'h-[500px]' : 'h-96'} w-auto object-contain transition-transform duration-200 ${isActive || isAutoTitrating ? 'scale-105' : ''}`}
+              style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
+            />
+            {isAutoTitrating && (
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                <div className="w-1 h-12 bg-gradient-to-b from-purple-400 to-transparent animate-pulse opacity-80"></div>
+              </div>
+            )}
+          </div>
         ) : id === 'conical-flask' && isPositioned ? (
           <div className="relative">
             <div className={mixing ? 'animate-shake' : ''}>
