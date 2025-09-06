@@ -382,6 +382,23 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
               </div>
             </div>
           );
+
+          // Heat shimmer around tube bottom
+          visuals.push(
+            <div key="tubeGlow" className="absolute pointer-events-none" style={{ left: tube.x + (tubeWidth / 2) - 28, top: tube.y + tubeHeight - 68 }}>
+              <div
+                className="rounded-full"
+                style={{
+                  width: 56,
+                  height: 56,
+                  background: `radial-gradient(circle, rgba(255,99,71,${0.55}) 0%, rgba(255,140,0,0.45) 45%, rgba(255,140,0,0) 70%)`,
+                  filter: "blur(10px)",
+                  opacity: 0.85,
+                  animation: 'flameFlicker 1.2s ease-in-out infinite',
+                }}
+              />
+            </div>
+          );
         }
 
         return (
