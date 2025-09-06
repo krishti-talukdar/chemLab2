@@ -30,36 +30,87 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
     if (!eqId) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const x = Math.max(16, Math.min(e.clientX - rect.left - 24, rect.width - 48));
-    const y = Math.max(16, Math.min(e.clientY - rect.top - 24, rect.height - 48));
-    setPlaced(prev => {
-      const next = [...prev, { id: eqId, x, y }];
-      const tube = next.find(p => p.id === 'ignition-tube');
-      const burner = next.find(p => p.id === 'bunsen-burner');
+
+    // Snap items to fixed target positions regardless of where they are dropped
+    const getSnapPosition = (
+      id: string,
+      r: DOMRect,
+      current: Array<{ id: string; x: number; y: number }>
+    ) => {
+      const margin = 16;
+      const clampX = (x: number) => Math.max(margin, Math.min(x, r.width - margin));
+      const clampY = (y: number) => Math.max(margin, Math.min(y, r.height - margin));
+
+      // Sizes used in rendering
+      const burnerSize = { w: 480, h: 480 };
+      const tubeSize = { w: 224, h: 256 };
+
+      const burnerPos = current.find((p) => p.id === "bunsen-burner");
+
+      switch (id) {
+        case "bunsen-burner": {
+          const x = clampX(r.width / 2 - burnerSize.w / 2);
+          const y = clampY(r.height - burnerSize.h - margin);
+          return { x, y };
+        }
+        case "ignition-tube": {
+          // If burner exists, center above it; otherwise, keep centered near top
+          if (burnerPos) {
+            const x = clampX(
+              burnerPos.x + (burnerSize.w - tubeSize.w) / 2
+            );
+            const y = clampY(burnerPos.y - tubeSize.h + 50);
+            return { x, y };
+          }
+          const x = clampX(r.width / 2 - tubeSize.w / 2);
+          const y = clampY(40);
+          return { x, y };
+        }
+        case "sodium-piece": {
+          return { x: clampX(32), y: clampY(120) };
+        }
+        case "organic-compound": {
+          return { x: clampX(r.width - 120), y: clampY(120) };
+        }
+        case "water-bath": {
+          return { x: clampX(32), y: clampY(r.height - 180) };
+        }
+        case "filter-funnel": {
+          return { x: clampX(r.width - 140), y: clampY(r.height - 200) };
+        }
+        default: {
+          // Fallback: center
+          return { x: clampX(r.width / 2 - 24), y: clampY(r.height / 2 - 24) };
+        }
+      }
+    };
+
+    setPlaced((prev) => {
+      const withoutSame = prev.filter((p) => p.id !== eqId);
+      const snapped = getSnapPosition(eqId, rect, withoutSame);
+      const next = [...withoutSame, { id: eqId, ...snapped }];
+
+      const tube = next.find((p) => p.id === "ignition-tube");
+      const burner = next.find((p) => p.id === "bunsen-burner");
       if (tube && burner) {
-        // Center the fusion tube directly above the burner
         const tubeWidth = 224; // w-56
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
-
         const tubeX = Math.max(16, Math.min(burner.x + (burnerWidth - tubeWidth) / 2, rect.width - tubeWidth - 16));
-        const tubeY = Math.max(16, burner.y - tubeHeight + 50); // small gap above burner
-
-        return next.map(p =>
-          p.id === 'ignition-tube' ? { ...p, x: tubeX, y: tubeY } : p
-        );
+        const tubeY = Math.max(16, burner.y - tubeHeight + 50);
+        return next.map((p) => (p.id === "ignition-tube" ? { ...p, x: tubeX, y: tubeY } : p));
       }
       return next;
     });
 
     // Auto-progress steps based on expected sequence
     const sequence = [
-      "ignition-tube",       // Step 1
-      "sodium-piece",        // Step 2
-      "organic-compound",    // Step 3
-      "bunsen-burner",       // Step 4
-      "water-bath",          // Step 5
-      "filter-funnel"        // Step 6
+      "ignition-tube",
+      "sodium-piece",
+      "organic-compound",
+      "bunsen-burner",
+      "water-bath",
+      "filter-funnel",
     ];
     const expected = sequence[step];
     if (expected && eqId === expected) {
