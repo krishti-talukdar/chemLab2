@@ -58,6 +58,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const [isHeating, setIsHeating] = useState(false);
   const heatTimerRef = useRef<number | null>(null);
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
+  const [isPostHeated, setIsPostHeated] = useState(false);
+  const prevHeatingRef = useRef(false);
 
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
@@ -76,6 +78,15 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
     };
   }, [isHeating]);
 
+  // Detect transition from heating -> stopped to set dark red state
+  useEffect(() => {
+    const wasHeating = prevHeatingRef.current;
+    if (wasHeating && !isHeating) {
+      setIsPostHeated(true);
+    }
+    prevHeatingRef.current = isHeating;
+  }, [isHeating]);
+
   // Smoothly animate heating/cooling progress
   useEffect(() => {
     const tick = () =>
@@ -90,11 +101,15 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
 
   // Derived colors for the organic compound when heating
   const heatedColors = useMemo(() => {
-    // From warm yellow/orange to red-hot
+    if (!isHeating && isPostHeated) {
+      // After heating stops, show dark red permanently
+      return { top: "#b91c1c", bottom: "#7f1d1d" };
+    }
+    // While heating/cooling, interpolate
     const bottom = interpolateHex("#f59e0b", "#ef4444", heatProgress);
     const top = interpolateHex("#fde68a", "#fca5a5", heatProgress);
     return { bottom, top };
-  }, [heatProgress]);
+  }, [heatProgress, isHeating, isPostHeated]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -380,6 +395,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                     if (!next && heatTimerRef.current) {
                       clearTimeout(heatTimerRef.current);
                       heatTimerRef.current = null;
+                      setIsPostHeated(true); // manual stop also makes dark red
+                    }
+                    if (next) {
+                      // starting heat again keeps dark red unless needed otherwise
                     }
                     return next;
                   });
