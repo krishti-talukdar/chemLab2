@@ -670,32 +670,6 @@ export default function VirtualLab({
     }
   }, [currentStep, conicalFlask, burette, animateColorTransition, currentTrial]);
 
-  // Handle step completion
-  const handleStepComplete = () => {
-    if (!completedSteps.includes(currentStep)) {
-      // Save current state to history
-      const currentState = {
-        conicalFlask: { ...conicalFlask },
-        burette: { ...burette },
-        titrationState: { ...titrationState },
-        titrationLog: [...titrationLog],
-        equipmentOnBench: [...equipmentOnBench]
-      };
-      setStepHistory(prev => [...prev, { step: currentStep, state: currentState }]);
-
-      // Call parent's step completion handler
-      onStepComplete(currentStep);
-
-      if (currentStep < GUIDED_STEPS.length) {
-        setTimeout(() => {
-          setCurrentStep(currentStep + 1);
-          setShowToast(`Step ${currentStep} completed! Moving to step ${currentStep + 1}`);
-          setTimeout(() => setShowToast(""), 3000);
-        }, 500);
-      }
-    }
-  };
-
   // Reset experiment
   const handleResetExperiment = () => {
     setConicalFlask(INITIAL_FLASK);
