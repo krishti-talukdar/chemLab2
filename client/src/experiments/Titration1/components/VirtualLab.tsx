@@ -207,6 +207,32 @@ export default function VirtualLab({
     }
   }, [currentStep, setSafeTimeout, startTitrationPromptShown]);
 
+  // Handle step completion
+  const handleStepComplete = useCallback(() => {
+    if (!completedSteps.includes(currentStep)) {
+      // Save current state to history
+      const currentState = {
+        conicalFlask: { ...conicalFlask },
+        burette: { ...burette },
+        titrationState: { ...titrationState },
+        titrationLog: [...titrationLog],
+        equipmentOnBench: [...equipmentOnBench]
+      };
+      setStepHistory(prev => [...prev, { step: currentStep, state: currentState }]);
+
+      // Call parent's step completion handler
+      onStepComplete(currentStep);
+
+      if (currentStep < GUIDED_STEPS.length) {
+        setTimeout(() => {
+          setCurrentStep(currentStep + 1);
+          setShowToast(`Step ${currentStep} completed! Moving to step ${currentStep + 1}`);
+          setTimeout(() => setShowToast(""), 3000);
+        }, 500);
+      }
+    }
+  }, [currentStep, completedSteps, conicalFlask, burette, titrationState, titrationLog, equipmentOnBench, onStepComplete]);
+
   // Auto-titration function
   const startAutoTitration = useCallback(() => {
     setIsAutoTitrating(true);
