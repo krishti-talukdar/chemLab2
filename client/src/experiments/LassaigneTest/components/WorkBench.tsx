@@ -297,14 +297,29 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                       {hasOrganicCompound && (
                         <div className="absolute bottom-12 left-[53%] -translate-x-1/2 pointer-events-none">
                           <div className="relative w-[22px] h-[110px] overflow-hidden">
+                            {/* Liquid content with heat-responsive color */}
                             <div
-                              className="absolute bottom-0 left-0 right-0"
+                              className="absolute bottom-0 left-0 right-0 transition-all duration-300"
                               style={{
                                 height: "22%",
-                                background: "linear-gradient(to top, #fde68a, #f59e0b)",
+                                background: `linear-gradient(to top, ${heatedColors.top}, ${heatedColors.bottom})`,
                                 borderTopLeftRadius: 8,
                                 borderTopRightRadius: 8,
                                 opacity: 0.95,
+                                boxShadow: `0 0 ${8 + 24 * heatProgress}px rgba(239,68,68,${0.4 * heatProgress})`,
+                                filter: `saturate(${1 + heatProgress * 0.5}) brightness(${1 + heatProgress * 0.2})`,
+                              }}
+                            />
+                            {/* Red-hot glow at tube tip when heating */}
+                            <div
+                              className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full"
+                              style={{
+                                width: 40,
+                                height: 40,
+                                background: `radial-gradient(circle, rgba(255,80,80,${0.6 * heatProgress}) 0%, rgba(255,140,0,${0.4 * heatProgress}) 40%, rgba(255,140,0,0) 70%)`,
+                                filter: `blur(${6 + 10 * heatProgress}px)`,
+                                opacity: heatProgress,
+                                transition: "opacity 200ms, filter 200ms",
                               }}
                             />
                           </div>
