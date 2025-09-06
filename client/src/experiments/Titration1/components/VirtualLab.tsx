@@ -425,10 +425,16 @@ export default function VirtualLab({
         };
         setTitrationLog(prev => [...prev, logEntry]);
 
-        setActiveEquipment("");
-        setShowToast("Burette ready - begin titration!");
-        setSafeTimeout(() => setShowToast(""), 2000);
-        handleStepComplete();
+        // Automatically remove phenolphthalein and pipette from workbench
+        setEquipmentOnBench(prev => prev.filter(eq => eq.id !== 'phenolphthalein' && eq.id !== 'pipette'));
+        setShowToast("Pipette and phenolphthalein removed from workbench");
+
+        setSafeTimeout(() => {
+          setActiveEquipment("");
+          setShowToast("Burette ready - begin titration!");
+          setSafeTimeout(() => setShowToast(""), 2000);
+          handleStepComplete();
+        }, 1000);
       }, 2000);
 
     } else if (equipmentId === 'burette' && currentStep === 5) {
