@@ -39,12 +39,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
   const [currentPosition, setCurrentPosition] = React.useState(position || { x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = React.useState(false);
 
   React.useEffect(() => {
     if (position) {
       setCurrentPosition(position);
     }
   }, [position]);
+
   const handleDragStart = (e: React.DragEvent) => {
     if (disabled) {
       e.preventDefault();
@@ -56,7 +58,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!disabled && onInteract && !isDragging) {
+    // Only handle click if we haven't moved during mouse down
+    if (!disabled && onInteract && !hasMoved) {
       onInteract(id);
     }
   };
@@ -64,66 +67,57 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isPositioned || disabled || !onReposition) return;
 
-    // Only start dragging if it's a long press or mouse move
-    const startTime = Date.now();
-    const startX = e.clientX;
-    const startY = e.clientY;
-
+    setHasMoved(false);
+    
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
-
+    
     setDragOffset({ x: offsetX, y: offsetY });
 
-    const handleMouseUp = () => {
-      const duration = Date.now() - startTime;
-      const distance = Math.sqrt(Math.pow(e.clientX - startX, 2) + Math.pow(e.clientY - startY, 2));
-
-      // If it was a short click with minimal movement, treat as click
-      if (duration < 200 && distance < 5) {
-        handleClick(e);
+    const startX = e.clientX;
+    const startY = e.clientY;
+    
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const distance = Math.sqrt(
+        Math.pow(moveEvent.clientX - startX, 2) + 
+        Math.pow(moveEvent.clientY - startY, 2)
+      );
+      
+      // Start dragging if moved more than 5 pixels
+      if (distance > 5 && !isDragging) {
+        setIsDragging(true);
+        setHasMoved(true);
       }
+      
+      if (isDragging) {
+        // Get workbench bounds
+        const workbench = document.querySelector('[data-workbench="true"]');
+        if (!workbench) return;
 
-      document.removeEventListener('mouseup', handleMouseUp);
+        const workbenchRect = workbench.getBoundingClientRect();
+        const equipmentWidth = id === 'burette' ? 240 : 80;
+        const equipmentHeight = id === 'burette' ? 420 : 80;
+        const newX = Math.max(0, Math.min(moveEvent.clientX - workbenchRect.left - offsetX, workbenchRect.width - equipmentWidth));
+        const newY = Math.max(0, Math.min(moveEvent.clientY - workbenchRect.top - offsetY, workbenchRect.height - equipmentHeight));
+
+        setCurrentPosition({ x: newX, y: newY });
+      }
     };
 
-    document.addEventListener('mouseup', handleMouseUp);
-  };
-
-  React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !onReposition) return;
-
-      // Get workbench bounds
-      const workbench = document.querySelector('[data-workbench="true"]');
-      if (!workbench) return;
-
-      const workbenchRect = workbench.getBoundingClientRect();
-      const equipmentWidth = id === 'burette' ? 240 : 80;
-      const equipmentHeight = id === 'burette' ? 420 : 80;
-      const newX = Math.max(0, Math.min(e.clientX - workbenchRect.left - dragOffset.x, workbenchRect.width - equipmentWidth));
-      const newY = Math.max(0, Math.min(e.clientY - workbenchRect.top - dragOffset.y, workbenchRect.height - equipmentHeight));
-
-      setCurrentPosition({ x: newX, y: newY });
-    };
-
-    const handleMouseUpDrag = () => {
+    const handleMouseUp = () => {
       if (isDragging && onReposition) {
         onReposition(id, currentPosition.x, currentPosition.y);
       }
       setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
+      
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset, currentPosition, id, onReposition]);
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   const isPositioned = position !== undefined;
   const baseClasses = `
