@@ -35,7 +35,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   color,
   volume,
   reading,
-  mixing
+  mixing,
+  currentStep = 1
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
