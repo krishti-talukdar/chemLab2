@@ -252,19 +252,19 @@ export default function VirtualLab({
       }
     }
 
-    // Get predefined position for this equipment
-    const predefinedPosition = getEquipmentPosition(equipmentId);
-
-    // Add equipment to workbench and compute resulting set
+    // Add equipment to workbench at drop position and compute resulting set
     let afterIds: string[] = [];
     setEquipmentOnBench(prev => {
       const filtered = prev.filter(eq => eq.id !== equipmentId);
-      const next = [...filtered, {
-        id: equipmentId,
-        position: predefinedPosition,
-        isActive: false
-      }];
-      afterIds = next.map(eq => eq.id);
+      const next = [
+        ...filtered,
+        {
+          id: equipmentId,
+          position: { x, y },
+          isActive: false,
+        },
+      ];
+      afterIds = next.map((eq) => eq.id);
       return next;
     });
 
@@ -287,7 +287,7 @@ export default function VirtualLab({
       // Step 3 special flow: after placing indicator, prompt user to click it
       if (currentStep === 3 && equipmentId === 'phenolphthalein') {
         setTimeout(() => {
-          setShowToast('Click on the phenolpthalein icon to add 2-3 drops into the conical flask');
+          setShowToast('click on the indicator icon');
           setSafeTimeout(() => setShowToast(''), 4000);
         }, 600);
       } else if (isPlacementStep && allPresent && !completedSteps.includes(currentStep)) {
@@ -363,7 +363,6 @@ export default function VirtualLab({
       // Add indicator after click with mixing animation and messages
       setActiveEquipment(equipmentId);
       setIsMixing(true);
-      setShowToast('Phenolpthalein added to the flask');
 
       setSafeTimeout(() => {
         setIsMixing(false);
@@ -386,8 +385,8 @@ export default function VirtualLab({
         setTitrationLog(prev => [...prev, logEntry]);
 
         setActiveEquipment("");
-        setShowToast('Phenolpthalein added to the flask');
-        setSafeTimeout(() => setShowToast(""), 2000);
+        setShowToast('2-3 drops of phenolpthalein added into the conical flask');
+        setSafeTimeout(() => setShowToast(""), 3000);
         handleStepComplete();
       }, ANIMATION.MIXING_DURATION);
 
