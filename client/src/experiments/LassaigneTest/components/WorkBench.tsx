@@ -421,9 +421,9 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           visuals.push(
             <img
               key="china-dish"
-              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fa357d1e0379f4f93a6440c08a0713b94?format=webp&width=800"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
               alt="China Dish"
-              className="absolute pointer-events-none drop-shadow-md mix-blend-multiply"
+              className="absolute pointer-events-none drop-shadow-md"
               style={{ left, top, width: 140, height: 140, objectFit: 'contain', background: 'transparent' }}
             />
           );
