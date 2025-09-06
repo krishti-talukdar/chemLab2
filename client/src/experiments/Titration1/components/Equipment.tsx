@@ -202,11 +202,27 @@ export const Equipment: React.FC<EquipmentProps> = ({
             )}
             {/* Mixing animation overlay */}
             {mixing && (
-              <div
-                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
-              >
-                <div className="w-10 h-10 rounded-full border-4 border-white/60 border-t-transparent animate-spin"></div>
+              <div className="absolute inset-0 pointer-events-none">
+                {/* Mixing swirl animation in the solution area */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+                >
+                  <div className="w-12 h-12 rounded-full border-4 border-blue-500/80 border-t-transparent animate-spin"></div>
+                </div>
+                {/* Additional swirling effects */}
+                <div
+                  className="absolute inset-0 flex items-end justify-center pb-8"
+                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+                >
+                  <div className="w-8 h-8 rounded-full border-2 border-purple-400/60 border-r-transparent animate-spin animation-delay-150"></div>
+                </div>
+                <div
+                  className="absolute inset-0 flex items-end justify-center pb-12"
+                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
+                >
+                  <div className="w-6 h-6 rounded-full border-2 border-pink-400/60 border-l-transparent animate-spin animation-delay-300"></div>
+                </div>
               </div>
             )}
           </div>
