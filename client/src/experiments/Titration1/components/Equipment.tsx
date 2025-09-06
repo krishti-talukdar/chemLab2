@@ -20,6 +20,7 @@ interface EquipmentProps {
   reading?: number;
   mixing?: boolean;
   currentStep?: number;
+  isAutoTitrating?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
