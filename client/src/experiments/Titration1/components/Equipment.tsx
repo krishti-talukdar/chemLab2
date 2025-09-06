@@ -182,12 +182,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
             style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
           />
         ) : id === 'conical-flask' && isPositioned ? (
-          <div className="relative">
+          <div className={`relative ${mixing ? 'animate-pulse' : ''}`}>
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
               alt="Conical Flask"
-              className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
-              style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
+              className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''} ${mixing ? 'animate-bounce' : ''}`}
+              style={{
+                filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))',
+                transform: mixing ? 'translateX(-2px)' : 'translateX(0px)',
+                animation: mixing ? 'shake 0.3s ease-in-out infinite' : 'none'
+              }}
             />
             {/* Oxalic acid solution overlay */}
             {color && color !== '#F8F9FA' && (
@@ -196,41 +200,39 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 style={{
                   background: `linear-gradient(to bottom, transparent 50%, ${color} 70%, ${color} 85%, ${color} 95%)`,
                   clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)',
-                  opacity: 0.7
+                  opacity: 0.7,
+                  transform: mixing ? 'translateX(-1px)' : 'translateX(0px)',
+                  animation: mixing ? 'shake 0.3s ease-in-out infinite' : 'none'
                 }}
               />
             )}
-            {/* Mixing animation overlay */}
+            {/* Mixing animation - flask shaking effect with solution movement */}
             {mixing && (
               <div className="absolute inset-0 pointer-events-none">
-                {/* Mixing swirl animation in the solution area */}
+                {/* Stirring motion indicator */}
                 <div
                   className="absolute inset-0 flex items-center justify-center"
                   style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
                 >
-                  <div className="w-12 h-12 rounded-full border-4 border-blue-500/80 border-t-transparent animate-spin"></div>
+                  <div className="w-8 h-1 bg-blue-400/40 rounded-full animate-pulse"></div>
                 </div>
-                {/* Additional swirling effects */}
                 <div
                   className="absolute inset-0 flex items-end justify-center pb-8"
                   style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
                 >
-                  <div
-                    className="w-8 h-8 rounded-full border-2 border-purple-400/60 border-r-transparent animate-spin"
-                    style={{ animationDelay: '0.15s' }}
-                  ></div>
-                </div>
-                <div
-                  className="absolute inset-0 flex items-end justify-center pb-12"
-                  style={{ clipPath: 'polygon(30% 70%, 70% 70%, 65% 95%, 35% 95%)' }}
-                >
-                  <div
-                    className="w-6 h-6 rounded-full border-2 border-pink-400/60 border-l-transparent animate-spin"
-                    style={{ animationDelay: '0.3s' }}
-                  ></div>
+                  <div className="w-6 h-1 bg-purple-400/30 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }}></div>
                 </div>
               </div>
             )}
+            {/* Custom shake animation keyframes */}
+            <style jsx>{`
+              @keyframes shake {
+                0%, 100% { transform: translateX(0px) translateY(0px); }
+                25% { transform: translateX(-2px) translateY(-1px); }
+                50% { transform: translateX(2px) translateY(1px); }
+                75% { transform: translateX(-1px) translateY(1px); }
+              }
+            `}</style>
           </div>
         ) : (
           <div className={`${id === 'pipette' && isActive ? 'relative' : ''}`}>
