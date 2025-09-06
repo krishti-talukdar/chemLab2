@@ -365,6 +365,9 @@ export default function VirtualLab({
       setActiveEquipment(equipmentId);
       setIsMixing(true);
 
+      // Show immediate mixing popup message
+      setShowToast('indicator mixed in the flask!');
+
       setSafeTimeout(() => {
         setIsMixing(false);
         setConicalFlask(prev => ({
