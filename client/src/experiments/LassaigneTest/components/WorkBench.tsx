@@ -267,8 +267,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
+        const hasWaterBath = placed.some(p => p.id === "water-bath");
         const tube = placed.find(p => p.id === 'ignition-tube');
         const burner = placed.find(p => p.id === 'bunsen-burner');
+        const waterBath = placed.find(p => p.id === 'water-bath');
         const tubeWidth = 224;
         const tubeHeight = 256;
 
