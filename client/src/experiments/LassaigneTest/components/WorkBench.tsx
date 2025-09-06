@@ -59,6 +59,23 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const heatTimerRef = useRef<number | null>(null);
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
 
+  // Auto-stop heating after 6 seconds when started
+  useEffect(() => {
+    if (isHeating) {
+      if (heatTimerRef.current) clearTimeout(heatTimerRef.current);
+      heatTimerRef.current = window.setTimeout(() => {
+        setIsHeating(false);
+        heatTimerRef.current = null;
+      }, 6000);
+    }
+    return () => {
+      if (!isHeating && heatTimerRef.current) {
+        clearTimeout(heatTimerRef.current);
+        heatTimerRef.current = null;
+      }
+    };
+  }, [isHeating]);
+
   // Smoothly animate heating/cooling progress
   useEffect(() => {
     const tick = () =>
@@ -67,8 +84,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const next = Math.max(0, Math.min(1, p + delta));
         return next;
       });
-    const id = setInterval(tick, 100);
-    return () => clearInterval(id);
+    const id = window.setInterval(tick, 100);
+    return () => window.clearInterval(id);
   }, [isHeating]);
 
   // Derived colors for the organic compound when heating
