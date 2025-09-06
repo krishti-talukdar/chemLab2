@@ -15,14 +15,101 @@ interface PrepWorkbenchProps {
   equipmentItems: EquipmentItem[];
 }
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TestTube, Beaker, FlaskConical, Droplets, Filter, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Utility to interpolate between two hex colors
+function hexToRgb(hex: string) {
+  const clean = hex.replace("#", "");
+  const bigint = parseInt(clean, 16);
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255,
+  };
+}
+function rgbToHex(r: number, g: number, b: number) {
+  return (
+    "#" +
+    [r, g, b]
+      .map((x) => {
+        const h = x.toString(16);
+        return h.length === 1 ? "0" + h : h;
+      })
+      .join("")
+  );
+}
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+function interpolateHex(from: string, to: string, t: number) {
+  const a = hexToRgb(from);
+  const b = hexToRgb(to);
+  const r = Math.round(lerp(a.r, b.r, t));
+  const g = Math.round(lerp(a.g, b.g, t));
+  const bl = Math.round(lerp(a.b, b.b, t));
+  return rgbToHex(r, g, bl);
+}
 
 export default function WorkBench({ step, totalSteps, equipmentItems, onNext, onFinish }: PrepWorkbenchProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
   const [isHeating, setIsHeating] = useState(false);
+  const heatTimerRef = useRef<number | null>(null);
+  const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
+  const [isPostHeated, setIsPostHeated] = useState(false);
+  const prevHeatingRef = useRef(false);
+
+  // Auto-stop heating after 6 seconds when started
+  useEffect(() => {
+    if (isHeating) {
+      if (heatTimerRef.current) clearTimeout(heatTimerRef.current);
+      heatTimerRef.current = window.setTimeout(() => {
+        setIsHeating(false);
+        heatTimerRef.current = null;
+      }, 6000);
+    }
+    return () => {
+      if (!isHeating && heatTimerRef.current) {
+        clearTimeout(heatTimerRef.current);
+        heatTimerRef.current = null;
+      }
+    };
+  }, [isHeating]);
+
+  // Detect transition from heating -> stopped to set dark red state
+  useEffect(() => {
+    const wasHeating = prevHeatingRef.current;
+    if (wasHeating && !isHeating) {
+      setIsPostHeated(true);
+    }
+    prevHeatingRef.current = isHeating;
+  }, [isHeating]);
+
+  // Smoothly animate heating/cooling progress
+  useEffect(() => {
+    const tick = () =>
+      setHeatProgress((p) => {
+        const delta = isHeating ? 0.03 : -0.03;
+        const next = Math.max(0, Math.min(1, p + delta));
+        return next;
+      });
+    const id = window.setInterval(tick, 100);
+    return () => window.clearInterval(id);
+  }, [isHeating]);
+
+  // Derived colors for the organic compound when heating
+  const heatedColors = useMemo(() => {
+    if (!isHeating && isPostHeated) {
+      // After heating stops, show dark red permanently
+      return { top: "#b91c1c", bottom: "#7f1d1d" };
+    }
+    // While heating/cooling, interpolate
+    const bottom = interpolateHex("#f59e0b", "#ef4444", heatProgress);
+    const top = interpolateHex("#fde68a", "#fca5a5", heatProgress);
+    return { bottom, top };
+  }, [heatProgress, isHeating, isPostHeated]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -180,8 +267,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const hasSodiumPiece = placed.some(p => p.id === "sodium-piece");
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
+        const hasWaterBath = placed.some(p => p.id === "water-bath");
         const tube = placed.find(p => p.id === 'ignition-tube');
         const burner = placed.find(p => p.id === 'bunsen-burner');
+        const waterBath = placed.find(p => p.id === 'water-bath');
         const tubeWidth = 224;
         const tubeHeight = 256;
 
@@ -190,6 +279,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
           if (p.id === "organic-compound" && hasIgnitionTube) return null;
+          if (p.id === "water-bath") return null; // remove water bath symbol from workbench
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
@@ -199,7 +289,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
               ? Flame
               : p.id === "organic-compound"
               ? FlaskConical
-              : p.id === "water-bath"
+              : p.id === "water-bath" || p.id === "distilled-water"
               ? Droplets
               : Filter;
           const colorClass =
@@ -213,6 +303,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
               ? "text-purple-600"
               : p.id === "water-bath"
               ? "text-blue-500"
+              : p.id === "distilled-water"
+              ? "text-sky-500"
               : "text-amber-600";
           return (
             <div
@@ -243,14 +335,29 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                       {hasOrganicCompound && (
                         <div className="absolute bottom-12 left-[53%] -translate-x-1/2 pointer-events-none">
                           <div className="relative w-[22px] h-[110px] overflow-hidden">
+                            {/* Liquid content with heat-responsive color */}
                             <div
-                              className="absolute bottom-0 left-0 right-0"
+                              className="absolute bottom-0 left-0 right-0 transition-all duration-300"
                               style={{
                                 height: "22%",
-                                background: "linear-gradient(to top, #fde68a, #f59e0b)",
+                                background: `linear-gradient(to top, ${heatedColors.top}, ${heatedColors.bottom})`,
                                 borderTopLeftRadius: 8,
                                 borderTopRightRadius: 8,
                                 opacity: 0.95,
+                                boxShadow: `0 0 ${8 + 24 * heatProgress}px rgba(239,68,68,${0.4 * heatProgress})`,
+                                filter: `saturate(${1 + heatProgress * 0.5}) brightness(${1 + heatProgress * 0.2})`,
+                              }}
+                            />
+                            {/* Red-hot glow at tube tip when heating */}
+                            <div
+                              className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full"
+                              style={{
+                                width: 40,
+                                height: 40,
+                                background: `radial-gradient(circle, rgba(255,80,80,${0.6 * heatProgress}) 0%, rgba(255,140,0,${0.4 * heatProgress}) 40%, rgba(255,140,0,0) 70%)`,
+                                filter: `blur(${6 + 10 * heatProgress}px)`,
+                                opacity: heatProgress,
+                                transition: "opacity 200ms, filter 200ms",
                               }}
                             />
                           </div>
@@ -286,10 +393,41 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                 top: Math.min(Math.max(burnerMouthY, 16), containerH - 60),
               }}
             >
-              <Button onClick={() => setIsHeating(h => !h)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
+              <Button
+                onClick={() => {
+                  setIsHeating((h) => {
+                    const next = !h;
+                    if (!next && heatTimerRef.current) {
+                      clearTimeout(heatTimerRef.current);
+                      heatTimerRef.current = null;
+                      setIsPostHeated(true); // manual stop also makes dark red
+                    }
+                    if (next) {
+                      // starting heat again keeps dark red unless needed otherwise
+                    }
+                    return next;
+                  });
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md"
+              >
                 {isHeating ? "STOP heating" : "START heating"}
               </Button>
             </div>
+          );
+        }
+
+        // Show china dish when water bath is on the bench
+        if (hasWaterBath && waterBath) {
+          const left = waterBath.x + 80;
+          const top = waterBath.y - 20;
+          visuals.push(
+            <img
+              key="china-dish"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
+              alt="China Dish"
+              className="absolute pointer-events-none drop-shadow-md"
+              style={{ left, top, width: 140, height: 140, objectFit: 'contain', background: 'transparent' }}
+            />
           );
         }
 
@@ -311,6 +449,23 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                 <div style={{ animation: 'rise 1.2s linear infinite' }} className="absolute bottom-20 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-200 rounded-full opacity-70" />
                 <div style={{ animation: 'heatWave 1s ease-in-out infinite' }} className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent opacity-40" />
               </div>
+            </div>
+          );
+
+          // Heat shimmer around tube bottom
+          visuals.push(
+            <div key="tubeGlow" className="absolute pointer-events-none" style={{ left: tube.x + (tubeWidth / 2) - 28, top: tube.y + tubeHeight - 68 }}>
+              <div
+                className="rounded-full"
+                style={{
+                  width: 56,
+                  height: 56,
+                  background: `radial-gradient(circle, rgba(255,99,71,${0.55}) 0%, rgba(255,140,0,0.45) 45%, rgba(255,140,0,0) 70%)`,
+                  filter: "blur(10px)",
+                  opacity: 0.85,
+                  animation: 'flameFlicker 1.2s ease-in-out infinite',
+                }}
+              />
             </div>
           );
         }
