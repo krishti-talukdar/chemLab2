@@ -7,14 +7,15 @@ import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircl
 import { Link } from "wouter";
 import WorkBench from "./WorkBench";
 import Equipment, { LAB_EQUIPMENT } from "./Equipment";
-import { 
-  COLORS, 
-  INITIAL_FLASK, 
+import {
+  COLORS,
+  INITIAL_FLASK,
   INITIAL_BURETTE,
   GUIDED_STEPS,
   ANIMATION,
   ENDPOINT_COLORS,
   EQUIPMENT_POSITIONS,
+  STEP_4_POSITIONS,
   TITRATION_FORMULAS
 } from "../constants";
 import { 
