@@ -7,14 +7,15 @@ import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircl
 import { Link } from "wouter";
 import WorkBench from "./WorkBench";
 import Equipment, { LAB_EQUIPMENT } from "./Equipment";
-import { 
-  COLORS, 
-  INITIAL_FLASK, 
+import {
+  COLORS,
+  INITIAL_FLASK,
   INITIAL_BURETTE,
   GUIDED_STEPS,
   ANIMATION,
   ENDPOINT_COLORS,
   EQUIPMENT_POSITIONS,
+  STEP_4_POSITIONS,
   TITRATION_FORMULAS
 } from "../constants";
 import { 
@@ -166,6 +167,42 @@ export default function VirtualLab({
       setIsRunning(false);
     }
   }, [showResultsModal, setIsRunning]);
+
+  const [showStartTitrationModal, setShowStartTitrationModal] = useState(false);
+  const [startTitrationPromptShown, setStartTitrationPromptShown] = useState(false);
+
+  // Auto-remove phenolphthalein and pipette when step 4 begins
+  useEffect(() => {
+    if (currentStep === 4) {
+      setEquipmentOnBench(prev => {
+        const filtered = prev.filter(eq => eq.id !== 'phenolphthalein' && eq.id !== 'pipette');
+
+        // Reposition burette and conical flask for better alignment in step 4
+        const repositioned = filtered.map(eq => {
+          if (eq.id === 'burette' && STEP_4_POSITIONS.burette) {
+            return { ...eq, position: STEP_4_POSITIONS.burette };
+          }
+          if (eq.id === 'conical-flask' && STEP_4_POSITIONS['conical-flask']) {
+            return { ...eq, position: STEP_4_POSITIONS['conical-flask'] };
+          }
+          return eq;
+        });
+
+        if (filtered.length !== prev.length) {
+          setShowToast("Pipette and phenolphthalein automatically removed from workbench");
+          setSafeTimeout(() => setShowToast(""), 3000);
+        }
+
+        return repositioned;
+      });
+
+      if (!startTitrationPromptShown) {
+        // show modal shortly after repositioning
+        setStartTitrationPromptShown(true);
+        setSafeTimeout(() => setShowStartTitrationModal(true), 600);
+      }
+    }
+  }, [currentStep, setSafeTimeout, startTitrationPromptShown]);
 
   // Handle color transitions for endpoint detection
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newPhase: TitrationState['currentPhase']) => {
@@ -641,12 +678,14 @@ export default function VirtualLab({
                 {currentStepData.title}
               </h4>
               <p className="text-sm text-gray-600 mb-2">
-                {currentStepData.description}
+                {currentStep === 4 ? "burette already filled with NaOH, Start the titration!" : currentStepData.description}
               </p>
-              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                <ArrowRight className="w-3 h-3 mr-1" />
-                {currentStepData.action}
-              </div>
+              {currentStep !== 4 && (
+                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  {currentStepData.action}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -743,6 +782,7 @@ export default function VirtualLab({
                     volume={equipment.id === 'conical-flask' ? conicalFlask.volume : equipment.id === 'pipette' ? (plannedOxalicVolume ?? undefined) : undefined}
                     reading={equipment.id === 'burette' ? burette.reading : undefined}
                     mixing={equipment.id === 'conical-flask' ? isMixing : undefined}
+                    currentStep={currentStep}
                   />
                 ) : null;
               })}
@@ -898,6 +938,36 @@ export default function VirtualLab({
             </div>
           </div>
         )}
+
+        {/* Start Titration Prompt (shown at beginning of step 4) */}
+        <Dialog open={showStartTitrationModal} onOpenChange={setShowStartTitrationModal}>
+          <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <Droplets className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white text-2xl font-extrabold">Let's start the titration now!</h3>
+                  <p className="text-blue-100 mt-1">Are you excited?</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-white">
+              <p className="text-sm text-gray-700">The burette has been aligned and is ready with NaOH. When you're ready, start adding NaOH to the conical flask to begin the titration.</p>
+
+              <div className="mt-6 flex justify-end">
+                <Button
+                  onClick={() => setShowStartTitrationModal(false)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2 rounded-md shadow-md"
+                >
+                  Yes, I am!
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Results Analysis Modal */}
         <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
