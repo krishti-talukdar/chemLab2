@@ -260,7 +260,7 @@ export default function VirtualLab({
         ...filtered,
         {
           id: equipmentId,
-          position: { x, y },
+          position: equipmentId === 'phenolphthalein' ? { x, y } : getEquipmentPosition(equipmentId),
           isActive: false,
         },
       ];
