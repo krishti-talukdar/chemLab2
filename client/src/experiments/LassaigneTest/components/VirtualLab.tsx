@@ -73,6 +73,7 @@ export default function VirtualLab({
     { id: "organic-compound", label: "Organic Compound", icon: <FlaskConical className="w-8 h-8 text-purple-600 mb-2" /> },
     { id: "bunsen-burner", label: "Bunsen Burner", icon: <Flame className="w-8 h-8 text-orange-500 mb-2" /> },
     { id: "water-bath", label: "China Dish", icon: <Droplets className="w-8 h-8 text-blue-500 mb-2" /> },
+    { id: "distilled-water", label: "Distilled Water", icon: <Droplets className="w-8 h-8 text-sky-500 mb-2" /> },
     { id: "filter-funnel", label: "Filter Paper & Funnel", icon: <Filter className="w-8 h-8 text-amber-600 mb-2" /> },
   ];
 
