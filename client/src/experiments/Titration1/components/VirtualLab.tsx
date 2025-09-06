@@ -671,10 +671,12 @@ export default function VirtualLab({
               <p className="text-sm text-gray-600 mb-2">
                 {currentStep === 4 ? "burette already filled with NaOH, Start the titration!" : currentStepData.description}
               </p>
-              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                <ArrowRight className="w-3 h-3 mr-1" />
-                {currentStepData.action}
-              </div>
+              {currentStep !== 4 && (
+                <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                  <ArrowRight className="w-3 h-3 mr-1" />
+                  {currentStepData.action}
+                </div>
+              )}
             </div>
           </div>
         </div>
