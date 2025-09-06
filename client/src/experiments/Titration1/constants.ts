@@ -309,3 +309,9 @@ export const EQUIPMENT_POSITIONS = {
   'naoh-solution': { x: 80, y: 300 },
   'phenolphthalein': { x: 80, y: 380 }
 };
+
+// Step 4 specific positioning for better alignment
+export const STEP_4_POSITIONS = {
+  'burette': { x: 100, y: 20 },
+  'conical-flask': { x: 200, y: 320 }
+};
