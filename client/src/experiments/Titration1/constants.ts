@@ -5,8 +5,9 @@ import type { ReagentBottle, ConicalFlask, Burette, GuidedStep, LabEquipment } f
 // Colors for titration states
 export const COLORS = {
   COLORLESS: "#F8F9FA",
-  PINK: "#FFB6C1", 
+  PINK: "#FFB6C1",
   LIGHT_PINK: "#FFC0CB",
+  DARK_PINK: "#C2185B",
   OXALIC_ACID: "#F0F8FF",
   NAOH: "#E6F3FF",
   WATER: "#87CEEB"
