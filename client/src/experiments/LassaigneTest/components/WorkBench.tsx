@@ -373,7 +373,19 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                 top: Math.min(Math.max(burnerMouthY, 16), containerH - 60),
               }}
             >
-              <Button onClick={() => setIsHeating(h => !h)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
+              <Button
+                onClick={() => {
+                  setIsHeating((h) => {
+                    const next = !h;
+                    if (!next && heatTimerRef.current) {
+                      clearTimeout(heatTimerRef.current);
+                      heatTimerRef.current = null;
+                    }
+                    return next;
+                  });
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md"
+              >
                 {isHeating ? "STOP heating" : "START heating"}
               </Button>
             </div>
