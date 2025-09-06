@@ -1071,6 +1071,10 @@ export default function VirtualLab({
         {/* Endpoint Warning Modal */}
         <Dialog open={showEndpointWarning} onOpenChange={setShowEndpointWarning}>
           <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Titration Endpoint Warning</DialogTitle>
+              <DialogDescription>Critical decision point in titration process</DialogDescription>
+            </DialogHeader>
             <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-6">
               <div className="flex items-start space-x-4">
                 <div className="bg-white/20 p-3 rounded-lg">
