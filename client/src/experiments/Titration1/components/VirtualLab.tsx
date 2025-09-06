@@ -168,6 +168,9 @@ export default function VirtualLab({
     }
   }, [showResultsModal, setIsRunning]);
 
+  const [showStartTitrationModal, setShowStartTitrationModal] = useState(false);
+  const [startTitrationPromptShown, setStartTitrationPromptShown] = useState(false);
+
   // Auto-remove phenolphthalein and pipette when step 4 begins
   useEffect(() => {
     if (currentStep === 4) {
@@ -192,8 +195,14 @@ export default function VirtualLab({
 
         return repositioned;
       });
+
+      if (!startTitrationPromptShown) {
+        // show modal shortly after repositioning
+        setStartTitrationPromptShown(true);
+        setSafeTimeout(() => setShowStartTitrationModal(true), 600);
+      }
     }
-  }, [currentStep, setSafeTimeout]);
+  }, [currentStep, setSafeTimeout, startTitrationPromptShown]);
 
   // Handle color transitions for endpoint detection
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newPhase: TitrationState['currentPhase']) => {
