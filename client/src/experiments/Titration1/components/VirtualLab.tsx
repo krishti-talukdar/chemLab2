@@ -170,6 +170,9 @@ export default function VirtualLab({
 
   const [showStartTitrationModal, setShowStartTitrationModal] = useState(false);
   const [startTitrationPromptShown, setStartTitrationPromptShown] = useState(false);
+  const [showEndpointWarning, setShowEndpointWarning] = useState(false);
+  const [isAutoTitrating, setIsAutoTitrating] = useState(false);
+  const [titrationInterval, setTitrationInterval] = useState<number | null>(null);
 
   // Auto-remove phenolphthalein and pipette when step 4 begins
   useEffect(() => {
