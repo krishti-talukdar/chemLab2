@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Export LAB_EQUIPMENT for use in other components
-export { LAB_EQUIPMENT } from "../constants";
+export { LAB_EQUIPMENT, STEP_4_POSITIONS } from "../constants";
 
 interface EquipmentProps {
   id: string;
@@ -19,6 +19,7 @@ interface EquipmentProps {
   volume?: number;
   reading?: number;
   mixing?: boolean;
+  currentStep?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
