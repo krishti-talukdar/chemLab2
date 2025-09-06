@@ -167,6 +167,20 @@ export default function VirtualLab({
     }
   }, [showResultsModal, setIsRunning]);
 
+  // Auto-remove phenolphthalein and pipette when step 4 begins
+  useEffect(() => {
+    if (currentStep === 4) {
+      setEquipmentOnBench(prev => {
+        const filtered = prev.filter(eq => eq.id !== 'phenolphthalein' && eq.id !== 'pipette');
+        if (filtered.length !== prev.length) {
+          setShowToast("Pipette and phenolphthalein automatically removed from workbench");
+          setSafeTimeout(() => setShowToast(""), 3000);
+        }
+        return filtered;
+      });
+    }
+  }, [currentStep, setSafeTimeout]);
+
   // Handle color transitions for endpoint detection
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newPhase: TitrationState['currentPhase']) => {
     setColorTransition({
