@@ -207,6 +207,72 @@ export default function VirtualLab({
     }
   }, [currentStep, setSafeTimeout, startTitrationPromptShown]);
 
+  // Auto-titration function
+  const startAutoTitration = useCallback(() => {
+    setIsAutoTitrating(true);
+    setActiveEquipment("burette");
+    setShowToast("Starting titration...");
+    setSafeTimeout(() => setShowToast(""), 2000);
+
+    // Animate burette reading from 0 to 10 over 10 seconds
+    let currentReading = 0;
+    const increment = 0.1; // 0.1 mL every 100ms = 10mL in 10 seconds
+
+    const interval = window.setInterval(() => {
+      currentReading += increment;
+
+      setBurette(prev => ({ ...prev, reading: currentReading }));
+
+      // Show endpoint warning at exactly 10mL
+      if (currentReading >= 10.0) {
+        clearInterval(interval);
+        setTitrationInterval(null);
+        setIsAutoTitrating(false);
+        setActiveEquipment("");
+        setShowEndpointWarning(true);
+      }
+    }, 100);
+
+    setTitrationInterval(interval);
+  }, [setSafeTimeout]);
+
+  // Handle endpoint decision
+  const handleEndpointDecision = useCallback((decision: 'stop' | 'continue') => {
+    setShowEndpointWarning(false);
+
+    if (decision === 'stop') {
+      // Light pink color
+      setConicalFlask(prev => ({
+        ...prev,
+        colorHex: COLORS.LIGHT_PINK,
+        hasIndicator: true,
+        endpointReached: true
+      }));
+      setShowToast("Perfect! Light pink endpoint reached.");
+    } else {
+      // Dark pink color
+      setConicalFlask(prev => ({
+        ...prev,
+        colorHex: COLORS.PINK,
+        hasIndicator: true,
+        endpointReached: true
+      }));
+      setShowToast("Overtitrated! Solution turned dark pink.");
+    }
+
+    setSafeTimeout(() => setShowToast(""), 3000);
+    handleStepComplete();
+  }, [setSafeTimeout, handleStepComplete]);
+
+  // Cleanup titration interval on unmount
+  useEffect(() => {
+    return () => {
+      if (titrationInterval) {
+        clearInterval(titrationInterval);
+      }
+    };
+  }, [titrationInterval]);
+
   // Handle color transitions for endpoint detection
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newPhase: TitrationState['currentPhase']) => {
     setColorTransition({
