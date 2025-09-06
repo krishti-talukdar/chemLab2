@@ -223,13 +223,20 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasBunsenBurner && burner && !isHeating) {
-          const burnerCenterX = burner.x + 480 / 2;
+        if (hasBunsenBurner && burner) {
           const burnerMouthY = burner.y + 80;
+          const containerH = containerRef.current?.getBoundingClientRect().height || 0;
           visuals.push(
-            <div key="start-heat" className="absolute z-20" style={{ left: burnerCenterX - 90, top: Math.min(burnerMouthY + 24, (containerRef.current?.getBoundingClientRect().height || 0) - 60) }}>
-              <Button onClick={() => setIsHeating(true)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
-                START heating
+            <div
+              key="start-heat"
+              className="absolute z-20"
+              style={{
+                left: 16,
+                top: Math.min(Math.max(burnerMouthY, 16), containerH - 60),
+              }}
+            >
+              <Button onClick={() => setIsHeating(h => !h)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
+                {isHeating ? "STOP heating" : "START heating"}
               </Button>
             </div>
           );
@@ -239,14 +246,18 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const burnerCenterX = burner.x + 480 / 2;
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
-          const flameX = burnerCenterX - 14;
-          const flameY = Math.min(burnerMouthY - 60, tubeBottomY + 10);
+          const flameX = burnerCenterX - 24; // align with burner hole
+          const minY = burnerMouthY - 60; // keep above burner mouth
+          const targetBelowTube = tubeBottomY - 26; // keep a safe gap below the tube
+          const targetAboveMouth = burnerMouthY - 18; // hover slightly above burner mouth
+          const desiredY = Math.min(targetBelowTube, targetAboveMouth);
+          const flameY = Math.max(minY, desiredY);
           visuals.push(
             <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
-              <div className="relative w-8 h-24">
-                <div style={{ animation: 'flameFlicker 0.8s ease-in-out infinite' }} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-16 rounded-full bg-gradient-to-t from-orange-500 via-yellow-400 to-transparent blur-sm opacity-90" />
-                <div style={{ animation: 'flameFlicker 1s ease-in-out infinite' }} className="absolute bottom-2 left-1/2 -translate-x-1/2 w-6 h-12 rounded-full bg-gradient-to-t from-red-500 via-orange-400 to-transparent blur-[2px] opacity-80" />
-                <div style={{ animation: 'rise 1.2s linear infinite' }} className="absolute bottom-14 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-200 rounded-full opacity-70" />
+              <div className="relative w-8 h-32">
+                <div style={{ animation: 'flameFlicker 0.8s ease-in-out infinite' }} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-24 rounded-full bg-gradient-to-t from-orange-500 via-yellow-400 to-transparent blur-sm opacity-90" />
+                <div style={{ animation: 'flameFlicker 1s ease-in-out infinite' }} className="absolute bottom-2 left-1/2 -translate-x-1/2 w-6 h-16 rounded-full bg-gradient-to-t from-red-500 via-orange-400 to-transparent blur-[2px] opacity-80" />
+                <div style={{ animation: 'rise 1.2s linear infinite' }} className="absolute bottom-20 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-200 rounded-full opacity-70" />
                 <div style={{ animation: 'heatWave 1s ease-in-out infinite' }} className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent opacity-40" />
               </div>
             </div>
