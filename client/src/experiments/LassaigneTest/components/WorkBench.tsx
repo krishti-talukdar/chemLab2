@@ -223,7 +223,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasBunsenBurner && burner && !isHeating) {
+        if (hasBunsenBurner && burner) {
           const burnerMouthY = burner.y + 80;
           const containerH = containerRef.current?.getBoundingClientRect().height || 0;
           visuals.push(
@@ -235,8 +235,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                 top: Math.min(Math.max(burnerMouthY, 16), containerH - 60),
               }}
             >
-              <Button onClick={() => setIsHeating(true)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
-                START heating
+              <Button onClick={() => setIsHeating(h => !h)} className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md">
+                {isHeating ? "STOP heating" : "START heating"}
               </Button>
             </div>
           );
