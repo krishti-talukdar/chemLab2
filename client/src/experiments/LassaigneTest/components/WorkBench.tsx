@@ -413,6 +413,21 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           );
         }
 
+        // Show china dish when water bath is on the bench
+        if (hasWaterBath && waterBath) {
+          const left = waterBath.x + 80;
+          const top = waterBath.y - 20;
+          visuals.push(
+            <img
+              key="china-dish"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fa357d1e0379f4f93a6440c08a0713b94?format=webp&width=800"
+              alt="China Dish"
+              className="absolute pointer-events-none drop-shadow-md"
+              style={{ left, top, width: 140, height: 140, objectFit: 'contain' }}
+            />
+          );
+        }
+
         if (hasIgnitionTube && hasBunsenBurner && tube && burner && isHeating) {
           const burnerCenterX = burner.x + 480 / 2;
           const tubeBottomY = tube.y + tubeHeight - 40;
