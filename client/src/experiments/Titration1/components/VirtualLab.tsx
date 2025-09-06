@@ -1034,6 +1034,10 @@ export default function VirtualLab({
         {/* Start Titration Prompt (shown at beginning of step 4) */}
         <Dialog open={showStartTitrationModal} onOpenChange={setShowStartTitrationModal}>
           <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Start Titration</DialogTitle>
+              <DialogDescription>Ready to begin the titration process</DialogDescription>
+            </DialogHeader>
             <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-6">
               <div className="flex items-start space-x-4">
                 <div className="bg-white/20 p-3 rounded-lg">
