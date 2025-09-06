@@ -962,7 +962,10 @@ export default function VirtualLab({
 
               <div className="mt-6 flex justify-end">
                 <Button
-                  onClick={() => setShowStartTitrationModal(false)}
+                  onClick={() => {
+                    setShowStartTitrationModal(false);
+                    startAutoTitration();
+                  }}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2 rounded-md shadow-md"
                 >
                   Yes, I am!
