@@ -246,7 +246,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const burnerCenterX = burner.x + 480 / 2;
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
-          const flameX = burnerCenterX - 14;
+          const flameX = burnerCenterX - 24; // shift slightly left to sit above the burner hole
           const flameY = Math.min(burnerMouthY - 60, tubeBottomY + 10);
           visuals.push(
             <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
