@@ -199,6 +199,8 @@ export default function VirtualLab({
     },
   ]), [hasExtract, nitrogenPositive, sulphurPositive, interferenceRemoved, halide, onStepComplete]);
 
+  const prepUndoRef = useRef<(() => void) | null>(null);
+
   return (
     <div className="relative min-h-[70vh] p-6">
       {!experimentStarted && (
