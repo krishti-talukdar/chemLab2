@@ -312,6 +312,6 @@ export const EQUIPMENT_POSITIONS = {
 
 // Step 4 specific positioning for better alignment
 export const STEP_4_POSITIONS = {
-  'burette': { x: 80, y: 20 },
-  'conical-flask': { x: 140, y: 380 }
+  'burette': { x: 80, y: 60 },
+  'conical-flask': { x: 140, y: 420 }
 };
