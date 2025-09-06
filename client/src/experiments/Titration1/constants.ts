@@ -144,12 +144,6 @@ export const LAB_EQUIPMENT: Array<{
     type: "flask"
   },
   {
-    id: "funnel",
-    name: "Funnel",
-    icon: React.createElement(Filter, { size: 36, className: "text-yellow-600" }),
-    type: "funnel"
-  },
-  {
     id: "wash-bottle",
     name: "Wash Bottle",
     icon: React.createElement(
