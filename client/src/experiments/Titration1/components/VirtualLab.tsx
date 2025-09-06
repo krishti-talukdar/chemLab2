@@ -1041,6 +1041,45 @@ export default function VirtualLab({
           </DialogContent>
         </Dialog>
 
+        {/* Endpoint Warning Modal */}
+        <Dialog open={showEndpointWarning} onOpenChange={setShowEndpointWarning}>
+          <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <AlertTriangle className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white text-xl font-bold">Endpoint Warning!</h3>
+                  <p className="text-orange-100 mt-1">The solution will turn very dark</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-white">
+              <p className="text-sm text-gray-700 mb-4">
+                You've added 10.0 mL of NaOH. Stop titration here to achieve the perfect light pink endpoint, or continue to see what happens when you overtitrate.
+              </p>
+
+              <div className="flex space-x-3">
+                <Button
+                  onClick={() => handleEndpointDecision('stop')}
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+                >
+                  Stop Titration
+                </Button>
+                <Button
+                  onClick={() => handleEndpointDecision('continue')}
+                  variant="outline"
+                  className="flex-1 border-orange-500 text-orange-600 hover:bg-orange-50"
+                >
+                  Continue Titrating
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Results Analysis Modal */}
         <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
