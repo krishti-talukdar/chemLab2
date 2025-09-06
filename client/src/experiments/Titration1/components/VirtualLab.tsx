@@ -968,6 +968,28 @@ export default function VirtualLab({
           </div>
         )}
 
+        {/* Auto-Titration Liquid Drop Animation */}
+        {isAutoTitrating && (
+          <div className="fixed inset-0 pointer-events-none z-40">
+            <div className="absolute" style={{ left: '180px', top: '400px' }}>
+              <div className="animate-pulse">
+                <div className="w-1 bg-purple-400 rounded-full animate-bounce"
+                     style={{ height: '60px', animationDuration: '0.5s' }}>
+                </div>
+              </div>
+            </div>
+            <div className="absolute bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-purple-200"
+                 style={{ left: '200px', top: '300px' }}>
+              <div className="flex items-center space-x-2">
+                <Droplets className="w-4 h-4 text-purple-600 animate-pulse" />
+                <span className="text-sm text-purple-700 font-medium">
+                  Adding NaOH... {burette.reading.toFixed(1)} mL
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Pipette volume modal for step 1 */}
         <Dialog open={showPipetteVolumeModal} onOpenChange={setShowPipetteVolumeModal}>
           <DialogContent className="max-w-sm">
