@@ -54,7 +54,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
     e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!disabled && onInteract && !isDragging) {
       onInteract(id);
     }
@@ -63,15 +64,30 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isPositioned || disabled || !onReposition) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+    // Only start dragging if it's a long press or mouse move
+    const startTime = Date.now();
+    const startX = e.clientX;
+    const startY = e.clientY;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
 
     setDragOffset({ x: offsetX, y: offsetY });
-    setIsDragging(true);
+
+    const handleMouseUp = () => {
+      const duration = Date.now() - startTime;
+      const distance = Math.sqrt(Math.pow(e.clientX - startX, 2) + Math.pow(e.clientY - startY, 2));
+
+      // If it was a short click with minimal movement, treat as click
+      if (duration < 200 && distance < 5) {
+        handleClick(e);
+      }
+
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mouseup', handleMouseUp);
   };
 
   React.useEffect(() => {
@@ -91,7 +107,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
       setCurrentPosition({ x: newX, y: newY });
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUpDrag = () => {
       if (isDragging && onReposition) {
         onReposition(id, currentPosition.x, currentPosition.y);
       }
