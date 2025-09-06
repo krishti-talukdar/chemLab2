@@ -289,7 +289,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
               ? Flame
               : p.id === "organic-compound"
               ? FlaskConical
-              : p.id === "water-bath"
+              : p.id === "water-bath" || p.id === "distilled-water"
               ? Droplets
               : Filter;
           const colorClass =
@@ -303,6 +303,8 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
               ? "text-purple-600"
               : p.id === "water-bath"
               ? "text-blue-500"
+              : p.id === "distilled-water"
+              ? "text-sky-500"
               : "text-amber-600";
           return (
             <div
