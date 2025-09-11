@@ -62,7 +62,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
   const [isPostHeated, setIsPostHeated] = useState(false);
   const prevHeatingRef = useRef(false);
-  const TUBE_BURNER_GAP = 60;
+  const TUBE_BURNER_GAP = 160;
 
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
@@ -154,7 +154,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       switch (id) {
         case "bunsen-burner": {
           const x = clampX(r.width / 2 - burnerSize.w / 2);
-          const y = clampY(r.height - burnerSize.h - margin - 180);
+          const y = clampY(r.height - burnerSize.h - margin - 260);
           return { x, y };
         }
         case "ignition-tube": {
@@ -451,10 +451,11 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
           const flameX = burnerCenterX - 24; // align with burner hole
-          const minY = burnerMouthY - 60; // keep above burner mouth
+          const minY = burnerMouthY - 24; // keep near but above burner mouth
           const targetBelowTube = tubeBottomY - 26; // keep a safe gap below the tube
-          const targetAboveMouth = burnerMouthY - 18; // hover slightly above burner mouth
-          const desiredY = Math.min(targetBelowTube, targetAboveMouth);
+          const targetAboveMouth = burnerMouthY - 12; // top boundary near burner mouth
+          const midGapY = (targetBelowTube + targetAboveMouth) / 2; // midpoint between tube and burner
+          const desiredY = Math.min(targetBelowTube, Math.max(targetAboveMouth, midGapY));
           const flameY = Math.max(minY, desiredY);
           visuals.push(
             <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
