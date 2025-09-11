@@ -62,6 +62,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
   const [isPostHeated, setIsPostHeated] = useState(false);
   const prevHeatingRef = useRef(false);
+  const TUBE_BURNER_GAP = 60;
 
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
@@ -162,7 +163,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             const x = clampX(
               burnerPos.x + (burnerSize.w - tubeSize.w) / 2
             );
-            const y = clampY(burnerPos.y - tubeSize.h - 10);
+            const y = clampY(burnerPos.y - tubeSize.h + (80 - TUBE_BURNER_GAP));
             return { x, y };
           }
           const x = clampX(r.width / 2 - tubeSize.w / 2);
@@ -201,7 +202,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
         const tubeX = Math.max(16, Math.min(burner.x + (burnerWidth - tubeWidth) / 2, rect.width - tubeWidth - 16));
-        const tubeY = Math.max(16, burner.y - tubeHeight + 50);
+        const tubeY = Math.max(16, burner.y - tubeHeight + (80 - TUBE_BURNER_GAP));
         return next.map((p) => (p.id === "ignition-tube" ? { ...p, x: tubeX, y: tubeY } : p));
       }
       return next;
