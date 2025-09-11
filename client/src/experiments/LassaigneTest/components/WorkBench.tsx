@@ -398,7 +398,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasBunsenBurner && burner) {
+        if (hasBunsenBurner && burner && !isPostHeated) {
           const burnerMouthY = burner.y + 80;
           const containerH = containerRef.current?.getBoundingClientRect().height || 0;
           visuals.push(
@@ -417,10 +417,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                     if (!next && heatTimerRef.current) {
                       clearTimeout(heatTimerRef.current);
                       heatTimerRef.current = null;
-                      setIsPostHeated(true); // manual stop also makes dark red
-                    }
-                    if (next) {
-                      // starting heat again keeps dark red unless needed otherwise
+                      setIsPostHeated(true);
                     }
                     return next;
                   });
