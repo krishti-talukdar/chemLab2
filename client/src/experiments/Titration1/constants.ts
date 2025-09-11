@@ -285,7 +285,7 @@ export const ENDPOINT_COLORS = {
   BEFORE: COLORS.COLORLESS,
   APPROACHING: "#FFE4E6", // Very light pink
   ENDPOINT: COLORS.LIGHT_PINK,
-  OVERSHOOT: COLORS.PINK
+  OVERSHOOT: "#C2185B"
 };
 
 // Default experimental conditions

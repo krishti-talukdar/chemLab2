@@ -20,6 +20,7 @@ interface EquipmentProps {
   reading?: number;
   mixing?: boolean;
   currentStep?: number;
+  flowing?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -36,7 +37,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   volume,
   reading,
   mixing,
-  currentStep = 1
+  currentStep = 1,
+  flowing = false
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
@@ -177,12 +179,19 @@ export const Equipment: React.FC<EquipmentProps> = ({
       {/* Equipment icon with custom styling for specific items */}
       <div className="relative">
         {id === 'burette' && isPositioned ? (
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
-            alt="Burette with NaOH solution"
-            className={`${currentStep >= 4 ? 'h-[500px]' : 'h-96'} w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
-            style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
-          />
+          <>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
+              alt="Burette with NaOH solution"
+              className={`${currentStep >= 4 ? 'h-[500px]' : 'h-96'} w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+              style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
+            />
+            {flowing && (
+              <div className="absolute left-1/2 top-3/4 -translate-x-1/2">
+                <div className="w-2 h-3 bg-blue-300 rounded-full animate-bounce" />
+              </div>
+            )}
+          </>
         ) : id === 'conical-flask' && isPositioned ? (
           <div className="relative">
             <div className={mixing ? 'animate-shake' : ''}>
