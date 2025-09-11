@@ -104,10 +104,11 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   // Derived colors for the organic compound when heating
   const heatedColors = useMemo(() => {
     if (!isHeating && isPostHeated) {
-      // After heating stops, show dark red permanently
-      return { top: "#b91c1c", bottom: "#7f1d1d" };
+      // After heating completes, show a hot magma gradient permanently
+      // bottom = lava core, top = molten glow
+      return { top: "#ffae42", bottom: "#ff3b00" };
     }
-    // While heating/cooling, interpolate
+    // While heating/cooling, interpolate smoothly
     const bottom = interpolateHex("#f59e0b", "#ef4444", heatProgress);
     const top = interpolateHex("#fde68a", "#fca5a5", heatProgress);
     return { bottom, top };
