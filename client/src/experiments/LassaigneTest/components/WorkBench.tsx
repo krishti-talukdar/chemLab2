@@ -154,7 +154,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       switch (id) {
         case "bunsen-burner": {
           const x = clampX(r.width / 2 - burnerSize.w / 2);
-          const y = clampY(r.height - burnerSize.h - margin - 180);
+          const y = clampY(r.height - burnerSize.h - margin - 260);
           return { x, y };
         }
         case "ignition-tube": {
