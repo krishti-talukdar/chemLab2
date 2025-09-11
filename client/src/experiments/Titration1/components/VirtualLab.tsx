@@ -171,6 +171,11 @@ export default function VirtualLab({
   const [showStartTitrationModal, setShowStartTitrationModal] = useState(false);
   const [startTitrationPromptShown, setStartTitrationPromptShown] = useState(false);
 
+  // Auto titration flow after start prompt
+  const [autoTitrating, setAutoTitrating] = useState(false);
+  const [showTitrationLimitWarning, setShowTitrationLimitWarning] = useState(false);
+  const autoFlowIntervalRef = useRef<number | null>(null);
+
   // Auto-remove phenolphthalein and pipette when step 4 begins
   useEffect(() => {
     if (currentStep === 4) {
@@ -203,6 +208,38 @@ export default function VirtualLab({
       }
     }
   }, [currentStep, setSafeTimeout, startTitrationPromptShown]);
+
+  const startAutoTitration = useCallback(() => {
+    setShowStartTitrationModal(false);
+    setCurrentStep((s) => (s < 5 ? 5 : s));
+    setActiveEquipment('burette');
+    setAutoTitrating(true);
+
+    if (autoFlowIntervalRef.current) {
+      clearInterval(autoFlowIntervalRef.current as number);
+      autoFlowIntervalRef.current = null;
+    }
+
+    autoFlowIntervalRef.current = window.setInterval(() => {
+      setBurette((prev) => {
+        const next = prev.reading + 0.5;
+        const clamped = next >= 10 ? 10 : next;
+        return { ...prev, reading: clamped };
+      });
+    }, 300);
+  }, []);
+
+  useEffect(() => {
+    if (autoTitrating && burette.reading >= 10) {
+      if (autoFlowIntervalRef.current) {
+        clearInterval(autoFlowIntervalRef.current as number);
+        autoFlowIntervalRef.current = null;
+      }
+      setAutoTitrating(false);
+      setActiveEquipment("");
+      setShowTitrationLimitWarning(true);
+    }
+  }, [autoTitrating, burette.reading]);
 
   // Handle color transitions for endpoint detection
   const animateColorTransition = useCallback((fromColor: string, toColor: string, newPhase: TitrationState['currentPhase']) => {
@@ -783,6 +820,7 @@ export default function VirtualLab({
                     reading={equipment.id === 'burette' ? burette.reading : undefined}
                     mixing={equipment.id === 'conical-flask' ? isMixing : undefined}
                     currentStep={currentStep}
+                    flowing={equipment.id === 'burette' ? autoTitrating : undefined}
                   />
                 ) : null;
               })}
@@ -959,12 +997,47 @@ export default function VirtualLab({
 
               <div className="mt-6 flex justify-end">
                 <Button
-                  onClick={() => setShowStartTitrationModal(false)}
+                  onClick={startAutoTitration}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2 rounded-md shadow-md"
                 >
                   Yes, I am!
                 </Button>
               </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Warning after 10 mL */}
+        <Dialog open={showTitrationLimitWarning} onOpenChange={setShowTitrationLimitWarning}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-bold text-amber-600">Warning</DialogTitle>
+              <DialogDescription className="text-sm text-gray-700">
+                titrating beyond this limit might give you a different result
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowTitrationLimitWarning(false);
+                  setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.ENDPOINT, endpointReached: true }));
+                  setTitrationState(prev => ({ ...prev, currentPhase: 'endpoint', flaskColor: ENDPOINT_COLORS.ENDPOINT, explanation: 'Stopped at safe limit (light pink observed)' }));
+                }}
+                className="border-amber-300 text-amber-700 hover:bg-amber-50"
+              >
+                Stop titration
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowTitrationLimitWarning(false);
+                  setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.OVERSHOOT }));
+                  setTitrationState(prev => ({ ...prev, currentPhase: 'completed', flaskColor: ENDPOINT_COLORS.OVERSHOOT, explanation: 'Continued beyond limit (dark pink observed)' }));
+                }}
+                className="bg-pink-600 hover:bg-pink-700 text-white"
+              >
+                Continue titrating
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
