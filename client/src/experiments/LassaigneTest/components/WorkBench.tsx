@@ -62,6 +62,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
   const [isPostHeated, setIsPostHeated] = useState(false);
   const prevHeatingRef = useRef(false);
+  const TUBE_BURNER_GAP = 60;
 
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
@@ -104,10 +105,11 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   // Derived colors for the organic compound when heating
   const heatedColors = useMemo(() => {
     if (!isHeating && isPostHeated) {
-      // After heating stops, show dark red permanently
-      return { top: "#b91c1c", bottom: "#7f1d1d" };
+      // After heating completes, show a hot magma gradient permanently
+      // bottom = lava core, top = molten glow
+      return { top: "#ffae42", bottom: "#ff3b00" };
     }
-    // While heating/cooling, interpolate
+    // While heating/cooling, interpolate smoothly
     const bottom = interpolateHex("#f59e0b", "#ef4444", heatProgress);
     const top = interpolateHex("#fde68a", "#fca5a5", heatProgress);
     return { bottom, top };
@@ -152,7 +154,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       switch (id) {
         case "bunsen-burner": {
           const x = clampX(r.width / 2 - burnerSize.w / 2);
-          const y = clampY(r.height - burnerSize.h - margin);
+          const y = clampY(r.height - burnerSize.h - margin - 180);
           return { x, y };
         }
         case "ignition-tube": {
@@ -161,11 +163,11 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             const x = clampX(
               burnerPos.x + (burnerSize.w - tubeSize.w) / 2
             );
-            const y = clampY(burnerPos.y - tubeSize.h + 50);
+            const y = clampY(burnerPos.y - tubeSize.h + (80 - TUBE_BURNER_GAP));
             return { x, y };
           }
           const x = clampX(r.width / 2 - tubeSize.w / 2);
-          const y = clampY(40);
+          const y = clampY(20);
           return { x, y };
         }
         case "sodium-piece": {
@@ -200,7 +202,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const tubeHeight = 256; // h-64
         const burnerWidth = 480; // w-[480px]
         const tubeX = Math.max(16, Math.min(burner.x + (burnerWidth - tubeWidth) / 2, rect.width - tubeWidth - 16));
-        const tubeY = Math.max(16, burner.y - tubeHeight + 50);
+        const tubeY = Math.max(16, burner.y - tubeHeight + (80 - TUBE_BURNER_GAP));
         return next.map((p) => (p.id === "ignition-tube" ? { ...p, x: tubeX, y: tubeY } : p));
       }
       return next;
@@ -397,7 +399,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasBunsenBurner && burner) {
+        if (hasBunsenBurner && burner && !isPostHeated) {
           const burnerMouthY = burner.y + 80;
           const containerH = containerRef.current?.getBoundingClientRect().height || 0;
           visuals.push(
@@ -416,10 +418,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                     if (!next && heatTimerRef.current) {
                       clearTimeout(heatTimerRef.current);
                       heatTimerRef.current = null;
-                      setIsPostHeated(true); // manual stop also makes dark red
-                    }
-                    if (next) {
-                      // starting heat again keeps dark red unless needed otherwise
+                      setIsPostHeated(true);
                     }
                     return next;
                   });
