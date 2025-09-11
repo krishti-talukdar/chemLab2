@@ -62,7 +62,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
   const [isPostHeated, setIsPostHeated] = useState(false);
   const prevHeatingRef = useRef(false);
-  const TUBE_BURNER_GAP = 60;
+  const TUBE_BURNER_GAP = 160;
 
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
