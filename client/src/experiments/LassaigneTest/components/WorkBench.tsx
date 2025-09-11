@@ -153,7 +153,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       switch (id) {
         case "bunsen-burner": {
           const x = clampX(r.width / 2 - burnerSize.w / 2);
-          const y = clampY(r.height - burnerSize.h - margin);
+          const y = clampY(r.height - burnerSize.h - margin - 180);
           return { x, y };
         }
         case "ignition-tube": {
@@ -162,11 +162,11 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             const x = clampX(
               burnerPos.x + (burnerSize.w - tubeSize.w) / 2
             );
-            const y = clampY(burnerPos.y - tubeSize.h + 50);
+            const y = clampY(burnerPos.y - tubeSize.h - 10);
             return { x, y };
           }
           const x = clampX(r.width / 2 - tubeSize.w / 2);
-          const y = clampY(40);
+          const y = clampY(20);
           return { x, y };
         }
         case "sodium-piece": {
