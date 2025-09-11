@@ -451,9 +451,9 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const tubeBottomY = tube.y + tubeHeight - 40;
           const burnerMouthY = burner.y + 80;
           const flameX = burnerCenterX - 24; // align with burner hole
-          const minY = burnerMouthY - 60; // keep above burner mouth
+          const minY = burnerMouthY - 24; // keep near but above burner mouth
           const targetBelowTube = tubeBottomY - 26; // keep a safe gap below the tube
-          const targetAboveMouth = burnerMouthY - 36; // move flame further above burner mouth (2x)
+          const targetAboveMouth = burnerMouthY - 12; // place flame just above burner mouth
           const desiredY = Math.min(targetBelowTube, targetAboveMouth);
           const flameY = Math.max(minY, desiredY);
           visuals.push(
