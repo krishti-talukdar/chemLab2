@@ -453,8 +453,9 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const flameX = burnerCenterX - 24; // align with burner hole
           const minY = burnerMouthY - 24; // keep near but above burner mouth
           const targetBelowTube = tubeBottomY - 26; // keep a safe gap below the tube
-          const targetAboveMouth = burnerMouthY - 12; // place flame just above burner mouth
-          const desiredY = Math.min(targetBelowTube, targetAboveMouth);
+          const targetAboveMouth = burnerMouthY - 12; // top boundary near burner mouth
+          const midGapY = (targetBelowTube + targetAboveMouth) / 2; // midpoint between tube and burner
+          const desiredY = Math.min(targetBelowTube, Math.max(targetAboveMouth, midGapY));
           const flameY = Math.max(minY, desiredY);
           visuals.push(
             <div key="flame" className="absolute pointer-events-none" style={{ left: flameX, top: flameY }}>
