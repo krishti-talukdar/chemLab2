@@ -176,7 +176,6 @@ export default function VirtualLab({
   const [showTitrationLimitWarning, setShowTitrationLimitWarning] = useState(false);
   const autoFlowIntervalRef = useRef<number | null>(null);
   const prevBuretteReadingRef = useRef<number>(burette.reading);
-  const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
 
   // Auto-remove phenolphthalein and pipette when step 4 begins
   useEffect(() => {
@@ -217,12 +216,6 @@ export default function VirtualLab({
     setActiveEquipment('burette');
     setAutoTitrating(true);
 
-    // compute countdown seconds based on increments (0.5 mL per 300ms)
-    const remainingMl = Math.max(0, 10 - burette.reading);
-    const increments = Math.ceil(remainingMl / 0.5);
-    const msRemaining = increments * 300;
-    setCountdownSeconds(Math.max(1, Math.ceil(msRemaining / 1000)));
-
     if (autoFlowIntervalRef.current) {
       clearInterval(autoFlowIntervalRef.current as number);
       autoFlowIntervalRef.current = null;
@@ -234,8 +227,6 @@ export default function VirtualLab({
         const clamped = next >= 10 ? 10 : next;
         return { ...prev, reading: clamped };
       });
-
-      setCountdownSeconds((s) => (s && s > 0 ? s - 1 : 0));
     }, 300);
   }, [burette.reading]);
 
@@ -247,7 +238,6 @@ export default function VirtualLab({
       }
       setAutoTitrating(false);
       setActiveEquipment("");
-      setCountdownSeconds(null);
       setShowTitrationLimitWarning(true);
     }
   }, [autoTitrating, burette.reading]);
@@ -869,11 +859,11 @@ export default function VirtualLab({
                       </div>
 
                       {/* Countdown */}
-                      {autoTitrating && countdownSeconds !== null && (
+                      {autoTitrating && (
                         <div className="mt-2 bg-white/95 p-2 rounded-lg shadow text-center text-sm">
                           <div className="text-xs text-gray-500">Auto-stop at</div>
                           <div className="text-lg font-bold text-blue-600">10.0 mL</div>
-                          <div className="text-xs text-gray-700">{countdownSeconds}s remaining</div>
+                          <div className="text-xs text-gray-700">{Math.max(0, Math.ceil(((10 - burette.reading) / 0.5 * 300) / 1000))}s remaining</div>
                         </div>
                       )}
                     </div>
