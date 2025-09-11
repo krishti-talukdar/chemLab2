@@ -850,22 +850,39 @@ export default function VirtualLab({
                     <style>{`@keyframes pourStream { 0% { height: 0 } 100% { height: 120px } } @keyframes dripFall { 0% { transform: translateY(0); opacity:1 } 80% { opacity:1 } 100% { transform: translateY(120px); opacity:0 } }`}</style>
 
                     <div className="absolute z-40 pointer-events-none" style={{ left: left + 60, top }}>
-                      <div style={{ width: 8, borderRadius: 8, background: 'linear-gradient(to bottom, rgba(59,130,246,0.9), rgba(99,102,241,0.9))', animation: 'pourStream 300ms linear forwards' }} className="origin-top" />
-
-                      <div style={{ position: 'absolute', left: -6, top: 0 }}>
-                        {[0,1,2].map((i) => (
-                          <div key={i} style={{ width: 8, height: 10, background: 'rgba(59,130,246,0.95)', borderRadius: 8, marginTop: 6, animation: `dripFall 900ms cubic-bezier(.2,.9,.3,1) ${i * 160}ms infinite` }} />
-                        ))}
-                      </div>
-
-                      {/* Countdown */}
-                      {autoTitrating && (
-                        <div className="mt-2 bg-white/95 p-2 rounded-lg shadow text-center text-sm">
-                          <div className="text-xs text-gray-500">Auto-stop at</div>
-                          <div className="text-lg font-bold text-blue-600">10.0 mL</div>
-                          <div className="text-xs text-gray-700">{Math.max(0, Math.ceil(((10 - burette.reading) / 0.5 * 300) / 1000))}s remaining</div>
+                      <div className="flex items-start space-x-3">
+                        {/* Count-up indicators 1..10 */}
+                        <div className="flex flex-col items-center bg-white/90 p-2 rounded-md shadow" style={{ width: 64 }}>
+                          {Array.from({ length: 10 }).map((_, idx) => {
+                            const n = idx + 1;
+                            const filled = burette.reading >= n;
+                            return (
+                              <div key={n} className={`w-full text-center text-xs py-0.5 ${filled ? 'bg-pink-600 text-white rounded mb-0.5' : 'text-gray-400'}`}>
+                                {n} mL
+                              </div>
+                            );
+                          })}
                         </div>
-                      )}
+
+                        <div className="relative">
+                          <div style={{ width: 8, borderRadius: 8, background: 'linear-gradient(to bottom, rgba(59,130,246,0.95), rgba(99,102,241,0.95))', animation: 'pourStream 300ms linear forwards' }} className="origin-top" />
+
+                          <div style={{ position: 'absolute', left: -6, top: 0 }}>
+                            {[0,1,2].map((i) => (
+                              <div key={i} style={{ width: 8, height: 10, background: 'rgba(59,130,246,0.95)', borderRadius: 8, marginTop: 6, animation: `dripFall 900ms cubic-bezier(.2,.9,.3,1) ${i * 160}ms infinite` }} />
+                            ))}
+                          </div>
+
+                          {/* Countdown */}
+                          {autoTitrating && (
+                            <div className="mt-2 bg-white/95 p-2 rounded-lg shadow text-center text-sm">
+                              <div className="text-xs text-gray-500">Auto-stop at</div>
+                              <div className="text-lg font-bold text-blue-600">10.0 mL</div>
+                              <div className="text-xs text-gray-700">{Math.max(0, Math.ceil(((10 - burette.reading) / 0.5 * 300) / 1000))}s remaining</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     {/* Splash indicator on flask */}
