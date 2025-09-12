@@ -435,15 +435,17 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
 
         // Show china dish when water bath is on the bench
         if (hasWaterBath && waterBath) {
-          const left = waterBath.x + 80;
-          const top = waterBath.y - 20;
+          // Prefer positioning directly under the fusion tube in the empty space
+          const dishSize = { w: 140, h: 140 };
+          const left = tube ? (tube.x + (tubeWidth - dishSize.w) / 2) : (waterBath.x + 80);
+          const top = tube ? (tube.y + tubeHeight + 12) : (waterBath.y - 20);
           visuals.push(
             <img
               key="china-dish"
               src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
               alt="China Dish"
               className="absolute pointer-events-none drop-shadow-md"
-              style={{ left, top, width: 140, height: 140, objectFit: 'contain', background: 'transparent' }}
+              style={{ left, top, width: dishSize.w, height: dishSize.h, objectFit: 'contain', background: 'transparent' }}
             />
           );
         }
