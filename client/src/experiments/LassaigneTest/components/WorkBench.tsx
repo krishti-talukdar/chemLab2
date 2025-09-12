@@ -286,6 +286,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
         const hasWaterBath = placed.some(p => p.id === "water-bath");
+        const hasDistilledWater = placed.some(p => p.id === "distilled-water");
         const tube = placed.find(p => p.id === 'ignition-tube');
         const burner = placed.find(p => p.id === 'bunsen-burner');
         const waterBath = placed.find(p => p.id === 'water-bath');
@@ -440,13 +441,33 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const left = tube ? (tube.x + (tubeWidth - dishSize.w) / 2) : (waterBath.x + 80);
           const top = tube ? (tube.y + tubeHeight + 12) : (waterBath.y - 20);
           visuals.push(
-            <img
+            <div
               key="china-dish"
-              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
-              alt="China Dish"
-              className="absolute pointer-events-none drop-shadow-md"
-              style={{ left, top, width: dishSize.w, height: dishSize.h, objectFit: 'contain', background: 'transparent' }}
-            />
+              className="absolute pointer-events-none"
+              style={{ left, top, width: dishSize.w, height: dishSize.h }}
+            >
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
+                alt="China Dish"
+                className="w-full h-full object-contain drop-shadow-md"
+                style={{ background: 'transparent' }}
+              />
+              {hasDistilledWater && (
+                <div
+                  className="absolute"
+                  style={{
+                    left: dishSize.w * 0.18,
+                    top: dishSize.h * 0.56,
+                    width: dishSize.w * 0.64,
+                    height: dishSize.h * 0.22,
+                    borderRadius: '50% / 60% 60% 40% 40%',
+                    background: 'radial-gradient(circle at 50% 35%, rgba(191,219,254,0.85) 0%, rgba(147,197,253,0.7) 35%, rgba(59,130,246,0.45) 60%, rgba(59,130,246,0.25) 75%, rgba(59,130,246,0.0) 100%)',
+                    boxShadow: 'inset 0 4px 8px rgba(59,130,246,0.25)',
+                    filter: 'blur(0.2px)',
+                  }}
+                />
+              )}
+            </div>
           );
         }
 
