@@ -6,15 +6,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Experiment from "@/pages/experiment";
 import NotFound from "@/pages/not-found";
-import { Route as WRoute, Switch } from "wouter";
+import * as Wouter from "wouter";
 
 function Router() {
   return (
-    <Switch>
-      <WRoute path="/" component={Home} />
-      <WRoute path="/experiment/:id" component={Experiment} />
-      <WRoute component={NotFound} />
-    </Switch>
+    <Wouter.Switch>
+      <Wouter.Route path="/" component={Home} />
+      <Wouter.Route path="/experiment/:id" component={Experiment} />
+      <Wouter.Route component={NotFound} />
+    </Wouter.Switch>
   );
 }
 
