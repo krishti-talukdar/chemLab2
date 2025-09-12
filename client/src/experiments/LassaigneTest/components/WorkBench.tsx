@@ -413,23 +413,21 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             >
               <Button
                 onClick={() => {
-                  if (isPostHeated) {
+                  if (isHeating || isPostHeated) {
+                    if (heatTimerRef.current) {
+                      clearTimeout(heatTimerRef.current);
+                      heatTimerRef.current = null;
+                    }
+                    setIsHeating(false);
+                    setIsPostHeated(true);
                     setPlaced((prev) => prev.filter((p) => p.id !== "bunsen-burner"));
                     return;
                   }
-                  setIsHeating((h) => {
-                    const next = !h;
-                    if (!next && heatTimerRef.current) {
-                      clearTimeout(heatTimerRef.current);
-                      heatTimerRef.current = null;
-                      setIsPostHeated(true);
-                    }
-                    return next;
-                  });
+                  setIsHeating(true);
                 }}
-                className={`${isPostHeated ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"} text-white shadow px-4 py-2 rounded-md`}
+                className={`${isHeating || isPostHeated ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"} text-white shadow px-4 py-2 rounded-md`}
               >
-                {isPostHeated ? "REMOVE BUNSEN BURNER" : isHeating ? "STOP heating" : "START heating"}
+                {isHeating || isPostHeated ? "REMOVE BUNSEN BURNER" : "START heating"}
               </Button>
             </div>
           );
