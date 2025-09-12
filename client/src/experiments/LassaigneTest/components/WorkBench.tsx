@@ -431,6 +431,31 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           );
         }
 
+        // After heating completes, allow removing the bunsen burner
+        if (hasBunsenBurner && burner && isPostHeated) {
+          const burnerMouthY = burner.y + 80;
+          const containerH = containerRef.current?.getBoundingClientRect().height || 0;
+          visuals.push(
+            <div
+              key="remove-burner"
+              className="absolute z-20"
+              style={{
+                left: 16,
+                top: Math.min(Math.max(burnerMouthY, 16), containerH - 60),
+              }}
+            >
+              <Button
+                onClick={() => {
+                  setPlaced((prev) => prev.filter((p) => p.id !== "bunsen-burner"));
+                }}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow px-4 py-2 rounded-md"
+              >
+                REMOVE BUNSEN BURNER
+              </Button>
+            </div>
+          );
+        }
+
         // Show china dish when water bath is on the bench
         if (hasWaterBath && waterBath) {
           const left = waterBath.x + 80;
