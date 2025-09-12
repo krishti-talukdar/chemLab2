@@ -457,7 +457,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                   className="absolute"
                   style={{
                     left: dishSize.w * 0.21,
-                    top: dishSize.h * 0.58,
+                    top: dishSize.h * 0.55,
                     width: dishSize.w * 0.58,
                     height: dishSize.h * 0.18,
                     borderRadius: '50% / 70% 70% 40% 40%',
