@@ -399,12 +399,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasBunsenBurner && burner && !isPostHeated) {
+        if (hasBunsenBurner && burner) {
           const burnerMouthY = burner.y + 80;
           const containerH = containerRef.current?.getBoundingClientRect().height || 0;
           visuals.push(
             <div
-              key="start-heat"
+              key="heat-control"
               className="absolute z-20"
               style={{
                 left: 16,
@@ -413,19 +413,21 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             >
               <Button
                 onClick={() => {
-                  setIsHeating((h) => {
-                    const next = !h;
-                    if (!next && heatTimerRef.current) {
+                  if (isHeating || isPostHeated) {
+                    if (heatTimerRef.current) {
                       clearTimeout(heatTimerRef.current);
                       heatTimerRef.current = null;
-                      setIsPostHeated(true);
                     }
-                    return next;
-                  });
+                    setIsHeating(false);
+                    setIsPostHeated(true);
+                    setPlaced((prev) => prev.filter((p) => p.id !== "bunsen-burner"));
+                    return;
+                  }
+                  setIsHeating(true);
                 }}
-                className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md"
+                className={`${isHeating || isPostHeated ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"} text-white shadow px-4 py-2 rounded-md`}
               >
-                {isHeating ? "STOP heating" : "START heating"}
+                {isHeating || isPostHeated ? "REMOVE BUNSEN BURNER" : "START heating"}
               </Button>
             </div>
           );
