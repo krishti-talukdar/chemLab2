@@ -286,6 +286,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         const hasOrganicCompound = placed.some(p => p.id === "organic-compound");
         const hasBunsenBurner = placed.some(p => p.id === "bunsen-burner");
         const hasWaterBath = placed.some(p => p.id === "water-bath");
+        const hasDistilledWater = placed.some(p => p.id === "distilled-water");
         const tube = placed.find(p => p.id === 'ignition-tube');
         const burner = placed.find(p => p.id === 'bunsen-burner');
         const waterBath = placed.find(p => p.id === 'water-bath');
@@ -297,7 +298,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           if (!item) return null;
           if (p.id === "sodium-piece" && hasIgnitionTube) return null;
           if (p.id === "organic-compound" && hasIgnitionTube) return null;
-          if (p.id === "water-bath") return null; // remove water bath symbol from workbench
+          if (p.id === "water-bath" || p.id === "distilled-water") return null; // remove water bath & distilled water symbol from workbench
           const Icon =
             p.id === "ignition-tube"
               ? TestTube
@@ -435,16 +436,40 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
 
         // Show china dish when water bath is on the bench
         if (hasWaterBath && waterBath) {
-          const left = waterBath.x + 80;
-          const top = waterBath.y - 20;
+          // Prefer positioning directly under the fusion tube in the empty space
+          const dishSize = { w: 140, h: 140 };
+          const left = tube ? (tube.x + (tubeWidth - dishSize.w) / 2) : (waterBath.x + 80);
+          const top = tube ? (tube.y + tubeHeight + 12) : (waterBath.y - 20);
           visuals.push(
-            <img
+            <div
               key="china-dish"
-              src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
-              alt="China Dish"
-              className="absolute pointer-events-none drop-shadow-md"
-              style={{ left, top, width: 140, height: 140, objectFit: 'contain', background: 'transparent' }}
-            />
+              className="absolute pointer-events-none"
+              style={{ left, top, width: dishSize.w, height: dishSize.h }}
+            >
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F21e55328d5ce41dea7cd0cecc3be9548?format=webp&width=800"
+                alt="China Dish"
+                className="w-full h-full object-contain drop-shadow-md"
+                style={{ background: 'transparent' }}
+              />
+              {hasDistilledWater && (
+                <div
+                  className="absolute"
+                  style={{
+                    left: dishSize.w * 0.21,
+                    top: dishSize.h * 0.55,
+                    width: dishSize.w * 0.58,
+                    height: dishSize.h * 0.18,
+                    borderRadius: '50% / 70% 70% 40% 40%',
+                    background: 'radial-gradient(ellipse at 50% 45%, rgba(191,219,254,0.95) 0%, rgba(147,197,253,0.8) 45%, rgba(59,130,246,0.55) 70%, rgba(59,130,246,0.0) 100%)',
+                    boxShadow: 'inset 0 6px 10px rgba(59,130,246,0.25)',
+                    transform: 'skewX(-6deg)',
+                    overflow: 'hidden',
+                    clipPath: 'ellipse(50% 48% at 50% 50%)',
+                  }}
+                />
+              )}
+            </div>
           );
         }
 
