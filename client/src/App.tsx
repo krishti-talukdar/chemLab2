@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Experiment from "@/pages/experiment";
 import NotFound from "@/pages/not-found";
+import { Route, Switch } from "wouter";
 
 function Router() {
   return (
