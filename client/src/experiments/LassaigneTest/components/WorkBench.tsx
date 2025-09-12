@@ -456,14 +456,16 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                 <div
                   className="absolute"
                   style={{
-                    left: dishSize.w * 0.18,
-                    top: dishSize.h * 0.56,
-                    width: dishSize.w * 0.64,
-                    height: dishSize.h * 0.22,
-                    borderRadius: '50% / 60% 60% 40% 40%',
-                    background: 'radial-gradient(circle at 50% 35%, rgba(191,219,254,0.85) 0%, rgba(147,197,253,0.7) 35%, rgba(59,130,246,0.45) 60%, rgba(59,130,246,0.25) 75%, rgba(59,130,246,0.0) 100%)',
-                    boxShadow: 'inset 0 4px 8px rgba(59,130,246,0.25)',
-                    filter: 'blur(0.2px)',
+                    left: dishSize.w * 0.21,
+                    top: dishSize.h * 0.58,
+                    width: dishSize.w * 0.58,
+                    height: dishSize.h * 0.18,
+                    borderRadius: '50% / 70% 70% 40% 40%',
+                    background: 'radial-gradient(ellipse at 50% 45%, rgba(191,219,254,0.95) 0%, rgba(147,197,253,0.8) 45%, rgba(59,130,246,0.55) 70%, rgba(59,130,246,0.0) 100%)',
+                    boxShadow: 'inset 0 6px 10px rgba(59,130,246,0.25)',
+                    transform: 'skewX(-6deg)',
+                    overflow: 'hidden',
+                    clipPath: 'ellipse(50% 48% at 50% 50%)',
                   }}
                 />
               )}
