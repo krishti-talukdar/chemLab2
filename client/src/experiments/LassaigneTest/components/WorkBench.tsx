@@ -399,12 +399,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         });
 
         const visuals: JSX.Element[] = [];
-        if (hasBunsenBurner && burner && !isPostHeated) {
+        if (hasBunsenBurner && burner) {
           const burnerMouthY = burner.y + 80;
           const containerH = containerRef.current?.getBoundingClientRect().height || 0;
           visuals.push(
             <div
-              key="start-heat"
+              key="heat-control"
               className="absolute z-20"
               style={{
                 left: 16,
@@ -413,6 +413,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             >
               <Button
                 onClick={() => {
+                  if (isPostHeated) {
+                    setPlaced((prev) => prev.filter((p) => p.id !== "bunsen-burner"));
+                    return;
+                  }
                   setIsHeating((h) => {
                     const next = !h;
                     if (!next && heatTimerRef.current) {
@@ -423,34 +427,9 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                     return next;
                   });
                 }}
-                className="bg-red-600 hover:bg-red-700 text-white shadow px-4 py-2 rounded-md"
+                className={`${isPostHeated ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"} text-white shadow px-4 py-2 rounded-md`}
               >
-                {isHeating ? "STOP heating" : "START heating"}
-              </Button>
-            </div>
-          );
-        }
-
-        // After heating completes, allow removing the bunsen burner
-        if (hasBunsenBurner && burner && isPostHeated) {
-          const burnerMouthY = burner.y + 80;
-          const containerH = containerRef.current?.getBoundingClientRect().height || 0;
-          visuals.push(
-            <div
-              key="remove-burner"
-              className="absolute z-20"
-              style={{
-                left: 16,
-                top: Math.min(Math.max(burnerMouthY, 16), containerH - 60),
-              }}
-            >
-              <Button
-                onClick={() => {
-                  setPlaced((prev) => prev.filter((p) => p.id !== "bunsen-burner"));
-                }}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow px-4 py-2 rounded-md"
-              >
-                REMOVE BUNSEN BURNER
+                {isPostHeated ? "REMOVE BUNSEN BURNER" : isHeating ? "STOP heating" : "START heating"}
               </Button>
             </div>
           );
