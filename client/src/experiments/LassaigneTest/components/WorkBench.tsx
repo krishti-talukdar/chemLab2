@@ -180,10 +180,9 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           const tube = current.find((p) => p.id === "ignition-tube");
           if (tube) {
             const dishWidth = 140;
-            const tubeWidth = 224;
-            const desiredLeft = tube.x + tubeWidth / 2 - dishWidth / 2;
+            const desiredLeft = tube.x + tubeSize.w / 2 - dishWidth / 2;
             const x = clampX(desiredLeft - 80);
-            const y = clampY(tube.y + tubeWidth /* approximate height offset */ + 10);
+            const y = clampY(tube.y + tubeSize.h + 10);
             return { x, y };
           }
           return { x: clampX(32), y: clampY(r.height - 180) };
