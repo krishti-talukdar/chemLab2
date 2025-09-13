@@ -445,6 +445,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         if (hasWaterBath && waterBath) {
           const left = waterBath.x + 80;
           const top = waterBath.y - 20;
+          // Dish image
           visuals.push(
             <img
               key="china-dish"
@@ -454,6 +455,38 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
               style={{ left, top, width: 140, height: 140, objectFit: 'contain', background: 'transparent' }}
             />
           );
+
+          // If distilled water is present, show water inside the dish
+          const hasDistilled = placed.some(p => p.id === "distilled-water");
+          if (hasDistilled) {
+            const waterLeft = left + 22;
+            const waterTop = top + 82;
+            visuals.push(
+              <div
+                key="china-dish-water"
+                className="absolute pointer-events-none"
+                style={{ left: waterLeft, top: waterTop, width: 96, height: 36 }}
+              >
+                <div
+                  className="w-full h-full rounded-full"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at 50% 40%, rgba(147, 197, 253, 0.95) 0%, rgba(96, 165, 250, 0.85) 45%, rgba(59, 130, 246, 0.75) 70%, rgba(59, 130, 246, 0.0) 100%)",
+                    boxShadow:
+                      "inset 0 2px 6px rgba(255,255,255,0.8), inset 0 -4px 8px rgba(37,99,235,0.25)",
+                    filter: "saturate(1.1)",
+                  }}
+                />
+                <div
+                  className="absolute left-1/2 -translate-x-1/2 top-1 h-1/2 w-4/5 rounded-full opacity-60"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(255,255,255,0))",
+                  }}
+                />
+              </div>
+            );
+          }
         }
 
         if (hasIgnitionTube && hasBunsenBurner && tube && burner && isHeating) {
