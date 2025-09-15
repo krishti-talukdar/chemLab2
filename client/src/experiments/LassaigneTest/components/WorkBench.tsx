@@ -447,7 +447,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         // Show china dish when water bath is on the bench
         if (hasWaterBath && waterBath) {
           // Prefer positioning directly under the fusion tube in the empty space
-          const dishSize = { w: 140, h: 140 };
+          const dishSize = { w: 238, h: 238 };
           const left = tube ? (tube.x + (tubeWidth - dishSize.w) / 2) : (waterBath.x + 80);
           const top = tube ? (tube.y + tubeHeight + 12) : (waterBath.y - 20);
           visuals.push(
