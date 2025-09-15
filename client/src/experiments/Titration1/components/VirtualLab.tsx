@@ -1268,6 +1268,8 @@ export default function VirtualLab({
                     setShowTitrationLimitWarning(false);
                     setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.OVERSHOOT }));
                     setTitrationState(prev => ({ ...prev, currentPhase: 'completed', flaskColor: ENDPOINT_COLORS.OVERSHOOT, explanation: 'Continued beyond limit (dark pink observed)' }));
+                    setExperimentCompleted(true);
+                    setLocation(`/experiment/${experimentId}/results`);
                   }}
                   className="bg-pink-600 hover:bg-pink-700 text-white"
                 >
