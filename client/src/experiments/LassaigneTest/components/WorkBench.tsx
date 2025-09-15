@@ -479,8 +479,79 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                   }}
                 />
               )}
+              {isBroken && (
+                <>
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div
+                      key={`shard-${i}`}
+                      className="absolute bg-white/80 shadow-sm"
+                      style={{
+                        left: (dishSize.w * 0.22) + Math.random() * dishSize.w * 0.54,
+                        top: (dishSize.h * 0.55) + Math.random() * dishSize.h * 0.18,
+                        width: 8 + (i % 3) * 4,
+                        height: 6 + (i % 2) * 4,
+                        transform: `rotate(${(i * 32) % 360}deg)` ,
+                        clipPath: 'polygon(0 0, 100% 0, 70% 100%, 0 80%)',
+                        animation: 'dropShard 500ms ease-out both',
+                      }}
+                    />
+                  ))}
+                  <div className="absolute left-[22%] top-[56%] w-[56%] h-[18%] rounded-full border-2 border-blue-300/60 opacity-0 animate-[ripple_1.2s_ease-out_1]" />
+                </>
+              )}
             </div>
           );
+
+          // Break button beside dish
+          if (hasIgnitionTube && tube && !isBroken) {
+            visuals.push(
+              <div key="break-btn" className="absolute z-20"
+                style={{ left: left + dishSize.w + 12, top: top + dishSize.h - 40 }}>
+                <Button
+                  onClick={() => {
+                    const destLeft = left + (dishSize.w - 224) / 2;
+                    const destTop = top - (256 - 24);
+                    setIsBreaking(true);
+                    setHideTube(true);
+                    setAnimTube({ left: tube.x, top: tube.y, rotate: 0 });
+                    requestAnimationFrame(() =>
+                      setAnimTube({ left: destLeft, top: destTop, rotate: 35 })
+                    );
+                    window.setTimeout(() => {
+                      setIsBreaking(false);
+                      setIsBroken(true);
+                      setAnimTube(null);
+                    }, 750);
+                  }}
+                  disabled={isBreaking}
+                  className="bg-red-600 hover:bg-red-700 text-white shadow px-3 py-2 rounded-md text-xs"
+                >
+                  BREAK FUSION TUBE
+                </Button>
+              </div>
+            );
+          }
+
+          // Animated falling tube overlay
+          if (isBreaking && animTube) {
+            visuals.push(
+              <div key="anim-tube" className="absolute"
+                style={{
+                  left: animTube.left,
+                  top: animTube.top,
+                  width: 224,
+                  height: 256,
+                  transform: `rotate(${animTube.rotate}deg)`,
+                  transition: 'left 700ms cubic-bezier(0.22,0.61,0.36,1), top 700ms cubic-bezier(0.22,0.61,0.36,1), transform 700ms ease-out',
+                }}>
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
+                  alt="Falling Fusion Tube"
+                  className="max-w-[176px] max-h-[208px] object-contain"
+                />
+              </div>
+            );
+          }
         }
 
         if (hasIgnitionTube && hasBunsenBurner && tube && burner && isHeating) {
