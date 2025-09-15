@@ -751,7 +751,7 @@ export default function VirtualLab({
               </h3>
               
               <div className="space-y-3">
-                {LAB_EQUIPMENT.map((equipment) => (
+                {LAB_EQUIPMENT.filter(eq => !['funnel','wash-bottle','oxalic-acid','naoh-solution'].includes(eq.id)).map((equipment) => (
                   <Equipment
                     key={equipment.id}
                     id={equipment.id}
