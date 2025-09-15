@@ -762,7 +762,7 @@ export default function VirtualLab({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
           {/* Equipment Section - Left */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className={`${experimentCompleted ? "hidden" : ""} lg:col-span-3 space-y-4`}>
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <Wrench className="w-5 h-5 mr-2 text-blue-600" />
