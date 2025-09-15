@@ -85,6 +85,9 @@ export default function VirtualLab({
   const [showTitrating, setShowTitrating] = useState(false);
   const [titrationData, setTitrationData] = useState<TitrationData[]>([]);
   const [currentTrial, setCurrentTrial] = useState(1);
+  const [userTrials, setUserTrials] = useState<Array<{ initial: number | ""; final: number | "" }>>([{ initial: "", final: "" }]);
+  const [acidNormality, setAcidNormality] = useState<number | "">("");
+  const [acidVolume, setAcidVolume] = useState<number | "">("");
   const timeoutsRef = useRef<number[]>([]);
   const colorIntervalRef = useRef<number | null>(null);
 
@@ -614,10 +617,6 @@ export default function VirtualLab({
       // Set experiment as completed
       setExperimentCompleted(true);
       
-      // Auto-show results after delay
-      setTimeout(() => {
-        setShowResultsModal(true);
-      }, 5000);
 
     } else {
       setShowToast("Follow the current step instructions");
@@ -685,7 +684,7 @@ export default function VirtualLab({
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
         {/* Step Progress Bar (guided mode only) */}
-        {mode.current === 'guided' && (
+        {mode.current === 'guided' && !experimentCompleted && (
         <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Titration Progress</h3>
@@ -782,15 +781,6 @@ export default function VirtualLab({
               </div>
             </div>
 
-            {/* Results Button - Only show when experiment is completed */}
-            {experimentCompleted && (
-              <Button
-                onClick={() => setShowResultsModal(true)}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
-              >
-                📊 View Results & Analysis
-              </Button>
-            )}
 
             {/* Reset Button */}
             <Button
@@ -946,7 +936,7 @@ export default function VirtualLab({
               )}
 
               {/* Steps Completed (guided mode only) */}
-              {mode.current === 'guided' && (
+              {mode.current === 'guided' && !experimentCompleted && (
               <div className="mb-4">
                 <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
                 <div className="space-y-1">
