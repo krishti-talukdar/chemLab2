@@ -130,6 +130,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           setHistory((h) => h.slice(0, -1));
           return last.placed;
         });
+        setIsBreaking(false);
+        setIsBroken(false);
+        setHideTube(false);
+        setAnimTube(null);
       });
     }
   }, [registerUndo, history]);
