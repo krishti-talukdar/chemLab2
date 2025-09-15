@@ -631,6 +631,7 @@ export default function VirtualLab({
       
       // Set experiment as completed
       setExperimentCompleted(true);
+      setLocation(`/experiment/${experimentId}/results`);
       
 
     } else {
