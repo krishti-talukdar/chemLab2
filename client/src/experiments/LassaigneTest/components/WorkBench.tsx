@@ -343,7 +343,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             >
               <div className="flex flex-col items-center">
                 <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : p.id === "bunsen-burner" ? "w-[480px] h-[480px]" : "w-16 h-16"} relative rounded-lg ${p.id === "ignition-tube" || p.id === "bunsen-burner" ? "bg-transparent border-0 shadow-none" : "bg-white border-2 border-blue-200 shadow-sm"} flex items-center justify-center ${colorClass}`}>
-                  {p.id === "ignition-tube" ? (
+                  {p.id === "ignition-tube" ? (!hideTube && (
                     <>
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
@@ -393,7 +393,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                         </div>
                       )}
                     </>
-                  ) : p.id === "bunsen-burner" ? (
+                  )) : p.id === "bunsen-burner" ? (
                     <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fc4be507c9a054f00b694808aa900a9e5?format=webp&width=800" alt="Bunsen Burner" className="max-w-full max-h-full object-contain" />
                   ) : (
                     <Icon className="w-6 h-6" />
