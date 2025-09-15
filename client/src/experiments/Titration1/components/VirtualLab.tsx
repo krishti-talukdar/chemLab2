@@ -782,7 +782,7 @@ export default function VirtualLab({
               <h4 className="text-sm font-semibold text-gray-700 mb-3">Chemical Reaction</h4>
               <div className="text-center text-xs font-mono leading-relaxed bg-gray-50 rounded-lg p-3 border">
                 <div className="mb-2">
-                  H₂C₂O₄ + 2NaOH → Na₂C₂O₄ + 2H₂O
+                  H₂C₂O₄ + 2NaOH → Na���C₂O₄ + 2H₂O
                 </div>
                 <div className="text-gray-500">
                   Oxalic acid + Sodium hydroxide
@@ -898,6 +898,122 @@ export default function VirtualLab({
 
           {/* Analysis Panel - Right */}
           <div className="lg:col-span-3 space-y-4">
+            {experimentCompleted && (
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Live Data Entry</h3>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Oxalic Acid Normality (N₁)</label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={acidNormality as any}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setAcidNormality(v === "" ? "" : Number(v));
+                      }}
+                      className="w-full border rounded px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Oxalic Acid Volume (V₁, mL)</label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={acidVolume as any}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setAcidVolume(v === "" ? "" : Number(v));
+                      }}
+                      className="w-full border rounded px-3 py-2 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-gray-600">
+                        <th className="py-2 pr-4">Trial</th>
+                        <th className="py-2 pr-4">Initial (mL)</th>
+                        <th className="py-2 pr-4">Final (mL)</th>
+                        <th className="py-2 pr-4">NaOH Used (mL)</th>
+                        <th className="py-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userTrials.map((t, idx) => {
+                        const vol = typeof t.initial === 'number' && typeof t.final === 'number' ? Math.max(0, t.final - t.initial) : 0;
+                        return (
+                          <tr key={idx} className="border-t">
+                            <td className="py-2 pr-4">{idx + 1}</td>
+                            <td className="py-2 pr-4">
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                value={t.initial as any}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setUserTrials(prev => prev.map((row, i) => i === idx ? { ...row, initial: v === "" ? "" : Number(v) } : row));
+                                }}
+                                className="w-24 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="py-2 pr-4">
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                value={t.final as any}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setUserTrials(prev => prev.map((row, i) => i === idx ? { ...row, final: v === "" ? "" : Number(v) } : row));
+                                }}
+                                className="w-24 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="py-2 pr-4 font-mono">{vol.toFixed(2)}</td>
+                            <td className="py-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setUserTrials(prev => prev.filter((_, i) => i !== idx))}
+                              >
+                                Remove
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <div className="mt-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setUserTrials(prev => [...prev, { initial: "", final: "" }])}
+                    >
+                      + Add Trial
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="bg-gray-50 rounded p-3">
+                    <div className="text-xs text-gray-600">Mean Titre Volume (V₂)</div>
+                    <div className="text-lg font-bold">{meanV2.toFixed(2)} mL</div>
+                  </div>
+                  <div className="bg-gray-50 rounded p-3">
+                    <div className="text-xs text-gray-600">NaOH Normality (N₂)</div>
+                    <div className="text-lg font-bold">{naohNormalityUser.toFixed(4)} N</div>
+                  </div>
+                  <div className="bg-gray-50 rounded p-3">
+                    <div className="text-xs text-gray-600">Strength</div>
+                    <div className="text-lg font-bold">{naohStrengthUser.toFixed(2)} g/L</div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <Info className="w-5 h-5 mr-2 text-green-600" />
