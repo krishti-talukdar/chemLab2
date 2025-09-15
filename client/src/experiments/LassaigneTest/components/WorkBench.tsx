@@ -64,6 +64,21 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const prevHeatingRef = useRef(false);
   const TUBE_BURNER_GAP = 160;
 
+  // Breaking animation state
+  const [isBreaking, setIsBreaking] = useState(false);
+  const [isBroken, setIsBroken] = useState(false);
+  const [hideTube, setHideTube] = useState(false);
+  const [animTube, setAnimTube] = useState<{ left: number; top: number; rotate: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [placed, setPlaced] = useState<Array<{ id: string; x: number; y: number }>>([]);
+  const [history, setHistory] = useState<Array<{ placed: Array<{ id: string; x: number; y: number }> }>>([]);
+  const [isHeating, setIsHeating] = useState(false);
+  const heatTimerRef = useRef<number | null>(null);
+  const [heatProgress, setHeatProgress] = useState(0); // 0 -> 1 while heating
+  const [isPostHeated, setIsPostHeated] = useState(false);
+  const prevHeatingRef = useRef(false);
+  const TUBE_BURNER_GAP = 160;
+
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
     if (isHeating) {
