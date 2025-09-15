@@ -290,6 +290,7 @@ export default function Titration1App({
                 onReset={handleReset}
                 completedSteps={completedSteps}
                 burettePreparationComplete={burettePreparationComplete}
+                experimentId={experimentId}
               />
             </CardContent>
           </Card>

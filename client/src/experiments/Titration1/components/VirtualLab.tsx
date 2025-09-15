@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import WorkBench from "./WorkBench";
 import Equipment, { LAB_EQUIPMENT } from "./Equipment";
 import {
@@ -40,6 +40,7 @@ interface VirtualLabProps {
   onReset: () => void;
   completedSteps: number[];
   burettePreparationComplete: boolean;
+  experimentId: number;
 }
 
 export default function VirtualLab({
@@ -53,6 +54,7 @@ export default function VirtualLab({
   onReset,
   completedSteps,
   burettePreparationComplete,
+  experimentId,
 }: VirtualLabProps) {
   // Lab state
   const [conicalFlask, setConicalFlask] = useState<ConicalFlask>(INITIAL_FLASK);
@@ -90,6 +92,7 @@ export default function VirtualLab({
   const [acidVolume, setAcidVolume] = useState<number | "">("");
   const timeoutsRef = useRef<number[]>([]);
   const colorIntervalRef = useRef<number | null>(null);
+  const [, setLocation] = useLocation();
 
   // Step 1 pipette planning state
   const [showPipetteVolumeModal, setShowPipetteVolumeModal] = useState(false);
@@ -550,6 +553,7 @@ export default function VirtualLab({
           setShowToast('✅ Endpoint confirmed! Titration complete!');
           setTimeout(() => setShowToast(''), 3000);
           setExperimentCompleted(true);
+          setLocation(`/experiment/${experimentId}/results`);
         }
         
         const logEntry: TitrationLog = {

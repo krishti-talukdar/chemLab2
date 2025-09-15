@@ -11,6 +11,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/experiment/:id/results" component={require("@/pages/titration-results").default} />
       <Route path="/experiment/:id" component={Experiment} />
       <Route component={NotFound} />
     </Switch>
