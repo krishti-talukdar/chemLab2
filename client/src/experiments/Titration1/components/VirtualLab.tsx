@@ -680,6 +680,15 @@ export default function VirtualLab({
 
   const currentStepData = GUIDED_STEPS[currentStep - 1];
 
+  const validTrialVolumes = userTrials
+    .map(t => (typeof t.initial === 'number' && typeof t.final === 'number' ? Math.max(0, t.final - t.initial) : null))
+    .filter((v): v is number => v !== null && !Number.isNaN(v));
+  const meanV2 = validTrialVolumes.length ? validTrialVolumes.reduce((a, b) => a + b, 0) / validTrialVolumes.length : 0;
+  const nAcid = typeof acidNormality === 'number' ? acidNormality : 0;
+  const vAcid = typeof acidVolume === 'number' ? acidVolume : 0;
+  const naohNormalityUser = meanV2 > 0 && nAcid > 0 && vAcid > 0 ? (nAcid * vAcid) / meanV2 : 0;
+  const naohStrengthUser = naohNormalityUser * 40;
+
   return (
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
