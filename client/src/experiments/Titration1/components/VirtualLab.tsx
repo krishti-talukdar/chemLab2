@@ -1256,6 +1256,8 @@ export default function VirtualLab({
                     setShowTitrationLimitWarning(false);
                     setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.ENDPOINT, endpointReached: true }));
                     setTitrationState(prev => ({ ...prev, currentPhase: 'endpoint', flaskColor: ENDPOINT_COLORS.ENDPOINT, explanation: 'Stopped at safe limit (light pink observed)' }));
+                    setExperimentCompleted(true);
+                    setLocation(`/experiment/${experimentId}/results`);
                   }}
                   className="border-pink-300 text-pink-700 hover:bg-pink-50"
                 >
