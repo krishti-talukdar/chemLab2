@@ -624,6 +624,14 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   0% { transform: translate(-50%, 0); opacity: .8; }
   100% { transform: translate(-50%, -18px); opacity: 0; }
 }
+@keyframes dropShard {
+  0% { transform: translateY(-20px) scale(0.9) rotate(0deg); opacity: 0; }
+  100% { transform: translateY(0) scale(1) rotate(25deg); opacity: 1; }
+}
+@keyframes ripple {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.12); opacity: 0; }
+}
 `}</style>
     </div>
   );
