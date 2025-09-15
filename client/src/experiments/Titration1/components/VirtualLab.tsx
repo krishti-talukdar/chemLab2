@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { FlaskConical, Beaker, Droplets, Info, ArrowRight, ArrowLeft, CheckCircle, Wrench, Calculator, TrendingUp, Clock, Home, FastForward } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import WorkBench from "./WorkBench";
 import Equipment, { LAB_EQUIPMENT } from "./Equipment";
 import {
@@ -40,6 +40,7 @@ interface VirtualLabProps {
   onReset: () => void;
   completedSteps: number[];
   burettePreparationComplete: boolean;
+  experimentId: number;
 }
 
 export default function VirtualLab({
@@ -53,6 +54,7 @@ export default function VirtualLab({
   onReset,
   completedSteps,
   burettePreparationComplete,
+  experimentId,
 }: VirtualLabProps) {
   // Lab state
   const [conicalFlask, setConicalFlask] = useState<ConicalFlask>(INITIAL_FLASK);
@@ -85,8 +87,12 @@ export default function VirtualLab({
   const [showTitrating, setShowTitrating] = useState(false);
   const [titrationData, setTitrationData] = useState<TitrationData[]>([]);
   const [currentTrial, setCurrentTrial] = useState(1);
+  const [userTrials, setUserTrials] = useState<Array<{ initial: number | ""; final: number | "" }>>([{ initial: "", final: "" }]);
+  const [acidNormality, setAcidNormality] = useState<number | "">("");
+  const [acidVolume, setAcidVolume] = useState<number | "">("");
   const timeoutsRef = useRef<number[]>([]);
   const colorIntervalRef = useRef<number | null>(null);
+  const [, setLocation] = useLocation();
 
   // Step 1 pipette planning state
   const [showPipetteVolumeModal, setShowPipetteVolumeModal] = useState(false);
@@ -537,6 +543,18 @@ export default function VirtualLab({
         // Endpoint reached!
         animateColorTransition(conicalFlask.colorHex, ENDPOINT_COLORS.ENDPOINT, 'endpoint');
         setConicalFlask(prev => ({ ...prev, endpointReached: true }));
+
+        // Mark experiment as completed immediately when color changes
+        if (!experimentCompleted) {
+          const finalReading = newReading;
+          const titreVolume = finalReading;
+          setTitrationData(prev => [...prev, { trial: currentTrial, initialReading: 0.0, finalReading, volume: titreVolume, isValid: true }]);
+          setTitrationState(prev => ({ ...prev, currentPhase: 'completed', titrationComplete: true }));
+          setShowToast('✅ Endpoint confirmed! Titration complete!');
+          setTimeout(() => setShowToast(''), 3000);
+          setExperimentCompleted(true);
+          setLocation(`/experiment/${experimentId}/results`);
+        }
         
         const logEntry: TitrationLog = {
           id: Date.now().toString(),
@@ -613,11 +631,8 @@ export default function VirtualLab({
       
       // Set experiment as completed
       setExperimentCompleted(true);
+      setLocation(`/experiment/${experimentId}/results`);
       
-      // Auto-show results after delay
-      setTimeout(() => {
-        setShowResultsModal(true);
-      }, 5000);
 
     } else {
       setShowToast("Follow the current step instructions");
@@ -681,11 +696,20 @@ export default function VirtualLab({
 
   const currentStepData = GUIDED_STEPS[currentStep - 1];
 
+  const validTrialVolumes = userTrials
+    .map(t => (typeof t.initial === 'number' && typeof t.final === 'number' ? Math.max(0, t.final - t.initial) : null))
+    .filter((v): v is number => v !== null && !Number.isNaN(v));
+  const meanV2 = validTrialVolumes.length ? validTrialVolumes.reduce((a, b) => a + b, 0) / validTrialVolumes.length : 0;
+  const nAcid = typeof acidNormality === 'number' ? acidNormality : 0;
+  const vAcid = typeof acidVolume === 'number' ? acidVolume : 0;
+  const naohNormalityUser = meanV2 > 0 && nAcid > 0 && vAcid > 0 ? (nAcid * vAcid) / meanV2 : 0;
+  const naohStrengthUser = naohNormalityUser * 40;
+
   return (
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
         {/* Step Progress Bar (guided mode only) */}
-        {mode.current === 'guided' && (
+        {mode.current === 'guided' && !experimentCompleted && (
         <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Titration Progress</h3>
@@ -743,7 +767,7 @@ export default function VirtualLab({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
           {/* Equipment Section - Left */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className={`${experimentCompleted ? "hidden" : ""} lg:col-span-3 space-y-4`}>
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <Wrench className="w-5 h-5 mr-2 text-blue-600" />
@@ -751,7 +775,7 @@ export default function VirtualLab({
               </h3>
               
               <div className="space-y-3">
-                {LAB_EQUIPMENT.map((equipment) => (
+                {LAB_EQUIPMENT.filter(eq => !['funnel','wash-bottle','oxalic-acid','naoh-solution'].includes(eq.id)).map((equipment) => (
                   <Equipment
                     key={equipment.id}
                     id={equipment.id}
@@ -782,15 +806,6 @@ export default function VirtualLab({
               </div>
             </div>
 
-            {/* Results Button - Only show when experiment is completed */}
-            {experimentCompleted && (
-              <Button
-                onClick={() => setShowResultsModal(true)}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
-              >
-                📊 View Results & Analysis
-              </Button>
-            )}
 
             {/* Reset Button */}
             <Button
@@ -899,7 +914,123 @@ export default function VirtualLab({
 
           {/* Analysis Panel - Right */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+            {experimentCompleted && (
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Live Data Entry</h3>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Oxalic Acid Normality (N₁)</label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={acidNormality as any}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setAcidNormality(v === "" ? "" : Number(v));
+                      }}
+                      className="w-full border rounded px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Oxalic Acid Volume (V₁, mL)</label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={acidVolume as any}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setAcidVolume(v === "" ? "" : Number(v));
+                      }}
+                      className="w-full border rounded px-3 py-2 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-gray-600">
+                        <th className="py-2 pr-4">Trial</th>
+                        <th className="py-2 pr-4">Initial (mL)</th>
+                        <th className="py-2 pr-4">Final (mL)</th>
+                        <th className="py-2 pr-4">NaOH Used (mL)</th>
+                        <th className="py-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userTrials.map((t, idx) => {
+                        const vol = typeof t.initial === 'number' && typeof t.final === 'number' ? Math.max(0, t.final - t.initial) : 0;
+                        return (
+                          <tr key={idx} className="border-t">
+                            <td className="py-2 pr-4">{idx + 1}</td>
+                            <td className="py-2 pr-4">
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                value={t.initial as any}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setUserTrials(prev => prev.map((row, i) => i === idx ? { ...row, initial: v === "" ? "" : Number(v) } : row));
+                                }}
+                                className="w-24 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="py-2 pr-4">
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                value={t.final as any}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setUserTrials(prev => prev.map((row, i) => i === idx ? { ...row, final: v === "" ? "" : Number(v) } : row));
+                                }}
+                                className="w-24 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="py-2 pr-4 font-mono">{vol.toFixed(2)}</td>
+                            <td className="py-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setUserTrials(prev => prev.filter((_, i) => i !== idx))}
+                              >
+                                Remove
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <div className="mt-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setUserTrials(prev => [...prev, { initial: "", final: "" }])}
+                    >
+                      + Add Trial
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="bg-gray-50 rounded p-3">
+                    <div className="text-xs text-gray-600">Mean Titre Volume (V₂)</div>
+                    <div className="text-lg font-bold">{meanV2.toFixed(2)} mL</div>
+                  </div>
+                  <div className="bg-gray-50 rounded p-3">
+                    <div className="text-xs text-gray-600">NaOH Normality (N₂)</div>
+                    <div className="text-lg font-bold">{naohNormalityUser.toFixed(4)} N</div>
+                  </div>
+                  <div className="bg-gray-50 rounded p-3">
+                    <div className="text-xs text-gray-600">Strength</div>
+                    <div className="text-lg font-bold">{naohStrengthUser.toFixed(2)} g/L</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className={`${experimentCompleted ? "hidden" : ""} bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm`}>
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <Info className="w-5 h-5 mr-2 text-green-600" />
                 Live Analysis
@@ -946,7 +1077,7 @@ export default function VirtualLab({
               )}
 
               {/* Steps Completed (guided mode only) */}
-              {mode.current === 'guided' && (
+              {mode.current === 'guided' && !experimentCompleted && (
               <div className="mb-4">
                 <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
                 <div className="space-y-1">
@@ -1125,6 +1256,8 @@ export default function VirtualLab({
                     setShowTitrationLimitWarning(false);
                     setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.ENDPOINT, endpointReached: true }));
                     setTitrationState(prev => ({ ...prev, currentPhase: 'endpoint', flaskColor: ENDPOINT_COLORS.ENDPOINT, explanation: 'Stopped at safe limit (light pink observed)' }));
+                    setExperimentCompleted(true);
+                    setLocation(`/experiment/${experimentId}/results`);
                   }}
                   className="border-pink-300 text-pink-700 hover:bg-pink-50"
                 >
@@ -1135,6 +1268,8 @@ export default function VirtualLab({
                     setShowTitrationLimitWarning(false);
                     setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.OVERSHOOT }));
                     setTitrationState(prev => ({ ...prev, currentPhase: 'completed', flaskColor: ENDPOINT_COLORS.OVERSHOOT, explanation: 'Continued beyond limit (dark pink observed)' }));
+                    setExperimentCompleted(true);
+                    setLocation(`/experiment/${experimentId}/results`);
                   }}
                   className="bg-pink-600 hover:bg-pink-700 text-white"
                 >
