@@ -64,6 +64,12 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
   const prevHeatingRef = useRef(false);
   const TUBE_BURNER_GAP = 160;
 
+  // Breaking animation state
+  const [isBreaking, setIsBreaking] = useState(false);
+  const [isBroken, setIsBroken] = useState(false);
+  const [hideTube, setHideTube] = useState(false);
+  const [animTube, setAnimTube] = useState<{ left: number; top: number; rotate: number } | null>(null);
+
   // Auto-stop heating after 6 seconds when started
   useEffect(() => {
     if (isHeating) {
@@ -124,6 +130,10 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
           setHistory((h) => h.slice(0, -1));
           return last.placed;
         });
+        setIsBreaking(false);
+        setIsBroken(false);
+        setHideTube(false);
+        setAnimTube(null);
       });
     }
   }, [registerUndo, history]);
@@ -333,7 +343,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
             >
               <div className="flex flex-col items-center">
                 <div className={`${p.id === "ignition-tube" ? "w-56 h-64" : p.id === "bunsen-burner" ? "w-[480px] h-[480px]" : "w-16 h-16"} relative rounded-lg ${p.id === "ignition-tube" || p.id === "bunsen-burner" ? "bg-transparent border-0 shadow-none" : "bg-white border-2 border-blue-200 shadow-sm"} flex items-center justify-center ${colorClass}`}>
-                  {p.id === "ignition-tube" ? (
+                  {p.id === "ignition-tube" ? (!hideTube && (
                     <>
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
@@ -383,7 +393,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                         </div>
                       )}
                     </>
-                  ) : p.id === "bunsen-burner" ? (
+                  )) : p.id === "bunsen-burner" ? (
                     <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fc4be507c9a054f00b694808aa900a9e5?format=webp&width=800" alt="Bunsen Burner" className="max-w-full max-h-full object-contain" />
                   ) : (
                     <Icon className="w-6 h-6" />
@@ -437,7 +447,7 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
         // Show china dish when water bath is on the bench
         if (hasWaterBath && waterBath) {
           // Prefer positioning directly under the fusion tube in the empty space
-          const dishSize = { w: 140, h: 140 };
+          const dishSize = { w: 238, h: 238 };
           const left = tube ? (tube.x + (tubeWidth - dishSize.w) / 2) : (waterBath.x + 80);
           const top = tube ? (tube.y + tubeHeight + 12) : (waterBath.y - 20);
           visuals.push(
@@ -469,8 +479,79 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
                   }}
                 />
               )}
+              {isBroken && (
+                <>
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div
+                      key={`shard-${i}`}
+                      className="absolute bg-white/80 shadow-sm"
+                      style={{
+                        left: (dishSize.w * 0.22) + Math.random() * dishSize.w * 0.54,
+                        top: (dishSize.h * 0.55) + Math.random() * dishSize.h * 0.18,
+                        width: 8 + (i % 3) * 4,
+                        height: 6 + (i % 2) * 4,
+                        transform: `rotate(${(i * 32) % 360}deg)` ,
+                        clipPath: 'polygon(0 0, 100% 0, 70% 100%, 0 80%)',
+                        animation: 'dropShard 500ms ease-out both',
+                      }}
+                    />
+                  ))}
+                  <div className="absolute left-[22%] top-[56%] w-[56%] h-[18%] rounded-full border-2 border-blue-300/60 opacity-0 animate-[ripple_1.2s_ease-out_1]" />
+                </>
+              )}
             </div>
           );
+
+          // Break button beside dish
+          if (hasIgnitionTube && tube && !isBroken) {
+            visuals.push(
+              <div key="break-btn" className="absolute z-20"
+                style={{ left: left + dishSize.w + 12, top: top + dishSize.h - 40 }}>
+                <Button
+                  onClick={() => {
+                    const destLeft = left + (dishSize.w - 224) / 2;
+                    const destTop = top - (256 - 24);
+                    setIsBreaking(true);
+                    setHideTube(true);
+                    setAnimTube({ left: tube.x, top: tube.y, rotate: 0 });
+                    requestAnimationFrame(() =>
+                      setAnimTube({ left: destLeft, top: destTop, rotate: 35 })
+                    );
+                    window.setTimeout(() => {
+                      setIsBreaking(false);
+                      setIsBroken(true);
+                      setAnimTube(null);
+                    }, 750);
+                  }}
+                  disabled={isBreaking}
+                  className="bg-red-600 hover:bg-red-700 text-white shadow px-3 py-2 rounded-md text-xs"
+                >
+                  BREAK FUSION TUBE
+                </Button>
+              </div>
+            );
+          }
+
+          // Animated falling tube overlay
+          if (isBreaking && animTube) {
+            visuals.push(
+              <div key="anim-tube" className="absolute"
+                style={{
+                  left: animTube.left,
+                  top: animTube.top,
+                  width: 224,
+                  height: 256,
+                  transform: `rotate(${animTube.rotate}deg)`,
+                  transition: 'left 700ms cubic-bezier(0.22,0.61,0.36,1), top 700ms cubic-bezier(0.22,0.61,0.36,1), transform 700ms ease-out',
+                }}>
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F320141ac949c402cb646f053900e49f8?format=webp&width=800"
+                  alt="Falling Fusion Tube"
+                  className="max-w-[176px] max-h-[208px] object-contain"
+                />
+              </div>
+            );
+          }
         }
 
         if (hasIgnitionTube && hasBunsenBurner && tube && burner && isHeating) {
@@ -542,6 +623,14 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
 @keyframes rise {
   0% { transform: translate(-50%, 0); opacity: .8; }
   100% { transform: translate(-50%, -18px); opacity: 0; }
+}
+@keyframes dropShard {
+  0% { transform: translateY(-20px) scale(0.9) rotate(0deg); opacity: 0; }
+  100% { transform: translateY(0) scale(1) rotate(25deg); opacity: 1; }
+}
+@keyframes ripple {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.12); opacity: 0; }
 }
 `}</style>
     </div>
