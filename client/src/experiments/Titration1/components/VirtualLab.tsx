@@ -540,6 +540,17 @@ export default function VirtualLab({
         // Endpoint reached!
         animateColorTransition(conicalFlask.colorHex, ENDPOINT_COLORS.ENDPOINT, 'endpoint');
         setConicalFlask(prev => ({ ...prev, endpointReached: true }));
+
+        // Mark experiment as completed immediately when color changes
+        if (!experimentCompleted) {
+          const finalReading = newReading;
+          const titreVolume = finalReading;
+          setTitrationData(prev => [...prev, { trial: currentTrial, initialReading: 0.0, finalReading, volume: titreVolume, isValid: true }]);
+          setTitrationState(prev => ({ ...prev, currentPhase: 'completed', titrationComplete: true }));
+          setShowToast('✅ Endpoint confirmed! Titration complete!');
+          setTimeout(() => setShowToast(''), 3000);
+          setExperimentCompleted(true);
+        }
         
         const logEntry: TitrationLog = {
           id: Date.now().toString(),
