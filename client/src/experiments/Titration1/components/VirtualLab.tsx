@@ -933,7 +933,7 @@ export default function VirtualLab({
           </div>
 
           {/* Analysis Panel - Right */}
-          <div className="lg:col-span-4 space-y-4">
+          <div className="lg:col-span-3 space-y-4">
             {experimentCompleted && (
               <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Live Data Entry</h3>
