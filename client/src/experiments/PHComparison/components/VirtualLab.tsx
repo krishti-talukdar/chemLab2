@@ -113,7 +113,6 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       return;
     }
 
-    if (equipmentId === 'hcl-0-01m') setShowHclDialog(true);
     if (equipmentId === 'acetic-0-01m') addToTube('CH3COOH');
     if (equipmentId === 'universal-indicator') addToTube('IND', 0.5);
 
