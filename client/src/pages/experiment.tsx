@@ -35,9 +35,7 @@ export default function Experiment() {
       case 7:
         return <LassaigneApp onBack={() => window.history.back()} />;
       case 8:
-        return (
-          <GenericExperimentApp experimentId={experimentId} onBack={() => window.history.back()} />
-        );
+        return <PHComparisonApp onBack={() => window.history.back()} />;
       default:
         return (
           <GenericExperimentApp experimentId={experimentId} onBack={() => window.history.back()} />
