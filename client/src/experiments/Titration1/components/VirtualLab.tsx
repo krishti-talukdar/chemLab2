@@ -878,12 +878,12 @@ export default function VirtualLab({
                     <div className="absolute z-40 pointer-events-none" style={{ left: left + 60, top }}>
                       <div className="flex items-start space-x-3">
                         {/* Count-up indicators 1..10 */}
-                        <div className="flex flex-col items-center bg-white/90 p-2 rounded-md shadow" style={{ width: 64 }}>
+                        <div className="flex flex-col items-center bg-white p-2 rounded-md shadow-lg ring-1 ring-gray-200 z-50" style={{ width: 72 }}>
                           {Array.from({ length: 10 }).map((_, idx) => {
                             const n = idx + 1;
                             const filled = burette.reading >= n;
                             return (
-                              <div key={n} className={`w-full text-center text-xs py-0.5 ${filled ? 'bg-pink-600 text-white rounded mb-0.5' : 'text-gray-400'}`}>
+                              <div key={n} className={`w-full text-center text-sm py-0.5 ${filled ? 'bg-pink-600 text-white rounded mb-0.5' : 'text-gray-800'}`}>
                                 {n} mL
                               </div>
                             );
