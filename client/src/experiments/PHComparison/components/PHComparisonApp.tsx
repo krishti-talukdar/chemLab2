@@ -35,7 +35,12 @@ export default function PHComparisonApp({ onBack }: Props) {
 
   const handleStart = () => { setExperimentStarted(true); setIsRunning(true); };
   const handleReset = () => {
-    setExperimentStarted(false); setIsRunning(false); setTimer(0); setCompletedSteps([]); setMode({ current: 'guided', currentGuidedStep: 0 }); setResetKey(k => k+1);
+    setIsRunning(false);
+    setTimer(0);
+    setCompletedSteps([]);
+    setMode({ current: 'guided', currentGuidedStep: 0 });
+    setExperimentStarted(true);
+    setResetKey(k => k+1);
     updateProgress.mutate({ experimentId, currentStep: 0, completed: false, progressPercentage: 0 });
   };
 
@@ -45,6 +50,11 @@ export default function PHComparisonApp({ onBack }: Props) {
     if (mode.currentGuidedStep < experiment.stepDetails.length - 1) {
       setMode(m => ({ ...m, currentGuidedStep: m.currentGuidedStep + 1 }));
     }
+  };
+
+  const handleStepUndo = () => {
+    setCompletedSteps(prev => prev.slice(0, -1));
+    setMode(m => ({ ...m, currentGuidedStep: Math.max(0, m.currentGuidedStep - 1) }));
   };
 
   useEffect(() => {
@@ -92,7 +102,7 @@ export default function PHComparisonApp({ onBack }: Props) {
             <CardTitle className="text-2xl">pH Comparison - Interactive Workbench</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <VirtualLab key={resetKey} experimentStarted={experimentStarted} onStartExperiment={handleStart} isRunning={isRunning} setIsRunning={setIsRunning} mode={mode} onStepComplete={handleStepComplete} onStepUndo={() => {}} onReset={handleReset} completedSteps={completedSteps} />
+            <VirtualLab key={resetKey} experimentStarted={experimentStarted} onStartExperiment={handleStart} isRunning={isRunning} setIsRunning={setIsRunning} mode={mode} onStepComplete={handleStepComplete} onStepUndo={handleStepUndo} onReset={handleReset} completedSteps={completedSteps} />
           </CardContent>
         </Card>
       </div>

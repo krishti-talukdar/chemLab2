@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WorkBench } from "@/experiments/EquilibriumShift/components/WorkBench";
 import { Equipment, PH_LAB_EQUIPMENT } from "./Equipment";
 import { COLORS, INITIAL_TESTTUBE, GUIDED_STEPS, ANIMATION } from "../constants";
-import { Beaker, Info, Wrench, CheckCircle, ArrowRight } from "lucide-react";
+import { Beaker, Info, Wrench, CheckCircle, ArrowRight, TestTube, Undo2 } from "lucide-react";
 
 interface ExperimentMode {
   current: 'guided';
@@ -31,8 +32,11 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [testTube, setTestTube] = useState<TestTubeState>(INITIAL_TESTTUBE);
   const [currentStep, setCurrentStep] = useState(1);
   const [equipmentOnBench, setEquipmentOnBench] = useState<Array<{ id: string; position: { x: number; y: number }; isActive: boolean }>>([]);
+  const [history, setHistory] = useState<Array<{ type: 'HCL' | 'CH3COOH' | 'IND'; volume: number }>>([]);
   const [activeEquipment, setActiveEquipment] = useState<string>("");
   const [showToast, setShowToast] = useState<string>("");
+  const [showHclDialog, setShowHclDialog] = useState(false);
+  const [hclVolume, setHclVolume] = useState<string>("3.0");
 
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
@@ -64,6 +68,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
 
   const addToTube = (reagent: 'HCL'|'CH3COOH'|'IND', volume = 3) => {
     setActiveEquipment(reagent);
+    setHistory(prev => [...prev, { type: reagent, volume }]);
     setTimeout(() => {
       setTestTube(prev => {
         const newVol = Math.min(prev.volume + volume, 20);
@@ -108,7 +113,6 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       return;
     }
 
-    if (equipmentId === 'hcl-0-01m') addToTube('HCL');
     if (equipmentId === 'acetic-0-01m') addToTube('CH3COOH');
     if (equipmentId === 'universal-indicator') addToTube('IND', 0.5);
 
@@ -119,8 +123,49 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     });
   };
 
+  const handleUndo = () => {
+    if (history.length === 0) {
+      const hasTube = !!equipmentOnBench.find(e => e.id === 'test-tube');
+      if (hasTube) {
+        setEquipmentOnBench(prev => prev.filter(e => e.id !== 'test-tube'));
+        setTestTube(INITIAL_TESTTUBE);
+        if (onStepUndo) onStepUndo();
+        setShowToast('Removed test tube');
+        setTimeout(() => setShowToast(""), 1200);
+      }
+      return;
+    }
+
+    const last = history[history.length - 1];
+    const remaining = history.slice(0, -1);
+    setHistory(remaining);
+    setTestTube(prev => {
+      const volume = Math.max(0, prev.volume - last.volume);
+      const hasEarlier = remaining.some(h => h.type === last.type);
+      let contents = prev.contents;
+      if (!hasEarlier) contents = contents.filter(c => c !== last.type);
+      let colorHex = prev.colorHex;
+      if (!contents.includes('IND')) colorHex = COLORS.CLEAR;
+      else if (contents.includes('HCL')) colorHex = COLORS.HCL_PH2;
+      else if (contents.includes('CH3COOH')) colorHex = COLORS.ACETIC_PH3;
+      else colorHex = COLORS.NEUTRAL;
+      return { ...prev, volume, contents, colorHex };
+    });
+    if (onStepUndo) onStepUndo();
+    setShowToast('Last action undone');
+    setTimeout(() => setShowToast(""), 1200);
+  };
+
+  const confirmAddHcl = () => {
+    const v = parseFloat(hclVolume);
+    if (Number.isNaN(v) || v <= 0) return setShowToast('Enter a valid volume');
+    const clamped = Math.min(5.0, Math.max(0.1, v));
+    addToTube('HCL', clamped);
+    setShowHclDialog(false);
+  };
+
   const handleInteract = (id: string) => {
-    if (id === 'hcl-0-01m') addToTube('HCL');
+    if (id === 'hcl-0-01m') setShowHclDialog(true);
     if (id === 'acetic-0-01m') addToTube('CH3COOH');
     if (id === 'universal-indicator') addToTube('IND', 0.5);
   };
@@ -180,14 +225,19 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               </div>
             </div>
 
-            <Button onClick={() => { setEquipmentOnBench([]); setTestTube(INITIAL_TESTTUBE); onReset(); }} variant="outline" className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100">Reset Experiment</Button>
+            <div className="space-y-2">
+              <Button onClick={handleUndo} variant="outline" className="w-full bg-white border-gray-200 text-gray-700 hover:bg-gray-100 flex items-center justify-center">
+                <Undo2 className="w-4 h-4 mr-2" /> UNDO
+              </Button>
+              <Button onClick={() => { setEquipmentOnBench([]); setTestTube(INITIAL_TESTTUBE); setHistory([]); onReset(); }} variant="outline" className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100">Reset Experiment</Button>
+            </div>
           </div>
 
           {/* Workbench - Center */}
           <div className="lg:col-span-6">
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
               {equipmentOnBench.find(e => e.id === 'test-tube') && (
-                <Equipment id="test-tube" name="Test Tube" icon={<Beaker className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
+                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
               )}
 
               {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
@@ -231,6 +281,35 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           </div>
         </div>
       </div>
+
+      <Dialog open={showHclDialog} onOpenChange={setShowHclDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter Volume</DialogTitle>
+            <DialogDescription>
+              Enter the volume of 0.01 M HCl to add to the test tube.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Volume (mL)</label>
+            <input
+              type="number"
+              step="0.1"
+              min={0.1}
+              max={5.0}
+              value={hclVolume}
+              onChange={(e) => setHclVolume(e.target.value)}
+              className="w-full border rounded-md px-3 py-2"
+              placeholder="Enter volume in mL"
+            />
+            <p className="text-xs text-gray-500">Recommended range: 0.1 – 5.0 mL</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowHclDialog(false)}>Cancel</Button>
+            <Button onClick={confirmAddHcl}>Add Solution</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 }
