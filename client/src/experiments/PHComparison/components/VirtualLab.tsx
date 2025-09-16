@@ -31,6 +31,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [testTube, setTestTube] = useState<TestTubeState>(INITIAL_TESTTUBE);
   const [currentStep, setCurrentStep] = useState(1);
   const [equipmentOnBench, setEquipmentOnBench] = useState<Array<{ id: string; position: { x: number; y: number }; isActive: boolean }>>([]);
+  const [history, setHistory] = useState<Array<{ type: 'HCL' | 'CH3COOH' | 'IND'; volume: number }>>([]);
   const [activeEquipment, setActiveEquipment] = useState<string>("");
   const [showToast, setShowToast] = useState<string>("");
 
