@@ -121,6 +121,28 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     });
   };
 
+  const handleUndo = () => {
+    if (!history.length) return;
+    const last = history[history.length - 1];
+    const remaining = history.slice(0, -1);
+    setHistory(remaining);
+    setTestTube(prev => {
+      const volume = Math.max(0, prev.volume - last.volume);
+      const hasEarlier = remaining.some(h => h.type === last.type);
+      let contents = prev.contents;
+      if (!hasEarlier) contents = contents.filter(c => c !== last.type);
+      let colorHex = prev.colorHex;
+      if (!contents.includes('IND')) colorHex = COLORS.CLEAR;
+      else if (contents.includes('HCL')) colorHex = COLORS.HCL_PH2;
+      else if (contents.includes('CH3COOH')) colorHex = COLORS.ACETIC_PH3;
+      else colorHex = COLORS.NEUTRAL;
+      return { ...prev, volume, contents, colorHex };
+    });
+    if (onStepUndo) onStepUndo();
+    setShowToast('Last action undone');
+    setTimeout(() => setShowToast(""), 1200);
+  };
+
   const handleInteract = (id: string) => {
     if (id === 'hcl-0-01m') addToTube('HCL');
     if (id === 'acetic-0-01m') addToTube('CH3COOH');
