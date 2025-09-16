@@ -35,7 +35,12 @@ export default function PHComparisonApp({ onBack }: Props) {
 
   const handleStart = () => { setExperimentStarted(true); setIsRunning(true); };
   const handleReset = () => {
-    setExperimentStarted(false); setIsRunning(false); setTimer(0); setCompletedSteps([]); setMode({ current: 'guided', currentGuidedStep: 0 }); setResetKey(k => k+1);
+    setIsRunning(false);
+    setTimer(0);
+    setCompletedSteps([]);
+    setMode({ current: 'guided', currentGuidedStep: 0 });
+    setExperimentStarted(true);
+    setResetKey(k => k+1);
     updateProgress.mutate({ experimentId, currentStep: 0, completed: false, progressPercentage: 0 });
   };
 
