@@ -122,7 +122,18 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   };
 
   const handleUndo = () => {
-    if (!history.length) return;
+    if (history.length === 0) {
+      const hasTube = !!equipmentOnBench.find(e => e.id === 'test-tube');
+      if (hasTube) {
+        setEquipmentOnBench(prev => prev.filter(e => e.id !== 'test-tube'));
+        setTestTube(INITIAL_TESTTUBE);
+        if (onStepUndo) onStepUndo();
+        setShowToast('Removed test tube');
+        setTimeout(() => setShowToast(""), 1200);
+      }
+      return;
+    }
+
     const last = history[history.length - 1];
     const remaining = history.slice(0, -1);
     setHistory(remaining);
