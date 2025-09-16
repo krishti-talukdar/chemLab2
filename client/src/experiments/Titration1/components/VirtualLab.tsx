@@ -485,6 +485,16 @@ export default function VirtualLab({
         setActiveEquipment("");
         setShowToast('2-3 drops of phanolpthalein added');
         setSafeTimeout(() => setShowToast(""), 3000);
+        // Align flask under burette immediately after adding indicator
+        setEquipmentOnBench(prev => prev.map(eq => {
+          if (eq.id === 'burette' && STEP_4_POSITIONS.burette) {
+            return { ...eq, position: STEP_4_POSITIONS.burette };
+          }
+          if (eq.id === 'conical-flask' && STEP_4_POSITIONS['conical-flask']) {
+            return { ...eq, position: STEP_4_POSITIONS['conical-flask'] };
+          }
+          return eq;
+        }));
         handleStepComplete();
       }, ANIMATION.MIXING_DURATION);
 
