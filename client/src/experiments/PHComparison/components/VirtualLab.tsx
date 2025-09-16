@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { WorkBench } from "@/experiments/EquilibriumShift/components/WorkBench";
 import { Equipment, PH_LAB_EQUIPMENT } from "./Equipment";
 import { COLORS, INITIAL_TESTTUBE, GUIDED_STEPS, ANIMATION } from "../constants";
-import { Beaker, Info, Wrench, CheckCircle, ArrowRight } from "lucide-react";
+import { Beaker, Info, Wrench, CheckCircle, ArrowRight, TestTube } from "lucide-react";
 
 interface ExperimentMode {
   current: 'guided';
@@ -187,7 +187,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           <div className="lg:col-span-6">
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
               {equipmentOnBench.find(e => e.id === 'test-tube') && (
-                <Equipment id="test-tube" name="Test Tube" icon={<Beaker className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
+                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
               )}
 
               {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
