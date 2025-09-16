@@ -497,7 +497,7 @@ export default function VirtualLab({
           const buretteEq = prev.find(e => e.id === 'burette');
           const bx = buretteEq?.position?.x ?? STEP_4_POSITIONS.burette.x;
           const by = buretteEq?.position?.y ?? STEP_4_POSITIONS.burette.y;
-          const newFlaskPos = { x: bx + 52, y: by + 235 };
+          const newFlaskPos = { x: bx + 80, y: by + 280 };
           return prev.map(eq => {
             if (eq.id === 'burette') return { ...eq, position: { x: bx, y: by } };
             if (eq.id === 'conical-flask') return { ...eq, position: newFlaskPos };
