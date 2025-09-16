@@ -13,7 +13,7 @@ interface Props { onBack?: () => void }
 export default function PHComparisonApp({ onBack }: Props) {
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
-  const [experimentStarted, setExperimentStarted] = useState(false);
+  const [experimentStarted, setExperimentStarted] = useState(true);
   const [mode, setMode] = useState<{ current: 'guided'; currentGuidedStep: number }>({ current: 'guided', currentGuidedStep: 0 });
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [resetKey, setResetKey] = useState(0);
