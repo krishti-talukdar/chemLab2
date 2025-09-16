@@ -36,7 +36,8 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [activeEquipment, setActiveEquipment] = useState<string>("");
   const [showToast, setShowToast] = useState<string>("");
   const [showHclDialog, setShowHclDialog] = useState(false);
-  const [hclVolume, setHclVolume] = useState<string>("3.0");
+  const [hclVolume, setHclVolume] = useState<string>("5.0");
+  const [previewHclVolume, setPreviewHclVolume] = useState<number | null>(5.0);
 
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
@@ -159,7 +160,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const confirmAddHcl = () => {
     const v = parseFloat(hclVolume);
     if (Number.isNaN(v) || v <= 0) return setShowToast('Enter a valid volume');
-    const clamped = Math.min(5.0, Math.max(0.1, v));
+    const clamped = Math.min(10.0, Math.max(5.0, v));
     addToTube('HCL', clamped);
     setShowHclDialog(false);
   };
@@ -237,7 +238,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           <div className="lg:col-span-6">
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
               {equipmentOnBench.find(e => e.id === 'test-tube') && (
-                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
+                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : testTube.volume} isActive={true} />
               )}
 
               {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
@@ -282,7 +283,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
         </div>
       </div>
 
-      <Dialog open={showHclDialog} onOpenChange={setShowHclDialog}>
+      <Dialog open={showHclDialog} onOpenChange={(open) => { setShowHclDialog(open); if (!open) setPreviewHclVolume(null); }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enter Volume</DialogTitle>
@@ -295,14 +296,14 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
             <input
               type="number"
               step="0.1"
-              min={0.1}
-              max={5.0}
+              min={5.0}
+              max={10.0}
               value={hclVolume}
-              onChange={(e) => setHclVolume(e.target.value)}
+              onChange={(e) => { const val = e.target.value; setHclVolume(val); const parsed = parseFloat(val); if (!Number.isNaN(parsed)) setPreviewHclVolume(Math.min(10.0, Math.max(5.0, parsed))); else setPreviewHclVolume(null); }}
               className="w-full border rounded-md px-3 py-2"
               placeholder="Enter volume in mL"
             />
-            <p className="text-xs text-gray-500">Recommended range: 0.1 – 5.0 mL</p>
+            <p className="text-xs text-gray-500">Recommended range: 5.0 – 10.0 mL</p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowHclDialog(false)}>Cancel</Button>
