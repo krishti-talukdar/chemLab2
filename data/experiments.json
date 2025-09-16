@@ -516,5 +516,35 @@
       { "id": 6, "title": "Cleanup", "description": "Dispose of solutions as per guidelines and rinse glassware with plenty of water.", "duration": "2 minutes", "completed": false }
     ],
     "safetyInfo": "Both acids are irritants; avoid contact with skin and eyes. Wear safety goggles and gloves. Do not ingest chemicals. Handle glassware carefully."
+  },
+  {
+    "title": "Preparation of Oxalic Acid",
+    "description": "To prepare a standard solution of oxalic acid (preparation of 250 mL 0.1N oxalic acid solution).",
+    "category": "Quantitative Analysis",
+    "difficulty": "Beginner",
+    "duration": 30,
+    "steps": 7,
+    "rating": 4.6,
+    "imageUrl": "https://images.unsplash.com/photo-1554475901-4538ddfbccc2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400",
+    "equipment": [
+      "Analytical Balance",
+      "Volumetric Flask (250 mL)",
+      "Beaker (100 mL)",
+      "Glass Rod",
+      "Funnel",
+      "Wash Bottle",
+      "Weighing Bottle",
+      "Dropper"
+    ],
+    "stepDetails": [
+      { "id": 1, "title": "Calculate Required Mass", "description": "Calculate the mass of oxalic acid dihydrate (H₂C₂O₄·2H₂O) needed to prepare 250 mL of 0.1N solution. Use equivalent weight 63.03 g/eq.", "duration": "5 minutes", "temperature": "Room temperature", "completed": false },
+      { "id": 2, "title": "Weigh Oxalic Acid", "description": "Accurately weigh the calculated amount of oxalic acid dihydrate in a weighing bottle using an analytical balance.", "duration": "8 minutes", "safety": "Handle with care, avoid skin contact", "completed": false },
+      { "id": 3, "title": "Initial Dissolution", "description": "Transfer the weighed oxalic acid to a 100 mL beaker. Add ~50 mL distilled water and stir with a glass rod until fully dissolved.", "duration": "5 minutes", "completed": false },
+      { "id": 4, "title": "Transfer to Volumetric Flask", "description": "Using a funnel, transfer the solution to a 250 mL volumetric flask. Rinse the beaker and funnel into the flask.", "duration": "7 minutes", "completed": false },
+      { "id": 5, "title": "Add Water to Near Mark", "description": "Add distilled water until the meniscus is 2–3 cm below the mark. Swirl to mix.", "duration": "3 minutes", "completed": false },
+      { "id": 6, "title": "Make to Mark", "description": "Use a dropper to bring the bottom of the meniscus exactly to the 250 mL mark.", "duration": "5 minutes", "completed": false },
+      { "id": 7, "title": "Final Mixing and Labeling", "description": "Cap and invert 20–25 times for complete mixing. Label as 0.1N oxalic acid with date.", "duration": "5 minutes", "completed": false }
+    ],
+    "safetyInfo": "Oxalic acid is toxic and corrosive. Avoid skin contact and inhalation. Wear safety goggles and gloves. Work in a well-ventilated area. Wash hands thoroughly after handling."
   }
 ]
