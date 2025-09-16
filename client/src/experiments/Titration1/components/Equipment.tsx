@@ -199,7 +199,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
                 alt="Conical Flask"
-                className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+                className={`h-48 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
                 style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
               />
               {/* Oxalic acid solution overlay */}
