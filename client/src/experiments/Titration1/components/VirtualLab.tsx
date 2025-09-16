@@ -899,7 +899,7 @@ export default function VirtualLab({
                           })}
                         </div>
 
-                        <div className="relative">
+                        <div className="relative" style={{ marginLeft: -60 }}>
                           <div style={{ width: 8, borderRadius: 8, background: 'linear-gradient(to bottom, rgba(59,130,246,0.95), rgba(99,102,241,0.95))', animation: 'pourStream 300ms linear forwards' }} className="origin-top" />
 
                           <div style={{ position: 'absolute', left: -6, top: 0 }}>
