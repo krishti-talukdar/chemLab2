@@ -81,7 +81,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white/90 px-2 py-0.5 rounded-full border text-[10px] font-semibold text-gray-700">
                   {(displayVolume ?? volume ?? 0).toFixed(1)} mL
                 </div>
-                <img src="https://cdn.builder.io/api/v1/image/assets%2F4fe18c7cc7824ff98352705750053deb%2Fa4603d4891d44fadbfe3660d27a3ae36?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
+                <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
                 {volume > 0 && (
                   <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
                     <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(25, (volume / 100) * 150)}px`, backgroundColor: color, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
