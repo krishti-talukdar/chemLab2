@@ -47,6 +47,11 @@ export default function PHComparisonApp({ onBack }: Props) {
     }
   };
 
+  const handleStepUndo = () => {
+    setCompletedSteps(prev => prev.slice(0, -1));
+    setMode(m => ({ ...m, currentGuidedStep: Math.max(0, m.currentGuidedStep - 1) }));
+  };
+
   useEffect(() => {
     const total = experiment.stepDetails.length;
     const done = completedSteps.length;
