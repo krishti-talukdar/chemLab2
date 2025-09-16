@@ -180,6 +180,7 @@ export default function VirtualLab({
   // Auto titration flow after start prompt
   const [autoTitrating, setAutoTitrating] = useState(false);
   const [showTitrationLimitWarning, setShowTitrationLimitWarning] = useState(false);
+  const [showStrengthPrompt, setShowStrengthPrompt] = useState(false);
   const autoFlowIntervalRef = useRef<number | null>(null);
   const prevBuretteReadingRef = useRef<number>(burette.reading);
 
