@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WorkBench } from "@/experiments/EquilibriumShift/components/WorkBench";
 import { Equipment, PH_LAB_EQUIPMENT } from "./Equipment";
@@ -34,6 +35,8 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [history, setHistory] = useState<Array<{ type: 'HCL' | 'CH3COOH' | 'IND'; volume: number }>>([]);
   const [activeEquipment, setActiveEquipment] = useState<string>("");
   const [showToast, setShowToast] = useState<string>("");
+  const [showHclDialog, setShowHclDialog] = useState(false);
+  const [hclVolume, setHclVolume] = useState<string>("3.0");
 
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
@@ -110,7 +113,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       return;
     }
 
-    if (equipmentId === 'hcl-0-01m') addToTube('HCL');
+    if (equipmentId === 'hcl-0-01m') setShowHclDialog(true);
     if (equipmentId === 'acetic-0-01m') addToTube('CH3COOH');
     if (equipmentId === 'universal-indicator') addToTube('IND', 0.5);
 
@@ -154,8 +157,16 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     setTimeout(() => setShowToast(""), 1200);
   };
 
+  const confirmAddHcl = () => {
+    const v = parseFloat(hclVolume);
+    if (Number.isNaN(v) || v <= 0) return setShowToast('Enter a valid volume');
+    const clamped = Math.min(5.0, Math.max(0.1, v));
+    addToTube('HCL', clamped);
+    setShowHclDialog(false);
+  };
+
   const handleInteract = (id: string) => {
-    if (id === 'hcl-0-01m') addToTube('HCL');
+    if (id === 'hcl-0-01m') setShowHclDialog(true);
     if (id === 'acetic-0-01m') addToTube('CH3COOH');
     if (id === 'universal-indicator') addToTube('IND', 0.5);
   };
@@ -271,6 +282,35 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           </div>
         </div>
       </div>
+
+      <Dialog open={showHclDialog} onOpenChange={setShowHclDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter Volume</DialogTitle>
+            <DialogDescription>
+              Enter the volume of 0.01 M HCl to add to the test tube.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Volume (mL)</label>
+            <input
+              type="number"
+              step="0.1"
+              min={0.1}
+              max={5.0}
+              value={hclVolume}
+              onChange={(e) => setHclVolume(e.target.value)}
+              className="w-full border rounded-md px-3 py-2"
+              placeholder="Enter volume in mL"
+            />
+            <p className="text-xs text-gray-500">Recommended range: 0.1 – 5.0 mL</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowHclDialog(false)}>Cancel</Button>
+            <Button onClick={confirmAddHcl}>Add Solution</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 }
