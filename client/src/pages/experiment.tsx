@@ -7,6 +7,7 @@ import EquilibriumShiftApp from "@/experiments/EquilibriumShift/components/Equil
 import FeSCNEquilibriumApp from "@/experiments/FeSCNEquilibrium/components/FeSCNEquilibriumApp";
 import Titration1App from "@/experiments/Titration1/components/Titration1App";
 import LassaigneApp from "@/experiments/LassaigneTest/components/LassaigneApp";
+import GenericExperimentApp from "@/experiments/Generic/components/GenericExperimentApp";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
@@ -32,24 +33,13 @@ export default function Experiment() {
         return <Titration1App onBack={() => window.history.back()} />;
       case 7:
         return <LassaigneApp onBack={() => window.history.back()} />;
+      case 8:
+        return (
+          <GenericExperimentApp experimentId={experimentId} onBack={() => window.history.back()} />
+        );
       default:
         return (
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Experiment Not Found
-              </h2>
-              <p className="text-gray-600 mb-6">
-                The requested experiment (ID: {experimentId}) is not available.
-                Please select a valid experiment from the home page.
-              </p>
-              <Link href="/">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                  Return to Home
-                </Button>
-              </Link>
-            </div>
-          </div>
+          <GenericExperimentApp experimentId={experimentId} onBack={() => window.history.back()} />
         );
     }
   };
