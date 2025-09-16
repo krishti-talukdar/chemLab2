@@ -236,15 +236,15 @@ export const LAB_EQUIPMENT = [
     description: 'CoCl₂ in water (pink)'
   },
   {
-    id: 'distilled-water',
-    name: 'Distilled Water',
-    icon: <Beaker className="w-8 h-8" />,
-    description: 'Pure H₂O for dilution'
-  },
-  {
     id: 'concentrated-hcl',
     name: 'Concentrated HCl',
     icon: <Droplets className="w-8 h-8" />,
     description: 'Hydrochloric acid (12M)'
+  },
+  {
+    id: 'distilled-water',
+    name: 'Distilled Water',
+    icon: <Beaker className="w-8 h-8" />,
+    description: 'Pure H₂O for dilution'
   }
 ];
