@@ -180,6 +180,7 @@ export default function VirtualLab({
   // Auto titration flow after start prompt
   const [autoTitrating, setAutoTitrating] = useState(false);
   const [showTitrationLimitWarning, setShowTitrationLimitWarning] = useState(false);
+  const [showStrengthPrompt, setShowStrengthPrompt] = useState(false);
   const autoFlowIntervalRef = useRef<number | null>(null);
   const prevBuretteReadingRef = useRef<number>(burette.reading);
 
@@ -190,12 +191,19 @@ export default function VirtualLab({
         const filtered = prev.filter(eq => eq.id !== 'phenolphthalein' && eq.id !== 'pipette');
 
         // Reposition burette and conical flask for better alignment in step 4
-        const repositioned = filtered.map(eq => {
-          if (eq.id === 'burette' && STEP_4_POSITIONS.burette) {
-            return { ...eq, position: STEP_4_POSITIONS.burette };
+        let bx = STEP_4_POSITIONS.burette.x;
+        let by = STEP_4_POSITIONS.burette.y;
+        const withBurette = filtered.map(eq => {
+          if (eq.id === 'burette') {
+            bx = eq.position?.x ?? bx;
+            by = eq.position?.y ?? by;
+            return { ...eq, position: { x: bx, y: by } };
           }
-          if (eq.id === 'conical-flask' && STEP_4_POSITIONS['conical-flask']) {
-            return { ...eq, position: STEP_4_POSITIONS['conical-flask'] };
+          return eq;
+        });
+        const repositioned = withBurette.map(eq => {
+          if (eq.id === 'conical-flask') {
+            return { ...eq, position: { x: bx + 52, y: by + 235 } };
           }
           return eq;
         });
@@ -484,6 +492,18 @@ export default function VirtualLab({
         setActiveEquipment("");
         setShowToast('2-3 drops of phanolpthalein added');
         setSafeTimeout(() => setShowToast(""), 3000);
+        // Align flask under burette immediately after adding indicator
+        setEquipmentOnBench(prev => {
+          const buretteEq = prev.find(e => e.id === 'burette');
+          const bx = buretteEq?.position?.x ?? STEP_4_POSITIONS.burette.x;
+          const by = buretteEq?.position?.y ?? STEP_4_POSITIONS.burette.y;
+          const newFlaskPos = { x: bx + 88, y: by + 245 };
+          return prev.map(eq => {
+            if (eq.id === 'burette') return { ...eq, position: { x: bx, y: by } };
+            if (eq.id === 'conical-flask') return { ...eq, position: newFlaskPos };
+            return eq;
+          });
+        });
         handleStepComplete();
       }, ANIMATION.MIXING_DURATION);
 
@@ -858,28 +878,28 @@ export default function VirtualLab({
                 const buretteOnBench = equipmentOnBench.find(e => e.id === 'burette');
                 const flaskOnBench = equipmentOnBench.find(e => e.id === 'conical-flask');
                 const left = (buretteOnBench?.position?.x ?? 120);
-                const top = (buretteOnBench?.position?.y ?? 100) + 200; // adjust to tip
+                const top = (buretteOnBench?.position?.y ?? 100) + 190; // adjust to tip
 
                 return (
                   <>
                     <style>{`@keyframes pourStream { 0% { height: 0 } 100% { height: 120px } } @keyframes dripFall { 0% { transform: translateY(0); opacity:1 } 80% { opacity:1 } 100% { transform: translateY(120px); opacity:0 } }`}</style>
 
-                    <div className="absolute z-40 pointer-events-none" style={{ left: left + 60, top }}>
+                    <div className="absolute pointer-events-none" style={{ left: left + 160, top, zIndex: 80 }}>
                       <div className="flex items-start space-x-3">
-                        {/* Count-up indicators 1..10 */}
-                        <div className="flex flex-col items-center bg-white/90 p-2 rounded-md shadow" style={{ width: 64 }}>
+                        {/* Burette scale (downcounting 10→1) - moved to side */}
+                        <div className="flex flex-col items-center bg-white p-2 rounded-md shadow-lg ring-1 ring-blue-200" style={{ width: 60, zIndex: 70 }}>
                           {Array.from({ length: 10 }).map((_, idx) => {
-                            const n = idx + 1;
-                            const filled = burette.reading >= n;
+                            const n = 10 - idx; // Downcount from 10 to 1
+                            const used = burette.reading >= (10 - n + 1); // Show as used when passed
                             return (
-                              <div key={n} className={`w-full text-center text-xs py-0.5 ${filled ? 'bg-pink-600 text-white rounded mb-0.5' : 'text-gray-400'}`}>
+                              <div key={n} className={`w-full text-center text-xs font-medium py-0.5 mb-0.5 ${used ? 'bg-pink-600 text-white rounded' : 'text-gray-800 bg-gray-100 rounded'}`}>
                                 {n} mL
                               </div>
                             );
                           })}
                         </div>
 
-                        <div className="relative">
+                        <div className="relative" style={{ marginLeft: -100 }}>
                           <div style={{ width: 8, borderRadius: 8, background: 'linear-gradient(to bottom, rgba(59,130,246,0.95), rgba(99,102,241,0.95))', animation: 'pourStream 300ms linear forwards' }} className="origin-top" />
 
                           <div style={{ position: 'absolute', left: -6, top: 0 }}>
@@ -1257,7 +1277,7 @@ export default function VirtualLab({
                     setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.ENDPOINT, endpointReached: true }));
                     setTitrationState(prev => ({ ...prev, currentPhase: 'endpoint', flaskColor: ENDPOINT_COLORS.ENDPOINT, explanation: 'Stopped at safe limit (light pink observed)' }));
                     setExperimentCompleted(true);
-                    setLocation(`/experiment/${experimentId}/results`);
+                    setSafeTimeout(() => setShowStrengthPrompt(true), 6000);
                   }}
                   className="border-pink-300 text-pink-700 hover:bg-pink-50"
                 >
@@ -1269,12 +1289,40 @@ export default function VirtualLab({
                     setConicalFlask(prev => ({ ...prev, colorHex: ENDPOINT_COLORS.OVERSHOOT }));
                     setTitrationState(prev => ({ ...prev, currentPhase: 'completed', flaskColor: ENDPOINT_COLORS.OVERSHOOT, explanation: 'Continued beyond limit (dark pink observed)' }));
                     setExperimentCompleted(true);
-                    setLocation(`/experiment/${experimentId}/results`);
+                    setSafeTimeout(() => setShowStrengthPrompt(true), 6000);
                   }}
                   className="bg-pink-600 hover:bg-pink-700 text-white"
                 >
                   Continue titrating
                 </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Strength calculation prompt */}
+        <Dialog open={showStrengthPrompt} onOpenChange={setShowStrengthPrompt}>
+          <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <div className="bg-gradient-to-br from-pink-600 via-rose-500 to-fuchsia-600 p-6 relative">
+              <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,white,transparent_30%),radial-gradient(circle_at_80%_30%,white,transparent_30%)]" />
+              <div className="relative z-10 flex items-center">
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 mr-3">
+                  <Calculator className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white text-xl font-bold tracking-tight">Calculate the strength of NaOH now</h3>
+                  <p className="text-pink-100 text-sm mt-1">The solution color is set. Proceed to compute normality and strength.</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-5">
+              <div className="flex items-center mb-4">
+                <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: conicalFlask.colorHex }} />
+                <span className="text-sm text-gray-600">Flask color preview</span>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowStrengthPrompt(false)}>Stay</Button>
+                <Button className="bg-gradient-to-r from-pink-600 to-fuchsia-600 text-white" onClick={() => { setShowStrengthPrompt(false); setLocation(`/experiment/${experimentId}/results`); }}>Go to calculation</Button>
               </div>
             </div>
           </DialogContent>

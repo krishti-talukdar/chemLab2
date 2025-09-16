@@ -100,8 +100,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         if (!workbench) return;
 
         const workbenchRect = workbench.getBoundingClientRect();
-        const equipmentWidth = id === 'burette' ? 240 : 80;
-        const equipmentHeight = id === 'burette' ? 420 : 80;
+        const equipmentWidth = id === 'burette' ? 200 : (id === 'conical-flask' ? 64 : 80);
+        const equipmentHeight = id === 'burette' ? 420 : (id === 'conical-flask' ? 64 : 80);
         const newX = Math.max(0, Math.min(moveEvent.clientX - workbenchRect.left - offsetX, workbenchRect.width - equipmentWidth));
         const newY = Math.max(0, Math.min(moveEvent.clientY - workbenchRect.top - offsetY, workbenchRect.height - equipmentHeight));
 
@@ -144,7 +144,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
       style={isPositioned ? {
         left: currentPosition.x,
         top: currentPosition.y,
-        transform: isActive ? 'scale(1.05)' : 'scale(1)'
+        transform: isActive ? 'scale(1.05)' : 'scale(1)',
+        zIndex: id === 'conical-flask' ? 60 : (id === 'burette' ? 50 : undefined)
       } : {}}
       draggable={!disabled && !isPositioned}
       onDragStart={handleDragStart}
@@ -183,7 +184,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F73ac259c4cb845619a548dafd6799255?format=webp&width=800"
               alt="Burette with NaOH solution"
-              className={`${currentStep >= 4 ? 'h-[500px]' : 'h-96'} w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+              className={`${currentStep >= 4 ? 'h-[420px]' : 'h-80'} w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
               style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
             />
             {flowing && (
@@ -198,7 +199,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F83364a0ee9aa408e91a299c5b7ef0886?format=webp&width=800"
                 alt="Conical Flask"
-                className={`h-40 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
+                className={`h-32 w-auto object-contain transition-transform duration-200 ${isActive ? 'scale-105' : ''}`}
                 style={{ filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.15))' }}
               />
               {/* Oxalic acid solution overlay */}
