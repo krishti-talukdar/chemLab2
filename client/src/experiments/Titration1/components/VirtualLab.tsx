@@ -838,7 +838,7 @@ export default function VirtualLab({
           </div>
 
           {/* Workbench - Center */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-6">
             <WorkBench
               onDrop={handleEquipmentDrop}
               isRunning={isRunning}
