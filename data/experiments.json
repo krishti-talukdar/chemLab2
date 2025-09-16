@@ -325,7 +325,7 @@
       {
         "id": 2,
         "title": "Establish Equilibrium System",
-        "description": "The equilibrium system is: [Co(H₂O)₆]²⁺ + 4Cl⁻ ⇌ [CoCl₄]²⁻ + 6H₂O. The pink form represents the hydrated complex, while blue represents the chloride complex.",
+        "description": "The equilibrium system is: [Co(H₂O)₆]²⁺ + 4Cl⁻ ⇌ [CoCl��]²⁻ + 6H₂O. The pink form represents the hydrated complex, while blue represents the chloride complex.",
         "duration": "3 minutes",
         "completed": false
       },
@@ -455,7 +455,7 @@
     "duration": 50,
     "steps": 9,
     "rating": 4.7,
-    "imageUrl": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&h=400",
+    "imageUrl": "https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F1121feb13d994effb4bba6d984630d3e?format=webp&width=800",
     "equipment": [
       "Sodium Metal",
       "Ignition Tube",
