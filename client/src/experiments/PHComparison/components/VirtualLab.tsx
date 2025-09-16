@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { WorkBench } from "@/experiments/EquilibriumShift/components/WorkBench";
 import { Equipment, PH_LAB_EQUIPMENT } from "./Equipment";
 import { COLORS, INITIAL_TESTTUBE, GUIDED_STEPS, ANIMATION } from "../constants";
-import { Beaker, Info, Wrench, CheckCircle, ArrowRight, TestTube } from "lucide-react";
+import { Beaker, Info, Wrench, CheckCircle, ArrowRight, TestTube, Undo2 } from "lucide-react";
 
 interface ExperimentMode {
   current: 'guided';
