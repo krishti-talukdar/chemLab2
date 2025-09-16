@@ -1291,7 +1291,7 @@ export default function VirtualLab({
                   <Calculator className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white text-xl font-bold tracking-tight">Calculate the Strength of NaOH</h3>
+                  <h3 className="text-white text-xl font-bold tracking-tight">Calculate the strength of NaOH now</h3>
                   <p className="text-pink-100 text-sm mt-1">The solution color is set. Proceed to compute normality and strength.</p>
                 </div>
               </div>
