@@ -144,7 +144,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
       style={isPositioned ? {
         left: currentPosition.x,
         top: currentPosition.y,
-        transform: isActive ? 'scale(1.05)' : 'scale(1)'
+        transform: isActive ? 'scale(1.05)' : 'scale(1)',
+        zIndex: id === 'conical-flask' ? 60 : (id === 'burette' ? 50 : undefined)
       } : {}}
       draggable={!disabled && !isPositioned}
       onDragStart={handleDragStart}
