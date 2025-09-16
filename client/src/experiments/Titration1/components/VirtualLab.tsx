@@ -1281,6 +1281,34 @@ export default function VirtualLab({
           </DialogContent>
         </Dialog>
 
+        {/* Strength calculation prompt */}
+        <Dialog open={showStrengthPrompt} onOpenChange={setShowStrengthPrompt}>
+          <DialogContent className="max-w-md w-full p-0 rounded-xl overflow-hidden">
+            <div className="bg-gradient-to-br from-pink-600 via-rose-500 to-fuchsia-600 p-6 relative">
+              <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,white,transparent_30%),radial-gradient(circle_at_80%_30%,white,transparent_30%)]" />
+              <div className="relative z-10 flex items-center">
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 mr-3">
+                  <Calculator className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white text-xl font-bold tracking-tight">Calculate the Strength of NaOH</h3>
+                  <p className="text-pink-100 text-sm mt-1">The solution color is set. Proceed to compute normality and strength.</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-5">
+              <div className="flex items-center mb-4">
+                <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: conicalFlask.colorHex }} />
+                <span className="text-sm text-gray-600">Flask color preview</span>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowStrengthPrompt(false)}>Stay</Button>
+                <Button className="bg-gradient-to-r from-pink-600 to-fuchsia-600 text-white" onClick={() => { setShowStrengthPrompt(false); setLocation(`/experiment/${experimentId}/results`); }}>Go to calculation</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Results Analysis Modal */}
         <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
