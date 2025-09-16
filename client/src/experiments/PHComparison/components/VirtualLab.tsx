@@ -65,6 +65,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
 
   const addToTube = (reagent: 'HCL'|'CH3COOH'|'IND', volume = 3) => {
     setActiveEquipment(reagent);
+    setHistory(prev => [...prev, { type: reagent, volume }]);
     setTimeout(() => {
       setTestTube(prev => {
         const newVol = Math.min(prev.volume + volume, 20);
