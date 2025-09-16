@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { WorkBench } from "@/experiments/EquilibriumShift/components/WorkBench";
 import { Equipment, PH_LAB_EQUIPMENT } from "./Equipment";
 import { COLORS, INITIAL_TESTTUBE, GUIDED_STEPS, ANIMATION } from "../constants";
-import { Beaker, Droplets, FlaskConical, Info } from "lucide-react";
+import { Beaker, Info, Wrench, CheckCircle, ArrowRight } from "lucide-react";
 
 interface ExperimentMode {
   current: 'guided';
@@ -101,7 +101,6 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       return;
     }
 
-    // Only allow drop if tube present
     const tube = equipmentOnBench.find(e => e.id === 'test-tube');
     if (!tube) {
       setShowToast('Place the test tube first.');
@@ -131,43 +130,107 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     if (id === 'test-tube') setTestTube(INITIAL_TESTTUBE);
   };
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6">
-      {/* Workbench */}
-      <div className="lg:col-span-3">
-        <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
-          {/* Test tube */}
-          {equipmentOnBench.find(e => e.id === 'test-tube') && (
-            <Equipment id="test-tube" name="Test Tube" icon={<Beaker className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
-          )}
-
-          {/* Placed reagents */}
-          {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
-            <Equipment key={e.id} id={e.id} name={PH_LAB_EQUIPMENT.find(x => x.id === e.id)?.name || e.id} icon={<Beaker className="w-8 h-8" />} position={e.position} onRemove={handleRemove} onInteract={handleInteract} />
-          ))}
-        </WorkBench>
+  const stepsProgress = (
+    <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">Experiment Progress</h3>
+        <span className="text-sm text-blue-600 font-medium">Step {currentStep} of {GUIDED_STEPS.length}</span>
       </div>
-
-      {/* Equipment toolbar */}
-      <div className="lg:col-span-1">
-        <div className="bg-white rounded-xl shadow p-4 border">
-          <h3 className="font-semibold mb-3">Equipment</h3>
-          <div className="grid grid-cols-2 gap-3">
-            {PH_LAB_EQUIPMENT.map(eq => (
-              <Equipment key={eq.id} id={eq.id} name={eq.name} icon={eq.icon} onDrag={() => {}} />
-            ))}
+      <div className="flex space-x-2 mb-4">
+        {GUIDED_STEPS.map((step) => (
+          <div key={step.id} className={`flex-1 h-2 rounded-full ${completedSteps.includes(step.id) ? 'bg-green-500' : currentStep === step.id ? 'bg-blue-500' : 'bg-gray-200'}`} />
+        ))}
+      </div>
+      <div className="flex items-start space-x-3">
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${completedSteps.includes(currentStep) ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'}`}>
+          {completedSteps.includes(currentStep) ? <CheckCircle className="w-4 h-4" /> : <span className="text-sm font-bold">{currentStep}</span>}
+        </div>
+        <div className="flex-1">
+          <h4 className="font-semibold text-gray-800 mb-1">{GUIDED_STEPS[currentStep-1].title}</h4>
+          <p className="text-sm text-gray-600 mb-2">{GUIDED_STEPS[currentStep-1].description}</p>
+          <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+            <ArrowRight className="w-3 h-3 mr-1" />
+            {GUIDED_STEPS[currentStep-1].action}
           </div>
         </div>
-
-        <div className="mt-4 bg-white rounded-xl shadow p-4 border">
-          <h4 className="font-semibold mb-2">Instructions</h4>
-          <p className="text-sm text-gray-600">Drag equipment to the bench. Add acid first, then add indicator to observe color.</p>
-        </div>
-
-        {showToast && (
-          <div className="mt-4 p-3 rounded bg-blue-50 border border-blue-200 text-blue-700 text-sm">{showToast}</div>
-        )}
       </div>
     </div>
+  );
+
+  return (
+    <TooltipProvider>
+      <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
+        {stepsProgress}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+          {/* Equipment - Left */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Wrench className="w-5 h-5 mr-2 text-blue-600" />
+                Equipment
+              </h3>
+              <div className="space-y-3">
+                {PH_LAB_EQUIPMENT.map((eq) => (
+                  <Equipment key={eq.id} id={eq.id} name={eq.name} icon={eq.icon} disabled={!true ? true : false} />
+                ))}
+              </div>
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-xs text-blue-700"><strong>Tip:</strong> Drag equipment to the workbench following the steps.</p>
+              </div>
+            </div>
+
+            <Button onClick={() => { setEquipmentOnBench([]); setTestTube(INITIAL_TESTTUBE); onReset(); }} variant="outline" className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100">Reset Experiment</Button>
+          </div>
+
+          {/* Workbench - Center */}
+          <div className="lg:col-span-6">
+            <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
+              {equipmentOnBench.find(e => e.id === 'test-tube') && (
+                <Equipment id="test-tube" name="Test Tube" icon={<Beaker className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={testTube.volume} isActive={true} />
+              )}
+
+              {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
+                <Equipment key={e.id} id={e.id} name={PH_LAB_EQUIPMENT.find(x => x.id === e.id)?.name || e.id} icon={<Beaker className="w-8 h-8" />} position={e.position} onRemove={handleRemove} onInteract={handleInteract} />
+              ))}
+            </WorkBench>
+          </div>
+
+          {/* Analysis - Right */}
+          <div className="lg:col-span-3 space-y-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Info className="w-5 h-5 mr-2 text-green-600" />
+                Live Analysis
+              </h3>
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Current Solution</h4>
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: testTube.colorHex }}></div>
+                  <span className="text-sm">{testTube.colorHex === COLORS.CLEAR ? 'Clear (no indicator)' : 'With indicator'}</span>
+                </div>
+                <p className="text-xs text-gray-600">Contents: {testTube.contents.join(', ') || 'None'}</p>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">Completed Steps</h4>
+                <div className="space-y-1">
+                  {GUIDED_STEPS.map((step) => (
+                    <div key={step.id} className={`flex items-center space-x-2 text-xs ${completedSteps.includes(step.id) ? 'text-green-600' : 'text-gray-400'}`}>
+                      <CheckCircle className="w-3 h-3" />
+                      <span>{step.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {showToast && (
+              <div className="p-3 rounded bg-blue-50 border border-blue-200 text-blue-700 text-sm">{showToast}</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </TooltipProvider>
   );
 }
