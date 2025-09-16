@@ -97,7 +97,7 @@ export default function PHComparisonApp({ onBack }: Props) {
             <CardTitle className="text-2xl">pH Comparison - Interactive Workbench</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <VirtualLab key={resetKey} experimentStarted={experimentStarted} onStartExperiment={handleStart} isRunning={isRunning} setIsRunning={setIsRunning} mode={mode} onStepComplete={handleStepComplete} onStepUndo={() => {}} onReset={handleReset} completedSteps={completedSteps} />
+            <VirtualLab key={resetKey} experimentStarted={experimentStarted} onStartExperiment={handleStart} isRunning={isRunning} setIsRunning={setIsRunning} mode={mode} onStepComplete={handleStepComplete} onStepUndo={handleStepUndo} onReset={handleReset} completedSteps={completedSteps} />
           </CardContent>
         </Card>
       </div>
