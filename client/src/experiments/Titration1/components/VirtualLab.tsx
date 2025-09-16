@@ -887,7 +887,7 @@ export default function VirtualLab({
                     <div className="absolute z-40 pointer-events-none" style={{ left: left + 60, top }}>
                       <div className="flex items-start space-x-3">
                         {/* Burette scale (downcounting 10→1) */}
-                        <div className="flex flex-col items-center bg-white p-3 rounded-lg shadow-xl ring-2 ring-blue-200 z-50" style={{ width: 80 }}>
+                        <div className="flex flex-col items-center bg-white p-3 rounded-lg shadow-xl ring-2 ring-blue-200" style={{ width: 80, zIndex: 70 }}>
                           {Array.from({ length: 10 }).map((_, idx) => {
                             const n = 10 - idx; // Downcount from 10 to 1
                             const used = burette.reading >= (10 - n + 1); // Show as used when passed
