@@ -203,7 +203,13 @@ export default function WorkBench({ step, totalSteps, equipmentItems, onNext, on
       setHistory((h) => [...h, { placed: prev }]);
       const withoutSame = prev.filter((p) => p.id !== eqId);
       const snapped = getSnapPosition(eqId, rect, withoutSame);
-      const next = [...withoutSame, { id: eqId, ...snapped }];
+      let next = [...withoutSame, { id: eqId, ...snapped }];
+
+      // If distilled water is dropped first, automatically place the china dish
+      if (eqId === "distilled-water" && !withoutSame.some((p) => p.id === "water-bath")) {
+        const dishSnap = getSnapPosition("water-bath", rect, withoutSame);
+        next = [...next, { id: "water-bath", ...dishSnap }];
+      }
 
       const tube = next.find((p) => p.id === "ignition-tube");
       const burner = next.find((p) => p.id === "bunsen-burner");
