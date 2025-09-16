@@ -191,12 +191,19 @@ export default function VirtualLab({
         const filtered = prev.filter(eq => eq.id !== 'phenolphthalein' && eq.id !== 'pipette');
 
         // Reposition burette and conical flask for better alignment in step 4
-        const repositioned = filtered.map(eq => {
-          if (eq.id === 'burette' && STEP_4_POSITIONS.burette) {
-            return { ...eq, position: STEP_4_POSITIONS.burette };
+        let bx = STEP_4_POSITIONS.burette.x;
+        let by = STEP_4_POSITIONS.burette.y;
+        const withBurette = filtered.map(eq => {
+          if (eq.id === 'burette') {
+            bx = eq.position?.x ?? bx;
+            by = eq.position?.y ?? by;
+            return { ...eq, position: { x: bx, y: by } };
           }
-          if (eq.id === 'conical-flask' && STEP_4_POSITIONS['conical-flask']) {
-            return { ...eq, position: STEP_4_POSITIONS['conical-flask'] };
+          return eq;
+        });
+        const repositioned = withBurette.map(eq => {
+          if (eq.id === 'conical-flask') {
+            return { ...eq, position: { x: bx + 52, y: by + 235 } };
           }
           return eq;
         });
