@@ -859,7 +859,7 @@ export default function VirtualLab({
                 const buretteOnBench = equipmentOnBench.find(e => e.id === 'burette');
                 const flaskOnBench = equipmentOnBench.find(e => e.id === 'conical-flask');
                 const left = (buretteOnBench?.position?.x ?? 120);
-                const top = (buretteOnBench?.position?.y ?? 100) + 200; // adjust to tip
+                const top = (buretteOnBench?.position?.y ?? 100) + 180; // adjust to tip
 
                 return (
                   <>
