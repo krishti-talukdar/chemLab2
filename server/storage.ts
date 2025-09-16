@@ -40,8 +40,11 @@ export class MemStorage implements IStorage {
     try {
       const experimentsPath = path.resolve(process.cwd(), 'data', 'experiments.json');
       const experimentsData = JSON.parse(fs.readFileSync(experimentsPath, 'utf-8'));
-      
-      experimentsData.forEach((exp: any, index: number) => {
+      const filteredExperiments = Array.isArray(experimentsData)
+        ? experimentsData.filter((exp: any) => exp.title !== "Preparation of Standard Solution of Oxalic Acid")
+        : [];
+
+      filteredExperiments.forEach((exp: any, index: number) => {
         const experiment: Experiment = {
           id: index + 1, // Use 1-based indexing for consistent IDs
           title: exp.title,
