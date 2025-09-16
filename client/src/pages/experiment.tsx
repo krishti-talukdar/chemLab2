@@ -7,6 +7,7 @@ import EquilibriumShiftApp from "@/experiments/EquilibriumShift/components/Equil
 import FeSCNEquilibriumApp from "@/experiments/FeSCNEquilibrium/components/FeSCNEquilibriumApp";
 import Titration1App from "@/experiments/Titration1/components/Titration1App";
 import LassaigneApp from "@/experiments/LassaigneTest/components/LassaigneApp";
+import PHComparisonApp from "@/experiments/PHComparison/components/PHComparisonApp";
 import GenericExperimentApp from "@/experiments/Generic/components/GenericExperimentApp";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
