@@ -204,7 +204,12 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               </div>
             </div>
 
-            <Button onClick={() => { setEquipmentOnBench([]); setTestTube(INITIAL_TESTTUBE); onReset(); }} variant="outline" className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100">Reset Experiment</Button>
+            <div className="space-y-2">
+              <Button onClick={handleUndo} variant="outline" className="w-full bg-white border-gray-200 text-gray-700 hover:bg-gray-100 flex items-center justify-center">
+                <Undo2 className="w-4 h-4 mr-2" /> Uno
+              </Button>
+              <Button onClick={() => { setEquipmentOnBench([]); setTestTube(INITIAL_TESTTUBE); setHistory([]); onReset(); }} variant="outline" className="w-full bg-red-50 border-red-200 text-red-700 hover:bg-red-100">Reset Experiment</Button>
+            </div>
           </div>
 
           {/* Workbench - Center */}
