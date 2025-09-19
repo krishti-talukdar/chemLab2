@@ -38,6 +38,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [showHclDialog, setShowHclDialog] = useState(false);
   const [hclVolume, setHclVolume] = useState<string>("5.0");
   const [previewHclVolume, setPreviewHclVolume] = useState<number | null>(5.0);
+  const [hclError, setHclError] = useState<string | null>(null);
 
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
@@ -159,9 +160,11 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
 
   const confirmAddHcl = () => {
     const v = parseFloat(hclVolume);
-    if (Number.isNaN(v) || v <= 0) return setShowToast('Enter a valid volume');
-    const clamped = Math.min(10.0, Math.max(5.0, v));
-    addToTube('HCL', clamped);
+    if (Number.isNaN(v) || v < 5.0 || v > 10.0) {
+      setHclError('Please enter a value between 5.0 and 10.0 mL');
+      return;
+    }
+    addToTube('HCL', v);
     setShowHclDialog(false);
   };
 
@@ -299,15 +302,28 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               min={5.0}
               max={10.0}
               value={hclVolume}
-              onChange={(e) => { const val = e.target.value; setHclVolume(val); const parsed = parseFloat(val); if (!Number.isNaN(parsed)) setPreviewHclVolume(Math.min(10.0, Math.max(5.0, parsed))); else setPreviewHclVolume(null); }}
+              onChange={(e) => {
+                const val = e.target.value;
+                setHclVolume(val);
+                const parsed = parseFloat(val);
+                if (!Number.isNaN(parsed)) {
+                  setPreviewHclVolume(Math.min(10.0, Math.max(5.0, parsed)));
+                  if (parsed < 5.0 || parsed > 10.0) setHclError("Please enter a value between 5.0 and 10.0 mL");
+                  else setHclError(null);
+                } else {
+                  setPreviewHclVolume(null);
+                  setHclError("Enter a valid number");
+                }
+              }}
               className="w-full border rounded-md px-3 py-2"
               placeholder="Enter volume in mL"
             />
+            {hclError && <p className="text-xs text-red-600">{hclError}</p>}
             <p className="text-xs text-gray-500">Recommended range: 5.0 – 10.0 mL</p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowHclDialog(false)}>Cancel</Button>
-            <Button onClick={confirmAddHcl}>Add Solution</Button>
+            <Button onClick={confirmAddHcl} disabled={!!hclError || Number.isNaN(parseFloat(hclVolume)) || parseFloat(hclVolume) < 5.0 || parseFloat(hclVolume) > 10.0}>Add Solution</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

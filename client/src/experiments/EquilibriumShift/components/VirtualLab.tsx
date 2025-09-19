@@ -74,6 +74,7 @@ export default function VirtualLab({
   const [showVolumeModal, setShowVolumeModal] = useState(false);
   const [selectedBottle, setSelectedBottle] = useState<string>("");
   const [volumeInput, setVolumeInput] = useState<string>("");
+  const [volumeError, setVolumeError] = useState<string | null>(null);
   const [observePulse, setObservePulse] = useState<boolean>(true);
   const [finalVolumeUsed, setFinalVolumeUsed] = useState<number | null>(null);
 
@@ -1082,11 +1083,28 @@ export default function VirtualLab({
                        selectedBottle === 'distilled-water' ? '3.0' : '50'}
                   step="0.1"
                   value={volumeInput}
-                  onChange={(e) => setVolumeInput(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setVolumeInput(val);
+                    const n = parseFloat(val);
+                    const max = selectedBottle === 'cobalt-ii-solution' ? 5.0 :
+                                 selectedBottle === 'concentrated-hcl' ? 2.0 :
+                                 selectedBottle === 'distilled-water' ? 3.0 : 50;
+                    if (Number.isNaN(n)) {
+                      setVolumeError('Enter a valid number');
+                    } else if (n < 0.1 || n > max) {
+                      setVolumeError(`Please enter a value between 0.1 and ${max} mL`);
+                    } else {
+                      setVolumeError(null);
+                    }
+                  }}
                   placeholder="Enter volume in mL"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   autoFocus
                 />
+                {volumeError && (
+                  <p className="text-xs text-red-600 mt-1">{volumeError}</p>
+                )}
                 <p className="text-xs text-gray-500 mt-1">
                   Recommended range: 0.1 - {selectedBottle === 'cobalt-ii-solution' ? '5.0' :
                                               selectedBottle === 'concentrated-hcl' ? '2.0' :
@@ -1101,6 +1119,7 @@ export default function VirtualLab({
                     setShowVolumeModal(false);
                     setVolumeInput("");
                     setSelectedBottle("");
+                    setVolumeError(null);
                   }}
                 >
                   Cancel
@@ -1112,15 +1131,15 @@ export default function VirtualLab({
                                      selectedBottle === 'concentrated-hcl' ? 2.0 :
                                      selectedBottle === 'distilled-water' ? 3.0 : 50;
 
-                    if (isNaN(volume) || volume <= 0 || volume > maxVolume) {
-                      setShowToast(`Please enter a valid volume between 0.1 and ${maxVolume} mL`);
-                      setTimeout(() => setShowToast(""), 3000);
+                    if (Number.isNaN(volume) || volume < 0.1 || volume > maxVolume) {
+                      setVolumeError(`Please enter a value between 0.1 and ${maxVolume} mL`);
                       return;
                     }
+                    setVolumeError(null);
                     handleVolumeSubmit(volume);
                   }}
                   className="bg-blue-500 hover:bg-blue-600 text-white"
-                  disabled={!volumeInput || isNaN(parseFloat(volumeInput))}
+                  disabled={!volumeInput || isNaN(parseFloat(volumeInput)) || !!volumeError}
                 >
                   Add Solution
                 </Button>
