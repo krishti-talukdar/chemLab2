@@ -231,6 +231,12 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     if (id === 'test-tube') setTestTube(INITIAL_TESTTUBE);
   };
 
+  const handleCompare = () => {
+    setCompareMode(true);
+    setEquipmentOnBench(prev => prev.filter(e => e.id === 'test-tube'));
+    onStepComplete(6);
+  };
+
   const stepsProgress = (
     <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
       <div className="flex items-center justify-between mb-4">
