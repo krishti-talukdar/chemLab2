@@ -245,7 +245,15 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               )}
 
               {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
-                <Equipment key={e.id} id={e.id} name={PH_LAB_EQUIPMENT.find(x => x.id === e.id)?.name || e.id} icon={<Beaker className="w-8 h-8" />} position={e.position} onRemove={handleRemove} onInteract={handleInteract} />
+                <Equipment
+                  key={e.id}
+                  id={e.id}
+                  name={PH_LAB_EQUIPMENT.find(x => x.id === e.id)?.name || e.id}
+                  icon={PH_LAB_EQUIPMENT.find(x => x.id === e.id)?.icon || <Beaker className="w-8 h-8" />}
+                  position={e.position}
+                  onRemove={handleRemove}
+                  onInteract={handleInteract}
+                />
               ))}
             </WorkBench>
           </div>
