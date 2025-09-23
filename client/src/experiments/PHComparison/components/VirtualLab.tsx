@@ -229,7 +229,8 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const shouldShowRestore = testTube.contents.includes('IND') && testTube.contents.includes('HCL') && testTube.colorHex === COLORS.HCL_PH2;
 
   const handleRestore = () => {
-    setTestTube(prev => ({ ...prev, contents: prev.contents.filter(c => c !== 'IND'), colorHex: COLORS.CLEAR }));
+    setHistory([]);
+    setTestTube(prev => ({ ...prev, volume: 0, contents: [], colorHex: COLORS.CLEAR }));
   };
 
   return (
