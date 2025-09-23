@@ -335,7 +335,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                   <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showAceticDialog && previewAceticVolume != null ? previewAceticVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
                   {shouldShowRestore && (
                     <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 220, transform: 'translate(-50%, 0)' }}>
-                      <Button size="sm" variant="outline" className="bg-white border-gray-300 shadow-sm animate-pulse" onClick={handleRestore}>RESET</Button>
+                      <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white shadow-sm animate-pulse" onClick={handleRestore}>RESET</Button>
                     </div>
                   )}
 
