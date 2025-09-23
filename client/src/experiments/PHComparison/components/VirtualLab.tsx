@@ -292,6 +292,13 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                       <Button size="sm" variant="outline" className="bg-white border-gray-300 shadow-sm" onClick={handleRestore}>RESTORE</Button>
                     </div>
                   )}
+
+                  {/* Show COMPARE when solution is yellow (acetic acid + indicator) */}
+                  {testTube.contents.includes('IND') && testTube.contents.includes('CH3COOH') && testTube.colorHex === COLORS.ACETIC_PH3 && (
+                    <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 260, transform: 'translate(-50%, 0)' }}>
+                      <Button size="sm" className="shadow-sm" onClick={() => onStepComplete(6)}>COMPARE</Button>
+                    </div>
+                  )}
                 </>
               )}
 
