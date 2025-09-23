@@ -165,6 +165,9 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       return;
     }
     addToTube('HCL', v);
+    if (currentStep === 2) {
+      onStepComplete(2);
+    }
     setShowHclDialog(false);
   };
 
