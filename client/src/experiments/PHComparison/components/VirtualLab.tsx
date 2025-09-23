@@ -39,6 +39,10 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [hclVolume, setHclVolume] = useState<string>("5.0");
   const [previewHclVolume, setPreviewHclVolume] = useState<number | null>(5.0);
   const [hclError, setHclError] = useState<string | null>(null);
+  const [showIndicatorDialog, setShowIndicatorDialog] = useState(false);
+  const [indicatorVolume, setIndicatorVolume] = useState<string>("0.5");
+  const [previewIndicatorVolume, setPreviewIndicatorVolume] = useState<number | null>(0.5);
+  const [indicatorError, setIndicatorError] = useState<string | null>(null);
 
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
@@ -171,10 +175,23 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     setShowHclDialog(false);
   };
 
+  const confirmAddIndicator = () => {
+    const v = parseFloat(indicatorVolume);
+    if (Number.isNaN(v) || v < 0.2 || v > 1.0) {
+      setIndicatorError('Please enter a value between 0.2 and 1.0 mL');
+      return;
+    }
+    addToTube('IND', v);
+    if (currentStep === 3 || currentStep === 5) {
+      onStepComplete(currentStep);
+    }
+    setShowIndicatorDialog(false);
+  };
+
   const handleInteract = (id: string) => {
     if (id === 'hcl-0-01m') setShowHclDialog(true);
     if (id === 'acetic-0-01m') addToTube('CH3COOH');
-    if (id === 'universal-indicator') addToTube('IND', 0.5);
+    if (id === 'universal-indicator') setShowIndicatorDialog(true);
   };
 
   const handleRemove = (id: string) => {
@@ -244,7 +261,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           <div className="lg:col-span-6">
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
               {equipmentOnBench.find(e => e.id === 'test-tube') && (
-                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : testTube.volume} isActive={true} />
+                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
               )}
 
               {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
@@ -335,6 +352,49 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowHclDialog(false)}>Cancel</Button>
             <Button onClick={confirmAddHcl} disabled={!!hclError || Number.isNaN(parseFloat(hclVolume)) || parseFloat(hclVolume) < 5.0 || parseFloat(hclVolume) > 10.0}>Add Solution</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showIndicatorDialog} onOpenChange={(open) => { setShowIndicatorDialog(open); if (!open) setPreviewIndicatorVolume(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter Volume</DialogTitle>
+            <DialogDescription>
+              Enter the volume of Universal Indicator to add to the test tube.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Volume (mL)</label>
+            <input
+              type="number"
+              step="0.1"
+              min={0.2}
+              max={1.0}
+              value={indicatorVolume}
+              onChange={(e) => {
+                const val = e.target.value;
+                setIndicatorVolume(val);
+                const parsed = parseFloat(val);
+                if (!Number.isNaN(parsed)) {
+                  const bounded = Math.min(1.0, Math.max(0.2, parsed));
+                  setPreviewIndicatorVolume(bounded);
+                  if (parsed < 0.2 || parsed > 1.0) setIndicatorError("Please enter a value between 0.2 and 1.0 mL");
+                  else setIndicatorError(null);
+                } else {
+                  setPreviewIndicatorVolume(null);
+                  setIndicatorError("Enter a valid number");
+                }
+              }}
+              className="w-full border rounded-md px-3 py-2"
+              placeholder="Enter volume in mL"
+            />
+            {indicatorError && <p className="text-xs text-red-600">{indicatorError}</p>}
+            <p className="text-xs text-gray-500">Recommended range: 0.2 – 1.0 mL</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowIndicatorDialog(false)}>Cancel</Button>
+            <Button onClick={confirmAddIndicator} disabled={!!indicatorError || Number.isNaN(parseFloat(indicatorVolume)) || parseFloat(indicatorVolume) < 0.2 || parseFloat(indicatorVolume) > 1.0}>Add Solution</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
