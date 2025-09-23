@@ -65,6 +65,16 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     return positions[equipmentId] || { x: 300, y: 250 };
   };
 
+  // Capture snapshots automatically when recognizable end-states are reached
+  useEffect(() => {
+    if (testTube.contents.includes('IND') && testTube.contents.includes('HCL') && testTube.colorHex === COLORS.HCL_PH2) {
+      setHclSample(testTube);
+    }
+    if (testTube.contents.includes('IND') && testTube.contents.includes('CH3COOH') && testTube.colorHex === COLORS.ACETIC_PH3) {
+      setAceticSample(testTube);
+    }
+  }, [testTube]);
+
   const animateColorTransition = (toColor: string) => {
     const fromColor = testTube.colorHex;
     const totalSteps = 16;
