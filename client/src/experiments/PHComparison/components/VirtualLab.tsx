@@ -48,6 +48,11 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [previewIndicatorVolume, setPreviewIndicatorVolume] = useState<number | null>(0.5);
   const [indicatorError, setIndicatorError] = useState<string | null>(null);
 
+  // Comparison mode and snapshots
+  const [compareMode, setCompareMode] = useState(false);
+  const [hclSample, setHclSample] = useState<TestTubeState | null>(null);
+  const [aceticSample, setAceticSample] = useState<TestTubeState | null>(null);
+
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
   const getEquipmentPosition = (equipmentId: string) => {
