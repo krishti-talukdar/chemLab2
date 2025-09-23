@@ -336,7 +336,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               ))}
               {/* Comparison overlay */}
               {compareMode && (
-                <div className="absolute inset-0 flex items-end justify-center pb-2 pointer-events-none">
+                <div className="absolute inset-0 flex items-end justify-center pb-28 pointer-events-none">
                   <div className="grid grid-cols-2 gap-12">
                     <div className="flex flex-col items-center">
                       <div className="relative w-32 h-72">
