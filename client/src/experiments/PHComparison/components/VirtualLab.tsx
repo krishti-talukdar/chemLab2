@@ -120,7 +120,10 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     }
 
     if (equipmentId === 'acetic-0-01m') addToTube('CH3COOH');
-    if (equipmentId === 'universal-indicator') addToTube('IND', 0.5);
+    if (equipmentId === 'universal-indicator') {
+      // Open the dialog to assign volume first; actual color change happens on confirm
+      setShowIndicatorDialog(true);
+    }
 
     const pos = getEquipmentPosition(equipmentId);
     setEquipmentOnBench(prev => {
