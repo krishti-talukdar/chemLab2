@@ -5,7 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { WorkBench } from "@/experiments/EquilibriumShift/components/WorkBench";
 import { Equipment, PH_LAB_EQUIPMENT } from "./Equipment";
 import { COLORS, INITIAL_TESTTUBE, GUIDED_STEPS, ANIMATION } from "../constants";
-import { Beaker, Info, Wrench, CheckCircle, ArrowRight, TestTube, Undo2 } from "lucide-react";
+import { Beaker, Info, Wrench, CheckCircle, ArrowRight, TestTube, Undo2, TrendingUp, Clock, FlaskConical, Home } from "lucide-react";
+import { Link } from "wouter";
 
 interface ExperimentMode {
   current: 'guided';
@@ -14,6 +15,14 @@ interface ExperimentMode {
 
 interface TestTubeState {
   id: string; volume: number; color: string; colorHex: string; contents: string[]; temperature: number;
+}
+
+interface LogEntry {
+  id: string;
+  action: string;
+  observation: string;
+  colorBefore: string;
+  colorAfter: string;
 }
 
 interface VirtualLabProps {
@@ -52,6 +61,10 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [compareMode, setCompareMode] = useState(false);
   const [hclSample, setHclSample] = useState<TestTubeState | null>(null);
   const [aceticSample, setAceticSample] = useState<TestTubeState | null>(null);
+
+  // Results modal and analysis log
+  const [showResultsModal, setShowResultsModal] = useState(false);
+  const [analysisLog, setAnalysisLog] = useState<LogEntry[]>([]);
 
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
@@ -94,17 +107,24 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const addToTube = (reagent: 'HCL'|'CH3COOH'|'IND', volume = 3) => {
     setActiveEquipment(reagent);
     setHistory(prev => [...prev, { type: reagent, volume }]);
+    const colorBefore = testTube.colorHex;
     setTimeout(() => {
       setTestTube(prev => {
         const newVol = Math.min(prev.volume + volume, 20);
         const contents = Array.from(new Set([...prev.contents, reagent]));
-        let color = prev.colorHex;
+        let nextColor = prev.colorHex;
         if (contents.includes('IND')) {
-          if (contents.includes('HCL')) color = COLORS.HCL_PH2;
-          else if (contents.includes('CH3COOH')) color = COLORS.ACETIC_PH3;
-          else color = COLORS.NEUTRAL;
-          animateColorTransition(color);
+          if (contents.includes('HCL')) nextColor = COLORS.HCL_PH2;
+          else if (contents.includes('CH3COOH')) nextColor = COLORS.ACETIC_PH3;
+          else nextColor = COLORS.NEUTRAL;
+          animateColorTransition(nextColor);
         }
+        // Log this action for analysis timeline
+        const label = reagent === 'HCL' ? 'Added HCl' : reagent === 'CH3COOH' ? 'Added CH3COOH' : 'Added Universal Indicator';
+        const observation = contents.includes('IND')
+          ? (contents.includes('HCL') ? 'Indicator turned red/orange → strong acid (~pH 2)' : contents.includes('CH3COOH') ? 'Indicator turned yellow/orange → weak acid (~pH 3–4)' : 'Indicator added to neutral solution')
+          : 'Solution color unchanged (no indicator)';
+        setAnalysisLog(prevLog => [...prevLog, { id: `${Date.now()}-${Math.random()}`, action: `${label} (${volume.toFixed(1)} mL)`, observation, colorBefore, colorAfter: nextColor }]);
         return { ...prev, volume: newVol, contents };
       });
       setActiveEquipment("");
@@ -235,6 +255,11 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     setCompareMode(true);
     setEquipmentOnBench(prev => prev.filter(e => e.id === 'test-tube'));
     onStepComplete(6);
+    setShowToast('Results opening in 5 seconds...');
+    setTimeout(() => setShowToast(""), 3000);
+    setTimeout(() => {
+      setShowResultsModal(true);
+    }, 5000);
   };
 
   const stepsProgress = (
@@ -310,7 +335,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                   <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showAceticDialog && previewAceticVolume != null ? previewAceticVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
                   {shouldShowRestore && (
                     <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 220, transform: 'translate(-50%, 0)' }}>
-                      <Button size="sm" variant="outline" className="bg-white border-gray-300 shadow-sm" onClick={handleRestore}>RESTORE</Button>
+                      <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white shadow-sm animate-pulse" onClick={handleRestore}>RESET</Button>
                     </div>
                   )}
 
@@ -397,6 +422,186 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           </div>
         </div>
       </div>
+
+      {/* Results & Analysis Modal */}
+      <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-green-700 bg-clip-text text-transparent flex items-center">
+              <TrendingUp className="w-6 h-6 mr-2 text-blue-600" />
+              Experiment Results & Analysis
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Complete analysis of your pH comparison experiment using universal indicator
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 mt-4">
+            {/* Per-Solution Experiment Summaries */}
+            <div className="bg-gradient-to-r from-green-50 to-amber-50 rounded-lg p-6 border border-emerald-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Experiment Summary (Per Solution)</h3>
+              {(() => {
+                const hclSteps = [1,2,3].filter(id => completedSteps.includes(id)).length;
+                const aceticSteps = [1,4,5].filter(id => completedSteps.includes(id)).length;
+                const hclActions = analysisLog.filter(l => l.action.includes('HCl') || l.observation.toLowerCase().includes('strong acid'));
+                const aceticActions = analysisLog.filter(l => l.action.includes('CH3COOH') || l.observation.toLowerCase().includes('weak acid'));
+                const hclVol = (hclSample?.volume ?? 0).toFixed(1);
+                const aceticVol = (aceticSample?.volume ?? 0).toFixed(1);
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* HCl (Red/Orange) */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border border-red-200">
+                      <div className="flex items-center mb-3">
+                        <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: COLORS.HCL_PH2 }} />
+                        <h4 className="font-semibold text-gray-800">0.01 M HCl + Indicator</h4>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-red-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-green-700">{hclSteps}</div>
+                          <div className="text-xs text-gray-600">Steps Completed</div>
+                        </div>
+                        <div className="bg-red-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-blue-700">{hclActions.length}</div>
+                          <div className="text-xs text-gray-600">Actions Performed</div>
+                        </div>
+                        <div className="bg-red-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-purple-700">{hclVol} mL</div>
+                          <div className="text-xs text-gray-600">Total Volume</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CH3COOH (Yellow) */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border border-amber-200">
+                      <div className="flex items-center mb-3">
+                        <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: COLORS.ACETIC_PH3 }} />
+                        <h4 className="font-semibold text-gray-800">0.01 M CH3COOH + Indicator</h4>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-amber-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-green-700">{aceticSteps}</div>
+                          <div className="text-xs text-gray-600">Steps Completed</div>
+                        </div>
+                        <div className="bg-amber-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-blue-700">{aceticActions.length}</div>
+                          <div className="text-xs text-gray-600">Actions Performed</div>
+                        </div>
+                        <div className="bg-amber-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-purple-700">{aceticVol} mL</div>
+                          <div className="text-xs text-gray-600">Total Volume</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* pH Comparison Analysis */}
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">pH Comparison Analysis</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <h4 className="font-semibold text-red-800 mb-1">0.01 M HCl + Universal Indicator</h4>
+                  <p className="text-sm text-red-700 mb-2">Strong acid; expected indicator color: red/orange (≈ pH 2).</p>
+                  <div className="flex items-center space-x-2 text-xs">
+                    <span className="w-4 h-4 rounded-full border" style={{ backgroundColor: COLORS.HCL_PH2 }}></span>
+                    <span>Observed acidic color implies higher [H⁺] than CH3COOH.</span>
+                  </div>
+                </div>
+                <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                  <h4 className="font-semibold text-amber-800 mb-1">0.01 M CH3COOH + Universal Indicator</h4>
+                  <p className="text-sm text-amber-700 mb-2">Weak acid; expected indicator color: yellow/orange (≈ pH 3–4).</p>
+                  <div className="flex items-center space-x-2 text-xs">
+                    <span className="w-4 h-4 rounded-full border" style={{ backgroundColor: COLORS.ACETIC_PH3 }}></span>
+                    <span>Less acidic than HCl at same molarity.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Timeline */}
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <Clock className="w-5 h-5 mr-2 text-gray-600" />
+                Action Timeline
+              </h3>
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {analysisLog.map((log, index) => (
+                  <div key={log.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">{index + 1}</div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-800">{log.action}</div>
+                      <div className="text-sm text-gray-600">{log.observation}</div>
+                      <div className="flex items-center space-x-4 mt-2 text-xs">
+                        <span className="flex items-center"><span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: log.colorBefore }}></span>Before</span>
+                        <span>→</span>
+                        <span className="flex items-center"><span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: log.colorAfter }}></span>After</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Final Experimental State (Both Solutions) */}
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Final Experimental State</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* HCl + Indicator (Red/Orange) */}
+                <div className="rounded-lg border border-red-200 p-4 bg-red-50/40">
+                  <div className="flex items-center mb-3">
+                    <span className="w-4 h-4 rounded-full mr-2 border" style={{ backgroundColor: COLORS.HCL_PH2 }} />
+                    <h4 className="font-semibold text-gray-800">0.01 M HCl + Indicator (≈ pH 2)</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Current Solution</h5>
+                      <p className="text-sm text-gray-600">Contents: {hclSample ? hclSample.contents.join(', ') : 'Not recorded'}</p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Contents Analysis</h5>
+                      <div className="space-y-1 text-sm">
+                        <div>Volume: <span className="font-medium">{(hclSample?.volume ?? 0).toFixed(1)} mL</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CH3COOH + Indicator (Yellow) */}
+                <div className="rounded-lg border border-amber-200 p-4 bg-amber-50/40">
+                  <div className="flex items-center mb-3">
+                    <span className="w-4 h-4 rounded-full mr-2 border" style={{ backgroundColor: COLORS.ACETIC_PH3 }} />
+                    <h4 className="font-semibold text-gray-800">0.01 M CH3COOH + Indicator (≈ pH 3–4)</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Current Solution</h5>
+                      <p className="text-sm text-gray-600">Contents: {aceticSample ? aceticSample.contents.join(', ') : 'Not recorded'}</p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Contents Analysis</h5>
+                      <div className="space-y-1 text-sm">
+                        <div>Volume: <span className="font-medium">{(aceticSample?.volume ?? 0).toFixed(1)} mL</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between mt-6">
+            <Link href="/">
+              <Button className="bg-gray-500 hover:bg-gray-600 text-white flex items-center space-x-2">
+                <Home className="w-4 h-4" />
+                <span>Return to Experiments</span>
+              </Button>
+            </Link>
+            <Button onClick={() => setShowResultsModal(false)} className="bg-blue-500 hover:bg-blue-600 text-white">Close Analysis</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showHclDialog} onOpenChange={(open) => { setShowHclDialog(open); if (!open) setPreviewHclVolume(null); }}>
         <DialogContent>
