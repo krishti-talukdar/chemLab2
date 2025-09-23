@@ -39,6 +39,10 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [hclVolume, setHclVolume] = useState<string>("5.0");
   const [previewHclVolume, setPreviewHclVolume] = useState<number | null>(5.0);
   const [hclError, setHclError] = useState<string | null>(null);
+  const [showAceticDialog, setShowAceticDialog] = useState(false);
+  const [aceticVolume, setAceticVolume] = useState<string>("5.0");
+  const [previewAceticVolume, setPreviewAceticVolume] = useState<number | null>(5.0);
+  const [aceticError, setAceticError] = useState<string | null>(null);
   const [showIndicatorDialog, setShowIndicatorDialog] = useState(false);
   const [indicatorVolume, setIndicatorVolume] = useState<string>("0.5");
   const [previewIndicatorVolume, setPreviewIndicatorVolume] = useState<number | null>(0.5);
@@ -119,7 +123,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       return;
     }
 
-    if (equipmentId === 'acetic-0-01m') addToTube('CH3COOH');
+    // Do not add acetic acid or open dialog on drop; dialog opens when the placed bottle is pressed
     // Do not add indicator or open dialog on drop; dialog opens when the placed bottle is pressed
 
     const pos = getEquipmentPosition(equipmentId);
@@ -175,6 +179,19 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     setShowHclDialog(false);
   };
 
+  const confirmAddAcetic = () => {
+    const v = parseFloat(aceticVolume);
+    if (Number.isNaN(v) || v < 5.0 || v > 10.0) {
+      setAceticError('Please enter a value between 5.0 and 10.0 mL');
+      return;
+    }
+    addToTube('CH3COOH', v);
+    if (currentStep === 4) {
+      onStepComplete(4);
+    }
+    setShowAceticDialog(false);
+  };
+
   const confirmAddIndicator = () => {
     const v = parseFloat(indicatorVolume);
     if (Number.isNaN(v) || v < 0.2 || v > 1.0) {
@@ -190,7 +207,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
 
   const handleInteract = (id: string) => {
     if (id === 'hcl-0-01m') setShowHclDialog(true);
-    if (id === 'acetic-0-01m') addToTube('CH3COOH');
+    if (id === 'acetic-0-01m') setShowAceticDialog(true);
     if (id === 'universal-indicator') setShowIndicatorDialog(true);
   };
 
@@ -269,7 +286,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
               {equipmentOnBench.find(e => e.id === 'test-tube') && (
                 <>
-                  <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
+                  <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showAceticDialog && previewAceticVolume != null ? previewAceticVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
                   {shouldShowRestore && (
                     <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 220, transform: 'translate(-50%, 0)' }}>
                       <Button size="sm" variant="outline" className="bg-white border-gray-300 shadow-sm" onClick={handleRestore}>RESTORE</Button>
@@ -366,6 +383,48 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowHclDialog(false)}>Cancel</Button>
             <Button onClick={confirmAddHcl} disabled={!!hclError || Number.isNaN(parseFloat(hclVolume)) || parseFloat(hclVolume) < 5.0 || parseFloat(hclVolume) > 10.0}>Add Solution</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showAceticDialog} onOpenChange={(open) => { setShowAceticDialog(open); if (!open) setPreviewAceticVolume(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter Volume</DialogTitle>
+            <DialogDescription>
+              Enter the volume of 0.01 M CH3COOH to add to the test tube.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Volume (mL)</label>
+            <input
+              type="number"
+              step="0.1"
+              min={5.0}
+              max={10.0}
+              value={aceticVolume}
+              onChange={(e) => {
+                const val = e.target.value;
+                setAceticVolume(val);
+                const parsed = parseFloat(val);
+                if (!Number.isNaN(parsed)) {
+                  setPreviewAceticVolume(Math.min(10.0, Math.max(5.0, parsed)));
+                  if (parsed < 5.0 || parsed > 10.0) setAceticError("Please enter a value between 5.0 and 10.0 mL");
+                  else setAceticError(null);
+                } else {
+                  setPreviewAceticVolume(null);
+                  setAceticError("Enter a valid number");
+                }
+              }}
+              className="w-full border rounded-md px-3 py-2"
+              placeholder="Enter volume in mL"
+            />
+            {aceticError && <p className="text-xs text-red-600">{aceticError}</p>}
+            <p className="text-xs text-gray-500">Recommended range: 5.0 – 10.0 mL</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAceticDialog(false)}>Cancel</Button>
+            <Button onClick={confirmAddAcetic} disabled={!!aceticError || Number.isNaN(parseFloat(aceticVolume)) || parseFloat(aceticVolume) < 5.0 || parseFloat(aceticVolume) > 10.0}>Add Solution</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
