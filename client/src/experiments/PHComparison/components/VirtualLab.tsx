@@ -563,7 +563,6 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                       <h5 className="font-medium text-gray-700 mb-2">Contents Analysis</h5>
                       <div className="space-y-1 text-sm">
                         <div>Volume: <span className="font-medium">{(hclSample?.volume ?? 0).toFixed(1)} mL</span></div>
-                        <div>Color Code: <span className="font-medium">{COLORS.HCL_PH2}</span></div>
                       </div>
                     </div>
                   </div>
@@ -584,7 +583,6 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                       <h5 className="font-medium text-gray-700 mb-2">Contents Analysis</h5>
                       <div className="space-y-1 text-sm">
                         <div>Volume: <span className="font-medium">{(aceticSample?.volume ?? 0).toFixed(1)} mL</span></div>
-                        <div>Color Code: <span className="font-medium">{COLORS.ACETIC_PH3}</span></div>
                       </div>
                     </div>
                   </div>
