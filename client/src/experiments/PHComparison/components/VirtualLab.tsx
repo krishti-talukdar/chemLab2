@@ -437,28 +437,6 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           </DialogHeader>
 
           <div className="space-y-6 mt-4">
-            {/* Experiment Summary */}
-            <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-lg p-6 border border-blue-200">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FlaskConical className="w-5 h-5 mr-2 text-blue-600" />
-                Experiment Summary
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="text-2xl font-bold text-green-600">{completedSteps.length}</div>
-                  <div className="text-sm text-gray-600">Steps Completed</div>
-                </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="text-2xl font-bold text-blue-600">{analysisLog.length}</div>
-                  <div className="text-sm text-gray-600">Actions Performed</div>
-                </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="text-2xl font-bold text-purple-600">{testTube.volume.toFixed(1)} mL</div>
-                  <div className="text-sm text-gray-600">Total Volume</div>
-                </div>
-              </div>
-            </div>
-
             {/* Per-Solution Experiment Summaries */}
             <div className="bg-gradient-to-r from-green-50 to-amber-50 rounded-lg p-6 border border-emerald-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Experiment Summary (Per Solution)</h3>
