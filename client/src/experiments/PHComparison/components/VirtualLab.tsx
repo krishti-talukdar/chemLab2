@@ -48,6 +48,11 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const [previewIndicatorVolume, setPreviewIndicatorVolume] = useState<number | null>(0.5);
   const [indicatorError, setIndicatorError] = useState<string | null>(null);
 
+  // Comparison mode and snapshots
+  const [compareMode, setCompareMode] = useState(false);
+  const [hclSample, setHclSample] = useState<TestTubeState | null>(null);
+  const [aceticSample, setAceticSample] = useState<TestTubeState | null>(null);
+
   useEffect(() => { setCurrentStep((mode.currentGuidedStep || 0) + 1); }, [mode.currentGuidedStep]);
 
   const getEquipmentPosition = (equipmentId: string) => {
@@ -59,6 +64,16 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     };
     return positions[equipmentId] || { x: 300, y: 250 };
   };
+
+  // Capture snapshots automatically when recognizable end-states are reached
+  useEffect(() => {
+    if (testTube.contents.includes('IND') && testTube.contents.includes('HCL') && testTube.colorHex === COLORS.HCL_PH2) {
+      setHclSample(testTube);
+    }
+    if (testTube.contents.includes('IND') && testTube.contents.includes('CH3COOH') && testTube.colorHex === COLORS.ACETIC_PH3) {
+      setAceticSample(testTube);
+    }
+  }, [testTube]);
 
   const animateColorTransition = (toColor: string) => {
     const fromColor = testTube.colorHex;
@@ -216,6 +231,12 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     if (id === 'test-tube') setTestTube(INITIAL_TESTTUBE);
   };
 
+  const handleCompare = () => {
+    setCompareMode(true);
+    setEquipmentOnBench(prev => prev.filter(e => e.id === 'test-tube'));
+    onStepComplete(6);
+  };
+
   const stepsProgress = (
     <div className="mb-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -284,12 +305,19 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           {/* Workbench - Center */}
           <div className="lg:col-span-6">
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
-              {equipmentOnBench.find(e => e.id === 'test-tube') && (
+              {equipmentOnBench.find(e => e.id === 'test-tube') && !compareMode && (
                 <>
                   <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showAceticDialog && previewAceticVolume != null ? previewAceticVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
                   {shouldShowRestore && (
                     <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 220, transform: 'translate(-50%, 0)' }}>
                       <Button size="sm" variant="outline" className="bg-white border-gray-300 shadow-sm" onClick={handleRestore}>RESTORE</Button>
+                    </div>
+                  )}
+
+                  {/* Show COMPARE when solution is yellow (acetic acid + indicator) */}
+                  {testTube.contents.includes('IND') && testTube.contents.includes('CH3COOH') && testTube.colorHex === COLORS.ACETIC_PH3 && (
+                    <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 260, transform: 'translate(-50%, 0)' }}>
+                      <Button size="sm" className="shadow-sm" onClick={handleCompare}>COMPARE</Button>
                     </div>
                   )}
                 </>
@@ -306,6 +334,31 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                   onInteract={handleInteract}
                 />
               ))}
+              {/* Comparison overlay */}
+              {compareMode && (
+                <div className="absolute inset-0 flex items-end justify-center pb-28 pointer-events-none">
+                  <div className="grid grid-cols-2 gap-12">
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-32 h-72">
+                        <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
+                        <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
+                          <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(0, Math.min(150, ((Math.min(Math.max((hclSample?.volume ?? 10), 0), 20) / 20) * 150)))}px`, backgroundColor: COLORS.HCL_PH2, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium mt-2">0.01 M HCl + Indicator</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-32 h-72">
+                        <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
+                        <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
+                          <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(0, Math.min(150, ((Math.min(Math.max((aceticSample?.volume ?? 10), 0), 20) / 20) * 150)))}px`, backgroundColor: COLORS.ACETIC_PH3, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium mt-2">0.01 M CH3COOH + Indicator</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </WorkBench>
           </div>
 
