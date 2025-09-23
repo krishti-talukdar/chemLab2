@@ -459,6 +459,66 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               </div>
             </div>
 
+            {/* Per-Solution Experiment Summaries */}
+            <div className="bg-gradient-to-r from-green-50 to-amber-50 rounded-lg p-6 border border-emerald-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Experiment Summary (Per Solution)</h3>
+              {(() => {
+                const hclSteps = [1,2,3].filter(id => completedSteps.includes(id)).length;
+                const aceticSteps = [1,4,5].filter(id => completedSteps.includes(id)).length;
+                const hclActions = analysisLog.filter(l => l.action.includes('HCl') || l.observation.toLowerCase().includes('strong acid'));
+                const aceticActions = analysisLog.filter(l => l.action.includes('CH3COOH') || l.observation.toLowerCase().includes('weak acid'));
+                const hclVol = (hclSample?.volume ?? 0).toFixed(1);
+                const aceticVol = (aceticSample?.volume ?? 0).toFixed(1);
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* HCl (Red/Orange) */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border border-red-200">
+                      <div className="flex items-center mb-3">
+                        <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: COLORS.HCL_PH2 }} />
+                        <h4 className="font-semibold text-gray-800">0.01 M HCl + Indicator</h4>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-red-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-green-700">{hclSteps}</div>
+                          <div className="text-xs text-gray-600">Steps Completed</div>
+                        </div>
+                        <div className="bg-red-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-blue-700">{hclActions.length}</div>
+                          <div className="text-xs text-gray-600">Actions Performed</div>
+                        </div>
+                        <div className="bg-red-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-purple-700">{hclVol} mL</div>
+                          <div className="text-xs text-gray-600">Total Volume</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CH3COOH (Yellow) */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border border-amber-200">
+                      <div className="flex items-center mb-3">
+                        <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: COLORS.ACETIC_PH3 }} />
+                        <h4 className="font-semibold text-gray-800">0.01 M CH3COOH + Indicator</h4>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-amber-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-green-700">{aceticSteps}</div>
+                          <div className="text-xs text-gray-600">Steps Completed</div>
+                        </div>
+                        <div className="bg-amber-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-blue-700">{aceticActions.length}</div>
+                          <div className="text-xs text-gray-600">Actions Performed</div>
+                        </div>
+                        <div className="bg-amber-50 rounded-md p-3 text-center">
+                          <div className="text-xl font-bold text-purple-700">{aceticVol} mL</div>
+                          <div className="text-xs text-gray-600">Total Volume</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
             {/* pH Comparison Analysis */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">pH Comparison Analysis</h3>
