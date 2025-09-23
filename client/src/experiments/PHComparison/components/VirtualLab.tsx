@@ -226,6 +226,12 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     </div>
   );
 
+  const shouldShowRestore = testTube.contents.includes('IND') && testTube.contents.includes('HCL') && testTube.colorHex === COLORS.HCL_PH2;
+
+  const handleRestore = () => {
+    setTestTube(prev => ({ ...prev, contents: prev.contents.filter(c => c !== 'IND'), colorHex: COLORS.CLEAR }));
+  };
+
   return (
     <TooltipProvider>
       <div className="w-full h-full bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-6">
@@ -261,7 +267,14 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
           <div className="lg:col-span-6">
             <WorkBench onDrop={handleEquipmentDrop} isRunning={isRunning} currentStep={currentStep}>
               {equipmentOnBench.find(e => e.id === 'test-tube') && (
-                <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
+                <>
+                  <Equipment id="test-tube" name="20 mL Test Tube" icon={<TestTube className="w-8 h-8" />} position={getEquipmentPosition('test-tube')} onRemove={handleRemove} onInteract={() => {}} color={testTube.colorHex} volume={testTube.volume} displayVolume={showHclDialog && previewHclVolume != null ? previewHclVolume : showIndicatorDialog && previewIndicatorVolume != null ? Math.min(20, testTube.volume + previewIndicatorVolume) : testTube.volume} isActive={true} />
+                  {shouldShowRestore && (
+                    <div style={{ position: 'absolute', left: getEquipmentPosition('test-tube').x, top: getEquipmentPosition('test-tube').y + 220, transform: 'translate(-50%, 0)' }}>
+                      <Button size="sm" variant="outline" className="bg-white border-gray-300 shadow-sm" onClick={handleRestore}>RESTORE</Button>
+                    </div>
+                  )}
+                </>
               )}
 
               {equipmentOnBench.filter(e => e.id !== 'test-tube').map(e => (
