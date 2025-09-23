@@ -566,25 +566,49 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               </div>
             </div>
 
-            {/* Final Experimental State */}
+            {/* Final Experimental State (Both Solutions) */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Final Experimental State</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">Current Solution</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 rounded-full border-2 border-gray-300" style={{ backgroundColor: testTube.colorHex }}></div>
-                      <span className="text-sm font-medium">{testTube.colorHex === COLORS.HCL_PH2 ? 'HCl + Indicator (≈ pH 2)' : testTube.colorHex === COLORS.ACETIC_PH3 ? 'CH3COOH + Indicator (≈ pH 3–4)' : 'Neutral/No indicator'}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* HCl + Indicator (Red/Orange) */}
+                <div className="rounded-lg border border-red-200 p-4 bg-red-50/40">
+                  <div className="flex items-center mb-3">
+                    <span className="w-4 h-4 rounded-full mr-2 border" style={{ backgroundColor: COLORS.HCL_PH2 }} />
+                    <h4 className="font-semibold text-gray-800">0.01 M HCl + Indicator (≈ pH 2)</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Current Solution</h5>
+                      <p className="text-sm text-gray-600">Contents: {hclSample ? hclSample.contents.join(', ') : 'Not recorded'}</p>
                     </div>
-                    <p className="text-sm text-gray-600">Contents: {testTube.contents.join(', ')}</p>
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Contents Analysis</h5>
+                      <div className="space-y-1 text-sm">
+                        <div>Volume: <span className="font-medium">{(hclSample?.volume ?? 0).toFixed(1)} mL</span></div>
+                        <div>Color Code: <span className="font-medium">{COLORS.HCL_PH2}</span></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">Contents Analysis</h4>
-                  <div className="space-y-1 text-sm">
-                    <div>Volume: <span className="font-medium">{testTube.volume.toFixed(1)} mL</span></div>
-                    <div>Color Code: <span className="font-medium">{testTube.colorHex}</span></div>
+
+                {/* CH3COOH + Indicator (Yellow) */}
+                <div className="rounded-lg border border-amber-200 p-4 bg-amber-50/40">
+                  <div className="flex items-center mb-3">
+                    <span className="w-4 h-4 rounded-full mr-2 border" style={{ backgroundColor: COLORS.ACETIC_PH3 }} />
+                    <h4 className="font-semibold text-gray-800">0.01 M CH3COOH + Indicator (≈ pH 3–4)</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Current Solution</h5>
+                      <p className="text-sm text-gray-600">Contents: {aceticSample ? aceticSample.contents.join(', ') : 'Not recorded'}</p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-700 mb-2">Contents Analysis</h5>
+                      <div className="space-y-1 text-sm">
+                        <div>Volume: <span className="font-medium">{(aceticSample?.volume ?? 0).toFixed(1)} mL</span></div>
+                        <div>Color Code: <span className="font-medium">{COLORS.ACETIC_PH3}</span></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
