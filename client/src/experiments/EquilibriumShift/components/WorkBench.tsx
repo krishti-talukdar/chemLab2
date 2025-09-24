@@ -64,20 +64,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
         `,
       }}
     >
-      {/* Laboratory surface pattern */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `
-            linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
-            linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
-            linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
-            linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)
-          `,
-          backgroundSize: "20px 20px",
-          backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
-        }}
-      />
 
       {/* Step indicator */}
       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-md border border-gray-200">
@@ -132,17 +118,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
         {children}
       </div>
 
-      {/* Grid lines for positioning */}
-      <div
-        className="absolute inset-0 opacity-5 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: "50px 50px",
-        }}
-      />
     </div>
   );
 };

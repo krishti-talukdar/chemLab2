@@ -71,9 +71,9 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   const getEquipmentPosition = (equipmentId: string) => {
     const positions: Record<string, { x: number; y: number }> = {
       'test-tube': { x: 200, y: 250 },
-      'hcl-0-01m': { x: 500, y: 130 },
-      'acetic-0-01m': { x: 500, y: 300 },
-      'universal-indicator': { x: 500, y: 470 },
+      'hcl-0-01m': { x: 500, y: 200 },
+      'acetic-0-01m': { x: 500, y: 360 },
+      'universal-indicator': { x: 500, y: 520 },
     };
     return positions[equipmentId] || { x: 300, y: 250 };
   };
@@ -169,6 +169,18 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   };
 
   const handleUndo = () => {
+    // If we're in comparison/results, exit that first
+    if (compareMode || showResultsModal) {
+      setCompareMode(false);
+      setShowResultsModal(false);
+      setHclSample(null);
+      setAceticSample(null);
+      if (onStepUndo) onStepUndo();
+      setShowToast('Exited comparison');
+      setTimeout(() => setShowToast("") , 1200);
+      return;
+    }
+
     if (history.length === 0) {
       const hasTube = !!equipmentOnBench.find(e => e.id === 'test-tube');
       if (hasTube) {
@@ -184,6 +196,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     const last = history[history.length - 1];
     const remaining = history.slice(0, -1);
     setHistory(remaining);
+    setAnalysisLog(prev => prev.slice(0, -1));
     setTestTube(prev => {
       const volume = Math.max(0, prev.volume - last.volume);
       const hasEarlier = remaining.some(h => h.type === last.type);
@@ -196,6 +209,18 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       else colorHex = COLORS.NEUTRAL;
       return { ...prev, volume, contents, colorHex };
     });
+
+    // Also remove the corresponding bottle from the bench if it has no earlier usage
+    const idMap: Record<'HCL' | 'CH3COOH' | 'IND', string> = {
+      HCL: 'hcl-0-01m',
+      CH3COOH: 'acetic-0-01m',
+      IND: 'universal-indicator',
+    };
+    const hasEarlier = remaining.some(h => h.type === last.type);
+    if (!hasEarlier) {
+      setEquipmentOnBench(prev => prev.filter(e => e.id !== idMap[last.type]));
+    }
+
     if (onStepUndo) onStepUndo();
     setShowToast('Last action undone');
     setTimeout(() => setShowToast(""), 1200);
@@ -363,16 +388,16 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               {compareMode && (
                 <div className="absolute inset-0 pointer-events-none">
                   {/* pH scale at the top center to use the empty workbench space */}
-                  <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                  <div className="absolute top-24 left-1/2 -translate-x-1/2">
                     <img
                       src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F7d9627b53247494cb290097a41570c50?format=webp&width=800"
                       alt="Universal pH color chart"
-                      className="max-w-[720px] w-[90vw] md:w-[700px] h-auto drop-shadow-md opacity-95"
+                      className="max-w-[560px] w-[75vw] md:w-[520px] h-auto drop-shadow-md opacity-95"
                     />
                   </div>
 
                   {/* Two final samples pinned to the bottom */}
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-28">
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-16">
                     <div className="grid grid-cols-2 gap-12">
                       <div className="flex flex-col items-center">
                         <div className="relative w-32 h-72">
