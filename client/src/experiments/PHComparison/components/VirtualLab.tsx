@@ -196,6 +196,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     const last = history[history.length - 1];
     const remaining = history.slice(0, -1);
     setHistory(remaining);
+    setAnalysisLog(prev => prev.slice(0, -1));
     setTestTube(prev => {
       const volume = Math.max(0, prev.volume - last.volume);
       const hasEarlier = remaining.some(h => h.type === last.type);
