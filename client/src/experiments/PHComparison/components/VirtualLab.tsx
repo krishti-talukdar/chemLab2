@@ -169,6 +169,18 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
   };
 
   const handleUndo = () => {
+    // If we're in comparison/results, exit that first
+    if (compareMode || showResultsModal) {
+      setCompareMode(false);
+      setShowResultsModal(false);
+      setHclSample(null);
+      setAceticSample(null);
+      if (onStepUndo) onStepUndo();
+      setShowToast('Exited comparison');
+      setTimeout(() => setShowToast("") , 1200);
+      return;
+    }
+
     if (history.length === 0) {
       const hasTube = !!equipmentOnBench.find(e => e.id === 'test-tube');
       if (hasTube) {
@@ -196,6 +208,18 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
       else colorHex = COLORS.NEUTRAL;
       return { ...prev, volume, contents, colorHex };
     });
+
+    // Also remove the corresponding bottle from the bench if it has no earlier usage
+    const idMap: Record<'HCL' | 'CH3COOH' | 'IND', string> = {
+      HCL: 'hcl-0-01m',
+      CH3COOH: 'acetic-0-01m',
+      IND: 'universal-indicator',
+    };
+    const hasEarlier = remaining.some(h => h.type === last.type);
+    if (!hasEarlier) {
+      setEquipmentOnBench(prev => prev.filter(e => e.id !== idMap[last.type]));
+    }
+
     if (onStepUndo) onStepUndo();
     setShowToast('Last action undone');
     setTimeout(() => setShowToast(""), 1200);
