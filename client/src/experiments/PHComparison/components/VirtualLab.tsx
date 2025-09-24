@@ -367,7 +367,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
                     <img
                       src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F7d9627b53247494cb290097a41570c50?format=webp&width=800"
                       alt="Universal pH color chart"
-                      className="max-w-[720px] w-[90vw] md:w-[700px] h-auto drop-shadow-md opacity-95"
+                      className="max-w-[560px] w-[75vw] md:w-[520px] h-auto drop-shadow-md opacity-95"
                     />
                   </div>
 
