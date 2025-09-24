@@ -255,11 +255,11 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
     setCompareMode(true);
     setEquipmentOnBench(prev => prev.filter(e => e.id === 'test-tube'));
     onStepComplete(6);
-    setShowToast('Results opening in 5 seconds...');
+    setShowToast('Results opening in 10 seconds...');
     setTimeout(() => setShowToast(""), 3000);
     setTimeout(() => {
       setShowResultsModal(true);
-    }, 5000);
+    }, 10000);
   };
 
   const stepsProgress = (
@@ -361,25 +361,37 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               ))}
               {/* Comparison overlay */}
               {compareMode && (
-                <div className="absolute inset-0 flex items-end justify-center pb-28 pointer-events-none">
-                  <div className="grid grid-cols-2 gap-12">
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-32 h-72">
-                        <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
-                        <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
-                          <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(0, Math.min(150, ((Math.min(Math.max((hclSample?.volume ?? 10), 0), 20) / 20) * 150)))}px`, backgroundColor: COLORS.HCL_PH2, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
+                <div className="absolute inset-0 pointer-events-none">
+                  {/* pH scale at the top center to use the empty workbench space */}
+                  <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F7d9627b53247494cb290097a41570c50?format=webp&width=800"
+                      alt="Universal pH color chart"
+                      className="max-w-[720px] w-[90vw] md:w-[700px] h-auto drop-shadow-md opacity-95"
+                    />
+                  </div>
+
+                  {/* Two final samples pinned to the bottom */}
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-28">
+                    <div className="grid grid-cols-2 gap-12">
+                      <div className="flex flex-col items-center">
+                        <div className="relative w-32 h-72">
+                          <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
+                          <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
+                            <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(0, Math.min(150, ((Math.min(Math.max((hclSample?.volume ?? 10), 0), 20) / 20) * 150)))}px`, backgroundColor: COLORS.HCL_PH2, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
+                          </div>
                         </div>
+                        <span className="text-sm font-medium mt-2">0.01 M HCl + Indicator</span>
                       </div>
-                      <span className="text-sm font-medium mt-2">0.01 M HCl + Indicator</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-32 h-72">
-                        <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
-                        <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
-                          <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(0, Math.min(150, ((Math.min(Math.max((aceticSample?.volume ?? 10), 0), 20) / 20) * 150)))}px`, backgroundColor: COLORS.ACETIC_PH3, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
+                      <div className="flex flex-col items-center">
+                        <div className="relative w-32 h-72">
+                          <img src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F3dd94cfaa2fc4876a1e3759c6d76db7e?format=webp&width=800" alt="Test tube" className="w-full h-full object-contain" />
+                          <div className="absolute left-1/2 -translate-x-1/2 transition-all" style={{ bottom: '28px', width: '28px', height: '150px', overflow: 'hidden', borderRadius: '0 0 14px 14px' }}>
+                            <div className="absolute left-0 right-0 bottom-0 transition-all duration-500" style={{ height: `${Math.max(0, Math.min(150, ((Math.min(Math.max((aceticSample?.volume ?? 10), 0), 20) / 20) * 150)))}px`, backgroundColor: COLORS.ACETIC_PH3, boxShadow: 'inset 0 0 6px rgba(0,0,0,0.25), 0 0 3px rgba(0,0,0,0.1)', opacity: 0.85 }} />
+                          </div>
                         </div>
+                        <span className="text-sm font-medium mt-2">0.01 M CH3COOH + Indicator</span>
                       </div>
-                      <span className="text-sm font-medium mt-2">0.01 M CH3COOH + Indicator</span>
                     </div>
                   </div>
                 </div>
