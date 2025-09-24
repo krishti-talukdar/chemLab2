@@ -388,7 +388,7 @@ export default function VirtualLab({ experimentStarted, onStartExperiment, isRun
               {compareMode && (
                 <div className="absolute inset-0 pointer-events-none">
                   {/* pH scale at the top center to use the empty workbench space */}
-                  <div className="absolute top-6 left-1/2 -translate-x-1/2">
+                  <div className="absolute top-16 left-1/2 -translate-x-1/2">
                     <img
                       src="https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2F7d9627b53247494cb290097a41570c50?format=webp&width=800"
                       alt="Universal pH color chart"
