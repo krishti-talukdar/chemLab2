@@ -55,7 +55,7 @@ export class MemStorage implements IStorage {
         steps: 6,
         rating: 4.6,
         imageUrl:
-          "https://images.unsplash.com/photo-1581092588429-1e7e6ae1d0dd?q=80&w=1200&auto=format&fit=crop",
+          "https://cdn.builder.io/api/v1/image/assets%2Fc52292a04d4c4255a87bdaa80a28beb9%2Fd9024b9081e64d6c94e0588d642ffd0d?format=webp&width=800",
         equipment: [
           "Test Tubes (2–3)",
           "Beakers",
