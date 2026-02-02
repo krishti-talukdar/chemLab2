@@ -59,7 +59,7 @@ export default function SignInModal({ children }: SignInModalProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="h-6 w-6 text-blue-600" />
-            Welcome to ChemLab Virtual
+            Welcome to AgriVerse
           </DialogTitle>
           <DialogDescription>
             Sign in to save your progress and access personalized features
