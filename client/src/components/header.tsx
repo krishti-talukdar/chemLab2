@@ -37,19 +37,6 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#experiments" className="text-emerald-800 font-medium border-b-2 border-emerald-800 pb-1">
-              Experiments
-            </a>
-            <ProgressModal>
-              <button className="text-emerald-800 hover:text-emerald-900 transition-colors">
-                My Progress
-              </button>
-            </ProgressModal>
-            <SafetyGuideModal>
-              <button className="text-emerald-800 hover:text-emerald-900 transition-colors">
-                Safety Guide
-              </button>
-            </SafetyGuideModal>
             <SignInModal>
               <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
                 Sign In
@@ -70,19 +57,6 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <a href="#experiments" className="text-blue-600 font-medium px-4 py-2">
-                Experiments
-              </a>
-              <ProgressModal>
-                <button className="text-gray-600 hover:text-gray-900 px-4 py-2 text-left">
-                  My Progress
-                </button>
-              </ProgressModal>
-              <SafetyGuideModal>
-                <button className="text-gray-600 hover:text-gray-900 px-4 py-2 text-left">
-                  Safety Guide
-                </button>
-              </SafetyGuideModal>
               <div className="px-4">
                 <SignInModal>
                   <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">
