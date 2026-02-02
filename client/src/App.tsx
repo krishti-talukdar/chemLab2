@@ -1,4 +1,3 @@
-import { Switch, Route } from "wouter";
 import React, { Suspense, lazy } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
