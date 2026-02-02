@@ -17,6 +17,7 @@ function Router() {
       <Route path="/experiment/:id" component={Experiment} />
       <Route path="/about" component={About} />
       <Route path="/detection" component={() => import("@/pages/detection").then(m => m.default) } />
+      <Route path="/subscription" component={() => import("@/pages/subscription").then(m => m.default) } />
       <Route component={NotFound} />
     </Switch>
   );
