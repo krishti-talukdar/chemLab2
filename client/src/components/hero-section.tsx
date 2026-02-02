@@ -77,22 +77,31 @@ export default function HeroSection() {
                     </Button>
                   </DialogTrigger>
 
-                  <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                      <DialogTitle>About BORPAT ai</DialogTitle>
-                      <DialogDescription>
-                        We are a forward-thinking agritech and tea solutions company committed to empowering the tea industry through innovation, sustainability, and technology. Our approach merges data-driven intelligence with high-quality agricultural products to help tea growers and buyers thrive in every stage of production.
-                        <br />
-                        <br />
-                        At the heart of our work lies our AI-based pest detection model, designed to help tea estates monitor crop health in real time. By identifying early signs of pest infestation, our technology enables faster decision-making, reduces chemical overuse, and enhances both quality and yield.
-                        <br />
-                        <br />
-                        Alongside technology, we provide a range of eco-conscious pest control products developed to maintain tea garden health naturally and effectively.
-                        <br />
-                        <br />
-                        Through our B2B tea supply solutions, we connect certified tea producers with bulk buyers and exporters who value traceability and sustainability. By bridging technology with tradition, we ensure every cup of tea represents the best of innovation, care, and agricultural excellence.
-                      </DialogDescription>
-                    </DialogHeader>
+                  <DialogContent className="max-w-3xl bg-emerald-900 text-white p-6 sm:p-8 rounded-xl shadow-2xl">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start">
+                      <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F65f93d514a034dd48ade5031e70434a0?format=webp&width=800&height=500" alt="Assam tea gardens" className="w-full sm:w-40 h-28 object-cover rounded-md shadow-inner" />
+
+                      <DialogHeader className="!text-left flex-1">
+                        <DialogTitle className="text-2xl font-serif text-amber-100">About BORPAT ai</DialogTitle>
+                        <DialogDescription className="mt-2 text-sm text-amber-50/90 leading-relaxed">
+                          <p>
+                            We are a forward-thinking agritech and tea solutions company committed to empowering the tea industry through innovation, sustainability, and technology. Our approach merges data-driven intelligence with high-quality agricultural products to help tea growers and buyers thrive in every stage of production.
+                          </p>
+
+                          <p className="mt-3">
+                            At the heart of our work lies our AI-based pest detection model, designed to help tea estates monitor crop health in real time. By identifying early signs of pest infestation, our technology enables faster decision-making, reduces chemical overuse, and enhances both quality and yield.
+                          </p>
+
+                          <p className="mt-3">
+                            Alongside technology, we provide a range of eco-conscious pest control products developed to maintain tea garden health naturally and effectively.
+                          </p>
+
+                          <p className="mt-3">
+                            Through our B2B tea supply solutions, we connect certified tea producers with bulk buyers and exporters who value traceability and sustainability. By bridging technology with tradition, we ensure every cup of tea represents the best of innovation, care, and agricultural excellence.
+                          </p>
+                        </DialogDescription>
+                      </DialogHeader>
+                    </div>
                   </DialogContent>
                 </Dialog>
 
