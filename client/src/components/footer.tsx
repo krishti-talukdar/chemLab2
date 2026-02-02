@@ -3,7 +3,7 @@ import { FlaskRound } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-footer-green text-cream py-12">
+    <footer id="about-assam" className="bg-footer-green text-cream py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -44,7 +44,7 @@ export default function Footer() {
             <p className="text-cream/80 mb-4">Kohima, Nagaland, India<br/>info@agritech.com<br/>+91 98765 43210</p>
             <label className="text-sm text-cream/80 mb-2 block">Subscribe for agritech updates</label>
             <div className="flex gap-2">
-              <input type="email" placeholder="Your email" className="flex-1 rounded px-3 py-2 text-foreground bg-white" />
+              <input id="subscribe-email" type="email" placeholder="Your email" className="flex-1 rounded px-3 py-2 text-foreground bg-white" />
               <button className="bg-white text-emerald-800 rounded px-3 py-2">Subscribe</button>
             </div>
           </div>

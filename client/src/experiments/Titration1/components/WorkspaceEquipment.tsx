@@ -3,7 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertTriangle, CheckCircle } from "lucide-react";
-import { TITRATION_EQUIPMENT, TITRATION_CHEMICALS, SAFETY_GUIDELINES } from '../constants';
+import { LAB_EQUIPMENT as TITRATION_EQUIPMENT, TITRATION_REAGENTS as TITRATION_CHEMICALS, GUIDED_STEPS } from '../constants';
+
+const SAFETY_GUIDELINES = [
+  'Wear safety goggles and gloves while handling chemicals',
+  'Work in a well-ventilated area',
+  'Handle acids and bases with care and neutralize spills',
+  'Do not taste or directly inhale chemicals',
+  'Report any accidents to the instructor immediately'
+];
 
 interface WorkspaceEquipmentProps {
   onEquipmentSelect?: (equipmentId: string) => void;
@@ -29,7 +37,7 @@ export const WorkspaceEquipment: React.FC<WorkspaceEquipmentProps> = ({
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {TITRATION_EQUIPMENT.map((equipment) => (
+            {TITRATION_EQUIPMENT.map((equipment: any) => (
               <div
                 key={equipment.id}
                 className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${
@@ -76,7 +84,7 @@ export const WorkspaceEquipment: React.FC<WorkspaceEquipmentProps> = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {TITRATION_CHEMICALS.map((chemical) => (
+            {TITRATION_CHEMICALS.map((chemical: any) => (
               <div
                 key={chemical.id}
                 className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -125,7 +133,7 @@ export const WorkspaceEquipment: React.FC<WorkspaceEquipmentProps> = ({
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {SAFETY_GUIDELINES.map((guideline, index) => (
+            {SAFETY_GUIDELINES.map((guideline: string, index: number) => (
               <div key={index} className="flex items-start gap-3">
                 <div className="w-2 h-2 rounded-full bg-amber-500 mt-2 flex-shrink-0"></div>
                 <p className="text-sm leading-relaxed">{guideline}</p>

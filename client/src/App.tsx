@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import Experiment from "@/pages/experiment";
 import NotFound from "@/pages/not-found";
 import TitrationResultsPage from "@/pages/titration-results";
+import About from "@/pages/about";
 
 function Router() {
   return (
@@ -14,6 +15,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/experiment/:id/results" component={TitrationResultsPage} />
       <Route path="/experiment/:id" component={Experiment} />
+      <Route path="/about" component={About} />
+      <Route path="/detection" component={() => import("@/pages/detection").then(m => m.default) } />
       <Route component={NotFound} />
     </Switch>
   );

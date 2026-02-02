@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { TestTubeState } from "../types";
 import { X, FlaskConical, TestTube2, Beaker, Pipette, BarChart3 } from "lucide-react";
 
 interface EquipmentProps {
@@ -18,13 +19,7 @@ interface EquipmentProps {
     color: string;
   }>;
   onSolutionDrop?: (solutionId: string, equipmentId: string, volume: number) => void;
-  testTubes?: Array<{
-    id: string;
-    label: string;
-    colorHex: string;
-    volume: number;
-    isCompleted: boolean;
-  }>;
+  testTubes?: TestTubeState[];
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -155,7 +150,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       <div 
                         className="absolute bottom-0 left-0 right-0 transition-all duration-300"
                         style={{ 
-                          height: `${Math.max(20, tube.volume * 8)}%`,
+                          height: `${Math.max(20, (tube.totalVolume || 0) * 8)}%`,
                           backgroundColor: tube.colorHex
                         }}
                       />

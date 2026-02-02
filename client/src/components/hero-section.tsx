@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
+import SignInModal from "./sign-in-modal";
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
@@ -13,10 +14,25 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="bg-hero-green text-white py-20">
+    <section className="bg-hero-green text-white py-20 relative">
+      <div className="absolute top-4 left-4 z-50">
+          <Button onClick={() => navigate('/about')} className="bg-gradient-to-r from-amber-400 to-emerald-600 text-white hover:from-amber-500 hover:to-emerald-700 px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
+            <span className="mr-2 text-lg">☕</span>
+            <span style={{ fontFamily: '"Playfair Display", serif' }}>About ASSAM's Tea</span>
+          </Button>
+        </div>
+
+      <div className="absolute top-4 right-4 z-50 hidden md:block">
+          <SignInModal>
+            <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
+              Sign In
+            </Button>
+          </SignInModal>
+        </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 tracking-wider italic" style={{ fontFamily: '"Playfair Display", serif' }}>BORPAT</h1>
+          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 tracking-wider italic" style={{ fontFamily: '"Playfair Display", serif' }}>BORPAT <span className="not-italic">ai</span></h1>
           <p className="max-w-2xl mx-auto text-lg text-white/90 mb-6">
             Explore the essence of Assam's tea and agriculture through our interactive virtual experience. Discover cultivation techniques, process tea leaves firsthand, and trace every step from plantation to perfect brew.
           </p>
@@ -41,6 +57,23 @@ export default function HeroSection() {
 
               {/* Subtle border overlay for depth */}
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
+            </div>
+
+            {/* Lower action buttons: left, center, right */}
+            <div className="absolute left-0 right-0 bottom-6 px-4">
+              <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <Button onClick={() => navigate('/about')} className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
+                  <span className="mr-2">🔎</span> Know More About Us
+                </Button>
+
+                <Button onClick={() => navigate('/detection')} className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-4 py-2 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold">
+                  <span className="mr-2">🧪</span> BORPAT ai Detection Centre
+                </Button>
+
+                <Button onClick={() => { const el = document.getElementById('subscribe-email'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); (el as HTMLElement).focus(); } }} className="flex-1 md:flex-none bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
+                  <span className="mr-2">✉️</span> Subscription
+                </Button>
+              </div>
             </div>
           </div>
         </div>

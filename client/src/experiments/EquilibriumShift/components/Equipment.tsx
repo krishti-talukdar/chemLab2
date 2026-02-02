@@ -14,6 +14,7 @@ interface EquipmentProps {
   color?: string;
   volume?: number;
   displayVolume?: number; // explicit volume to show in badge
+  isCobaltAnimation?: boolean;
   onInteract?: (id: string) => void;
   isActive?: boolean;
 }

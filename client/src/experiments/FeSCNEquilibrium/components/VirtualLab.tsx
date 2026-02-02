@@ -101,9 +101,11 @@ export default function VirtualLab({
       const newEquipment: LabEquipment = {
         id: equipmentId,
         name: equipmentId.replace('-', ' '),
-        type: equipmentId.includes('rack') ? 'testtube' : 
-              equipmentId.includes('pipette') ? 'dropper' : 
-              equipmentId.includes('colorimeter') ? 'thermometer' : 'stirrer',
+        type: equipmentId.includes('rack') ? 'rack' :
+              equipmentId.includes('pipette') ? 'pipette' :
+              equipmentId.includes('colorimeter') ? 'colorimeter' :
+              equipmentId.includes('burette') ? 'burette' :
+              'test-tube',
         position: { x, y },
         isActive: true
       };
