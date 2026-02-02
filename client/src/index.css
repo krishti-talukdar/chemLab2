@@ -29,6 +29,11 @@
   --lab-green: hsl(158, 64%, 52%);
   --alert-red: hsl(0, 74%, 42%);
   --lab-gray: hsl(215, 20%, 65%);
+
+  /* Colors added to match the provided design */
+  --hero-green: #6b8f6b; /* hero section muted green */
+  --footer-green: #1f4d2b; /* deep footer green */
+  --cream: #f2efe4; /* cream background for features */
 }
 
 .dark {
