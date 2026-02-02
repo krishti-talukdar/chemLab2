@@ -15,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/experiment/:id/results" component={TitrationResultsPage} />
       <Route path="/experiment/:id" component={Experiment} />
+      <Route path="/about" component={About} />
       <Route component={NotFound} />
     </Switch>
   );
