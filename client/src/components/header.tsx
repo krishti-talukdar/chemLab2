@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FlaskRound, Menu, X } from "lucide-react";
+import { Leaf, Menu, X } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
 import ProgressModal from "./progress-modal";
@@ -30,26 +30,13 @@ export default function Header() {
         <div className="flex justify-between items-center h-12">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
-              <FlaskRound className="h-6 w-6 text-emerald-800" />
-              <h1 className="text-lg font-semibold text-emerald-900">ChemLab Virtual</h1>
+              <Leaf className="h-6 w-6 text-emerald-800" />
+              <h1 className="text-lg font-semibold text-emerald-900">AgriVerse</h1>
             </Link>
           </div>
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#experiments" className="text-emerald-800 font-medium border-b-2 border-emerald-800 pb-1">
-              Experiments
-            </a>
-            <ProgressModal>
-              <button className="text-emerald-800 hover:text-emerald-900 transition-colors">
-                My Progress
-              </button>
-            </ProgressModal>
-            <SafetyGuideModal>
-              <button className="text-emerald-800 hover:text-emerald-900 transition-colors">
-                Safety Guide
-              </button>
-            </SafetyGuideModal>
             <SignInModal>
               <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
                 Sign In
@@ -70,19 +57,6 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <a href="#experiments" className="text-blue-600 font-medium px-4 py-2">
-                Experiments
-              </a>
-              <ProgressModal>
-                <button className="text-gray-600 hover:text-gray-900 px-4 py-2 text-left">
-                  My Progress
-                </button>
-              </ProgressModal>
-              <SafetyGuideModal>
-                <button className="text-gray-600 hover:text-gray-900 px-4 py-2 text-left">
-                  Safety Guide
-                </button>
-              </SafetyGuideModal>
               <div className="px-4">
                 <SignInModal>
                   <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">

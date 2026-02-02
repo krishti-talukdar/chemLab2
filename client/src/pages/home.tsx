@@ -5,7 +5,6 @@ import HeroSection from "@/components/hero-section";
 import StatsSection from "@/components/stats-section";
 import ExperimentCard from "@/components/experiment-card";
 import ExperimentModal from "@/components/experiment-modal";
-import FeaturesSection from "@/components/features-section";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -43,7 +42,6 @@ export default function Home() {
       <Header />
       <HeroSection />
 
-      <FeaturesSection />
       <Footer />
 
       <ExperimentModal

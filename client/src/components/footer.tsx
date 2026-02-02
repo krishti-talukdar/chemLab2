@@ -60,7 +60,7 @@ export default function Footer() {
           </div>
 
           <div className="border-t border-cream/20 pt-6 text-center text-cream/70">
-            <p>&copy; 2024 ChemLab Virtual. All rights reserved.</p>
+            <p>&copy; 2026 AgriVerse. All rights reserved.</p>
           </div>
         </div>
       </div>

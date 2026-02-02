@@ -18,16 +18,10 @@ export default function HeroSection() {
         <div className="text-center">
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 tracking-wider">BORPAT</h1>
           <p className="max-w-2xl mx-auto text-lg text-white/90 mb-6">
-            Experience hands-on chemistry learning with our interactive virtual laboratory.
-            Conduct real experiments safely and track your progress step by step.
+            Explore the essence of Assam's tea and agriculture through our interactive virtual experience. Discover cultivation techniques, process tea leaves firsthand, and trace every step from plantation to perfect brew.
           </p>
 
-          <div className="flex justify-center gap-4 mt-6">
-            <button onClick={scrollToExperiments} className="w-14 h-9 rounded bg-white/90" aria-label="button-1"></button>
-            <SafetyGuideModal>
-              <button className="w-14 h-9 rounded bg-white/90" aria-label="button-2"></button>
-            </SafetyGuideModal>
-          </div>
+          <div className="flex justify-center gap-4 mt-6"></div>
         </div>
       </div>
     </section>

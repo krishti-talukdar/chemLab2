@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Mail, Lock, UserPlus } from "lucide-react";
+import { User, Mail, Lock, UserPlus, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SignInModalProps {
@@ -59,7 +59,7 @@ export default function SignInModal({ children }: SignInModalProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="h-6 w-6 text-blue-600" />
-            Welcome to ChemLab Virtual
+            Welcome to AgriVerse
           </DialogTitle>
           <DialogDescription>
             Sign in to save your progress and access personalized features
@@ -75,6 +75,32 @@ export default function SignInModal({ children }: SignInModalProps) {
           <TabsContent value="signin" className="space-y-4">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="signin-username">User Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="signin-username"
+                    type="text"
+                    placeholder="Enter your user name"
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signin-phone">Phone No.</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="signin-phone"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -87,7 +113,7 @@ export default function SignInModal({ children }: SignInModalProps) {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
@@ -101,12 +127,12 @@ export default function SignInModal({ children }: SignInModalProps) {
                   />
                 </div>
               </div>
-              
+
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>
-            
+
             <div className="text-center">
               <Button variant="link" className="text-sm">
                 Forgot your password?
@@ -117,19 +143,33 @@ export default function SignInModal({ children }: SignInModalProps) {
           <TabsContent value="signup" className="space-y-4">
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">User Name</Label>
                 <div className="relative">
                   <UserPlus className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="Enter your user name"
                     className="pl-10"
                     required
                   />
                 </div>
               </div>
-              
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-phone">Phone No.</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="signup-phone"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="signup-email">Email</Label>
                 <div className="relative">
@@ -143,7 +183,7 @@ export default function SignInModal({ children }: SignInModalProps) {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="signup-password">Password</Label>
                 <div className="relative">
@@ -157,7 +197,7 @@ export default function SignInModal({ children }: SignInModalProps) {
                   />
                 </div>
               </div>
-              
+
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
@@ -165,10 +205,6 @@ export default function SignInModal({ children }: SignInModalProps) {
           </TabsContent>
         </Tabs>
         
-        <div className="text-center text-sm text-gray-600 border-t pt-4">
-          <p>🧪 Demo Version - No registration required!</p>
-          <p>Start experimenting immediately with full access to all features.</p>
-        </div>
       </DialogContent>
     </Dialog>
   );
