@@ -150,7 +150,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       <div 
                         className="absolute bottom-0 left-0 right-0 transition-all duration-300"
                         style={{ 
-                          height: `${Math.max(20, tube.volume * 8)}%`,
+                          height: `${Math.max(20, (tube.totalVolume || 0) * 8)}%`,
                           backgroundColor: tube.colorHex
                         }}
                       />
