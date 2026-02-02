@@ -109,41 +109,11 @@ export default function HeroSection() {
                   <span className="mr-2">🧪</span> BORPAT ai Detection Centre
                 </Button>
 
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="flex-1 md:flex-none bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
-                      <span className="mr-2">✉️</span> Subscription
-                    </Button>
-                  </DialogTrigger>
-
-                  <DialogContent className="max-w-sm bg-emerald-600 text-white p-4 sm:p-6 rounded-xl shadow-2xl">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center justify-between">
-                        <div className="text-2xl font-bold font-serif">Hi there <span className="ml-2">👋</span></div>
-                        <div className="text-sm">&nbsp;</div>
-                      </div>
-
-                      <div className="text-sm text-amber-50/90">Need help? Search our help center for answers or start a conversation:</div>
-
-                      <div className="bg-white text-emerald-900 rounded-lg p-4 shadow">
-                        <h3 className="font-semibold mb-2">Recent Conversations</h3>
-                        <div className="text-xs text-muted-foreground">You (25 minutes ago)</div>
-                        <div className="mt-2 bg-amber-50 rounded-md p-3 text-sm flex items-center justify-between">
-                          <div>I have a question</div>
-                          <div className="text-emerald-800 font-bold">›</div>
-                        </div>
-                      </div>
-
-                      <div className="bg-white text-emerald-900 rounded-lg p-4 shadow">
-                        <h3 className="font-semibold mb-2">Help Center</h3>
-                        <div className="border rounded-md p-2 bg-white">
-                          <input placeholder="Search for answers" className="w-full border-none outline-none text-sm text-emerald-800" />
-                        </div>
-                      </div>
-
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <div className="flex-1 md:flex-none">
+                  <Button onClick={() => navigate('/subscription')} className="w-full bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
+                    <span className="mr-2">✉️</span> Subscription
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
