@@ -3,7 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertTriangle, CheckCircle } from "lucide-react";
-import { TITRATION_EQUIPMENT, TITRATION_CHEMICALS, SAFETY_GUIDELINES } from '../constants';
+import { LAB_EQUIPMENT as TITRATION_EQUIPMENT, TITRATION_REAGENTS as TITRATION_CHEMICALS, GUIDED_STEPS } from '../constants';
+
+const SAFETY_GUIDELINES = [
+  'Wear safety goggles and gloves while handling chemicals',
+  'Work in a well-ventilated area',
+  'Handle acids and bases with care and neutralize spills',
+  'Do not taste or directly inhale chemicals',
+  'Report any accidents to the instructor immediately'
+];
 
 interface WorkspaceEquipmentProps {
   onEquipmentSelect?: (equipmentId: string) => void;
