@@ -58,7 +58,7 @@ export default function SignInModal({ children }: SignInModalProps) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <User className="h-6 w-6 text-blue-600" />
+            <span role="img" aria-label="leaf" className="text-2xl">🍃</span>
             Welcome to AgriVerse
           </DialogTitle>
           <DialogDescription>
