@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import Experiment from "@/pages/experiment";
 import NotFound from "@/pages/not-found";
 import TitrationResultsPage from "@/pages/titration-results";
+import About from "@/pages/about";
 
 function Router() {
   return (
