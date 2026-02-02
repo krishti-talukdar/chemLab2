@@ -16,7 +16,7 @@ export default function HeroSection() {
   return (
     <section className="bg-hero-green text-white py-20 relative">
       <div className="absolute top-4 left-4 z-50">
-          <Button onClick={() => { const el = document.getElementById('about-assam'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="bg-emerald-800 text-white hover:bg-emerald-900">
+          <Button onClick={() => navigate('/about')} className="bg-emerald-800 text-white hover:bg-emerald-900">
             About ASSAM
           </Button>
         </div>
