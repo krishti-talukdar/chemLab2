@@ -83,23 +83,23 @@ export default function HeroSection() {
 
                       <DialogHeader className="!text-left flex-1">
                         <DialogTitle className="text-2xl font-serif text-amber-100">About BORPAT ai</DialogTitle>
-                        <DialogDescription className="mt-2 text-sm text-amber-50/90 leading-relaxed">
-                          <p>
+                        <div className="mt-2 text-sm text-amber-50/90 leading-relaxed">
+                          <div>
                             We are a forward-thinking agritech and tea solutions company committed to empowering the tea industry through innovation, sustainability, and technology. Our approach merges data-driven intelligence with high-quality agricultural products to help tea growers and buyers thrive in every stage of production.
-                          </p>
+                          </div>
 
-                          <p className="mt-3">
+                          <div className="mt-3">
                             At the heart of our work lies our AI-based pest detection model, designed to help tea estates monitor crop health in real time. By identifying early signs of pest infestation, our technology enables faster decision-making, reduces chemical overuse, and enhances both quality and yield.
-                          </p>
+                          </div>
 
-                          <p className="mt-3">
+                          <div className="mt-3">
                             Alongside technology, we provide a range of eco-conscious pest control products developed to maintain tea garden health naturally and effectively.
-                          </p>
+                          </div>
 
-                          <p className="mt-3">
+                          <div className="mt-3">
                             Through our B2B tea supply solutions, we connect certified tea producers with bulk buyers and exporters who value traceability and sustainability. By bridging technology with tradition, we ensure every cup of tea represents the best of innovation, care, and agricultural excellence.
-                          </p>
-                        </DialogDescription>
+                          </div>
+                        </div>
                       </DialogHeader>
                     </div>
                   </DialogContent>
