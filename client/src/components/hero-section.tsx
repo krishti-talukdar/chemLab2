@@ -58,6 +58,23 @@ export default function HeroSection() {
               {/* Subtle border overlay for depth */}
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
             </div>
+
+            {/* Lower action buttons: left, center, right */}
+            <div className="absolute left-0 right-0 bottom-6 px-4">
+              <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <Button onClick={() => navigate('/about')} className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
+                  <span className="mr-2">🔎</span> Know More About Us
+                </Button>
+
+                <Button onClick={() => navigate('/detection')} className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-4 py-2 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold">
+                  <span className="mr-2">🧪</span> BORPAT ai Detection Centre
+                </Button>
+
+                <Button onClick={() => { const el = document.getElementById('subscribe-email'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); (el as HTMLElement).focus(); } }} className="flex-1 md:flex-none bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
+                  <span className="mr-2">✉️</span> Subscription
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
