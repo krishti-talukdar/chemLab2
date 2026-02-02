@@ -120,6 +120,27 @@
   .bg-lab-gray {
     background-color: var(--lab-gray);
   }
+
+  /* New utilities for design matching */
+  .bg-hero-green {
+    background-color: var(--hero-green);
+  }
+
+  .bg-footer-green {
+    background-color: var(--footer-green);
+  }
+
+  .bg-cream {
+    background-color: var(--cream);
+  }
+
+  .text-cream {
+    color: var(--cream);
+  }
+
+  .font-serif {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
 }
 
 /* Enhanced drag and drop styles */
