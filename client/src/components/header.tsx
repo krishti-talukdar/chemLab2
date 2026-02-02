@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FlaskRound, Menu, X } from "lucide-react";
+import { Leaf, Menu, X } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
 import ProgressModal from "./progress-modal";
@@ -30,8 +30,8 @@ export default function Header() {
         <div className="flex justify-between items-center h-12">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
-              <FlaskRound className="h-6 w-6 text-emerald-800" />
-              <h1 className="text-lg font-semibold text-emerald-900">ChemLab Virtual</h1>
+              <Leaf className="h-6 w-6 text-emerald-800" />
+              <h1 className="text-lg font-semibold text-emerald-900">AgriVerse</h1>
             </Link>
           </div>
           
