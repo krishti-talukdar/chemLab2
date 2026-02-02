@@ -2,6 +2,14 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
 import SignInModal from "./sign-in-modal";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
@@ -62,9 +70,31 @@ export default function HeroSection() {
             {/* Lower action buttons: left, center, right */}
             <div className="absolute left-0 right-0 bottom-6 px-4">
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <Button onClick={() => navigate('/about')} className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
-                  <span className="mr-2">🔎</span> Know More About Us
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
+                      <span className="mr-2">🔎</span> Know More About Us
+                    </Button>
+                  </DialogTrigger>
+
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>About BORPAT ai</DialogTitle>
+                      <DialogDescription>
+                        We are a forward-thinking agritech and tea solutions company committed to empowering the tea industry through innovation, sustainability, and technology. Our approach merges data-driven intelligence with high-quality agricultural products to help tea growers and buyers thrive in every stage of production.
+                        <br />
+                        <br />
+                        At the heart of our work lies our AI-based pest detection model, designed to help tea estates monitor crop health in real time. By identifying early signs of pest infestation, our technology enables faster decision-making, reduces chemical overuse, and enhances both quality and yield.
+                        <br />
+                        <br />
+                        Alongside technology, we provide a range of eco-conscious pest control products developed to maintain tea garden health naturally and effectively.
+                        <br />
+                        <br />
+                        Through our B2B tea supply solutions, we connect certified tea producers with bulk buyers and exporters who value traceability and sustainability. By bridging technology with tradition, we ensure every cup of tea represents the best of innovation, care, and agricultural excellence.
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
 
                 <Button onClick={() => navigate('/detection')} className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-4 py-2 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold">
                   <span className="mr-2">🧪</span> BORPAT ai Detection Centre
