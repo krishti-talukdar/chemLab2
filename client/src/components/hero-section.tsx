@@ -23,13 +23,13 @@ export default function HeroSection() {
 
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="rounded-lg overflow-hidden shadow-lg bg-white">
-              <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F3ee28a4500db4241b39985ee5eafa9b1?format=webp&width=800&height=1200" alt="One-horned rhino" className="w-full h-48 object-cover"/>
+              <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2Fad98c6c3ddea42d5aa58f45a14038f5b?format=webp&width=800&height=1200" alt="One-horned rhino" className="w-full h-48 object-cover"/>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg bg-white">
-              <img src="https://source.unsplash.com/800x600/?assam,tea,garden" alt="Assam tea gardens" className="w-full h-48 object-cover"/>
+              <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F65f93d514a034dd48ade5031e70434a0?format=webp&width=800&height=1200" alt="Assam tea gardens" className="w-full h-48 object-cover"/>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg bg-white">
-              <img src="https://source.unsplash.com/800x600/?agriculture,farm,crops" alt="Agriculture" className="w-full h-48 object-cover"/>
+              <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F4bcb006d94e144a3a13590ea32f3839e?format=webp&width=800&height=1200" alt="Agriculture" className="w-full h-48 object-cover"/>
             </div>
           </div>
         </div>
