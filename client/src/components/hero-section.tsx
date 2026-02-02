@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
+import SignInModal from "./sign-in-modal";
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
@@ -13,7 +14,15 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="bg-hero-green text-white py-20">
+    <section className="bg-hero-green text-white py-20 relative">
+      <div className="absolute top-4 right-4 z-50 hidden md:block">
+          <SignInModal>
+            <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
+              Sign In
+            </Button>
+          </SignInModal>
+        </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 tracking-wider italic" style={{ fontFamily: '"Playfair Display", serif' }}>BORPAT AI</h1>
