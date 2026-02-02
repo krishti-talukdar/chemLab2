@@ -165,10 +165,6 @@ export default function SignInModal({ children }: SignInModalProps) {
           </TabsContent>
         </Tabs>
         
-        <div className="text-center text-sm text-gray-600 border-t pt-4">
-          <p>🧪 Demo Version - No registration required!</p>
-          <p>Start experimenting immediately with full access to all features.</p>
-        </div>
       </DialogContent>
     </Dialog>
   );
