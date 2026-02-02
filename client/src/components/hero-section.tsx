@@ -22,12 +22,7 @@ export default function HeroSection() {
             Conduct real experiments safely and track your progress step by step.
           </p>
 
-          <div className="flex justify-center gap-4 mt-6">
-            <button onClick={scrollToExperiments} className="w-14 h-9 rounded bg-white/90" aria-label="button-1"></button>
-            <SafetyGuideModal>
-              <button className="w-14 h-9 rounded bg-white/90" aria-label="button-2"></button>
-            </SafetyGuideModal>
-          </div>
+          <div className="flex justify-center gap-4 mt-6"></div>
         </div>
       </div>
     </section>
