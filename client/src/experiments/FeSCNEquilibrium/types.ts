@@ -71,6 +71,7 @@ export interface LabEquipment {
   name: string;
   type: 'pipette' | 'burette' | 'test-tube' | 'rack' | 'colorimeter';
   isActive: boolean;
+  position?: { x: number; y: number };
   currentVolume?: number;
   maxVolume?: number;
 }
