@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Play, Book } from "lucide-react";
 import { useLocation } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
-  
+
   const scrollToExperiments = () => {
     const experimentsSection = document.getElementById('experiments');
     if (experimentsSection) {
@@ -13,31 +12,20 @@ export default function HeroSection() {
     }
   };
 
-
-
   return (
-    <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+    <section className="bg-hero-green text-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg">
-            Discover Chemistry Through Virtual Experiments
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              onClick={scrollToExperiments}
-              className="bg-white text-blue-600 px-8 py-3 hover:bg-gray-100 font-semibold"
-            >
-              <Play className="mr-2 h-4 w-4" />
-              Start Experimenting
-            </Button>
+          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 tracking-wider">BORPAT</h1>
+          <p className="max-w-2xl mx-auto text-lg text-white/90 mb-6">
+            Experience hands-on chemistry learning with our interactive virtual laboratory.
+            Conduct real experiments safely and track your progress step by step.
+          </p>
+
+          <div className="flex justify-center gap-4 mt-6">
+            <button onClick={scrollToExperiments} className="w-14 h-9 rounded bg-white/90" aria-label="button-1"></button>
             <SafetyGuideModal>
-              <Button 
-                variant="outline" 
-                className="border-2 border-white text-white px-8 py-3 bg-transparent hover:bg-white hover:text-blue-600 font-semibold"
-              >
-                <Book className="mr-2 h-4 w-4" />
-                View Safety Guide
-              </Button>
+              <button className="w-14 h-9 rounded bg-white/90" aria-label="button-2"></button>
             </SafetyGuideModal>
           </div>
         </div>

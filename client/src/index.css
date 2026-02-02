@@ -29,6 +29,11 @@
   --lab-green: hsl(158, 64%, 52%);
   --alert-red: hsl(0, 74%, 42%);
   --lab-gray: hsl(215, 20%, 65%);
+
+  /* Colors added to match the provided design */
+  --hero-green: #6b8f6b; /* hero section muted green */
+  --footer-green: #1f4d2b; /* deep footer green */
+  --cream: #f2efe4; /* cream background for features */
 }
 
 .dark {
@@ -114,6 +119,27 @@
 
   .bg-lab-gray {
     background-color: var(--lab-gray);
+  }
+
+  /* New utilities for design matching */
+  .bg-hero-green {
+    background-color: var(--hero-green);
+  }
+
+  .bg-footer-green {
+    background-color: var(--footer-green);
+  }
+
+  .bg-cream {
+    background-color: var(--cream);
+  }
+
+  .text-cream {
+    color: var(--cream);
+  }
+
+  .font-serif {
+    font-family: Georgia, 'Times New Roman', serif;
   }
 }
 
