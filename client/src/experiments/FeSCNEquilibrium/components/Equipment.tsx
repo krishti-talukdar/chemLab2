@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { TestTubeState } from "../types";
 import { X, FlaskConical, TestTube2, Beaker, Pipette, BarChart3 } from "lucide-react";
 
 interface EquipmentProps {
