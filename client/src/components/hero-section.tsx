@@ -16,31 +16,31 @@ export default function HeroSection() {
 
 
   return (
-    <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+    <section className="bg-gradient-to-r from-emerald-700 to-emerald-500 text-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg">
-            Discover Chemistry Through Virtual Experiments
+          <h2 className="text-5xl md:text-6xl font-serif font-bold mb-4 tracking-wider drop-shadow-lg">
+            BORPAT
           </h2>
-          <p className="text-xl mb-8 text-blue-50 max-w-3xl mx-auto drop-shadow-md">
-            Experience hands-on chemistry learning with our interactive virtual laboratory. 
+          <p className="text-lg mb-8 text-emerald-100 max-w-3xl mx-auto drop-shadow-md">
+            Experience hands-on chemistry learning with our interactive virtual laboratory.
             Conduct real experiments safely and track your progress step by step.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
+          <div className="flex gap-4 justify-center">
+            <Button
               onClick={scrollToExperiments}
-              className="bg-white text-blue-600 px-8 py-3 hover:bg-gray-100 font-semibold"
+              className="bg-white text-emerald-700 px-6 py-2 rounded-sm w-28 h-10 font-semibold"
             >
               <Play className="mr-2 h-4 w-4" />
-              Start Experimenting
+              Start
             </Button>
             <SafetyGuideModal>
-              <Button 
-                variant="outline" 
-                className="border-2 border-white text-white px-8 py-3 bg-transparent hover:bg-white hover:text-blue-600 font-semibold"
+              <Button
+                variant="outline"
+                className="bg-white text-emerald-700 px-6 py-2 rounded-sm w-28 h-10 font-semibold"
               >
                 <Book className="mr-2 h-4 w-4" />
-                View Safety Guide
+                Safety
               </Button>
             </SafetyGuideModal>
           </div>
