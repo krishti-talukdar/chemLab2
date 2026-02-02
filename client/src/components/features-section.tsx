@@ -26,11 +26,11 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-amber-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ChemLab Virtual?</h3>
-          <p className="text-xl text-lab-gray max-w-2xl mx-auto">
+          <h3 className="text-3xl font-serif font-bold text-gray-800 mb-4">Why Choose ChemLab Virtual?</h3>
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Our platform provides comprehensive virtual chemistry education with real-world applications
           </p>
         </div>
@@ -40,8 +40,8 @@ export default function FeaturesSection() {
               <div className={`w-16 h-16 ${feature.bgColor} rounded-full flex items-center justify-center mx-auto mb-4`}>
                 <feature.icon className={`h-8 w-8 ${feature.iconColor}`} />
               </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h4>
-              <p className="text-lab-gray">{feature.description}</p>
+              <h4 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h4>
+              <p className="text-gray-700">{feature.description}</p>
             </div>
           ))}
         </div>
