@@ -42,7 +42,6 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <HeroSection />
-      <StatsSection />
 
       {/* Experiments Section */}
       <section id="experiments" className="py-16 bg-gray-50">
