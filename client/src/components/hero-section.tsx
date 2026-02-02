@@ -16,8 +16,9 @@ export default function HeroSection() {
   return (
     <section className="bg-hero-green text-white py-20 relative">
       <div className="absolute top-4 left-4 z-50">
-          <Button onClick={() => navigate('/about')} className="bg-emerald-800 text-white hover:bg-emerald-900">
-            About ASSAM
+          <Button onClick={() => navigate('/about')} className="bg-gradient-to-r from-amber-400 to-emerald-600 text-white hover:from-amber-500 hover:to-emerald-700 px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
+            <span className="mr-2 text-lg">☕</span>
+            <span style={{ fontFamily: '"Playfair Display", serif' }}>About ASSAM's Tea</span>
           </Button>
         </div>
 
