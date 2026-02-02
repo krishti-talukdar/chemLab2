@@ -2,6 +2,14 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import SafetyGuideModal from "./safety-guide-modal";
 import SignInModal from "./sign-in-modal";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
@@ -62,17 +70,80 @@ export default function HeroSection() {
             {/* Lower action buttons: left, center, right */}
             <div className="absolute left-0 right-0 bottom-6 px-4">
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <Button onClick={() => navigate('/about')} className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
-                  <span className="mr-2">🔎</span> Know More About Us
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
+                      <span className="mr-2">🔎</span> Know More About Us
+                    </Button>
+                  </DialogTrigger>
+
+                  <DialogContent className="max-w-3xl bg-emerald-900 text-white p-6 sm:p-8 rounded-xl shadow-2xl">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start">
+                      <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F65f93d514a034dd48ade5031e70434a0?format=webp&width=800&height=500" alt="Assam tea gardens" className="w-full sm:w-40 h-28 object-cover rounded-md shadow-inner" />
+
+                      <DialogHeader className="!text-left flex-1">
+                        <DialogTitle className="text-2xl font-serif text-amber-100">About BORPAT ai</DialogTitle>
+                        <div className="mt-2 text-sm text-amber-50/90 leading-relaxed">
+                          <div>
+                            We are a forward-thinking agritech and tea solutions company committed to empowering the tea industry through innovation, sustainability, and technology. Our approach merges data-driven intelligence with high-quality agricultural products to help tea growers and buyers thrive in every stage of production.
+                          </div>
+
+                          <div className="mt-3">
+                            At the heart of our work lies our AI-based pest detection model, designed to help tea estates monitor crop health in real time. By identifying early signs of pest infestation, our technology enables faster decision-making, reduces chemical overuse, and enhances both quality and yield.
+                          </div>
+
+                          <div className="mt-3">
+                            Alongside technology, we provide a range of eco-conscious pest control products developed to maintain tea garden health naturally and effectively.
+                          </div>
+
+                          <div className="mt-3">
+                            Through our B2B tea supply solutions, we connect certified tea producers with bulk buyers and exporters who value traceability and sustainability. By bridging technology with tradition, we ensure every cup of tea represents the best of innovation, care, and agricultural excellence.
+                          </div>
+                        </div>
+                      </DialogHeader>
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 <Button onClick={() => navigate('/detection')} className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-4 py-2 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold">
                   <span className="mr-2">🧪</span> BORPAT ai Detection Centre
                 </Button>
 
-                <Button onClick={() => { const el = document.getElementById('subscribe-email'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); (el as HTMLElement).focus(); } }} className="flex-1 md:flex-none bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
-                  <span className="mr-2">✉️</span> Subscription
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="flex-1 md:flex-none bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
+                      <span className="mr-2">✉️</span> Subscription
+                    </Button>
+                  </DialogTrigger>
+
+                  <DialogContent className="max-w-sm bg-emerald-600 text-white p-4 sm:p-6 rounded-xl shadow-2xl">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center justify-between">
+                        <div className="text-2xl font-bold font-serif">Hi there <span className="ml-2">👋</span></div>
+                        <div className="text-sm">&nbsp;</div>
+                      </div>
+
+                      <div className="text-sm text-amber-50/90">Need help? Search our help center for answers or start a conversation:</div>
+
+                      <div className="bg-white text-emerald-900 rounded-lg p-4 shadow">
+                        <h3 className="font-semibold mb-2">Recent Conversations</h3>
+                        <div className="text-xs text-muted-foreground">You (25 minutes ago)</div>
+                        <div className="mt-2 bg-amber-50 rounded-md p-3 text-sm flex items-center justify-between">
+                          <div>I have a question</div>
+                          <div className="text-emerald-800 font-bold">›</div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white text-emerald-900 rounded-lg p-4 shadow">
+                        <h3 className="font-semibold mb-2">Help Center</h3>
+                        <div className="border rounded-md p-2 bg-white">
+                          <input placeholder="Search for answers" className="w-full border-none outline-none text-sm text-emerald-800" />
+                        </div>
+                      </div>
+
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>
