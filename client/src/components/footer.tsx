@@ -1,5 +1,5 @@
-import { FlaskRound } from "lucide-react";
 import { FaTwitter, FaFacebook, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FlaskRound } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -49,8 +49,19 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-cream/20 mt-8 pt-8 text-center text-cream/70">
-          <p>&copy; 2024 ChemLab Virtual. All rights reserved.</p>
+
+        <div className="mt-8">
+          <div className="text-center mb-6 text-cream/80">Connect with us</div>
+          <div className="flex justify-center space-x-4 mb-6">
+            <a href="#" className="text-cream/80 hover:text-white transition-colors"><FaTwitter className="text-xl" /></a>
+            <a href="#" className="text-cream/80 hover:text-white transition-colors"><FaFacebook className="text-xl" /></a>
+            <a href="#" className="text-cream/80 hover:text-white transition-colors"><FaLinkedin className="text-xl" /></a>
+            <a href="#" className="text-cream/80 hover:text-white transition-colors"><FaGithub className="text-xl" /></a>
+          </div>
+
+          <div className="border-t border-cream/20 pt-6 text-center text-cream/70">
+            <p>&copy; 2024 ChemLab Virtual. All rights reserved.</p>
+          </div>
         </div>
       </div>
     </footer>
