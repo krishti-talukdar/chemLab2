@@ -19,13 +19,7 @@ interface EquipmentProps {
     color: string;
   }>;
   onSolutionDrop?: (solutionId: string, equipmentId: string, volume: number) => void;
-  testTubes?: Array<{
-    id: string;
-    label: string;
-    colorHex: string;
-    volume: number;
-    isCompleted: boolean;
-  }>;
+  testTubes?: TestTubeState[];
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
