@@ -1,5 +1,7 @@
 import { Link } from "wouter";
 
+import { Link } from "wouter";
+
 export default function Detection() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
