@@ -44,7 +44,7 @@ export default function Footer() {
             <p className="text-cream/80 mb-4">Kohima, Nagaland, India<br/>info@agritech.com<br/>+91 98765 43210</p>
             <label className="text-sm text-cream/80 mb-2 block">Subscribe for agritech updates</label>
             <div className="flex gap-2">
-              <input type="email" placeholder="Your email" className="flex-1 rounded px-3 py-2 text-foreground bg-white" />
+              <input id="subscribe-email" type="email" placeholder="Your email" className="flex-1 rounded px-3 py-2 text-foreground bg-white" />
               <button className="bg-white text-emerald-800 rounded px-3 py-2">Subscribe</button>
             </div>
           </div>
