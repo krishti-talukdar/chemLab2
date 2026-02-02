@@ -33,7 +33,7 @@ export default function HeroSection() {
       <div className="absolute top-4 right-4 z-50 hidden md:block">
           <SignInModal>
             <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
-              Sign In
+              Sign Up
             </Button>
           </SignInModal>
         </div>
