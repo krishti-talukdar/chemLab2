@@ -11,9 +11,6 @@ export default function SubscriptionPage() {
       priceMonthly: "₹2,999/mo",
       priceYearly: "₹33,999/yr",
       features: [
-        "Weekly newsletter",
-        "Access to blog content",
-        "Community support",
         "AI Chat box assistance",
         "Unlimited scanning with our disease detector",
         "Expert assistance from our Detection Centre (virtual)"
