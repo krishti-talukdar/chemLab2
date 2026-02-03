@@ -14,6 +14,7 @@ import About from "@/pages/about";
 function Router() {
   const Detection = lazy(() => import("@/pages/detection"));
   const Subscription = lazy(() => import("@/pages/subscription"));
+  const Products = lazy(() => import("@/pages/products"));
 
   return (
     <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
