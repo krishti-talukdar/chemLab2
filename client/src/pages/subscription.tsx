@@ -10,14 +10,30 @@ export default function SubscriptionPage() {
       name: "Basic",
       priceMonthly: "₹2,999/mo",
       priceYearly: "₹33,999/yr",
-      features: ["Weekly newsletter", "Access to blog content", "Community support"],
+      features: [
+        "Weekly newsletter",
+        "Access to blog content",
+        "Community support",
+        "AI Chat box assistance",
+        "Unlimited scanning with our disease detector",
+        "Expert assistance from our Detection Centre (virtual)"
+      ],
       cta: () => navigate('/detection')
     },
     {
       name: "Pro",
       priceMonthly: "₹5,999/mo",
       priceYearly: "₹69,999/yr",
-      features: ["All Basic features", "Early access to tools", "Priority email support"],
+      features: [
+        "All Basic features",
+        "Early access to tools",
+        "Priority email support",
+        "AI Chat box assistance",
+        "Unlimited scanning with our disease detector",
+        "Personalized disease detection from our experts at the Detection Centre",
+        "Free delivery of products",
+        "One free field visit every month"
+      ],
       cta: () => navigate('/detection')
     }
   ];
