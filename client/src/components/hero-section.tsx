@@ -51,6 +51,8 @@ export default function HeroSection() {
               <div className="flex flex-col gap-3 mt-2">
                 <button onClick={() => { setMenuOpen(false); setAboutOpen(true); }} className="w-full text-left rounded px-3 py-2 bg-gradient-to-r from-amber-400 to-emerald-600 text-white font-medium">Know More About Us</button>
 
+                <button onClick={() => { setMenuOpen(false); navigate('/subscription'); }} className="w-full text-left rounded px-3 py-2 bg-gradient-to-r from-amber-400 to-emerald-600 text-white font-medium">Buy Products from us</button>
+
                 <button onClick={() => { const el = document.getElementById('about-assam'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 font-medium">Contact Us</button>
               </div>
             </DialogContent>
