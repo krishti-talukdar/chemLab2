@@ -22,9 +22,6 @@ export default function SubscriptionPage() {
       priceMonthly: "₹5,999/mo",
       priceYearly: "₹69,999/yr",
       features: [
-        "All Basic features",
-        "Early access to tools",
-        "Priority email support",
         "AI Chat box assistance",
         "Unlimited scanning with our disease detector",
         "Personalized disease detection from our experts at the Detection Centre",
