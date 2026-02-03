@@ -13,6 +13,7 @@ import About from "@/pages/about";
 function Router() {
   const Detection = lazy(() => import("@/pages/detection"));
   const Subscription = lazy(() => import("@/pages/subscription"));
+  const Products = lazy(() => import("@/pages/products"));
 
   return (
     <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
@@ -23,6 +24,7 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/detection" component={Detection} />
         <Route path="/subscription" component={Subscription} />
+        <Route path="/products" component={Products} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>

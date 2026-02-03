@@ -8,21 +8,27 @@ export default function SubscriptionPage() {
   const plans = [
     {
       name: "Basic",
-      price: "₹299/mo",
-      features: ["Weekly newsletter", "Access to blog content", "Community support"],
+      priceMonthly: "₹2,999/mo",
+      priceYearly: "₹33,999/yr",
+      features: [
+        "AI Chat box assistance",
+        "Unlimited scanning with our disease detector",
+        "Expert assistance from our Detection Centre (virtual)"
+      ],
       cta: () => navigate('/detection')
     },
     {
       name: "Pro",
-      price: "₹799/mo",
-      features: ["All Basic features", "Early access to tools", "Priority email support"],
+      priceMonthly: "₹5,999/mo",
+      priceYearly: "₹69,999/yr",
+      features: [
+        "AI Chat box assistance",
+        "Unlimited scanning with our disease detector",
+        "Personalized disease detection from our experts at the Detection Centre",
+        "Free delivery of products",
+        "One free field visit every month"
+      ],
       cta: () => navigate('/detection')
-    },
-    {
-      name: "Enterprise",
-      price: "Contact us",
-      features: ["Custom integrations", "Dedicated account manager", "SLA & onboarding"],
-      cta: () => navigate('/about')
     }
   ];
 
@@ -41,16 +47,19 @@ export default function SubscriptionPage() {
             Subscription Plans
           </h1>
           <p className="mt-4 text-white/90 max-w-2xl mx-auto">
-            Choose a plan that fits your agritech needs. Upgrade, downgrade, or contact us for a custom enterprise solution.
+            Choose a plan that fits your agritech needs. Upgrade or downgrade anytime.
           </p>
         </div>
 
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {plans.map((plan) => (
             <div key={plan.name} className="bg-white/10 rounded-xl p-6 shadow-lg backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-2xl font-semibold">{plan.name}</h3>
-                <div className="text-xl font-bold">{plan.price}</div>
+                <div className="text-xl font-bold">
+                  <div>{plan.priceMonthly}</div>
+                  <div className="text-sm text-white/70 mt-1">{plan.priceYearly}</div>
+                </div>
               </div>
               <ul className="mt-4 space-y-2 text-sm text-white/90">
                 {plan.features.map((f) => (
