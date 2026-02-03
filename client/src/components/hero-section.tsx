@@ -105,13 +105,6 @@ export default function HeroSection() {
             <div className="absolute left-0 right-0 bottom-6 px-4">
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                 <Dialog open={aboutOpen} onOpenChange={setAboutOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
-                      <span className="mr-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-700">🔎</span>
-                      Know More About Us
-                    </Button>
-                  </DialogTrigger>
-
                   <DialogContent className="max-w-3xl bg-emerald-900 text-white p-6 sm:p-8 rounded-xl shadow-2xl">
                     <div className="flex flex-col sm:flex-row gap-4 items-start">
                       <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F65f93d514a034dd48ade5031e70434a0?format=webp&width=800&height=500" alt="Assam tea gardens" className="w-full sm:w-40 h-28 object-cover rounded-md shadow-inner" />
