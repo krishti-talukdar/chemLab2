@@ -45,13 +45,31 @@ export default function Footer() {
             <label className="text-sm text-cream/80 mb-2 block">Subscribe for agritech updates</label>
             <div className="flex gap-2">
               <a href="/subscription" className="flex-1 inline-block">
-                <button className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 inline-flex items-center gap-2">
+                <button className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 inline-flex items-center gap-2 relative overflow-hidden">
+                  {/* animated golden moving line */}
+                  <span
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '-50%',
+                      height: '4px',
+                      width: '50%',
+                      background: 'linear-gradient(90deg, rgba(250,190,50,0), rgba(250,190,50,0.95), rgba(250,190,50,0))',
+                      transform: 'translateX(0)',
+                      animation: 'slideGolden 2s linear infinite',
+                    }}
+                  />
+
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M12 2l7 10-7 10-7-10 7-10z" />
                   </svg>
-                  View plans & subscription
+                  <span className="relative z-10">View plans & subscription</span>
                 </button>
               </a>
+
+              {/* keyframes for animated golden line */}
+              <style>{`@keyframes slideGolden { from { transform: translateX(0); left: -50%; } to { transform: translateX(200%); left: -50%; } }`}</style>
             </div>
           </div>
         </div>
