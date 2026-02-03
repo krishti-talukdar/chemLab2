@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { useState } from "react";
 import SafetyGuideModal from "./safety-guide-modal";
 import SignInModal from "./sign-in-modal";
 import {
@@ -13,6 +14,8 @@ import {
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const scrollToExperiments = () => {
     const experimentsSection = document.getElementById('experiments');
@@ -32,7 +35,7 @@ export default function HeroSection() {
 
         {/* Top-right menu logo button */}
         <div className="absolute top-4 right-4 z-50">
-          <Dialog>
+          <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
             <DialogTrigger asChild>
               <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-emerald-700/80 hover:bg-emerald-700 text-white shadow-lg">
                 <span className="text-xl">☰</span>
@@ -46,7 +49,7 @@ export default function HeroSection() {
               </DialogHeader>
 
               <div className="flex flex-col gap-3 mt-2">
-                <button onClick={() => { navigate('/about'); }} className="w-full text-left rounded px-3 py-2 bg-gradient-to-r from-amber-400 to-emerald-600 text-white font-medium">Know More About Us</button>
+                <button onClick={() => { setMenuOpen(false); setAboutOpen(true); }} className="w-full text-left rounded px-3 py-2 bg-gradient-to-r from-amber-400 to-emerald-600 text-white font-medium">Know More About Us</button>
 
                 <button onClick={() => { const el = document.getElementById('about-assam'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 font-medium">Contact Us</button>
               </div>
@@ -97,7 +100,7 @@ export default function HeroSection() {
             {/* Lower action buttons: left, center, right */}
             <div className="absolute left-0 right-0 bottom-6 px-4">
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <Dialog>
+                <Dialog open={aboutOpen} onOpenChange={setAboutOpen}>
                   <DialogTrigger asChild>
                     <Button className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
                       <span className="mr-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-700">🔎</span>
