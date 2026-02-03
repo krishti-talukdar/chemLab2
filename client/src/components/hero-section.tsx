@@ -75,7 +75,7 @@ export default function HeroSection() {
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="flex-1 md:flex-none bg-white text-emerald-800 font-semibold tracking-wide px-6 py-3 rounded-full shadow-2xl transform transition-transform duration-200 hover:-translate-y-1 hover:scale-105" style={{ fontFamily: '"Playfair Display", serif' }}>
+                    <Button className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
                       <span className="mr-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-700">🔎</span>
                       Know More About Us
                     </Button>
