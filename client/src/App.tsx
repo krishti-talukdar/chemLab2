@@ -25,6 +25,7 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/detection" component={Detection} />
         <Route path="/subscription" component={Subscription} />
+        <Route path="/products" component={Products} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
