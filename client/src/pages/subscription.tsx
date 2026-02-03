@@ -37,7 +37,7 @@ export default function SubscriptionPage() {
             Subscription Plans
           </h1>
           <p className="mt-4 text-white/90 max-w-2xl mx-auto">
-            Choose a plan that fits your agritech needs. Upgrade, downgrade, or contact us for a custom enterprise solution.
+            Choose a plan that fits your agritech needs. Upgrade or downgrade anytime.
           </p>
         </div>
 
