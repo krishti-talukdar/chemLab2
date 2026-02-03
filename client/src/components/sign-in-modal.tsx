@@ -83,32 +83,6 @@ export default function SignInModal({ children }: SignInModalProps) {
                     type="text"
                     placeholder="Enter your user name"
                     className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="signin-phone">Phone No.</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="signin-phone"
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10"
                     required
                   />
                 </div>
