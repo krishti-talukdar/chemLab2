@@ -90,6 +90,12 @@ export default function HeroSection() {
               {/* Subtle border overlay for depth */}
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
 
+              {/* Center action: Scan tea disease */}
+              <div className="absolute left-1/2 top-[70%] -translate-x-1/2 z-20">
+                <Button onClick={() => navigate('/detection')} className="bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
+                  <span className="mr-2">🔬</span> Scan tea disease
+                </Button>
+              </div>
 
             </div>
 
