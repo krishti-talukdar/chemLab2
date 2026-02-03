@@ -92,7 +92,7 @@ export default function HeroSection() {
 
               {/* Center action: Scan tea disease */}
               <div className="absolute left-1/2 top-[70%] -translate-x-1/2 z-20">
-                <Button onClick={() => { window.location.href = 'https://aimodeldetector.streamlit.app/'; }} style={{ fontFamily: '"Inter", sans-serif' }} className="bg-gradient-to-r from-yellow-400 to-emerald-700 text-white px-6 py-4 rounded-full shadow-2xl transform hover:scale-110 transition-transform duration-200 text-xl font-bold tracking-wide font-sans">
+                <Button onClick={() => { window.open('https://aimodeldetector.streamlit.app/', '_blank', 'noopener,noreferrer'); }} style={{ fontFamily: '"Inter", sans-serif' }} className="bg-gradient-to-r from-yellow-400 to-emerald-700 text-white px-6 py-4 rounded-full shadow-2xl transform hover:scale-110 transition-transform duration-200 text-xl font-bold tracking-wide font-sans">
                   <span className="mr-3">🔬</span> Scan tea disease
                 </Button>
               </div>
