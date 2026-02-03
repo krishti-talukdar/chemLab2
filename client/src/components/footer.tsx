@@ -45,8 +45,24 @@ export default function Footer() {
             <label className="text-sm text-cream/80 mb-2 block">Subscribe for agritech updates</label>
             <div className="flex gap-2">
               <a href="/subscription" className="flex-1 inline-block">
-                <button className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800">View plans & Subscribe</button>
+                <button className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 inline-flex items-center gap-2 relative overflow-hidden">
+                  {/* animated golden stroke around button using SVG */}
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="192" height="40" rx="8" fill="none" stroke="transparent" strokeWidth="0" />
+                    <rect className="anim-stroke" x="4" y="4" width="192" height="40" rx="8" fill="none" stroke="#fabe32" strokeWidth="3" strokeLinecap="round" strokeDasharray="60 140" />
+                  </svg>
+
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 2l7 10-7 10-7-10 7-10z" />
+                  </svg>
+                  <span className="relative z-10">View plans & subscription</span>
+                </button>
               </a>
+
+              <style>{`@keyframes dash { to { stroke-dashoffset: -260; } }
+                .anim-stroke { stroke-dashoffset: 0; animation: dash 2s linear infinite; }
+                @media (prefers-reduced-motion: reduce) { .anim-stroke { animation: none; } }
+              `}</style>
             </div>
           </div>
         </div>

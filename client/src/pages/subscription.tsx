@@ -27,7 +27,14 @@ export default function SubscriptionPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-hero-green text-white py-16">
+    <div className="min-h-screen bg-hero-green text-white py-16 relative">
+      {/* Back button top-left */}
+      <div className="absolute top-4 left-4 z-50">
+        <Button onClick={() => navigate('/')} className="bg-white text-emerald-900 px-3 py-2 rounded shadow-sm">
+          Back
+        </Button>
+      </div>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-serif font-bold" style={{ fontFamily: '"Playfair Display", serif' }}>

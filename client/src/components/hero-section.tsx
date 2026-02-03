@@ -30,13 +30,6 @@ export default function HeroSection() {
           </Button>
         </div>
 
-      <div className="absolute top-4 right-4 z-50 hidden md:block">
-          <SignInModal>
-            <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
-              Sign Up
-            </Button>
-          </SignInModal>
-        </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
@@ -65,6 +58,16 @@ export default function HeroSection() {
 
               {/* Subtle border overlay for depth */}
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
+
+              {/* Sign Up button centered below the main image (styled to match About) */}
+              <div className="absolute left-1/2 top-[75%] md:top-[78%] -translate-x-1/2 z-30">
+                <SignInModal>
+                  <Button className="bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
+                    <span className="mr-2">✨</span> Sign Up
+                  </Button>
+                </SignInModal>
+              </div>
+
             </div>
 
             {/* Lower action buttons: left, center, right */}
@@ -72,8 +75,9 @@ export default function HeroSection() {
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="flex-1 md:flex-none bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-full shadow-md font-semibold">
-                      <span className="mr-2">🔎</span> Know More About Us
+                    <Button className="flex-1 md:flex-none bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
+                      <span className="mr-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-700">🔎</span>
+                      Know More About Us
                     </Button>
                   </DialogTrigger>
 
@@ -109,11 +113,6 @@ export default function HeroSection() {
                   <span className="mr-2">🧪</span> BORPAT ai Detection Centre
                 </Button>
 
-                <div className="flex-1 md:flex-none">
-                  <Button onClick={() => navigate('/subscription')} className="w-full bg-emerald-800 text-white px-4 py-2 rounded-full shadow-md font-semibold">
-                    <span className="mr-2">✉️</span> Subscription
-                  </Button>
-                </div>
               </div>
             </div>
           </div>

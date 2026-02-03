@@ -57,9 +57,9 @@ export default function SignInModal({ children }: SignInModalProps) {
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 font-serif text-2xl" style={{ fontFamily: '"Playfair Display", serif' }}>
             <span role="img" aria-label="leaf" className="text-2xl">🍃</span>
-            Welcome to AgriVerse
+            <span>Welcome to BORPAT ai</span>
           </DialogTitle>
           <DialogDescription>
             Sign in to save your progress and access personalized features
@@ -82,32 +82,6 @@ export default function SignInModal({ children }: SignInModalProps) {
                     id="signin-username"
                     type="text"
                     placeholder="Enter your user name"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="signin-phone">Phone No.</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="signin-phone"
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
                     className="pl-10"
                     required
                   />
