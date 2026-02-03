@@ -49,7 +49,7 @@ export default function Footer() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M12 2l7 10-7 10-7-10 7-10z" />
                   </svg>
-                  View plans & Subscribe
+                  View plans & subscription
                 </button>
               </a>
             </div>
