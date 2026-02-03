@@ -60,9 +60,9 @@ export default function HeroSection() {
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
 
               {/* Sign Up button centered below the main image */}
-              <div className="absolute left-1/2 top-[58%] -translate-x-1/2 z-30">
+              <div className="absolute left-1/2 top-[70%] md:top-[72%] -translate-x-1/2 z-30">
                 <SignInModal>
-                  <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
+                  <Button className="bg-white text-emerald-900 hover:bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-md shadow">
                     Sign Up
                   </Button>
                 </SignInModal>
