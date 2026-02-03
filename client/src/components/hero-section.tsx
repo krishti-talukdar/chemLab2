@@ -59,10 +59,10 @@ export default function HeroSection() {
               {/* Subtle border overlay for depth */}
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
 
-              {/* Sign Up button centered below the main image */}
-              <div className="absolute left-1/2 top-[70%] md:top-[72%] -translate-x-1/2 z-30">
+              {/* Sign Up button centered below the main image (styled) */}
+              <div className="absolute left-1/2 top-[75%] md:top-[78%] -translate-x-1/2 z-30">
                 <SignInModal>
-                  <Button className="bg-white text-emerald-900 hover:bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-md shadow">
+                  <Button className="bg-white text-emerald-900 font-semibold tracking-wide px-6 py-3 rounded-full shadow-2xl ring-1 ring-emerald-100 transform transition-transform duration-200 hover:-translate-y-1 hover:scale-105" style={{ fontFamily: '"Playfair Display", serif' }}>
                     Sign Up
                   </Button>
                 </SignInModal>
