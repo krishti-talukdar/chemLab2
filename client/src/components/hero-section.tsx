@@ -92,8 +92,8 @@ export default function HeroSection() {
 
               {/* Center action: Scan tea disease */}
               <div className="absolute left-1/2 top-[70%] -translate-x-1/2 z-20">
-                <Button onClick={() => navigate('/detection')} className="bg-gradient-to-r from-amber-400 to-emerald-600 text-white px-5 py-3 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 font-semibold tracking-wide font-serif">
-                  <span className="mr-2">🔬</span> Scan tea disease
+                <Button onClick={() => navigate('/detection')} style={{ fontFamily: '"Inter", sans-serif' }} className="bg-gradient-to-r from-yellow-400 to-emerald-700 text-white px-6 py-4 rounded-full shadow-2xl transform hover:scale-110 transition-transform duration-200 text-xl font-bold tracking-wide font-sans">
+                  <span className="mr-3">🔬</span> Scan tea disease
                 </Button>
               </div>
 
