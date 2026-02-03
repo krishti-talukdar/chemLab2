@@ -30,13 +30,6 @@ export default function HeroSection() {
           </Button>
         </div>
 
-      <div className="absolute top-4 right-4 z-50 hidden md:block">
-          <SignInModal>
-            <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
-              Sign Up
-            </Button>
-          </SignInModal>
-        </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
@@ -65,6 +58,16 @@ export default function HeroSection() {
 
               {/* Subtle border overlay for depth */}
               <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 pointer-events-none" />
+
+              {/* Sign Up button centered below the main image */}
+              <div className="absolute left-1/2 top-[58%] -translate-x-1/2 z-30">
+                <SignInModal>
+                  <Button className="bg-emerald-800 text-white hover:bg-emerald-900">
+                    Sign Up
+                  </Button>
+                </SignInModal>
+              </div>
+
             </div>
 
             {/* Lower action buttons: left, center, right */}
