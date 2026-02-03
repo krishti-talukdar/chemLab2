@@ -30,6 +30,30 @@ export default function HeroSection() {
           </Button>
         </div>
 
+        {/* Top-right menu logo button */}
+        <div className="absolute top-4 right-4 z-50">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-emerald-700/80 hover:bg-emerald-700 text-white shadow-lg">
+                <span className="text-xl">☰</span>
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="w-64 bg-emerald-900 text-white p-4 rounded-xl shadow-2xl">
+              <DialogHeader className="!p-0 mb-2">
+                <DialogTitle className="text-lg font-semibold">Menu</DialogTitle>
+                <DialogDescription className="text-sm text-amber-50/80">Quick links</DialogDescription>
+              </DialogHeader>
+
+              <div className="flex flex-col gap-3 mt-2">
+                <button onClick={() => { navigate('/about'); }} className="w-full text-left rounded px-3 py-2 bg-gradient-to-r from-amber-400 to-emerald-600 text-white font-medium">Know More About Us</button>
+
+                <button onClick={() => { const el = document.getElementById('about-assam'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 font-medium">Contact Us</button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
