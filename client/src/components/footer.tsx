@@ -45,7 +45,12 @@ export default function Footer() {
             <label className="text-sm text-cream/80 mb-2 block">Subscribe for agritech updates</label>
             <div className="flex gap-2">
               <a href="/subscription" className="flex-1 inline-block">
-                <button className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800">View plans & Subscribe</button>
+                <button className="w-full text-left rounded px-3 py-2 bg-white text-emerald-800 inline-flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 2l7 10-7 10-7-10 7-10z" />
+                  </svg>
+                  View plans & Subscribe
+                </button>
               </a>
             </div>
           </div>
