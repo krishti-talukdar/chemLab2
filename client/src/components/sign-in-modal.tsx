@@ -57,9 +57,9 @@ export default function SignInModal({ children }: SignInModalProps) {
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 font-serif text-2xl" style={{ fontFamily: '"Playfair Display", serif' }}>
             <span role="img" aria-label="leaf" className="text-2xl">🍃</span>
-            Welcome to AgriVerse
+            <span>Welcome to BORPAT ai</span>
           </DialogTitle>
           <DialogDescription>
             Sign in to save your progress and access personalized features
