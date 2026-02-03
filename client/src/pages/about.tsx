@@ -1,38 +1,45 @@
 import { Link } from "wouter";
 import { Leaf } from "lucide-react";
+import { Link } from "wouter";
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-emerald-100 to-amber-50 py-12">
-      <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm shadow-2xl rounded-lg p-10 border border-emerald-200">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-full bg-emerald-100 text-emerald-700 shadow-sm">
-              <Leaf className="w-6 h-6" />
+    <div className="min-h-screen bg-hero-green text-white py-16">
+      <div className="max-w-4xl mx-auto bg-emerald-900/95 rounded-xl p-6 sm:p-8 shadow-2xl ring-1 ring-white/10">
+        <div className="flex items-start gap-6">
+          <img src="https://cdn.builder.io/api/v1/image/assets%2F3c8edf2c5e3b436684f709f440180093%2F65f93d514a034dd48ade5031e70434a0?format=webp&width=800&height=500" alt="Assam tea gardens" className="w-40 h-28 object-cover rounded-md shadow-inner" />
+
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <div className="p-2 rounded-full bg-amber-100 text-amber-700 shadow-sm">
+                  <Leaf className="w-5 h-5" />
+                </div>
+                <h1 className="text-2xl font-serif font-bold" style={{ fontFamily: '"Playfair Display", serif' }}>About BORPAT ai</h1>
+              </div>
+
+              <Link href="/">
+                <button className="bg-emerald-700/60 text-white px-3 py-1 rounded">Home</button>
+              </Link>
             </div>
-            <h1 className="text-4xl md:text-5xl font-serif italic" style={{ fontFamily: '"Playfair Display", serif' }}>About ASSAM</h1>
-          </div>
 
-          <Link href="/">
-            <button className="bg-emerald-800 text-white px-4 py-2 rounded shadow">Home</button>
-          </Link>
-        </div>
+            <div className="text-sm text-amber-50/90 leading-relaxed">
+              <p>
+                We are a forward-thinking agritech and tea solutions company committed to empowering the tea industry through innovation, sustainability, and technology. Our approach merges data-driven intelligence with high-quality agricultural products to help tea growers and buyers thrive in every stage of production.
+              </p>
 
-        <h2 className="text-lg text-amber-800 font-semibold mb-6 tracking-wide">Assam Tea – The Pride of India</h2>
+              <p className="mt-3">
+                At the heart of our work lies our AI-based pest detection model, designed to help tea estates monitor crop health in real time. By identifying early signs of pest infestation, our technology enables faster decision-making, reduces chemical overuse, and enhances both quality and yield.
+              </p>
 
-        <div className="space-y-6 text-gray-800 text-lg leading-relaxed">
-          <p className="first-line:uppercase first-line:tracking-widest">Assam tea is a symbol of richness, strength, and tradition. Grown along the fertile banks of the Brahmaputra River, the lush tea gardens of Assam produce one of the world’s finest and most distinctive teas. Known for its bold flavor, deep amber color, and brisk, malty taste, Assam tea offers an experience that is both refreshing and energizing.</p>
+              <p className="mt-3">
+                Alongside technology, we provide a range of eco-conscious pest control products developed to maintain tea garden health naturally and effectively.
+              </p>
 
-          <blockquote className="border-l-4 border-emerald-300 pl-4 italic text-emerald-900 bg-emerald-50/60 p-4 rounded">
-            <span className="text-2xl mr-2 align-middle">☕</span>
-            What makes Assam tea truly special is its unique growing environment. The region’s warm climate, abundant rainfall, and rich alluvial soil create perfect conditions for tea cultivation, giving Assam tea its unmatched aroma and character. Each cup reflects the heritage, hard work, and craftsmanship of generations of tea growers.
-          </blockquote>
-
-          <p>Celebrated globally and enjoyed daily by millions, Assam tea is more than just a beverage—it is a legacy of quality, culture, and natural excellence. A sip of Assam tea is a taste of authenticity, warmth, and the timeless spirit of India.</p>
-
-          <div className="flex items-center gap-4 mt-4">
-            <span className="text-3xl">✨</span>
-            <p className="text-sm text-gray-600">Learn more about Assam's tea-growing regions, seasonality, and traditional processing techniques in our interactive experiences.</p>
+              <p className="mt-3">
+                Through our B2B tea supply solutions, we connect certified tea producers with bulk buyers and exporters who value traceability and sustainability. By bridging technology with tradition, we ensure every cup of tea represents the best of innovation, care, and agricultural excellence.
+              </p>
+            </div>
           </div>
         </div>
       </div>
