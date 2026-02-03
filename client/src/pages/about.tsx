@@ -1,6 +1,5 @@
 import { Link } from "wouter";
 import { Leaf } from "lucide-react";
-import { Link } from "wouter";
 
 export default function About() {
   return (
