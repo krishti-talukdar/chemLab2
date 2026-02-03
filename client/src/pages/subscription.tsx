@@ -8,21 +8,17 @@ export default function SubscriptionPage() {
   const plans = [
     {
       name: "Basic",
-      price: "₹299/mo",
+      priceMonthly: "₹2,999/mo",
+      priceYearly: "₹33,999/yr",
       features: ["Weekly newsletter", "Access to blog content", "Community support"],
       cta: () => navigate('/detection')
     },
     {
       name: "Pro",
-      price: "₹799/mo",
+      priceMonthly: "₹5,999/mo",
+      priceYearly: "₹69,999/yr",
       features: ["All Basic features", "Early access to tools", "Priority email support"],
       cta: () => navigate('/detection')
-    },
-    {
-      name: "Enterprise",
-      price: "Contact us",
-      features: ["Custom integrations", "Dedicated account manager", "SLA & onboarding"],
-      cta: () => navigate('/about')
     }
   ];
 
