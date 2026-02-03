@@ -41,12 +41,15 @@ export default function SubscriptionPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {plans.map((plan) => (
             <div key={plan.name} className="bg-white/10 rounded-xl p-6 shadow-lg backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-2xl font-semibold">{plan.name}</h3>
-                <div className="text-xl font-bold">{plan.price}</div>
+                <div className="text-xl font-bold">
+                  <div>{plan.priceMonthly}</div>
+                  <div className="text-sm text-white/70 mt-1">{plan.priceYearly}</div>
+                </div>
               </div>
               <ul className="mt-4 space-y-2 text-sm text-white/90">
                 {plan.features.map((f) => (
